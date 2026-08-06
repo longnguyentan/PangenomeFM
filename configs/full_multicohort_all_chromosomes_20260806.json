@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "analysis_id": "full_multicohort_all_chromosomes_20260806",
+  "primary_chromosomes": [
+    "chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8",
+    "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15",
+    "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22",
+    "chrX", "chrY"
+  ],
+  "datasets": {
+    "hprc_r2": {
+      "role": "current_hprc_training_graph",
+      "release": "HPRC Release 2.0 Minigraph SV graph, GRCh38 coordinates",
+      "source_format": "HPRC Minigraph-Cactus GBZ/rGFA release; current tables are the complete SV graph S/L records",
+      "raw_gbz": "data/public/hprc/v2.0/hprc-v2.0-mc-grch38.gbz",
+      "path_metadata": "data/public/hprc/v2.0/paths.metadata.tsv",
+      "data_dir": "data/hprc",
+      "segments": "data/hprc/full_segments.csv",
+      "links": "data/hprc/full_links.csv",
+      "benchmark": "data/hprc/benchmark_full_multicohort_20260806",
+      "pretrain_benchmark": "data/hprc/benchmark_full_coverage_5mb_20260806",
+      "reference_prefix": "GRCh38#0",
+      "graph_donors": 231,
+      "graph_haplotypes": 462,
+      "supersedes": "hprc_r1_1"
+    },
+    "hgsvc3": {
+      "role": "independent_cohort_training_and_transfer_graph",
+      "release": "HGSVC3 Minigraph SV graph, CHM13 coordinates, 2024-02-23",
+      "source_format": "GFA 1.1 Minigraph-Cactus SV graph; full-graph W paths indexed separately",
+      "raw_gfa": "data/hgsvc3/hgsvc3-2024-02-23-mc-chm13.sv.gfa.gz",
+      "data_dir": "data/hgsvc3_sv_all_20260806",
+      "segments": "data/hgsvc3_sv_all_20260806/full_segments.csv.gz",
+      "links": "data/hgsvc3_sv_all_20260806/full_links.csv.gz",
+      "benchmark": "data/hgsvc3_sv_all_20260806/benchmark_full_multicohort_20260806",
+      "pretrain_benchmark": "data/hgsvc3_sv_all_20260806/benchmark_full_coverage_5mb_20260806",
+      "reference_prefix": "CHM13#0",
+      "path_metadata": "data/hgsvc3/path_index_full/path_metadata.csv.gz",
+      "graph_donors": 65,
+      "graph_haplotypes": 130
+    },
+    "hprc_r1_1": {
+      "role": "graph_release_transfer_only",
+      "release": "HPRC Release 1.1 Minigraph SV graph, GRCh38 coordinates",
+      "source_format": "HPRC Minigraph-Cactus SV rGFA",
+      "raw_gfa": "data/public/hprc/v1.1/hprc-v1.1-mc-grch38.sv.gfa.gz",
+      "raw_gbz": "data/public/hprc/v1.1/hprc-v1.1-mc-grch38.gbz",
+      "raw_sha256": "e9cfa7d1f2918922b1ce7413d3c9d106730d9a77972de044343387d3be7ec8d8",
+      "data_dir": "data/hprc_r1_1_sv_all_20260806",
+      "segments": "data/hprc_r1_1_sv_all_20260806/full_segments.csv.gz",
+      "links": "data/hprc_r1_1_sv_all_20260806/full_links.csv.gz",
+      "benchmark": "data/hprc_r1_1_sv_all_20260806/benchmark_full_multicohort_20260806",
+      "pretrain_benchmark": "data/hprc_r1_1_sv_all_20260806/benchmark_full_coverage_5mb_20260806",
+      "reference_prefix": "GRCh38#0",
+      "combination_policy": "Do not pool with R2: overlapping donors and superseded assemblies would duplicate biological samples. Use only for release-transfer stress testing."
+    }
+  },
+  "combined_unique_graph_cohort": {
+    "datasets": ["hprc_r2", "hgsvc3"],
+    "hprc_graph_donors": 231,
+    "hgsvc3_graph_donors": 65,
+    "verified_overlap_donors": 4,
+    "unique_donors": 292,
+    "phased_haplotypes_before_overlap_deduplication": 592,
+    "note": "The graphs retain all release paths; the current encoder consumes local graph topology rather than donor identity."
+  },
+  "benchmark": {
+    "window_bp": 50000,
+    "windows_per_chromosome": 10,
+    "closures": ["strict", "1hop"],
+    "negative_sampler": "distance_matched",
+    "negative_coord_band": 5000,
+    "negative_tolerance_bp": 1000,
+    "negative_tolerance_fraction": 0.1,
+    "negative_degree_matched": true,
+    "non_overlapping_windows": true,
+    "matched_closure_windows": true,
+    "seed": 20260806
+  },
+  "full_coverage_pretraining": {
+    "window_bp": 5000000,
+    "tile_stride_bp": 5000000,
+    "closures": ["strict", "1hop"],
+    "negative_sampler": "distance_matched",
+    "negative_coord_band": 5000,
+    "negative_tolerance_bp": 1000,
+    "negative_tolerance_fraction": 0.1,
+    "negative_degree_matched": true,
+    "matched_closure_windows": true,
+    "seed": 20260806,
+    "coverage_definition": "Deterministic non-overlapping 5 Mb tiles from coordinate 0 through the maximum primary-reference segment end for every chr1-chr22, chrX, and chrY present in each graph."
+  },
+  "training": {
+    "seeds": [42, 314159, 20260806],
+    "split_seed": 20260806,
+    "epochs": 100,
+    "patience": 20,
+    "hidden_dim": 48,
+    "heads": 4,
+    "layers": 2,
+    "candidate_mask_batch_size": 512,
+    "contexts": ["strict", "1hop"],
+    "device_default": "cpu",
+    "query_edge_masking": true,
+    "save_predictions": true,
+    "recovery_every_epochs": 1
+  },
+  "rotating_chromosome_folds": [
+    {"name": "fold_a", "test": ["chr1", "chr6", "chr11", "chr16", "chr21"], "validation": ["chr2", "chr7", "chr12", "chr17", "chr22"]},
+    {"name": "fold_b", "test": ["chr2", "chr7", "chr12", "chr17", "chr22"], "validation": ["chr3", "chr8", "chr13", "chr18", "chrX"]},
+    {"name": "fold_c", "test": ["chr3", "chr8", "chr13", "chr18", "chrX"], "validation": ["chr4", "chr9", "chr14", "chr19", "chrY"]},
+    {"name": "fold_d", "test": ["chr4", "chr9", "chr14", "chr19", "chrY"], "validation": ["chr5", "chr10", "chr15", "chr20"]},
+    {"name": "fold_e", "test": ["chr5", "chr10", "chr15", "chr20"], "validation": ["chr1", "chr6", "chr11", "chr16", "chr21"]}
+  ],
+  "release_3_policy": {
+    "status_as_of_2026_08_06": "metadata_and_assemblies_available_but_no_stable_integrated_release_graph",
+    "tracking_cohort_samples": 345,
+    "finalized_test_set_samples": 42,
+    "training_decision": "inventory_only_until_a_versioned_integrated_graph_is released",
+    "reason": "Merging individual R3 assemblies would require rebuilding the pangenome and would not be format-equivalent to the released R2/HGSVC3 graphs."
+  },
+  "outputs": {
+    "root": "results/full_multicohort_all_chromosomes_20260806",
+    "logs": "logs/full_multicohort_all_chromosomes_20260806",
+    "validation": "results/full_multicohort_all_chromosomes_20260806/validation",
+    "state": "results/full_multicohort_all_chromosomes_20260806/execution_state.json"
+  }
+}

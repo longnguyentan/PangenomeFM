@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "benchmark": {
+    "dataset": "HPRC Release 2 processed pooled graph",
+    "manifest": "data/hprc/benchmark_matched_nonoverlap_v2_review_20260804/manifest.csv",
+    "seed": 20260804,
+    "window_bp": 50000,
+    "windows_per_chromosome": 10,
+    "targets": "all primary chromosomes chr1-22, chrX, chrY",
+    "contexts": {
+      "strict": "core-node-induced-subgraph",
+      "1hop": "endpoint-expanded-induced-subgraph"
+    },
+    "negative_sampler": "distance_matched",
+    "negative_coord_band": 5000,
+    "negative_tolerance_bp": 1000,
+    "negative_tolerance_fraction": 0.1,
+    "non_overlapping_windows": true,
+    "matched_context_intervals": true
+  },
+  "split": {
+    "held_out_chromosomes": [
+      "GRCh38#0#chr1",
+      "GRCh38#0#chr8",
+      "GRCh38#0#chr19",
+      "GRCh38#0#chrY"
+    ],
+    "validation_chromosomes": ["GRCh38#0#chr16"],
+    "candidate_partition": "deterministic 70/10/20 within slice",
+    "candidate_split_seed": 20260804,
+    "minimum_training_candidates": 10,
+    "loaded_slices": 414,
+    "loader_ineligible_slices": 66
+  },
+  "training": {
+    "epochs_max": 100,
+    "early_stopping_patience": 20,
+    "device": "cpu",
+    "query_edge_masking": true,
+    "distance_matched_negatives": true,
+    "dual_stream": true,
+    "multiscale_rope_scales": 3,
+    "orientation_encoding": true,
+    "adaptive_window_base": 32,
+    "adaptive_window_alpha": 4.0,
+    "focal_gamma": 2.0,
+    "drop_edge_rate": 0.1,
+    "completed_seeds": [20260804, 42, 314159],
+    "required_replication_seeds": [],
+    "variants": {
+      "full": [],
+      "graph": ["--stream_mode", "graph"],
+      "coordinate": ["--stream_mode", "coordinate"],
+      "nogate": ["--no_fusion_gate"]
+    }
+  },
+  "statistics": {
+    "bootstrap_unit": "graph slice / exact locus pair",
+    "bootstrap_replicates": 500,
+    "bootstrap_seed": 20260804,
+    "primary_metrics": ["AUROC", "AUPRC"],
+    "secondary_metrics": ["accuracy", "precision", "recall", "F1", "Brier", "ECE"]
+  },
+  "success_criteria_for_replication": {
+    "topology_signal": "graph-only and full AUROC confidence intervals remain above 0.5 in both contexts",
+    "coordinate_control": "full model exceeds coordinate-only on paired held-out predictions",
+    "context_claim": "no causal context-radius claim unless visible nodes, links, sequence bp, and candidate targets are exposure matched",
+    "submission_gate": "completed: report mean, sample standard deviation, range, and per-seed paired comparisons over three fixed-split seeds"
+  }
+}

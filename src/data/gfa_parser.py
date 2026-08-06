@@ -9,13 +9,48 @@ from typing import TextIO
 
 SEGMENT_COLUMNS = ["id", "name", "seq", "LN", "SN", "SO", "SR"]
 LINK_COLUMNS = ["from_seg", "from_orient", "to_seg", "to_orient", "overlap", "SR", "L1", "L2"]
+PATH_COLUMNS = [
+    "record_type",
+    "path_name",
+    "sample",
+    "haplotype",
+    "contig",
+    "path_start",
+    "path_end",
+    "rank",
+    "segment",
+    "orientation",
+]
+PATH_METADATA_COLUMNS = [
+    "record_type",
+    "path_name",
+    "sample",
+    "haplotype",
+    "contig",
+    "path_start",
+    "path_end",
+    "step_count",
+    "walk_chars",
+]
 
 
 def _open_text(path: str | Path, mode: str) -> TextIO:
     path = Path(path)
     if path.suffix == ".gz":
-        return gzip.open(path, mode + "t", newline="", encoding="utf-8")  # type: ignore[return-value]
+        kwargs = {"newline": "", "encoding": "utf-8"}
+        if mode.startswith(("w", "a", "x")):
+            # Level 6 is much faster for multi-gigabyte graph tables while
+            # remaining compact enough for constrained local scratch space.
+            kwargs["compresslevel"] = 6
+        return gzip.open(path, mode + "t", **kwargs)  # type: ignore[arg-type,return-value]
     return path.open(mode, newline="", encoding="utf-8")
+
+
+def _temporary_output(path: Path) -> Path:
+    """Return a sibling temporary path while preserving gzip detection."""
+    if path.suffix == ".gz":
+        return path.with_name(f"{path.name}.tmp.gz")
+    return path.with_name(f"{path.name}.tmp")
 
 
 def _parse_tags(fields: list[str]) -> dict[str, str]:
@@ -73,27 +108,273 @@ def parse_gfa_to_tables(
         "segments_missing_sr": 0,
     }
 
-    if target_sns:
-        stats["target_sns"] = len(target_sns)
-        stats["include_link_neighbors"] = int(include_link_neighbors)
-        _parse_targeted_gfa(
-            gfa_path=gfa_path,
-            segments_out=segments_out,
-            links_out=links_out,
-            stats=stats,
-            max_lines=max_lines,
-            target_sns=target_sns,
-            include_link_neighbors=include_link_neighbors,
-        )
-    else:
-        _parse_full_gfa(
-            gfa_path=gfa_path,
-            segments_out=segments_out,
-            links_out=links_out,
-            stats=stats,
-            max_lines=max_lines,
-        )
+    segments_tmp = _temporary_output(segments_out)
+    links_tmp = _temporary_output(links_out)
+    try:
+        if target_sns:
+            stats["target_sns"] = len(target_sns)
+            stats["include_link_neighbors"] = int(include_link_neighbors)
+            _parse_targeted_gfa(
+                gfa_path=gfa_path,
+                segments_out=segments_tmp,
+                links_out=links_tmp,
+                stats=stats,
+                max_lines=max_lines,
+                target_sns=target_sns,
+                include_link_neighbors=include_link_neighbors,
+            )
+        else:
+            _parse_full_gfa(
+                gfa_path=gfa_path,
+                segments_out=segments_tmp,
+                links_out=links_tmp,
+                stats=stats,
+                max_lines=max_lines,
+            )
+        segments_tmp.replace(segments_out)
+        links_tmp.replace(links_out)
+    finally:
+        # A failed conversion must never leave a partial file at an official
+        # dataset path where a later stage could mistake it for completion.
+        segments_tmp.unlink(missing_ok=True)
+        links_tmp.unlink(missing_ok=True)
 
+    if summary_out:
+        Path(summary_out).write_text(json.dumps(stats, indent=2), encoding="utf-8")
+    return stats
+
+
+def _split_path_name(path_name: str) -> tuple[str, str, str]:
+    """Best-effort decomposition of common HPRC/HGSVC path names."""
+    if "#" in path_name:
+        parts = path_name.split("#")
+        if len(parts) >= 3:
+            return parts[0], parts[1], "#".join(parts[2:])
+    if "|" in path_name:
+        parts = path_name.split("|")
+        if len(parts) >= 3:
+            return parts[0], parts[1], "|".join(parts[2:])
+        if len(parts) == 2:
+            return parts[0], "", parts[1]
+    return path_name, "", ""
+
+
+def _parse_p_walk(raw: str) -> list[tuple[str, str]]:
+    out: list[tuple[str, str]] = []
+    for token in raw.split(","):
+        token = token.strip()
+        if not token:
+            continue
+        orient = token[-1] if token[-1] in {"+", "-"} else "+"
+        segment = token[:-1] if token[-1] in {"+", "-"} else token
+        if segment:
+            out.append((segment, orient))
+    return out
+
+
+def _parse_w_walk(raw: str) -> list[tuple[str, str]]:
+    """Parse a GFA 1.1 W walk such as ``>s1>s2<s3``."""
+    out: list[tuple[str, str]] = []
+    orient: str | None = None
+    start = 0
+    for i, char in enumerate(raw):
+        if char not in {">", "<"}:
+            continue
+        if orient is not None and i > start:
+            out.append((raw[start:i], orient))
+        orient = "+" if char == ">" else "-"
+        start = i + 1
+    if orient is not None and start < len(raw):
+        out.append((raw[start:], orient))
+    return [(segment, strand) for segment, strand in out if segment]
+
+
+def extract_gfa_paths(
+    *,
+    gfa_path: str | Path,
+    paths_out: str | Path,
+    summary_out: str | Path | None = None,
+    max_lines: int | None = None,
+    samples: set[str] | None = None,
+    contigs: set[str] | None = None,
+) -> dict[str, int]:
+    """Stream GFA P/W records into one row per oriented path step.
+
+    P records are supported using the common ``sample#haplotype#contig``
+    convention. W records use the GFA 1.1 fields directly. This deliberately
+    stores node names rather than integer IDs so it works before or after the
+    project's S/L table conversion.
+    """
+    gfa_path = Path(gfa_path)
+    paths_out = Path(paths_out)
+    paths_out.parent.mkdir(parents=True, exist_ok=True)
+    if summary_out:
+        Path(summary_out).parent.mkdir(parents=True, exist_ok=True)
+
+    stats = {
+        "lines_read": 0,
+        "path_records": 0,
+        "walk_records": 0,
+        "records_selected": 0,
+        "path_steps": 0,
+        "malformed_records": 0,
+    }
+    with _open_text(gfa_path, "r") as gfa, _open_text(paths_out, "w") as out_fh:
+        writer = csv.DictWriter(out_fh, fieldnames=PATH_COLUMNS)
+        writer.writeheader()
+        for line in gfa:
+            if max_lines is not None and stats["lines_read"] >= max_lines:
+                break
+            stats["lines_read"] += 1
+            if not line or line.startswith("#"):
+                continue
+            fields = line.rstrip("\n").split("\t")
+            if not fields or fields[0] not in {"P", "W"}:
+                continue
+
+            rec_type = fields[0]
+            if rec_type == "P":
+                stats["path_records"] += 1
+                if len(fields) < 3:
+                    stats["malformed_records"] += 1
+                    continue
+                path_name = fields[1]
+                sample, haplotype, contig = _split_path_name(path_name)
+                path_start, path_end = "", ""
+                steps = _parse_p_walk(fields[2])
+            else:
+                stats["walk_records"] += 1
+                if len(fields) < 7:
+                    stats["malformed_records"] += 1
+                    continue
+                sample, haplotype, contig = fields[1], fields[2], fields[3]
+                path_start, path_end = fields[4], fields[5]
+                path_name = f"{sample}#{haplotype}#{contig}"
+                steps = _parse_w_walk(fields[6])
+
+            if samples and sample not in samples:
+                continue
+            if contigs and contig not in contigs:
+                continue
+            stats["records_selected"] += 1
+            for rank, (segment, orientation) in enumerate(steps):
+                writer.writerow(
+                    {
+                        "record_type": rec_type,
+                        "path_name": path_name,
+                        "sample": sample,
+                        "haplotype": haplotype,
+                        "contig": contig,
+                        "path_start": path_start,
+                        "path_end": path_end,
+                        "rank": rank,
+                        "segment": segment,
+                        "orientation": orientation,
+                    }
+                )
+                stats["path_steps"] += 1
+
+    if summary_out:
+        Path(summary_out).write_text(json.dumps(stats, indent=2), encoding="utf-8")
+    return stats
+
+
+def index_gfa_paths(
+    *,
+    gfa_path: str | Path,
+    metadata_out: str | Path,
+    summary_out: str | Path | None = None,
+    max_lines: int | None = None,
+    samples: set[str] | None = None,
+    contigs: set[str] | None = None,
+) -> dict[str, int]:
+    """Create a compact one-row-per-path inventory without expanding path steps.
+
+    Whole-genome Minigraph-Cactus W records can contain millions of steps.
+    Expanding all records into a long CSV is both slow and storage-intensive.
+    This inventory is safe to run first and can then drive targeted calls to
+    :func:`extract_gfa_paths`.
+    """
+    gfa_path = Path(gfa_path)
+    metadata_out = Path(metadata_out)
+    metadata_out.parent.mkdir(parents=True, exist_ok=True)
+    if summary_out:
+        Path(summary_out).parent.mkdir(parents=True, exist_ok=True)
+
+    stats = {
+        "lines_read": 0,
+        "path_records": 0,
+        "walk_records": 0,
+        "records_selected": 0,
+        "selected_steps": 0,
+        "selected_walk_chars": 0,
+        "malformed_records": 0,
+    }
+    sample_values: set[str] = set()
+    contig_values: set[str] = set()
+
+    with _open_text(gfa_path, "r") as gfa, _open_text(metadata_out, "w") as out_fh:
+        writer = csv.DictWriter(out_fh, fieldnames=PATH_METADATA_COLUMNS)
+        writer.writeheader()
+        for line in gfa:
+            if max_lines is not None and stats["lines_read"] >= max_lines:
+                break
+            stats["lines_read"] += 1
+            if not line or line[0] not in {"P", "W"}:
+                continue
+            fields = line.rstrip("\n").split("\t", 6)
+            if not fields or fields[0] not in {"P", "W"}:
+                continue
+
+            rec_type = fields[0]
+            if rec_type == "P":
+                stats["path_records"] += 1
+                if len(fields) < 3:
+                    stats["malformed_records"] += 1
+                    continue
+                path_name = fields[1]
+                sample, haplotype, contig = _split_path_name(path_name)
+                path_start, path_end = "", ""
+                raw_walk = fields[2]
+                step_count = 0 if not raw_walk else raw_walk.count(",") + 1
+            else:
+                stats["walk_records"] += 1
+                if len(fields) < 7:
+                    stats["malformed_records"] += 1
+                    continue
+                sample, haplotype, contig = fields[1], fields[2], fields[3]
+                path_start, path_end = fields[4], fields[5]
+                path_name = f"{sample}#{haplotype}#{contig}"
+                raw_walk = fields[6]
+                step_count = raw_walk.count(">") + raw_walk.count("<")
+
+            sample_values.add(sample)
+            contig_values.add(contig)
+            if samples and sample not in samples:
+                continue
+            if contigs and contig not in contigs:
+                continue
+
+            walk_chars = len(raw_walk)
+            stats["records_selected"] += 1
+            stats["selected_steps"] += step_count
+            stats["selected_walk_chars"] += walk_chars
+            writer.writerow(
+                {
+                    "record_type": rec_type,
+                    "path_name": path_name,
+                    "sample": sample,
+                    "haplotype": haplotype,
+                    "contig": contig,
+                    "path_start": path_start,
+                    "path_end": path_end,
+                    "step_count": step_count,
+                    "walk_chars": walk_chars,
+                }
+            )
+
+    stats["unique_samples_seen"] = len(sample_values)
+    stats["unique_contigs_seen"] = len(contig_values)
     if summary_out:
         Path(summary_out).write_text(json.dumps(stats, indent=2), encoding="utf-8")
     return stats

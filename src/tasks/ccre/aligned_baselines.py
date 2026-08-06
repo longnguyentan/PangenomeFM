@@ -26,26 +26,27 @@ from typing import Iterable
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.metrics import (
     average_precision_score,
     balanced_accuracy_score,
+    brier_score_loss,
     classification_report,
     confusion_matrix,
     f1_score,
+    precision_score,
     precision_recall_fscore_support,
+    recall_score,
     roc_auc_score,
 )
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-from graph.features import build_oid_metadata_from_segments
-from graph.io import read_links_csv, read_segments_csv
-from graph.neg_sampling import oriented_ids_from_links
-from graph.slicing import build_global_index
-from tasks.ccre.baselines import _norm_chrom, build_per_node_structural_features
+from graph.io import read_links_csv
+from tasks.ccre.baselines import _norm_chrom
 from tasks.ccre.binary import _choose_threshold
+from tasks.ccre.feature_policy import resolve_feature_policy
 from tasks.ccre.label_groups import (
     canonical_scheme,
     category_binary_labels,
@@ -83,14 +84,24 @@ def _resolve_path(path: str | Path, root: Path) -> Path:
     return p
 
 
-def _global_degree_map(links: pd.DataFrame, seg_index: pd.Index) -> dict[int, int]:
-    u, v = oriented_ids_from_links(links, seg_index)
-    deg_map: dict[int, int] = {}
-    for oid in u.tolist():
-        deg_map[int(oid)] = deg_map.get(int(oid), 0) + 1
-    for oid in v.tolist():
-        deg_map[int(oid)] = deg_map.get(int(oid), 0) + 1
-    return deg_map
+def _segment_number(name: object) -> int | None:
+    value = str(name)
+    if value.startswith("s") and value[1:].isdigit():
+        return int(value[1:]) - 1
+    return None
+
+
+def _degree_by_requested_segid(
+    links: pd.DataFrame,
+    requested: set[int],
+) -> dict[int, int]:
+    degree: dict[int, int] = {}
+    for left, right in links[["from_seg", "to_seg"]].itertuples(index=False):
+        for name in (left, right):
+            segid = _segment_number(name)
+            if segid is not None and segid in requested:
+                degree[segid] = degree.get(segid, 0) + 1
+    return degree
 
 
 def _covered_segids_from_manifest(
@@ -155,40 +166,188 @@ def _linearized_context_features(labels: pd.DataFrame, degree_by_segid: dict[int
     return np.log1p(np.maximum(arr, 0.0)).astype(np.float32)
 
 
+def _sequence_kmer_features_from_sequences(
+    seqs: list[str],
+    *,
+    k: int = 3,
+    max_bases: int = 2048,
+) -> tuple[np.ndarray, list[str]]:
+    """Length-normalized mono/di/tri-nucleotide composition.
+
+    Reverse complements are intentionally not collapsed: strand asymmetry can
+    be informative, while both graph orientations are represented elsewhere.
+    Ambiguous bases are reported as a separate fraction and break k-mers.
+    Very long graph nodes use balanced prefix/suffix sampling to cap runtime;
+    an inserted N prevents an artificial k-mer across the sampling boundary.
+    """
+    if k != 3:
+        raise ValueError("The paper baseline currently supports k=3.")
+    alphabet = "ACGT"
+    names = (
+        [f"frac_{base}" for base in alphabet]
+        + ["frac_ambiguous", "cpg_fraction"]
+        + [f"di_{a}{b}" for a in alphabet for b in alphabet]
+        + [f"tri_{a}{b}{c}" for a in alphabet for b in alphabet for c in alphabet]
+    )
+    X = np.zeros((len(seqs), len(names)), dtype=np.float32)
+    lookup = np.full(256, -1, dtype=np.int16)
+    for idx, base in enumerate(alphabet):
+        lookup[ord(base)] = idx
+    for row_idx, seq in enumerate(seqs):
+        seq = _sample_sequence(seq, max_bases)
+        n = max(len(seq), 1)
+        raw = np.frombuffer(seq.encode("ascii", errors="replace"), dtype=np.uint8)
+        encoded = lookup[raw]
+        valid = encoded >= 0
+        mono = np.bincount(encoded[valid], minlength=4).astype(np.float32)
+        valid_di_mask = valid[:-1] & valid[1:]
+        di_codes = encoded[:-1][valid_di_mask] * 4 + encoded[1:][valid_di_mask]
+        di = np.bincount(di_codes, minlength=16).astype(np.float32)
+        valid_tri_mask = valid[:-2] & valid[1:-1] & valid[2:]
+        tri_codes = (
+            encoded[:-2][valid_tri_mask] * 16
+            + encoded[1:-1][valid_tri_mask] * 4
+            + encoded[2:][valid_tri_mask]
+        )
+        tri = np.bincount(tri_codes, minlength=64).astype(np.float32)
+        valid_di = int(valid_di_mask.sum())
+        valid_tri = int(valid_tri_mask.sum())
+        cpg = int(di[1 * 4 + 2])
+        valid_bases = float(mono.sum())
+        X[row_idx, :4] = mono / max(valid_bases, 1.0)
+        X[row_idx, 4] = float(n - valid_bases) / n
+        X[row_idx, 5] = cpg / max(valid_di, 1)
+        X[row_idx, 6:22] = di / max(valid_di, 1)
+        X[row_idx, 22:] = tri / max(valid_tri, 1)
+    return X, names
+
+
+def _sample_sequence(seq: str, max_bases: int = 2048) -> str:
+    seq = seq.upper()
+    if len(seq) <= max_bases:
+        return seq
+    half = (max_bases - 1) // 2
+    right = max_bases - 1 - half
+    return seq[:half] + "N" + seq[-right:]
+
+
+def _stream_sequence_kmer_features(
+    full_segments: str | Path,
+    segids: np.ndarray,
+) -> tuple[np.ndarray, list[str]]:
+    """Read only requested sequences in chunks, avoiding a multi-GB DataFrame."""
+    positions: dict[int, list[int]] = {}
+    for row_idx, segid in enumerate(segids.tolist()):
+        positions.setdefault(int(segid), []).append(row_idx)
+    empty, names = _sequence_kmer_features_from_sequences([], k=3)
+    del empty
+    X = np.zeros((len(segids), len(names)), dtype=np.float32)
+    remaining = set(positions)
+    fallback_segid = 0
+    selected_sequences: list[str] = []
+    selected_positions: list[list[int]] = []
+
+    def flush() -> None:
+        if not selected_sequences:
+            return
+        chunk_X, _ = _sequence_kmer_features_from_sequences(selected_sequences, k=3)
+        for feature_row, row_indices in zip(chunk_X, selected_positions):
+            X[row_indices] = feature_row
+        selected_sequences.clear()
+        selected_positions.clear()
+
+    with _open_text(Path(full_segments)) as fh:
+        for row in csv.DictReader(fh):
+            name = row["name"]
+            seq = row["seq"]
+            raw_name = str(name)
+            if raw_name.startswith("s") and raw_name[1:].isdigit():
+                segid = int(raw_name[1:]) - 1
+            else:
+                segid = fallback_segid
+            fallback_segid += 1
+            if segid not in remaining:
+                continue
+            selected_sequences.append(_sample_sequence(str(seq)))
+            selected_positions.append(positions[segid])
+            remaining.remove(segid)
+            if len(selected_sequences) >= 512:
+                flush()
+            if not remaining:
+                break
+    flush()
+    if remaining:
+        raise KeyError(
+            f"{len(remaining)} requested segment IDs were absent from {full_segments}; "
+            f"examples: {sorted(remaining)[:5]}"
+        )
+    return X, names
+
+
 def _feature_matrix(
     *,
     feature_set: str,
+    feature_policy: str,
     labels: pd.DataFrame,
     full_segments: str | Path,
     full_links: str | Path,
 ) -> tuple[np.ndarray, list[str]]:
-    segments = read_segments_csv(full_segments)
-    links = read_links_csv(full_links)
-    seg_index, _ = build_global_index(segments)
-    md = build_oid_metadata_from_segments(segments, seg_index)
-    deg_map = _global_degree_map(links, seg_index)
-
     segids = labels["segid"].to_numpy(np.int64)
-    structural = build_per_node_structural_features(segids, md, deg_map, drop_is_grch38=True)
-    degree_by_segid = {
-        int(segid): deg_map.get(int(segid) * 2, 0) + deg_map.get(int(segid) * 2 + 1, 0)
-        for segid in segids
-    }
+    if feature_set == "sequence_kmer":
+        return _stream_sequence_kmer_features(full_segments, segids)
 
+    links = read_links_csv(full_links)
+    degree_by_segid = _degree_by_requested_segid(links, set(segids.tolist()))
+    so = labels["SO"].to_numpy(float)
+    ln = labels["LN"].to_numpy(float)
+    degree = np.array([degree_by_segid.get(int(segid), 0) for segid in segids], dtype=float)
+    structural_full = np.stack(
+        [
+            np.log1p(np.abs(so)),
+            np.log1p(np.maximum(ln, 0)),
+            np.zeros(len(labels), dtype=float),
+            np.log1p(degree),
+            np.zeros(len(labels), dtype=float),
+            np.ones(len(labels), dtype=float),
+        ],
+        axis=1,
+    ).astype(np.float32)
+    baseline_full_names = [
+        "log1p_SO",
+        "log1p_LN",
+        "SR",
+        "log1p_degree",
+        "orient",
+        "is_grch38",
+    ]
+    if feature_policy == "leakage_safe":
+        keep_names = ["log1p_SO", "log1p_LN", "log1p_degree", "orient"]
+    elif feature_policy == "legacy_sr":
+        keep_names = ["log1p_SO", "log1p_LN", "SR", "log1p_degree", "orient"]
+    elif feature_policy == "legacy_reference":
+        keep_names = baseline_full_names
+    else:
+        resolve_feature_policy(feature_policy)
+        raise AssertionError("unreachable")
+    baseline_name_to_full_idx = {name: i for i, name in enumerate(baseline_full_names)}
+    structural = structural_full[:, [baseline_name_to_full_idx[n] for n in keep_names]]
+    name_to_idx = {name: i for i, name in enumerate(keep_names)}
     if feature_set == "coordinate":
-        return structural[:, :3], ["log1p_SO", "log1p_LN", "SR"]
+        names = [n for n in ["log1p_SO", "log1p_LN", "SR", "is_grch38"] if n in name_to_idx]
+        return structural[:, [name_to_idx[n] for n in names]], names
     if feature_set == "graph":
-        return structural[:, 3:4], ["log1p_degree"]
+        return structural[:, [name_to_idx["log1p_degree"]]], ["log1p_degree"]
     if feature_set == "structural":
-        return structural, ["log1p_SO", "log1p_LN", "SR", "log1p_degree", "orient_fwd"]
+        return structural, keep_names
     if feature_set == "linearized_graph":
         context = _linearized_context_features(labels, degree_by_segid)
-        X = np.concatenate([structural[:, :4], context], axis=1)
-        names = [
-            "log1p_SO",
-            "log1p_LN",
-            "SR",
-            "log1p_degree",
+        base_names = [
+            n
+            for n in ["log1p_SO", "log1p_LN", "SR", "is_grch38", "log1p_degree"]
+            if n in name_to_idx
+        ]
+        X = np.concatenate([structural[:, [name_to_idx[n] for n in base_names]], context], axis=1)
+        names = base_names + [
             "prev_ln",
             "next_ln",
             "prev_gap",
@@ -235,7 +394,7 @@ def _fit_model(method: str, seed: int):
                 class_weight="balanced",
                 solver="lbfgs",
                 random_state=seed,
-                n_jobs=-1,
+                n_jobs=1,
             ),
         )
     if method == "mlp":
@@ -256,8 +415,23 @@ def _fit_model(method: str, seed: int):
             n_estimators=400,
             class_weight="balanced_subsample",
             min_samples_leaf=2,
-            n_jobs=-1,
+            n_jobs=1,
             random_state=seed,
+        )
+    if method == "sgd":
+        return make_pipeline(
+            StandardScaler(),
+            SGDClassifier(
+                loss="log_loss",
+                penalty="l2",
+                alpha=1e-4,
+                class_weight="balanced",
+                early_stopping=True,
+                validation_fraction=0.1,
+                n_iter_no_change=10,
+                max_iter=2000,
+                random_state=seed,
+            ),
         )
     raise ValueError(f"Unknown method={method!r}")
 
@@ -267,8 +441,12 @@ def _binary_metrics(y_true: np.ndarray, prob: np.ndarray, threshold: float) -> d
     out = {
         "threshold": float(threshold),
         "macro_f1": float(f1_score(y_true, pred, average="macro", zero_division=0)),
+        "f1": float(f1_score(y_true, pred, zero_division=0)),
+        "precision": float(precision_score(y_true, pred, zero_division=0)),
+        "recall": float(recall_score(y_true, pred, zero_division=0)),
         "balanced_accuracy": float(balanced_accuracy_score(y_true, pred)),
         "positive_fraction": float(np.mean(y_true)),
+        "brier": float(brier_score_loss(y_true, prob)),
     }
     if len(np.unique(y_true)) == 2:
         out["auroc"] = float(roc_auc_score(y_true, prob))
@@ -309,6 +487,7 @@ def run_aligned_baseline(
     val_chrs: list[str],
     method: str,
     feature_set: str,
+    feature_policy: str,
     label_scheme: str,
     positive_group: str | None,
     background_only_negative: bool,
@@ -355,6 +534,7 @@ def run_aligned_baseline(
     y = y_all[valid]
     X, feature_names = _feature_matrix(
         feature_set=feature_set,
+        feature_policy=feature_policy,
         labels=labels_df,
         full_segments=full_segments,
         full_links=full_links,
@@ -384,6 +564,7 @@ def run_aligned_baseline(
     summary: dict[str, object] = {
         "method": method,
         "feature_set": feature_set,
+        "feature_policy": feature_policy,
         "feature_names": feature_names,
         "label": label_desc,
         "evaluation_universe": evaluation_universe,
@@ -418,15 +599,25 @@ def run_aligned_baseline(
             summary["val_metrics"] = _multiclass_metrics(y_val, pred_val, labels_order)
 
     per_chrom = []
+    binary_prob = pred_payload.get("p_positive")
     for c in sorted(set(chrom_test.tolist())):
         m = chrom_test == c
-        per_chrom.append(
-            {
-                "chrom": c,
-                "n_nodes": int(m.sum()),
-                "macro_f1": float(f1_score(y_test[m], pred_test[m], average="macro", labels=labels_order, zero_division=0)),
-            }
-        )
+        row = {
+            "chrom": c,
+            "n_nodes": int(m.sum()),
+            "macro_f1": float(
+                f1_score(
+                    y_test[m],
+                    pred_test[m],
+                    average="macro",
+                    labels=labels_order,
+                    zero_division=0,
+                )
+            ),
+        }
+        if binary_prob is not None:
+            row.update(_binary_metrics(y_test[m], np.asarray(binary_prob)[m], threshold))
+        per_chrom.append(row)
     pd.DataFrame(per_chrom).to_csv(out_dir / "per_chrom_metrics.csv", index=False)
     pd.DataFrame(pred_payload).to_csv(out_dir / "test_predictions.csv.gz", index=False, compression="gzip")
 
@@ -455,11 +646,20 @@ def main() -> None:
     ap.add_argument("--out_dir", required=True)
     ap.add_argument("--test_chrs", nargs="+", required=True)
     ap.add_argument("--val_chrs", nargs="+", required=True)
-    ap.add_argument("--method", choices=["logistic", "mlp", "random_forest"], default="logistic")
+    ap.add_argument("--method", choices=["logistic", "mlp", "random_forest", "sgd"], default="logistic")
     ap.add_argument(
         "--feature_set",
-        choices=["coordinate", "graph", "structural", "linearized_graph"],
+        choices=["coordinate", "graph", "structural", "linearized_graph", "sequence_kmer"],
         default="structural",
+    )
+    ap.add_argument(
+        "--feature_policy",
+        choices=["leakage_safe", "legacy_sr", "legacy_reference"],
+        default="leakage_safe",
+        help=(
+            "cCRE feature policy. leakage_safe removes both SR and is_grch38; "
+            "legacy_sr matches older runs that kept SR but dropped is_grch38."
+        ),
     )
     ap.add_argument(
         "--label_scheme",
@@ -487,6 +687,7 @@ def main() -> None:
         val_chrs=args.val_chrs,
         method=args.method,
         feature_set=args.feature_set,
+        feature_policy=args.feature_policy,
         label_scheme=args.label_scheme,
         positive_group=args.positive_group,
         background_only_negative=not args.all_ccre_as_negative,

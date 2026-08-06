@@ -56,6 +56,14 @@ def _comparison_edge_names(
     return out
 
 
+def _edge_names_from_tables(
+    *,
+    segments_path: Path,
+    links_path: Path,
+) -> set[tuple[str, str, str, str]]:
+    return _comparison_edge_names(comparison_segments=segments_path, comparison_links=links_path)
+
+
 def _metrics(y: np.ndarray, p: np.ndarray) -> dict[str, float]:
     out = {
         "n": int(len(y)),
@@ -74,6 +82,7 @@ def run_imputation_scoring(
     checkpoint: str | Path,
     manifest: str | Path,
     full_segments: str | Path,
+    full_links: str | Path | None,
     out_dir: str | Path,
     closure: str,
     split: str,
@@ -109,12 +118,20 @@ def run_imputation_scoring(
         raise RuntimeError("No manifest rows after closure/split filtering.")
 
     comparison_edges = None
+    comparison_new_edges = None
     if comparison_segments and comparison_links:
         comparison_edges = _comparison_edge_names(
             comparison_segments=Path(comparison_segments),
             comparison_links=Path(comparison_links),
         )
         print(f"[impute] loaded {len(comparison_edges):,} comparison edges")
+        if full_links:
+            old_edges = _edge_names_from_tables(
+                segments_path=Path(full_segments),
+                links_path=Path(full_links),
+            )
+            comparison_new_edges = comparison_edges - old_edges
+            print(f"[impute] comparison has {len(comparison_new_edges):,} edges absent from old graph")
 
     model, predictor = _build_model_from_checkpoint(ckpt, args, device)
     rows: list[dict[str, object]] = []
@@ -185,6 +202,30 @@ def run_imputation_scoring(
     if top_k > 0:
         candidates.head(top_k).to_csv(out_dir / f"candidate_edges_top{top_k}.csv", index=False)
 
+    unique_candidates = pd.DataFrame()
+    if not candidates.empty:
+        group_cols = ["target_sn", "u_oid", "v_oid", "u_seg", "u_orient", "v_seg", "v_orient"]
+        agg = {
+            "p_edge": ["max", "mean", "count"],
+            "slice": "nunique",
+        }
+        if "present_in_comparison" in candidates.columns:
+            agg["present_in_comparison"] = "max"
+        unique_candidates = candidates.groupby(group_cols, as_index=False).agg(agg)
+        unique_candidates.columns = [
+            "_".join(c).strip("_") if isinstance(c, tuple) else c for c in unique_candidates.columns
+        ]
+        unique_candidates = unique_candidates.rename(
+            columns={
+                "p_edge_max": "max_p_edge",
+                "p_edge_mean": "mean_p_edge",
+                "p_edge_count": "n_rows",
+                "slice_nunique": "n_slices",
+                "present_in_comparison_max": "present_in_comparison",
+            }
+        ).sort_values("max_p_edge", ascending=False)
+        unique_candidates.to_csv(out_dir / "candidate_edges_unique_by_pair.csv", index=False)
+
     y = np.concatenate(calibration_y) if calibration_y else np.array([])
     p = np.concatenate(calibration_p) if calibration_p else np.array([])
     summary: dict[str, object] = {
@@ -194,6 +235,7 @@ def run_imputation_scoring(
         "split": split,
         "candidate_label": int(candidate_label),
         "n_candidates": int(len(candidates)),
+        "n_unique_pairs": int(len(unique_candidates)),
         "top_k": int(top_k),
         "calibration_metrics_on_edge_pred": _metrics(y, p) if len(y) else {},
     }
@@ -206,6 +248,23 @@ def run_imputation_scoring(
             if k and len(comp):
                 precision_at[str(k)] = float(comp[: min(k, len(comp))].mean())
         summary["comparison_precision_at_k"] = precision_at
+    if comparison_edges is not None and not unique_candidates.empty and "present_in_comparison" in unique_candidates.columns:
+        comp_u = unique_candidates["present_in_comparison"].astype(bool).to_numpy()
+        summary["comparison_n_present_unique"] = int(comp_u.sum())
+        summary["comparison_precision_unique_all"] = float(comp_u.mean()) if len(comp_u) else float("nan")
+        precision_at_unique = {}
+        recall_at_unique = {}
+        denom = len(comparison_new_edges) if comparison_new_edges is not None else None
+        for k in [10, 50, 100, 500, 1000, top_k]:
+            if k and len(comp_u):
+                top = comp_u[: min(k, len(comp_u))]
+                precision_at_unique[str(k)] = float(top.mean())
+                if denom:
+                    recall_at_unique[str(k)] = float(top.sum() / denom)
+        summary["comparison_precision_at_k_unique"] = precision_at_unique
+        if denom is not None:
+            summary["comparison_new_edges_not_in_old_graph"] = int(denom)
+            summary["comparison_recall_at_k_unique_new_edges"] = recall_at_unique
     (out_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
     return summary
@@ -216,6 +275,7 @@ def main() -> None:
     ap.add_argument("--checkpoint", required=True)
     ap.add_argument("--manifest", required=True)
     ap.add_argument("--full_segments", required=True)
+    ap.add_argument("--full_links", default=None)
     ap.add_argument("--out_dir", required=True)
     ap.add_argument("--closure", choices=["strict", "1hop", "all"], default="1hop")
     ap.add_argument("--split", choices=["all", "train", "val", "test"], default="all")
@@ -235,6 +295,7 @@ def main() -> None:
         checkpoint=args.checkpoint,
         manifest=args.manifest,
         full_segments=args.full_segments,
+        full_links=args.full_links,
         out_dir=args.out_dir,
         closure=args.closure,
         split=args.split,

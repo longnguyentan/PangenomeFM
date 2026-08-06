@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "audited_on": "2026-08-06",
+  "resources": [
+    {
+      "dataset": "HPRC Release 2",
+      "status": "stable_public_release",
+      "eligible_for_model_training": true,
+      "public_data_use_status": "HPRC states that Release II data are publicly available and in the public domain; ethical/data-use best practices still apply.",
+      "publication_action": "Cite the release/data-use pages, identify exact graph filenames and retrieval date, use population descriptors only where scientifically justified, and do not attempt participant identification.",
+      "sources": [
+        "https://humanpangenome.org/hprc-data-release-2/",
+        "https://data.humanpangenome.org/alignments",
+        "https://humanpangenome.org/data-use/",
+        "https://humanpangenome.org/publication_protocol/"
+      ]
+    },
+    {
+      "dataset": "HGSVC3 2024-02-23 graph release",
+      "status": "versioned_public_ftp_release",
+      "eligible_for_model_training": true,
+      "public_data_use_status": "Versioned public graph files, README, and MD5 manifest are available through the International Genome Sample Resource FTP release.",
+      "publication_action": "Retain and cite the release README and manifest; report the exact 2024-02-23 filenames and checksums.",
+      "sources": [
+        "https://www.internationalgenome.org/data-portal/data-collections/hgsvc3/",
+        "https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/HGSVC3/release/Graph_Genomes/1.0/2024_02_23_minigraph_cactus_hgsvc3/"
+      ]
+    },
+    {
+      "dataset": "Official HGSVC3 plus HPRC-v1 integrated graph",
+      "status": "versioned_public_ftp_release",
+      "eligible_for_model_training": true,
+      "public_data_use_status": "The official 2024-02-23 README and MD5 manifest are public; the graph contains HPRC-v1 rather than HPRC-v2 and reports 216 total haplotypes.",
+      "publication_action": "Treat as a separate integrated-release stress test, not additional independent donors and not an HPRC-R2/HGSVC3 pooled graph.",
+      "sources": [
+        "https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/HGSVC3/release/Graph_Genomes/1.0/2024_02_23_minigraph_cactus_hgsvc3_hprc/"
+      ]
+    },
+    {
+      "dataset": "HPRC Release 3",
+      "status": "planned_or_progressive_release_without_pinned_integrated_graph",
+      "eligible_for_model_training": false,
+      "public_data_use_status": "The official timeline targets a stable Summer-2026 release of more than 350 assemblies, but no stable versioned integrated R3 graph and checksum manifest was identified in this audit.",
+      "publication_action": "Inventory only. Re-audit the official explorer/timeline before submission; do not download mutable pre-release assemblies blindly or describe them as a stable integrated pangenome graph.",
+      "sources": [
+        "https://humanpangenome.org/release-timeline/",
+        "https://humanpangenome.org/data/",
+        "https://humanpangenome.org/publication_protocol/"
+      ]
+    }
+  ]
+}

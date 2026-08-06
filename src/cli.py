@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from data.gfa_parser import parse_gfa_to_tables
+from data.gfa_parser import extract_gfa_paths, index_gfa_paths, parse_gfa_to_tables
 from data.layout import DatasetLayout, find_dataset
 from pipeline import default_results_dir, run_module
 
@@ -110,6 +110,40 @@ def parse_gfa(args: argparse.Namespace) -> int:
     return 0
 
 
+def extract_paths(args: argparse.Namespace) -> int:
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    stats = extract_gfa_paths(
+        gfa_path=args.gfa,
+        paths_out=out_dir / "paths.csv.gz",
+        summary_out=out_dir / "path_summary.json",
+        max_lines=args.max_lines,
+        samples=set(args.samples) if args.samples else None,
+        contigs=set(args.contigs) if args.contigs else None,
+    )
+    print(f"extracted GFA paths: {out_dir}")
+    for key, value in stats.items():
+        print(f"  {key}: {value}")
+    return 0
+
+
+def index_paths(args: argparse.Namespace) -> int:
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    stats = index_gfa_paths(
+        gfa_path=args.gfa,
+        metadata_out=out_dir / "path_metadata.csv.gz",
+        summary_out=out_dir / "path_index_summary.json",
+        max_lines=args.max_lines,
+        samples=set(args.samples) if args.samples else None,
+        contigs=set(args.contigs) if args.contigs else None,
+    )
+    print(f"indexed GFA paths: {out_dir}")
+    for key, value in stats.items():
+        print(f"  {key}: {value}")
+    return 0
+
+
 def make_benchmark(args: argparse.Namespace) -> int:
     dataset = find_dataset(args.data_dir)
     out_dir = Path(args.out_dir) if args.out_dir else dataset.benchmark_dir
@@ -129,6 +163,9 @@ def make_benchmark(args: argparse.Namespace) -> int:
         "negative_tol_bp": args.negative_tol_bp,
         "negative_tol_frac": args.negative_tol_frac,
         "negative_degree_matched": args.negative_degree_matched,
+        "non_overlapping_windows": args.non_overlapping_windows,
+        "matched_closure_windows": args.matched_closure_windows,
+        "tile_stride_bp": args.tile_stride_bp,
         "no_network_analysis": args.no_network_analysis,
         "no_viz": args.no_viz,
     }
@@ -148,6 +185,11 @@ def pretrain(args: argparse.Namespace) -> int:
             "Run `python -m graphgenomefm make-benchmark --data-dir ...` first."
         )
     out_dir = Path(args.out_dir) if args.out_dir else default_results_dir(dataset.name, "pretrain")
+    extra_datasets = [
+        item
+        for triple in (args.extra_dataset or [])
+        for item in triple
+    ]
     module_args = {
         "manifest": manifest,
         "full_segments": dataset.segments,
@@ -175,6 +217,13 @@ def pretrain(args: argparse.Namespace) -> int:
         "warmup_epochs": 5,
         "stream_mode": args.stream_mode,
         "no_fusion_gate": args.no_fusion_gate,
+        "save_predictions": args.save_predictions,
+        "mask_query_edges": args.mask_query_edges,
+        "closures": args.closures,
+        "extra_datasets": extra_datasets,
+        "domain_adversarial": args.domain_adversarial,
+        "domain_loss_weight": args.domain_loss_weight,
+        "domain_grl_lambda": args.domain_grl_lambda,
     }
     print("starting shared pretraining")
     _print_dataset(dataset)
@@ -276,7 +325,9 @@ def ccre_gat(args: argparse.Namespace) -> int:
         "device": args.device,
         "pretrained_checkpoint": Path(args.pretrained_checkpoint) if args.pretrained_checkpoint else None,
         "freeze_backbone": args.freeze_backbone,
+        "feature_policy": args.feature_policy,
         "keep_is_grch38": args.keep_is_grch38,
+        "keep_sr": args.keep_sr,
         "dual_stream": True,
         "adaptive_window": True,
         "adaptive_window_base": 32,
@@ -309,6 +360,7 @@ def ccre_aligned_baseline(args: argparse.Namespace) -> int:
         "val_chrs": args.val_chrs,
         "method": args.method,
         "feature_set": args.feature_set,
+        "feature_policy": args.feature_policy,
         "label_scheme": args.label_scheme,
         "positive_group": args.positive_group,
         "all_ccre_as_negative": args.all_ccre_as_negative,
@@ -361,6 +413,53 @@ def ccre_embedding_baseline(args: argparse.Namespace) -> int:
     return 0
 
 
+def ccre_serialized_baseline(args: argparse.Namespace) -> int:
+    dataset = find_dataset(args.data_dir)
+    node_labels = Path(args.node_labels) if args.node_labels else _latest_node_labels(dataset.ccre_dir)
+    benchmark_dir = Path(args.benchmark_dir) if args.benchmark_dir else dataset.benchmark_dir
+    benchmark_manifest = benchmark_dir / "manifest.csv" if args.evaluation_universe == "benchmark_windows" else None
+    out_dir = Path(args.out_dir) if args.out_dir else default_results_dir(dataset.name, "ccre_serialized_baseline")
+    module_args = {
+        "full_segments": dataset.segments,
+        "full_links": dataset.links,
+        "node_labels": node_labels,
+        "out_dir": out_dir,
+        "test_chrs": args.test_chrs,
+        "val_chrs": args.val_chrs,
+        "label_scheme": args.label_scheme,
+        "positive_group": args.positive_group,
+        "all_ccre_as_negative": args.all_ccre_as_negative,
+        "evaluation_universe": args.evaluation_universe,
+        "benchmark_manifest": benchmark_manifest,
+        "closures": args.closures,
+        "feature_policy": args.feature_policy,
+        "context_radius": args.context_radius,
+        "hidden_dim": args.hidden_dim,
+        "n_heads": args.n_heads,
+        "n_layers": args.n_layers,
+        "dropout": args.dropout,
+        "epochs": args.epochs,
+        "patience": args.patience,
+        "batch_size": args.batch_size,
+        "lr": args.lr,
+        "weight_decay": args.weight_decay,
+        "include_sequence_features": args.include_sequence_features,
+        "max_train_nodes": args.max_train_nodes,
+        "max_val_nodes": args.max_val_nodes,
+        "max_test_nodes": args.max_test_nodes,
+        "seed": args.seed,
+        "device": args.device,
+    }
+    print("running serialized-graph Transformer cCRE baseline")
+    _print_dataset(dataset)
+    print(f"node_labels:   {node_labels}")
+    if benchmark_manifest is not None:
+        print(f"manifest:      {benchmark_manifest}")
+    print(f"out_dir:       {out_dir}")
+    run_module("tasks.ccre.serialized_baseline", module_args)
+    return 0
+
+
 def eval_external(args: argparse.Namespace) -> int:
     dataset = find_dataset(args.data_dir)
     benchmark_dir = Path(args.benchmark_dir) if args.benchmark_dir else dataset.benchmark_dir
@@ -375,11 +474,13 @@ def eval_external(args: argparse.Namespace) -> int:
         "checkpoint": Path(args.checkpoint),
         "manifest": manifest,
         "full_segments": dataset.segments,
+        "full_links": dataset.links,
         "out_dir": out_dir,
         "closure": args.closure,
         "split": args.split,
         "seed": args.seed,
         "device": args.device,
+        "mask_query_edges": args.mask_query_edges,
     }
     print("running frozen external link-prediction evaluation")
     _print_dataset(dataset)
@@ -387,6 +488,33 @@ def eval_external(args: argparse.Namespace) -> int:
     print(f"checkpoint:    {args.checkpoint}")
     print(f"out_dir:       {out_dir}")
     run_module("evaluation.external", module_args)
+    return 0
+
+
+def link_heuristics(args: argparse.Namespace) -> int:
+    dataset = find_dataset(args.data_dir)
+    benchmark_dir = Path(args.benchmark_dir) if args.benchmark_dir else dataset.benchmark_dir
+    manifest = benchmark_dir / "manifest.csv"
+    if not manifest.exists():
+        raise FileNotFoundError(f"Missing benchmark manifest: {manifest}")
+    out_dir = Path(args.out_dir) if args.out_dir else default_results_dir(dataset.name, "link_heuristics")
+    module_args = {
+        "manifest": manifest,
+        "full_segments": dataset.segments,
+        "out_dir": out_dir,
+        "closures": args.closures,
+        "target_chrs": _expand_chroms(args.target_chrs, args.target_prefix),
+        "split": args.split,
+        "seed": args.seed,
+        "no_mask_query_edges": args.no_mask_query_edges,
+        "shortest_path_cutoff": args.shortest_path_cutoff,
+        "save_scores": args.save_scores,
+    }
+    print("running topology-only link-prediction heuristics")
+    _print_dataset(dataset)
+    print(f"manifest:      {manifest}")
+    print(f"out_dir:       {out_dir}")
+    run_module("evaluation.link_heuristics", module_args)
     return 0
 
 
@@ -440,6 +568,25 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--include-link-neighbors", action="store_true")
     p.set_defaults(func=parse_gfa)
 
+    p = sub.add_parser("extract-paths", help="Extract GFA P/W haplotype paths into a long table.")
+    p.add_argument("--gfa", required=True)
+    p.add_argument("--out-dir", required=True)
+    p.add_argument("--max-lines", type=int, default=None)
+    p.add_argument("--samples", nargs="+", default=None)
+    p.add_argument("--contigs", nargs="+", default=None)
+    p.set_defaults(func=extract_paths)
+
+    p = sub.add_parser(
+        "index-paths",
+        help="Create a compact GFA P/W path inventory without expanding path steps.",
+    )
+    p.add_argument("--gfa", required=True)
+    p.add_argument("--out-dir", required=True)
+    p.add_argument("--max-lines", type=int, default=None)
+    p.add_argument("--samples", nargs="+", default=None)
+    p.add_argument("--contigs", nargs="+", default=None)
+    p.set_defaults(func=index_paths)
+
     p = sub.add_parser("make-benchmark", help="Build link-prediction benchmark slices.")
     p.add_argument("--data-dir", required=True)
     p.add_argument("--out-dir", default=None)
@@ -472,6 +619,21 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--negative-tol-bp", type=int, default=1_000)
     p.add_argument("--negative-tol-frac", type=float, default=0.10)
     p.add_argument("--negative-degree-matched", action="store_true")
+    p.add_argument("--non-overlapping-windows", action="store_true")
+    p.add_argument(
+        "--matched-closure-windows",
+        action="store_true",
+        help="Reuse identical target intervals for every graph-context regime.",
+    )
+    p.add_argument(
+        "--tile-stride-bp",
+        type=int,
+        default=None,
+        help=(
+            "Deterministically tile every target chromosome at this stride; "
+            "overrides --n-windows for full-coverage pretraining."
+        ),
+    )
     p.add_argument("--no-network-analysis", action="store_true")
     p.add_argument("--no-viz", action="store_true")
     p.set_defaults(func=make_benchmark)
@@ -486,10 +648,32 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--hidden-dim", type=int, default=48)
     p.add_argument("--n-heads", type=int, default=4)
     p.add_argument("--n-layers", type=int, default=2)
+    p.add_argument("--closures", nargs="+", choices=["strict", "1hop"], default=["strict", "1hop"])
+    p.add_argument(
+        "--extra-dataset",
+        nargs=3,
+        action="append",
+        metavar=("NAME", "MANIFEST", "FULL_SEGMENTS"),
+        default=None,
+        help="Add another benchmark graph to shared pretraining; may be repeated.",
+    )
     p.add_argument("--epochs", type=int, default=100)
     p.add_argument("--patience", type=int, default=20)
     p.add_argument("--stream-mode", choices=["full", "coordinate", "graph"], default="full")
     p.add_argument("--no-fusion-gate", action="store_true")
+    p.add_argument("--save-predictions", action="store_true")
+    p.add_argument(
+        "--domain-adversarial",
+        action="store_true",
+        help="Use a gradient-reversal dataset classifier during multi-dataset training.",
+    )
+    p.add_argument("--domain-loss-weight", type=float, default=0.1)
+    p.add_argument("--domain-grl-lambda", type=float, default=1.0)
+    p.add_argument(
+        "--mask-query-edges",
+        action="store_true",
+        help="Remove positive query edges from message passing for leakage-audited reruns.",
+    )
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--device", default="cpu", choices=["cpu", "cuda", "mps"])
     p.set_defaults(func=pretrain)
@@ -541,7 +725,14 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--no-fusion-gate", action="store_true")
     p.add_argument("--pretrained-checkpoint", default=None)
     p.add_argument("--freeze-backbone", action="store_true")
+    p.add_argument(
+        "--feature-policy",
+        choices=["leakage_safe", "legacy_sr", "legacy_reference"],
+        default="leakage_safe",
+        help="cCRE feature policy; leakage_safe removes both SR and is_grch38.",
+    )
     p.add_argument("--keep-is-grch38", action="store_true")
+    p.add_argument("--keep-sr", action="store_true")
     p.add_argument("--epochs", type=int, default=60)
     p.add_argument("--patience", type=int, default=15)
     p.add_argument("--seed", type=int, default=42)
@@ -554,11 +745,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--out-dir", default=None)
     p.add_argument("--test-chrs", nargs="+", default=["chr8", "chr19", "chr22"])
     p.add_argument("--val-chrs", nargs="+", default=["chr16"])
-    p.add_argument("--method", choices=["logistic", "mlp", "random_forest"], default="logistic")
+    p.add_argument("--method", choices=["logistic", "mlp", "random_forest", "sgd"], default="logistic")
     p.add_argument(
         "--feature-set",
-        choices=["coordinate", "graph", "structural", "linearized_graph"],
+        choices=["coordinate", "graph", "structural", "linearized_graph", "sequence_kmer"],
         default="structural",
+    )
+    p.add_argument(
+        "--feature-policy",
+        choices=["leakage_safe", "legacy_sr", "legacy_reference"],
+        default="leakage_safe",
+        help="cCRE feature policy; leakage_safe removes both SR and is_grch38.",
     )
     p.add_argument(
         "--label-scheme",
@@ -585,7 +782,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--out-dir", default=None)
     p.add_argument("--test-chrs", nargs="+", default=["chr8", "chr19", "chr22"])
     p.add_argument("--val-chrs", nargs="+", default=["chr16"])
-    p.add_argument("--method", choices=["logistic", "mlp", "random_forest"], default="logistic")
+    p.add_argument("--method", choices=["logistic", "mlp", "random_forest", "sgd"], default="logistic")
     p.add_argument(
         "--label-scheme",
         choices=["binary", "full9", "multiclass", "group3", "group4", "group5", "category_binary"],
@@ -600,6 +797,45 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--device", default="cpu", choices=["cpu", "cuda", "mps"])
     p.set_defaults(func=ccre_embedding_baseline)
 
+    p = sub.add_parser("ccre-serialized-baseline", help="Run DeepGene-style serialized graph Transformer cCRE baseline.")
+    p.add_argument("--data-dir", required=True)
+    p.add_argument("--benchmark-dir", default=None)
+    p.add_argument("--node-labels", default=None)
+    p.add_argument("--out-dir", default=None)
+    p.add_argument("--test-chrs", nargs="+", default=["chr8", "chr19", "chr22"])
+    p.add_argument("--val-chrs", nargs="+", default=["chr16"])
+    p.add_argument(
+        "--label-scheme",
+        choices=["binary", "full9", "multiclass", "group3", "group4", "group5", "category_binary"],
+        default="binary",
+    )
+    p.add_argument("--positive-group", default=None)
+    p.add_argument("--all-ccre-as-negative", action="store_true")
+    p.add_argument("--evaluation-universe", choices=["all", "benchmark_windows"], default="benchmark_windows")
+    p.add_argument("--closures", nargs="+", choices=["strict", "1hop"], default=["strict", "1hop"])
+    p.add_argument(
+        "--feature-policy",
+        choices=["leakage_safe", "legacy_sr", "legacy_reference"],
+        default="leakage_safe",
+    )
+    p.add_argument("--context-radius", type=int, default=15)
+    p.add_argument("--hidden-dim", type=int, default=64)
+    p.add_argument("--n-heads", type=int, default=4)
+    p.add_argument("--n-layers", type=int, default=2)
+    p.add_argument("--dropout", type=float, default=0.1)
+    p.add_argument("--epochs", type=int, default=30)
+    p.add_argument("--patience", type=int, default=8)
+    p.add_argument("--batch-size", type=int, default=256)
+    p.add_argument("--lr", type=float, default=1e-3)
+    p.add_argument("--weight-decay", type=float, default=1e-4)
+    p.add_argument("--include-sequence-features", action="store_true")
+    p.add_argument("--max-train-nodes", type=int, default=None)
+    p.add_argument("--max-val-nodes", type=int, default=None)
+    p.add_argument("--max-test-nodes", type=int, default=None)
+    p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--device", default="cpu", choices=["cpu", "cuda", "mps"])
+    p.set_defaults(func=ccre_serialized_baseline)
+
     p = sub.add_parser("eval-external", help="Evaluate a frozen pretraining checkpoint on an external benchmark.")
     p.add_argument("--data-dir", required=True)
     p.add_argument("--benchmark-dir", default=None)
@@ -609,7 +845,30 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--split", default="all", choices=["all", "train", "val", "test"])
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--device", default="cpu", choices=["cpu", "cuda", "mps"])
+    p.add_argument(
+        "--mask-query-edges",
+        action="store_true",
+        help="Remove positive query edges from message passing before scoring.",
+    )
     p.set_defaults(func=eval_external)
+
+    p = sub.add_parser("link-heuristics", help="Evaluate topology-only link-prediction heuristics.")
+    p.add_argument("--data-dir", required=True)
+    p.add_argument("--benchmark-dir", default=None)
+    p.add_argument("--out-dir", default=None)
+    p.add_argument("--closures", nargs="+", choices=["strict", "1hop"], default=None)
+    p.add_argument("--target-chrs", nargs="+", default=["chr1", "chr8", "chr19", "chrY"])
+    p.add_argument("--target-prefix", default="GRCh38#0")
+    p.add_argument("--split", choices=["all", "train", "val", "test"], default="test")
+    p.add_argument("--seed", type=int, default=42)
+    p.add_argument(
+        "--no-mask-query-edges",
+        action="store_true",
+        help="Allow positive query edges to remain in the observed graph before scoring.",
+    )
+    p.add_argument("--shortest-path-cutoff", type=int, default=4)
+    p.add_argument("--save-scores", action="store_true")
+    p.set_defaults(func=link_heuristics)
 
     p = sub.add_parser("impute-edges", help="Score candidate missing edges for HGSVC graph imputation.")
     p.add_argument("--data-dir", required=True)

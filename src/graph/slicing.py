@@ -21,7 +21,11 @@ def build_global_index(segments: pd.DataFrame) -> Tuple[pd.Index, pd.DataFrame]:
       - seg_u aligned to seg_index (one row per segment name)
     This MUST be used everywhere (window selection, link mapping, slicing).
     """
-    seg_index = pd.Index(segments["name"].astype("string").unique())
+    # Preserve the canonical column name across pandas versions; otherwise
+    # reset_index() may silently create an ``index`` column and break slicing.
+    seg_index = pd.Index(
+        segments["name"].astype("string").unique(), name="name"
+    )
     seg_u = (
         segments.drop_duplicates("name").set_index("name").loc[seg_index].reset_index()
     )
@@ -41,6 +45,37 @@ def map_links_to_segids(
             f"Link endpoints missing in seg_index. from={bad_from} to={bad_to}"
         )
     return from_id, to_id
+
+
+def build_incident_edge_index(
+    from_id: np.ndarray, to_id: np.ndarray, n_nodes: int
+) -> tuple[np.ndarray, np.ndarray]:
+    """Build CSR-like node-to-incident-edge rows for repeated local slicing."""
+    if len(from_id) != len(to_id):
+        raise ValueError("Link endpoint arrays must have equal length")
+    if n_nodes < 0:
+        raise ValueError("n_nodes must be non-negative")
+    node_ids = np.concatenate([from_id, to_id]).astype(np.int64, copy=False)
+    edge_ids = np.tile(np.arange(len(from_id), dtype=np.int64), 2)
+    order = np.argsort(node_ids, kind="stable")
+    node_ids = node_ids[order]
+    edge_ids = edge_ids[order]
+    counts = np.bincount(node_ids, minlength=n_nodes)
+    indptr = np.empty(n_nodes + 1, dtype=np.int64)
+    indptr[0] = 0
+    np.cumsum(counts, out=indptr[1:])
+    return indptr, edge_ids
+
+
+def _incident_edges(
+    nodes: np.ndarray, indptr: np.ndarray, edge_ids: np.ndarray
+) -> np.ndarray:
+    if len(nodes) == 0:
+        return np.empty(0, dtype=np.int64)
+    pieces = [edge_ids[indptr[node] : indptr[node + 1]] for node in nodes]
+    if not pieces:
+        return np.empty(0, dtype=np.int64)
+    return np.unique(np.concatenate(pieces)).astype(np.int64, copy=False)
 
 
 def segids_in_window_by_sn(
@@ -106,37 +141,69 @@ def induced_subgraph(
     seg_index: pd.Index,
     segids_core: np.ndarray,
     add_one_hop: bool,
+    from_id: np.ndarray | None = None,
+    to_id: np.ndarray | None = None,
+    incident_indptr: np.ndarray | None = None,
+    incident_edge_ids: np.ndarray | None = None,
+    segments_aligned_to_index: bool = False,
 ) -> Tuple[pd.DataFrame, pd.DataFrame, np.ndarray]:
     """
     Build induced subgraph on seg_index ID space.
     strict: only core nodes.
     1hop: add nodes touching core by any edge.
     """
-    from_id, to_id = map_links_to_segids(links, seg_index)
+    if from_id is None or to_id is None:
+        from_id, to_id = map_links_to_segids(links, seg_index)
+    elif len(from_id) != len(links) or len(to_id) != len(links):
+        raise ValueError("Precomputed link endpoint arrays must align with links")
 
     core_mask = np.zeros(len(seg_index), dtype=bool)
     core_mask[segids_core] = True
 
+    use_incident_index = incident_indptr is not None and incident_edge_ids is not None
+    if (incident_indptr is None) != (incident_edge_ids is None):
+        raise ValueError("Both incident index arrays must be provided together")
+
     if add_one_hop:
-        touch = core_mask[from_id] | core_mask[to_id]
-        segids_touch = np.unique(np.concatenate([from_id[touch], to_id[touch]])).astype(
-            np.int64
-        )
+        if use_incident_index:
+            core_edges = _incident_edges(segids_core, incident_indptr, incident_edge_ids)
+            segids_touch = np.unique(
+                np.concatenate([from_id[core_edges], to_id[core_edges]])
+            ).astype(np.int64)
+        else:
+            touch = core_mask[from_id] | core_mask[to_id]
+            segids_touch = np.unique(
+                np.concatenate([from_id[touch], to_id[touch]])
+            ).astype(np.int64)
         keep_mask = np.zeros(len(seg_index), dtype=bool)
         keep_mask[segids_touch] = True
     else:
         keep_mask = core_mask
 
-    edge_mask = keep_mask[from_id] & keep_mask[to_id]
-    links_sub = links.loc[edge_mask].copy().reset_index(drop=True)
+    if use_incident_index:
+        candidate_edges = _incident_edges(
+            np.flatnonzero(keep_mask), incident_indptr, incident_edge_ids
+        )
+        selected = candidate_edges[
+            keep_mask[from_id[candidate_edges]] & keep_mask[to_id[candidate_edges]]
+        ]
+        links_sub = links.iloc[selected].copy().reset_index(drop=True)
+    else:
+        edge_mask = keep_mask[from_id] & keep_mask[to_id]
+        links_sub = links.loc[edge_mask].copy().reset_index(drop=True)
 
     segids_final = np.where(keep_mask)[0].astype(np.int64)
-    seg_names_sub = seg_index[segids_final]
-    segments_sub = (
-        segments[segments["name"].astype("string").isin(seg_names_sub)]
-        .copy()
-        .reset_index(drop=True)
-    )
+    if segments_aligned_to_index:
+        if len(segments) != len(seg_index):
+            raise ValueError("Aligned segments must have one row per segment index")
+        segments_sub = segments.iloc[segids_final].copy().reset_index(drop=True)
+    else:
+        seg_names_sub = seg_index[segids_final]
+        segments_sub = (
+            segments[segments["name"].astype("string").isin(seg_names_sub)]
+            .copy()
+            .reset_index(drop=True)
+        )
 
     # closure check
     if len(links_sub) > 0:

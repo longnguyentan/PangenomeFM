@@ -281,7 +281,7 @@ echo "[run] Running frozen pretrained cCRE GAT"
   --out-dir "$CCRE_GAT_FROZEN_OUT" \
   --pretrained-checkpoint "$STRICT_CKPT" \
   --freeze-backbone \
-  --keep-is-grch38 \
+  --feature-policy leakage_safe \
   --epochs "$CCRE_EPOCHS" \
   --patience "$CCRE_PATIENCE" \
   --seed "$SEED" \
@@ -295,7 +295,7 @@ echo "[run] Running fine-tuned pretrained cCRE GAT"
   --val-chrs chr16 \
   --out-dir "$CCRE_GAT_FINETUNE_OUT" \
   --pretrained-checkpoint "$STRICT_CKPT" \
-  --keep-is-grch38 \
+  --feature-policy leakage_safe \
   --epochs "$CCRE_EPOCHS" \
   --patience "$CCRE_PATIENCE" \
   --seed "$SEED" \

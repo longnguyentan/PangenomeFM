@@ -1,0 +1,45 @@
+{
+  "hprc_v2_0_grch38_gbz": {
+    "url": "https://human-pangenomics.s3.amazonaws.com/pangenomes/freeze/release2/minigraph-cactus/hprc-v2.0-mc-grch38.gbz",
+    "access": "open",
+    "content_length_bytes": 5419804360,
+    "role": "Primary path-rich graph matching Release 2 epigenome assembly versions"
+  },
+  "hprc_v1_1_grch38_gbz": {
+    "url": "https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-grch38/hprc-v1.1-mc-grch38.gbz",
+    "access": "open",
+    "content_length_bytes": 3289083600,
+    "role": "Legacy path-rich graph; assembly versions do not match Release 2 epigenome tracks"
+  },
+  "hprc_epigenome": {
+    "url": "https://hprc-epigenome.s3.us-east-2.amazonaws.com/",
+    "access": "open",
+    "role": "Donor-matched haplotype methylation, accessibility, expression, and 3D-genome tracks"
+  },
+  "hprc_hg00438_haplotype_expression": {
+    "url": "https://hprc-epigenome.s3.us-east-2.amazonaws.com/samples/HG00438/",
+    "access": "open",
+    "content_length_bytes": 22815343,
+    "role": "Strand-specific haplotype-specific expression BigWigs for an HPRC Release 2 donor"
+  },
+  "geuvadis_e_geuv_3": {
+    "url": "https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-GEUV-3",
+    "access": "open",
+    "role": "RNA-seq for 465 1000 Genomes LCL samples"
+  },
+  "entex": {
+    "url": "https://www.encodeproject.org/search/?type=Experiment&status=released&target.label%21=Control&internal_tags=ENTEx",
+    "access": "open",
+    "role": "Four-donor personal-genome multi-assay allele-specific catalog"
+  },
+  "gtex_haplotype_expression": {
+    "url": "https://gtexportal.org/home/downloads/adult-gtex/overview",
+    "access": "open_processed_controlled_raw",
+    "role": "Public phASER haplotype-expression matrices; raw and SNP-level data have separate access requirements"
+  },
+  "one_kcp": {
+    "url": "https://yanglab.westlake.edu.cn/1kcp",
+    "access": "open_summary_controlled_individual",
+    "role": "Third graph domain and pan-variant eQTL summary resource"
+  }
+}

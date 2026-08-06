@@ -65,7 +65,6 @@ try:
 except ImportError:
     TORCH_AVAILABLE = False
 
-from graph.io import read_segments_csv
 from graph.slicing import build_global_index
 from graph.features import build_oid_metadata_from_segments
 from graph.neg_sampling import (
@@ -81,6 +80,7 @@ from models.dual_stream_gat import (
     build_pop_ids_array,
 )
 from models.losses import focal_bce_loss
+from evaluation.splits import normalize_chrom, validate_chromosome_split
 
 
 # ---------------------------------------------------------------------------
@@ -92,8 +92,9 @@ def drop_edges(
     src: "torch.Tensor",
     dst: "torch.Tensor",
     drop_rate: float,
+    edge_attr: Optional["torch.Tensor"] = None,
     training: bool = True,
-) -> Tuple["torch.Tensor", "torch.Tensor"]:
+) -> Tuple["torch.Tensor", "torch.Tensor", Optional["torch.Tensor"]]:
     """
     Randomly drop a fraction of structural edges during training.
 
@@ -109,10 +110,50 @@ def drop_edges(
         (src_aug, dst_aug) with a random subset of edges removed.
     """
     if not training or drop_rate <= 0.0:
-        return src, dst
+        return src, dst, edge_attr
     E = src.size(0)
     mask = torch.rand(E, device=src.device) >= drop_rate
-    return src[mask], dst[mask]
+    edge_attr_aug = edge_attr[mask] if edge_attr is not None else None
+    return src[mask], dst[mask], edge_attr_aug
+
+
+def mask_positive_query_edges(
+    src: "torch.Tensor",
+    dst: "torch.Tensor",
+    edge_attr: Optional["torch.Tensor"],
+    q_u: "torch.Tensor",
+    q_v: "torch.Tensor",
+    labels: "torch.Tensor",
+    idx: "torch.Tensor",
+) -> Tuple["torch.Tensor", "torch.Tensor", Optional["torch.Tensor"]]:
+    """Remove positive query edges from the message-passing graph.
+
+    This supports leakage-audited link prediction: the model may use the
+    surrounding observed topology, but the candidate positive edge currently
+    being scored is not available as a structural GAT edge.
+    """
+    if idx.numel() == 0:
+        return src, dst, edge_attr
+
+    pos_idx = idx[labels[idx] > 0.5]
+    if pos_idx.numel() == 0:
+        return src, dst, edge_attr
+
+    # Hash directed pairs into one integer key.  The previous per-query loop
+    # was quadratic in the number of structural/query edges and made
+    # chromosome-scale windows effectively unusable.
+    max_node = torch.max(
+        torch.cat([src, dst, q_u[pos_idx], q_v[pos_idx]])
+    ).to(torch.int64)
+    key_base = max_node + 1
+    structural_keys = src.to(torch.int64) * key_base + dst.to(torch.int64)
+    positive_keys = (
+        q_u[pos_idx].to(torch.int64) * key_base + q_v[pos_idx].to(torch.int64)
+    )
+    keep = ~torch.isin(structural_keys, torch.unique(positive_keys))
+
+    edge_attr_masked = edge_attr[keep] if edge_attr is not None else None
+    return src[keep], dst[keep], edge_attr_masked
 
 
 # ---------------------------------------------------------------------------
@@ -154,6 +195,39 @@ class ExpressiveLinkPredictor(nn.Module):
         return self.mlp(features).squeeze(-1)
 
 
+if TORCH_AVAILABLE:
+
+    class _GradientReversal(torch.autograd.Function):
+        """Identity forward pass with a sign-reversed encoder gradient."""
+
+        @staticmethod
+        def forward(ctx, value: "torch.Tensor", scale: float) -> "torch.Tensor":
+            ctx.scale = float(scale)
+            return value.view_as(value)
+
+        @staticmethod
+        def backward(ctx, grad_output: "torch.Tensor"):
+            return -ctx.scale * grad_output, None
+
+
+    class DatasetDiscriminator(nn.Module):
+        """Predict construction dataset from a pooled slice representation."""
+
+        def __init__(self, hidden_dim: int, n_domains: int, dropout: float = 0.1):
+            super().__init__()
+            self.network = nn.Sequential(
+                nn.Linear(hidden_dim, hidden_dim),
+                nn.LayerNorm(hidden_dim),
+                nn.ELU(),
+                nn.Dropout(dropout),
+                nn.Linear(hidden_dim, n_domains),
+            )
+
+        def forward(self, pooled: "torch.Tensor", grl_scale: float) -> "torch.Tensor":
+            reversed_features = _GradientReversal.apply(pooled, grl_scale)
+            return self.network(reversed_features)
+
+
 # ---------------------------------------------------------------------------
 # Slice loader (reuses logic from 06_gat_train)
 # ---------------------------------------------------------------------------
@@ -168,6 +242,21 @@ def _compute_adaptive_window_k(
 ) -> int:
     k = int(base * (1.0 + alpha * branching_frac))
     return max(wk_min, min(wk_max, k))
+
+
+def split_candidate_indices(
+    n_candidates: int, split_seed: int
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Return deterministic 70/10/20 indices independent of model seed."""
+
+    rng = np.random.default_rng(split_seed)
+    indices = rng.permutation(n_candidates)
+    n_test = int(n_candidates * 0.2)
+    n_val = int(n_candidates * 0.1)
+    test_idx = indices[:n_test]
+    val_idx = indices[n_test : n_test + n_val]
+    train_idx = indices[n_test + n_val :]
+    return train_idx, val_idx, test_idx
 
 
 def load_slice(
@@ -234,14 +323,9 @@ def load_slice(
     labels_arr = edge_df_v["label"].to_numpy(dtype=np.float32)
 
     # Train/val/test split per slice
-    rng = np.random.default_rng(args.seed)
     n = len(labels_arr)
-    idx = rng.permutation(n)
-    n_test = int(n * 0.2)
-    n_val = int(n * 0.1)
-    test_idx = idx[:n_test]
-    val_idx = idx[n_test : n_test + n_val]
-    train_idx = idx[n_test + n_val :]
+    split_seed = args.seed if args.split_seed is None else args.split_seed
+    train_idx, val_idx, test_idx = split_candidate_indices(n, split_seed)
 
     if len(train_idx) < 10:
         return None
@@ -313,15 +397,47 @@ def tensorize_slice(slice_data: Dict, device: "torch.device", args) -> Dict:
     d["name"] = slice_data["name"]
     d["target_sn"] = slice_data["target_sn"]
     d["closure"] = slice_data["closure"]
+    d["dataset"] = slice_data.get("dataset", "primary")
     d["n_nodes"] = len(slice_data["nodes"])
     d["n_pos"] = slice_data["n_pos"]
     d["n_neg"] = slice_data["n_neg"]
     return d
 
 
+def maybe_tensorize_slice(
+    slice_data: Dict, args: argparse.Namespace
+) -> Tuple[Dict, bool]:
+    """Return a tensor slice and whether it was created for this call.
+
+    Lazy tensorization avoids keeping every genome-wide slice twice in RAM.
+    The returned boolean lets callers drop their temporary reference promptly.
+    """
+    if "X" in slice_data:
+        return slice_data, False
+    return tensorize_slice(slice_data, torch.device(args.device), args), True
+
+
+def leakage_safe_mask_indices(
+    slice_data: Dict, query_idx: "torch.Tensor"
+) -> "torch.Tensor":
+    """Edges to hide for leakage-safe candidate-split reconstruction.
+
+    Validation and test positives are never exposed while fitting a training
+    chromosome.  The current training-query batch is additionally hidden,
+    leaving the other training edges as graph context.
+    """
+    return torch.unique(
+        torch.cat(
+            [slice_data["val_idx"], slice_data["test_idx"], query_idx]
+        )
+    )
+
+
 def train_one_epoch_shared(
     model: "DualStreamPangenomeGAT",
     predictor: Optional["ExpressiveLinkPredictor"],
+    domain_classifier: Optional["DatasetDiscriminator"],
+    dataset_to_idx: dict[str, int],
     optimizer: "torch.optim.Optimizer",
     slices: List[Dict],
     args: argparse.Namespace,
@@ -341,6 +457,8 @@ def train_one_epoch_shared(
     model.train()
     if predictor is not None:
         predictor.train()
+    if domain_classifier is not None:
+        domain_classifier.train()
 
     # Shuffle slice order each epoch
     rng = np.random.default_rng(args.seed + epoch)
@@ -352,8 +470,9 @@ def train_one_epoch_shared(
 
     optimizer.zero_grad()
 
-    for i, si in enumerate(order):
-        sd = slices[si]
+    optimizer_steps_pending = 0
+    for si in order:
+        sd, _temporary = maybe_tensorize_slice(slices[si], args)
         train_idx = sd["train_idx"]
         if len(train_idx) < 10:
             continue
@@ -369,78 +488,124 @@ def train_one_epoch_shared(
             for layer in model.linear_layers:
                 layer.window_k = eff_wk
 
-        # DropEdge augmentation
-        src_aug, dst_aug = drop_edges(
-            sd["src"],
-            sd["dst"],
-            drop_rate=args.drop_edge_rate if args.drop_edge else 0.0,
-            training=True,
+        # Candidate mini-batches are essential here. Masking every training
+        # positive simultaneously would erase nearly the whole structural
+        # graph, while leaving validation/test positives visible would leak.
+        permutation = torch.as_tensor(
+            rng.permutation(len(train_idx)), dtype=torch.long, device=train_idx.device
         )
+        shuffled_train_idx = train_idx[permutation]
+        candidate_batch_size = max(1, int(args.batch_size))
+        for batch_start in range(0, len(shuffled_train_idx), candidate_batch_size):
+            batch_idx = shuffled_train_idx[
+                batch_start : batch_start + candidate_batch_size
+            ]
 
-        # Forward: encode nodes
-        h = model.encode_nodes(
-            sd["X"],
-            sd["so"],
-            src_aug,
-            dst_aug,
-            sd["temps"],
-            sd["edge_attr"],
-            sd["orient"],
-            sd["pop_ids"],
-        )
+            src_for_mp = sd["src"]
+            dst_for_mp = sd["dst"]
+            edge_attr_for_mp = sd["edge_attr"]
+            if args.mask_query_edges:
+                mask_idx = leakage_safe_mask_indices(sd, batch_idx)
+                src_for_mp, dst_for_mp, edge_attr_for_mp = mask_positive_query_edges(
+                    src_for_mp,
+                    dst_for_mp,
+                    edge_attr_for_mp,
+                    sd["q_u"],
+                    sd["q_v"],
+                    sd["labels"],
+                    mask_idx,
+                )
 
-        # Score edges
-        qu = sd["q_u"][train_idx]
-        qv = sd["q_v"][train_idx]
-        labels = sd["labels"][train_idx]
-
-        if predictor is not None:
-            logits = predictor(h[qu], h[qv])
-            probs = torch.sigmoid(logits)
-        else:
-            probs = model.edge_predictor(torch.cat([h[qu], h[qv]], dim=-1)).squeeze(-1)
-            probs = torch.sigmoid(probs)
-
-        # Loss
-        n_pos = labels.sum().item()
-        n_neg = len(labels) - n_pos
-        pw = n_neg / max(n_pos, 1)
-
-        if args.focal_loss:
-            loss = focal_bce_loss(
-                probs,
-                labels,
-                gamma=args.focal_gamma,
-                alpha=args.focal_alpha,
-                pos_weight=pw,
+            src_aug, dst_aug, edge_attr_aug = drop_edges(
+                src_for_mp,
+                dst_for_mp,
+                drop_rate=args.drop_edge_rate if args.drop_edge else 0.0,
+                edge_attr=edge_attr_for_mp,
+                training=True,
             )
-        else:
-            weight = torch.where(
-                labels > 0.5,
-                torch.tensor(pw, device=labels.device),
-                torch.tensor(1.0, device=labels.device),
+
+            h = model.encode_nodes(
+                sd["X"],
+                sd["so"],
+                src_aug,
+                dst_aug,
+                sd["temps"],
+                edge_attr_aug,
+                sd["orient"],
+                sd["pop_ids"],
             )
-            loss = F.binary_cross_entropy(probs, labels, weight=weight)
 
-        # Scale loss for gradient accumulation
-        loss = loss / accum_steps
-        loss.backward()
-        total_loss += loss.item() * accum_steps
-        n_steps += 1
+            qu = sd["q_u"][batch_idx]
+            qv = sd["q_v"][batch_idx]
+            labels = sd["labels"][batch_idx]
 
-        # Step every accum_steps slices
-        if (i + 1) % accum_steps == 0:
-            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             if predictor is not None:
-                torch.nn.utils.clip_grad_norm_(predictor.parameters(), max_norm=1.0)
-            optimizer.step()
-            optimizer.zero_grad()
+                logits = predictor(h[qu], h[qv])
+                probs = torch.sigmoid(logits)
+            else:
+                probs = model.edge_predictor(
+                    torch.cat([h[qu], h[qv]], dim=-1)
+                ).squeeze(-1)
+                probs = torch.sigmoid(probs)
+
+            n_pos = labels.sum().item()
+            n_neg = len(labels) - n_pos
+            pw = n_neg / max(n_pos, 1)
+
+            if args.focal_loss:
+                loss = focal_bce_loss(
+                    probs,
+                    labels,
+                    gamma=args.focal_gamma,
+                    alpha=args.focal_alpha,
+                    pos_weight=pw,
+                )
+            else:
+                weight = torch.where(
+                    labels > 0.5,
+                    torch.tensor(pw, device=labels.device),
+                    torch.tensor(1.0, device=labels.device),
+                )
+                loss = F.binary_cross_entropy(probs, labels, weight=weight)
+
+            if domain_classifier is not None:
+                pooled = h.mean(dim=0, keepdim=True)
+                domain_logits = domain_classifier(pooled, args.domain_grl_lambda)
+                domain_target = torch.tensor(
+                    [dataset_to_idx[str(sd["dataset"])]],
+                    dtype=torch.long,
+                    device=h.device,
+                )
+                domain_loss = F.cross_entropy(domain_logits, domain_target)
+                loss = loss + args.domain_loss_weight * domain_loss
+
+            loss = loss / accum_steps
+            loss.backward()
+            total_loss += loss.item() * accum_steps
+            n_steps += 1
+            optimizer_steps_pending += 1
+
+            if optimizer_steps_pending == accum_steps:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+                if predictor is not None:
+                    torch.nn.utils.clip_grad_norm_(predictor.parameters(), max_norm=1.0)
+                if domain_classifier is not None:
+                    torch.nn.utils.clip_grad_norm_(
+                        domain_classifier.parameters(), max_norm=1.0
+                    )
+                optimizer.step()
+                optimizer.zero_grad()
+                optimizer_steps_pending = 0
 
     # Final step for remaining slices
-    if n_steps % accum_steps != 0:
+    if optimizer_steps_pending:
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
         if predictor is not None:
             torch.nn.utils.clip_grad_norm_(predictor.parameters(), max_norm=1.0)
+        if domain_classifier is not None:
+            torch.nn.utils.clip_grad_norm_(
+                domain_classifier.parameters(), max_norm=1.0
+            )
         optimizer.step()
         optimizer.zero_grad()
 
@@ -454,6 +619,8 @@ def evaluate_shared(
     slices: List[Dict],
     split: str = "val",  # "val" or "test"
     args: Optional[argparse.Namespace] = None,
+    prediction_rows: Optional[List[Dict]] = None,
+    prediction_split_label: Optional[str] = None,
 ) -> Tuple[float, List[Dict]]:
     """
     Evaluate shared model per-slice.
@@ -469,7 +636,8 @@ def evaluate_shared(
         predictor.eval()
 
     per_slice = []
-    for sd in slices:
+    for slice_data in slices:
+        sd, _temporary = maybe_tensorize_slice(slice_data, args)
         idx_key = f"{split}_idx"
         idx = sd[idx_key]
         if len(idx) < 4:
@@ -488,13 +656,31 @@ def evaluate_shared(
             for layer in model.linear_layers:
                 layer.window_k = eff_wk
 
+        src_for_mp = sd["src"]
+        dst_for_mp = sd["dst"]
+        edge_attr_for_mp = sd["edge_attr"]
+        if args is not None and getattr(args, "mask_query_edges", False):
+            # Validation/test positives are absent from the structural graph
+            # in every evaluation pass. For train metrics, also hide the
+            # currently scored training positives.
+            mask_idx = leakage_safe_mask_indices(sd, idx)
+            src_for_mp, dst_for_mp, edge_attr_for_mp = mask_positive_query_edges(
+                src_for_mp,
+                dst_for_mp,
+                edge_attr_for_mp,
+                sd["q_u"],
+                sd["q_v"],
+                sd["labels"],
+                mask_idx,
+            )
+
         h = model.encode_nodes(
             sd["X"],
             sd["so"],
-            sd["src"],
-            sd["dst"],
+            src_for_mp,
+            dst_for_mp,
             sd["temps"],
-            sd["edge_attr"],
+            edge_attr_for_mp,
             sd["orient"],
             sd["pop_ids"],
         )
@@ -511,6 +697,23 @@ def evaluate_shared(
             probs = torch.sigmoid(probs).cpu().numpy()
 
         y = labels.cpu().numpy()
+        if prediction_rows is not None:
+            qu_np = qu.cpu().numpy()
+            qv_np = qv.cpu().numpy()
+            for u_local, v_local, yy, pp in zip(qu_np, qv_np, y, probs):
+                prediction_rows.append(
+                    {
+                        "dataset": sd.get("dataset", "primary"),
+                        "slice": sd["name"],
+                        "target_sn": sd["target_sn"],
+                        "closure": sd["closure"],
+                        "split": prediction_split_label or split,
+                        "u_local": int(u_local),
+                        "v_local": int(v_local),
+                        "y_true": float(yy),
+                        "p_edge": float(pp),
+                    }
+                )
         if len(np.unique(y)) < 2:
             auc = 0.5
         else:
@@ -519,6 +722,7 @@ def evaluate_shared(
         per_slice.append(
             {
                 "name": sd["name"],
+                "dataset": sd.get("dataset", "primary"),
                 "target_sn": sd["target_sn"],
                 "closure": sd["closure"],
                 "n_nodes": sd["n_nodes"],
@@ -564,6 +768,26 @@ class WarmupCosineScheduler:
         for pg, base_lr in zip(self.optimizer.param_groups, self.base_lrs):
             pg["lr"] = base_lr * factor
 
+    def state_dict(self) -> Dict[str, object]:
+        """Return the minimal deterministic scheduler state for recovery."""
+
+        return {
+            "warmup_epochs": self.warmup_epochs,
+            "total_epochs": self.total_epochs,
+            "base_lrs": list(self.base_lrs),
+            "step_count": self._step_count,
+        }
+
+    def load_state_dict(self, state: Dict[str, object]) -> None:
+        """Restore a state written by :meth:`state_dict`."""
+
+        if int(state["warmup_epochs"]) != self.warmup_epochs:
+            raise ValueError("Recovery warmup_epochs does not match this run.")
+        if int(state["total_epochs"]) != self.total_epochs:
+            raise ValueError("Recovery total_epochs does not match this run.")
+        self.base_lrs = [float(value) for value in state["base_lrs"]]
+        self._step_count = int(state["step_count"])
+
 
 # ---------------------------------------------------------------------------
 # Main
@@ -580,6 +804,28 @@ def main():
     ap.add_argument("--manifest", required=True)
     ap.add_argument("--full_segments", required=True)
     ap.add_argument("--out_dir", required=True)
+    ap.add_argument(
+        "--primary_dataset_name",
+        default="primary",
+        help="Stable dataset label stored in predictions for the primary manifest.",
+    )
+    ap.add_argument(
+        "--extra_datasets",
+        nargs="*",
+        default=[],
+        metavar="ITEM",
+        help=(
+            "Flat triples NAME MANIFEST FULL_SEGMENTS for additional graphs. "
+            "All datasets share one encoder but retain dataset labels in outputs."
+        ),
+    )
+    ap.add_argument(
+        "--closures",
+        nargs="+",
+        choices=["strict", "1hop"],
+        default=["strict", "1hop"],
+        help="Train only selected closure types; useful for resumable long runs.",
+    )
 
     # Architecture (same as 06)
     ap.add_argument("--hidden_dim", type=int, default=48)
@@ -628,6 +874,24 @@ def main():
         type=int,
         default=20,
         help="Early stopping patience on mean val AUC",
+    )
+    ap.add_argument(
+        "--recovery_every",
+        type=int,
+        default=1,
+        help=(
+            "Write an atomic training-recovery checkpoint every N epochs; "
+            "set to 0 to disable (default: 1)."
+        ),
+    )
+    ap.add_argument(
+        "--resume_recovery",
+        type=str,
+        default=None,
+        help=(
+            "Resume a single --closures context from a recovery_*.pt file. "
+            "Architecture, epoch budget, and context must match."
+        ),
     )
     ap.add_argument(
         "--accum_steps",
@@ -689,8 +953,59 @@ def main():
 
     # Other
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument(
+        "--split_seed",
+        type=int,
+        default=None,
+        help=(
+            "Candidate train/validation/test split seed. Defaults to --seed for "
+            "backward compatibility; set explicitly for fair multi-seed runs."
+        ),
+    )
     ap.add_argument("--device", default="cpu", choices=["cpu", "cuda", "mps"])
     ap.add_argument("--batch_size", type=int, default=512)
+    ap.add_argument(
+        "--lazy_tensorize",
+        action="store_true",
+        help=(
+            "Keep genome-wide slices as NumPy arrays and move one slice at a time "
+            "to the selected device. This substantially reduces peak memory."
+        ),
+    )
+    ap.add_argument(
+        "--save_predictions",
+        action="store_true",
+        help="Save pooled edge probabilities from final evaluations for reliability curves.",
+    )
+    ap.add_argument(
+        "--mask_query_edges",
+        action="store_true",
+        help=(
+            "Remove positive query edges from the message-passing graph before "
+            "scoring each train/validation/test split. Use for leakage-audited "
+            "paper reruns."
+        ),
+    )
+    ap.add_argument(
+        "--domain_adversarial",
+        action="store_true",
+        help=(
+            "Add a gradient-reversal dataset classifier to multi-dataset "
+            "training. Use only after auditing construction and ancestry confounding."
+        ),
+    )
+    ap.add_argument(
+        "--domain_loss_weight",
+        type=float,
+        default=0.1,
+        help="Weight of dataset-classification loss in the joint objective.",
+    )
+    ap.add_argument(
+        "--domain_grl_lambda",
+        type=float,
+        default=1.0,
+        help="Gradient-reversal strength applied only to encoder gradients.",
+    )
 
     # ── Cross-chromosome held-out validation ─────────────────────────────────
     ap.add_argument(
@@ -715,6 +1030,16 @@ def main():
     )
 
     args = ap.parse_args()
+    if len(args.extra_datasets) % 3:
+        raise ValueError(
+            "--extra_datasets must contain triples: NAME MANIFEST FULL_SEGMENTS"
+        )
+    if args.recovery_every < 0:
+        raise ValueError("--recovery_every must be non-negative.")
+    if args.resume_recovery and len(args.closures) != 1:
+        raise ValueError(
+            "--resume_recovery requires exactly one value in --closures."
+        )
     device = torch.device(args.device)
 
     # ── Experiment label ─────────────────────────────────────────────────────
@@ -739,6 +1064,16 @@ def main():
         _lp.append("efeat")
     if args.expressive_predictor:
         _lp.append("exppred")
+    if args.mask_query_edges:
+        _lp.append("maskedq")
+    if args.split_seed is not None:
+        _lp.append(f"splitseed{args.split_seed}")
+    if args.extra_datasets:
+        _lp.append(f"multidata{1 + len(args.extra_datasets) // 3}")
+    if args.domain_adversarial:
+        _lp.append(
+            f"dannw{args.domain_loss_weight:g}l{args.domain_grl_lambda:g}"
+        )
     if args.test_chrs:
         # Short label for held-out chromosomes
         chr_short = "_".join(c.split("#")[-1] for c in args.test_chrs)
@@ -761,6 +1096,11 @@ def main():
     print(f"[06b] focal_loss={args.focal_loss} (gamma={args.focal_gamma})")
     print(f"[06b] drop_edge={args.drop_edge} (rate={args.drop_edge_rate})")
     print(f"[06b] expressive_predictor={args.expressive_predictor}")
+    print(f"[06b] mask_query_edges={args.mask_query_edges}")
+    print(
+        f"[06b] domain_adversarial={args.domain_adversarial} "
+        f"(weight={args.domain_loss_weight}, grl_lambda={args.domain_grl_lambda})"
+    )
     print(f"[06b] warmup={args.warmup_epochs}, accum_steps={args.accum_steps}")
     if args.test_chrs:
         print(f"[06b] CROSS-CHR HELD-OUT: {args.test_chrs}")
@@ -768,33 +1108,54 @@ def main():
     if args.val_chrs:
         print(f"[06b] CROSS-CHR VALIDATION: {args.val_chrs}")
 
-    # Load metadata
-    print("[06b] Loading full segments...")
-    full_segments = read_segments_csv(args.full_segments)
-    seg_index, _ = build_global_index(full_segments)
-    md = build_oid_metadata_from_segments(full_segments, seg_index)
-
     if args.pop_cond and args.pop_table:
         from models.dual_stream_gat import load_pop_table
 
         n_loaded = load_pop_table(args.pop_table)
         print(f"[06b] Population table: {n_loaded} samples loaded")
 
-    # Load all slices
-    manifest = pd.read_csv(args.manifest)
-    print(f"[06b] Loading {len(manifest)} slices...")
-
+    dataset_specs = [(args.primary_dataset_name, args.manifest, args.full_segments)]
+    dataset_specs.extend(
+        tuple(args.extra_datasets[i : i + 3])
+        for i in range(0, len(args.extra_datasets), 3)
+    )
     all_slices_raw = []
-    for _, row in manifest.iterrows():
-        sd = load_slice(row, seg_index, md, full_segments, args)
-        if sd is not None:
-            all_slices_raw.append(sd)
+    for dataset_name, manifest_path, segments_path in dataset_specs:
+        print(f"[06b] Loading metadata for dataset={dataset_name}: {segments_path}")
+        full_segments = pd.read_csv(
+            segments_path,
+            compression="infer",
+            usecols=["id", "name", "LN", "SN", "SO", "SR"],
+        )
+        seg_index, _ = build_global_index(full_segments)
+        md = build_oid_metadata_from_segments(full_segments, seg_index)
+        manifest = pd.read_csv(manifest_path)
+        print(f"[06b] Loading {len(manifest)} slices from dataset={dataset_name}...")
+        loaded_here = 0
+        for _, row in manifest.iterrows():
+            sd = load_slice(row, seg_index, md, full_segments, args)
+            if sd is not None:
+                sd["dataset"] = str(dataset_name)
+                all_slices_raw.append(sd)
+                loaded_here += 1
+        print(f"[06b] Loaded {loaded_here} slices from dataset={dataset_name}")
+        del full_segments, md
 
     print(f"[06b] Loaded {len(all_slices_raw)} slices successfully")
+    dataset_names = sorted({str(s["dataset"]) for s in all_slices_raw})
+    dataset_to_idx = {name: idx for idx, name in enumerate(dataset_names)}
+    if args.domain_adversarial and len(dataset_names) < 2:
+        raise ValueError(
+            "--domain_adversarial requires at least two datasets via "
+            "--extra_datasets."
+        )
 
     available_targets = {str(s["target_sn"]) for s in all_slices_raw}
+    available_chroms = {normalize_chrom(target) for target in available_targets}
     if args.test_chrs:
-        missing = sorted(set(args.test_chrs) - available_targets)
+        missing = sorted(
+            {normalize_chrom(chrom) for chrom in args.test_chrs} - available_chroms
+        )
         if missing:
             available_preview = ", ".join(sorted(available_targets)[:12])
             raise ValueError(
@@ -802,7 +1163,9 @@ def main():
                 f"{missing}. Available targets include: {available_preview}"
             )
     if args.val_chrs:
-        missing = sorted(set(args.val_chrs) - available_targets)
+        missing = sorted(
+            {normalize_chrom(chrom) for chrom in args.val_chrs} - available_chroms
+        )
         if missing:
             available_preview = ", ".join(sorted(available_targets)[:12])
             raise ValueError(
@@ -816,23 +1179,27 @@ def main():
     print(f"[06b] Strict: {len(strict_slices_raw)}, 1-hop: {len(hop1_slices_raw)}")
 
     # ── Cross-chromosome split ───────────────────────────────────────────────
-    test_chr_set = set(args.test_chrs) if args.test_chrs else set()
-    val_chr_set = set(args.val_chrs) if args.val_chrs else set()
-    if test_chr_set & val_chr_set:
-        raise ValueError(
-            "test_chrs and val_chrs must be disjoint for paper runs. "
-            f"Overlap: {sorted(test_chr_set & val_chr_set)}"
-        )
+    split_spec = validate_chromosome_split(
+        val_chrs=args.val_chrs,
+        test_chrs=args.test_chrs,
+    )
+    test_chr_set = set(split_spec["test_chrs"])
+    val_chr_set = set(split_spec["val_chrs"])
 
     def _split_by_chr(slices_raw):
         """Split slices into train, validation chromosome, and heldout test."""
         train = [
             s
             for s in slices_raw
-            if s["target_sn"] not in test_chr_set and s["target_sn"] not in val_chr_set
+            if normalize_chrom(s["target_sn"]) not in test_chr_set
+            and normalize_chrom(s["target_sn"]) not in val_chr_set
         ]
-        val = [s for s in slices_raw if s["target_sn"] in val_chr_set]
-        heldout = [s for s in slices_raw if s["target_sn"] in test_chr_set]
+        val = [
+            s for s in slices_raw if normalize_chrom(s["target_sn"]) in val_chr_set
+        ]
+        heldout = [
+            s for s in slices_raw if normalize_chrom(s["target_sn"]) in test_chr_set
+        ]
         return train, val, heldout
 
     if test_chr_set or val_chr_set:
@@ -858,6 +1225,8 @@ def main():
         ("strict", strict_train, strict_val, strict_heldout),
         ("1hop", hop1_train, hop1_val, hop1_heldout),
     ]:
+        if closure_name not in args.closures:
+            continue
         if not train_slices_raw:
             continue
         print(f"\n{'='*60}")
@@ -923,26 +1292,49 @@ def main():
                 dropout=args.dropout,
             ).to(device)
 
+        domain_classifier = None
+        if args.domain_adversarial:
+            domain_classifier = DatasetDiscriminator(
+                hidden_dim=args.hidden_dim,
+                n_domains=len(dataset_to_idx),
+                dropout=args.dropout,
+            ).to(device)
+
         # Optimizer
         params = list(model.parameters())
         if predictor is not None:
             params += list(predictor.parameters())
+        if domain_classifier is not None:
+            params += list(domain_classifier.parameters())
         optimizer = torch.optim.AdamW(
             params, lr=args.lr, weight_decay=args.weight_decay
         )
         scheduler = WarmupCosineScheduler(optimizer, args.warmup_epochs, args.epochs)
 
-        # Tensorize TRAIN slices (used for training + in-distribution eval)
-        slices_t = [tensorize_slice(sd, device, args) for sd in train_slices_raw]
+        # Tensorize eagerly for legacy/small runs, or one slice at a time for
+        # full-coordinate coverage runs.
+        slices_t = (
+            train_slices_raw
+            if args.lazy_tensorize
+            else [tensorize_slice(sd, device, args) for sd in train_slices_raw]
+        )
 
         # Tensorize HELD-OUT slices (only used for evaluation, never trained on)
         heldout_t = (
-            [tensorize_slice(sd, device, args) for sd in heldout_slices_raw]
+            (
+                heldout_slices_raw
+                if args.lazy_tensorize
+                else [tensorize_slice(sd, device, args) for sd in heldout_slices_raw]
+            )
             if heldout_slices_raw
             else []
         )
         val_chr_t = (
-            [tensorize_slice(sd, device, args) for sd in val_slices_raw]
+            (
+                val_slices_raw
+                if args.lazy_tensorize
+                else [tensorize_slice(sd, device, args) for sd in val_slices_raw]
+            )
             if val_slices_raw
             else []
         )
@@ -961,9 +1353,54 @@ def main():
         best_pred_state = None
         patience_counter = 0
 
-        for epoch in range(1, args.epochs + 1):
+        recovery_path = out_dir / f"recovery_{closure_name}{exp_label}.pt"
+        start_epoch = 1
+        if args.resume_recovery:
+            resume_path = Path(args.resume_recovery)
+            recovery = torch.load(resume_path, map_location=device, weights_only=False)
+            if recovery.get("closure") != closure_name:
+                raise ValueError(
+                    f"Recovery context {recovery.get('closure')!r} does not match "
+                    f"requested context {closure_name!r}."
+                )
+            if recovery.get("exp_label") != exp_label:
+                raise ValueError(
+                    "Recovery experiment label does not match the requested "
+                    "architecture, split, or epoch settings."
+                )
+            model.load_state_dict(recovery["model_state"])
+            if predictor is not None and recovery.get("predictor_state") is not None:
+                predictor.load_state_dict(recovery["predictor_state"])
+            if (
+                domain_classifier is not None
+                and recovery.get("domain_classifier_state") is not None
+            ):
+                domain_classifier.load_state_dict(recovery["domain_classifier_state"])
+            optimizer.load_state_dict(recovery["optimizer_state"])
+            scheduler.load_state_dict(recovery["scheduler_state"])
+            best_val_auc = float(recovery["best_val_auc"])
+            best_state = recovery.get("best_model_state")
+            best_pred_state = recovery.get("best_predictor_state")
+            patience_counter = int(recovery["patience_counter"])
+            start_epoch = int(recovery["epoch"]) + 1
+            torch.set_rng_state(recovery["torch_rng_state"].cpu())
+            np.random.set_state(recovery["numpy_rng_state"])
+            print(
+                f"  Resumed {closure_name} from {resume_path} at epoch "
+                f"{start_epoch} (best_val={best_val_auc:.4f})"
+            )
+
+        epoch = start_epoch - 1
+        for epoch in range(start_epoch, args.epochs + 1):
             train_loss = train_one_epoch_shared(
-                model, predictor, optimizer, slices_t, args, epoch
+                model,
+                predictor,
+                domain_classifier,
+                dataset_to_idx,
+                optimizer,
+                slices_t,
+                args,
+                epoch,
             )
             scheduler.step()
 
@@ -991,7 +1428,41 @@ def main():
             else:
                 patience_counter += 1
 
-            if patience_counter >= args.patience:
+            should_stop = patience_counter >= args.patience
+            if args.recovery_every and (
+                epoch % args.recovery_every == 0 or should_stop
+            ):
+                recovery_tmp = recovery_path.with_name(recovery_path.name + ".tmp")
+                torch.save(
+                    {
+                        "schema_version": 1,
+                        "closure": closure_name,
+                        "exp_label": exp_label,
+                        "epoch": int(epoch),
+                        "model_state": model.state_dict(),
+                        "predictor_state": (
+                            predictor.state_dict() if predictor is not None else None
+                        ),
+                        "domain_classifier_state": (
+                            domain_classifier.state_dict()
+                            if domain_classifier is not None
+                            else None
+                        ),
+                        "optimizer_state": optimizer.state_dict(),
+                        "scheduler_state": scheduler.state_dict(),
+                        "best_val_auc": float(best_val_auc),
+                        "best_model_state": best_state,
+                        "best_predictor_state": best_pred_state,
+                        "patience_counter": int(patience_counter),
+                        "torch_rng_state": torch.get_rng_state(),
+                        "numpy_rng_state": np.random.get_state(),
+                        "args": vars(args),
+                    },
+                    recovery_tmp,
+                )
+                recovery_tmp.replace(recovery_path)
+
+            if should_stop:
                 print(f"  Early stop @ epoch {epoch}  best_val={best_val_auc:.4f}")
                 break
 
@@ -1001,12 +1472,14 @@ def main():
         if predictor is not None and best_pred_state is not None:
             predictor.load_state_dict(best_pred_state)
 
+        pred_rows: Optional[List[Dict]] = [] if args.save_predictions else None
+
         # Final evaluation on test AND val splits with best model (in-distribution)
         test_auc, test_details = evaluate_shared(
-            model, predictor, slices_t, "test", args
+            model, predictor, slices_t, "test", args, pred_rows, "train_chr_test"
         )
         val_auc_final, val_details = evaluate_shared(
-            model, predictor, slices_t, "val", args
+            model, predictor, slices_t, "val", args, pred_rows, "train_chr_val"
         )
         print(
             f"\n  FINAL {closure_name} (in-dist): test_auc={test_auc:.4f}  best_val={best_val_auc:.4f}"
@@ -1027,10 +1500,10 @@ def main():
 
         if val_chr_t:
             val_chr_test_auc, val_chr_details = evaluate_shared(
-                model, predictor, val_chr_t, "test", args
+                model, predictor, val_chr_t, "test", args, pred_rows, "val_chr_test"
             )
             val_chr_val_auc, val_chr_val_details = evaluate_shared(
-                model, predictor, val_chr_t, "val", args
+                model, predictor, val_chr_t, "val", args, pred_rows, "val_chr_val"
             )
             val_chr_by_name = {
                 vd["name"]: vd["val_auc"] for vd in val_chr_val_details
@@ -1055,14 +1528,14 @@ def main():
             # (not the per-slice train/val/test split, since the model never
             #  saw any of these slices during training)
             heldout_test_auc, heldout_details = evaluate_shared(
-                model, predictor, heldout_t, "test", args
+                model, predictor, heldout_t, "test", args, pred_rows, "heldout_chr_test"
             )
             # Also evaluate on the "train" portion to check consistency
             heldout_train_auc, _ = evaluate_shared(
-                model, predictor, heldout_t, "train", args
+                model, predictor, heldout_t, "train", args, pred_rows, "heldout_chr_train"
             )
             heldout_val_auc, heldout_val_details = evaluate_shared(
-                model, predictor, heldout_t, "val", args
+                model, predictor, heldout_t, "val", args, pred_rows, "heldout_chr_val"
             )
 
             heldout_val_by_name = {
@@ -1120,6 +1593,9 @@ def main():
         results_df["n_heads"] = args.n_heads
         results_df["n_layers"] = args.n_layers
         results_df["seed"] = args.seed
+        results_df["split_seed"] = (
+            args.seed if args.split_seed is None else args.split_seed
+        )
         results_df["epochs_max"] = args.epochs
         results_df["patience"] = args.patience
         # Compatibility with 06 output format
@@ -1137,12 +1613,22 @@ def main():
         closure_csv = out_dir / f"{closure_name}_results{exp_label}.csv"
         results_df.to_csv(closure_csv, index=False)
         print(f"  Saved: {closure_csv}")
+        if pred_rows is not None:
+            pred_csv = out_dir / f"{closure_name}_pooled_predictions{exp_label}.csv.gz"
+            pd.DataFrame(pred_rows).to_csv(pred_csv, index=False, compression="gzip")
+            print(f"  Saved pooled predictions: {pred_csv}")
 
         ckpt_path = out_dir / f"ckpt_{closure_name}{exp_label}.pt"
         torch.save(
             {
                 "model_state": model.state_dict(),
                 "predictor_state": predictor.state_dict() if predictor is not None else None,
+                "domain_classifier_state": (
+                    domain_classifier.state_dict()
+                    if domain_classifier is not None
+                    else None
+                ),
+                "dataset_to_idx": dataset_to_idx,
                 "args": vars(args),
                 "closure": closure_name,
                 "exp_label": exp_label,

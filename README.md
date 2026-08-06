@@ -1,12 +1,12 @@
 # Graphgenome
 
-**A Graph Genome Foundation Model for Pangenome Link Prediction and Structural Variation Discovery**
+**Transferable topology pretraining for human pangenome graphs**
 
 ## Overview
 
-This project builds a **graph attention network (GAT)** that learns structural representations of the [Human Pangenome Reference Consortium (HPRC)](https://humanpangenome.org/) pangenome graph. The core task is **link prediction** (predicting whether edges exist between DNA segments in a GFA-format variation graph) as a pre-training objective for downstream functional genomics and structural variation analysis.
+This project builds a **graph attention network (GAT)** that learns structural representations of the [Human Pangenome Reference Consortium (HPRC)](https://humanpangenome.org/) pangenome graph. The core task is **query-edge-masked link prediction** in a GFA-format variation graph. The current evidence supports a focused graph-topology pretraining claim; downstream functional and haplotype analyses remain preliminary.
 
-The pangenome graph encodes genomic diversity across 47 ancestrally diverse human genomes as a variation graph, where linear (backbone) regions represent shared sequence and **bubble structures** represent sites of structural variation (insertions, deletions, inversions, duplications). By learning on the graph directly — rather than serializing it into a flat sequence — the model captures topological signals that linear genome models miss.
+The primary processed HPRC Release 2 graph contains 231 donor samples and 462 phased donor haplotypes. Linear backbone regions represent shared sequence and **bubble structures** represent variation. The encoder uses graph topology and segment metadata; it does **not** consume nucleotide tokens. See `docs/PROJECT_EVIDENCE_AUDIT_2026-08-04.md` for the verified evidence boundary.
 
 ## Current Code Organization
 
@@ -64,13 +64,15 @@ See `docs/RUN_HPRC.md` for the current step-by-step workflow and
 
 ### Key results
 
-| Metric                          | Value                      | Notes                                                   |
-| ------------------------------- | -------------------------- | ------------------------------------------------------- |
-| Cross-chromosome strict AUC     | **0.980** (mean)           | Range 0.957–0.995 across held-out chromosomes           |
-| Cross-chromosome 1-hop AUC      | **0.995** (mean)           | Range 0.991–0.997                                       |
-| Baseline (LR, distance-matched) | 0.515 strict / 0.840 1-hop | Graph model provides +0.465 strict improvement          |
-| Generalization gap              | ~0                         | Held-out chromosome AUC matches or exceeds training AUC |
-| Model size                      | ~100K parameters           | Compact; no large-scale pre-training required           |
+| Metric | Value | Evidence boundary |
+| --- | ---: | --- |
+| Matched query-edge-masked core-node-induced AUROC / AUPRC | **0.8300 ± 0.0307 / 0.7774 ± 0.0302** | Mean ± sample SD over three fixed-split seeds; 1,074 predictions per seed in 30 evaluable non-overlapping slices on chr1, chr8, chr19, and chrY |
+| Matched query-edge-masked endpoint-expanded AUROC / AUPRC | **0.9249 ± 0.0031 / 0.9318 ± 0.0019** | Mean ± sample SD over three fixed-split seeds; 2,303 predictions per seed in 37 evaluable slices in the same held-out chromosome set |
+| Frozen HPRC to targeted HGSVC3 expanded-context AUROC / AUPRC | **0.9181 / 0.9241** | Four selected HGSVC3 chromosomes; not genome-wide or donor-independent |
+| Core graph-only ablation AUROC | **0.8568 ± 0.0123** | Exceeds the full model by 0.0268 ± 0.0222 AUROC; paired difference has the same sign in all three seeds |
+| Model size | ~100K parameters | Compact topology/metadata encoder; no nucleotide-token pretraining |
+
+The earlier unmasked AUROCs (0.9846 core and 0.9957 expanded) leave positive query edges in the message-passing graph and are retained only as historical diagnostics. They are not valid headline reconstruction results. The matched v2 manifest contains 240 exact locus pairs; 66 sparse slices fail the default loader minimum, which is disclosed in the review audit. Expanded context remains exposure-confounded despite exact locus matching.
 
 ## Table of Contents
 
@@ -89,7 +91,7 @@ See `docs/RUN_HPRC.md` for the current step-by-step workflow and
 
 ### The pangenome graph
 
-A single linear reference genome (GRCh38) cannot represent the full spectrum of human genetic variation. The HPRC pangenome graph addresses this by encoding 47 diverse human genomes as a **variation graph** in rGFA format:
+A single linear reference genome (GRCh38) cannot represent the full spectrum of human genetic variation. The processed HPRC Release 2 input addresses this by encoding 231 donors and 462 phased donor haplotypes as a **variation graph** in rGFA-derived tables:
 
 - **Segments (S lines):** DNA sequences of variable length, each with a chromosome assignment (SN), genomic offset (SO), and reference status (SR = 0 for GRCh38 reference, SR > 0 for alt haplotypes)
 - **Links (L lines):** Directed edges between segments, connecting the back end of one to the front end of another, with orientation (+/−) indicating whether the segment or its reverse complement is used
@@ -180,8 +182,8 @@ Stream A: Linear        Stream B: Graph
 
 | File                       | Description                                             | Size           |
 | -------------------------- | ------------------------------------------------------- | -------------- |
-| `data/hprc/full_segments.csv` | All segments from HPRC Minigraph rGFA                | ~480K segments |
-| `data/hprc/full_links.csv`    | All links (edges) between segments                   | ~548K links    |
+| `data/hprc/full_segments.csv` | Processed segments from the HPRC Release 2 graph     | 751,237 rows   |
+| `data/hprc/full_links.csv`    | Processed links between segments                     | 1,097,658 rows |
 
 13,717 unique SN (sequence name) values exist in the data: 24 GRCh38 reference chromosomes plus thousands of sample-specific alt-haplotype contigs.
 
@@ -189,18 +191,19 @@ Stream A: Linear        Stream B: Graph
 
 Benchmarks are constructed by slicing the pangenome graph into 50kb genomic windows:
 
-**benchmark_v3** (current):
+**Legacy independently sampled benchmark**:
 
 - 240 slices total: 10 per chromosome × 24 chromosomes × 2 closure types
-- **Strict closure:** Only GRCh38 backbone edges (pure reference topology)
-- **1-hop closure:** Backbone + all edges to/from immediate alt-haplotype neighbors (captures bubble structure)
+- **Core-node-induced context** (legacy `strict`): retain nodes overlapping the target coordinate interval and induce links among them
+- **Endpoint-expanded-induced context** (legacy `1hop`): add every endpoint incident to a core node and induce links among all retained nodes
 - Windows are randomly sampled and may overlap (60–99% within-chromosome overlap identified)
-- Cross-chromosome held-out validation eliminates overlap leakage
+- Positive query edges must be removed from message passing during training and evaluation
+- The two context regimes were sampled at different loci and expose different numbers of nodes and edges, so their performance difference is not a controlled context effect
 
-**benchmark_v4** (in progress):
+**Matched, non-overlapping benchmark** (implemented; full rerun pending):
 
-- Non-overlapping tiled windows to eliminate within-chromosome leakage
-- Generator script: `scripts/09_make_benchmark_v4.py`
+- Use `--matched-closure-windows --nonoverlap` to reuse identical target intervals under both context regimes
+- Audit generated slices with `scripts/audit_benchmark_context.py`
 
 ### Negative sampling
 
@@ -462,6 +465,16 @@ python -m graphgenomefm ccre-gat \
   --patience 15 \
   --device cpu
 ```
+
+## Full public-data server run
+
+The reproducible all-chromosome HPRC R2/HGSVC3 workflow, including pinned
+downloads, GBZ path inventories, leakage/context audits, multi-GPU queues,
+SLURM/tmux commands, recovery, aggregation, and result packaging, is documented
+in [`docs/SERVER_FULL_DATA_EXECUTION.md`](docs/SERVER_FULL_DATA_EXECUTION.md).
+Start with the dry-run and hardware/storage preflight in that guide; the primary
+`analysis-full` profile is about 19.56 GiB compressed but requires at least
+500 GiB free for parsed graphs, benchmarks, checkpoints, and predictions.
 
 ## Roadmap
 

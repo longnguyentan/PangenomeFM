@@ -1,14 +1,27 @@
 from __future__ import annotations
 
+import re
+
+
+_CANONICAL_CHROM_RE = re.compile(r"(?:^|[#|:/])(?P<chrom>chr(?:[1-9]|1[0-9]|2[0-2]|X|Y|M|MT))$")
+
 
 def normalize_chrom(chrom: str) -> str:
-    """Normalize ``chr22`` and ``GRCh38#0#chr22`` to ``chr22``."""
-    chrom = str(chrom)
-    if chrom.startswith("chr"):
-        return chrom
-    if "#" in chrom:
-        return chrom.split("#")[-1]
-    return chrom
+    """Return a cohort-independent chromosome key.
+
+    Reference paths in the supported releases use several incompatible
+    spellings, including ``GRCh38#0#chr22``, ``CHM13#0#chr22`` and
+    ``id=CHM13|chr22``.  Exact-string splitting therefore leaks a held-out
+    biological chromosome from one cohort into training through another.
+    Non-canonical contig names are intentionally left unchanged.
+    """
+    value = str(chrom).strip()
+    if re.fullmatch(r"chr(?:[1-9]|1[0-9]|2[0-2]|X|Y|M|MT)", value):
+        return value
+    if re.fullmatch(r"(?:[1-9]|1[0-9]|2[0-2]|X|Y|M|MT)", value):
+        return f"chr{value}"
+    match = _CANONICAL_CHROM_RE.search(value)
+    return match.group("chrom") if match else value
 
 
 def validate_chromosome_split(
@@ -42,4 +55,3 @@ def validate_chromosome_split(
         "val_chrs": sorted(val),
         "test_chrs": sorted(test),
     }
-

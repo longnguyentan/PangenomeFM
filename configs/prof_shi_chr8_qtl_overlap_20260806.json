@@ -1,0 +1,20 @@
+{
+  "analysis": "HGSVC2 molecular-QTL direct overlap with PangenomeFM context-recovery windows",
+  "chromosome": "chr8",
+  "genome_build": "GRCh38",
+  "context_metric_sources": [
+    "results/review_20260804/matched_training_v2/graph_context_comparison_fixed_split_seed42/per_interval_metrics.csv",
+    "results/review_20260804/matched_training_v2/graph_context_comparison_fixed_split_seed314159/per_interval_metrics.csv",
+    "results/review_20260804/matched_training_v2/graph_context_comparison_seed20260804/per_interval_metrics.csv"
+  ],
+  "qtl_sources": {
+    "eQTL": "data/functional/hgsvc2_qtl/release_v1.0/eqtl/eQTL_results_chr8_expressedSelection_v4.txt.gz",
+    "sQTL": "data/functional/hgsvc2_qtl/release_v1.0/sqtl/sQTL_results_chr8_v4.txt.gz"
+  },
+  "thresholds": {
+    "association_p_value": 5e-8,
+    "empirical_feature_p_value": 0.05
+  },
+  "randomness": "Exact enumeration of all rank permutations; no random seed required for n=7 windows",
+  "interpretation_guardrail": "Descriptive pilot only; no enrichment, colocalization, or causal claim"
+}

@@ -253,7 +253,7 @@ if [[ "$FORCE_RERUN_CCRE_BINARY_GAT" == "1" ]] || ! latest_summary_exists "$CCRE
     --task binary \
     --pretrained-checkpoint "$CCRE_PRETRAINED_CKPT" \
     --freeze-backbone \
-    --keep-is-grch38 \
+    --feature-policy leakage_safe \
     --test-chrs chr8 chr19 chr22 \
     --val-chrs chr16 \
     --epochs "$CCRE_EPOCHS" \
@@ -274,7 +274,7 @@ if [[ "$FORCE_RERUN_CCRE_BINARY_GAT" == "1" ]] || ! latest_summary_exists "$CCRE
     --out-dir "$CCRE_BINARY_GAT_FINETUNE_OUT" \
     --task binary \
     --pretrained-checkpoint "$CCRE_PRETRAINED_CKPT" \
-    --keep-is-grch38 \
+    --feature-policy leakage_safe \
     --test-chrs chr8 chr19 chr22 \
     --val-chrs chr16 \
     --epochs "$CCRE_EPOCHS" \

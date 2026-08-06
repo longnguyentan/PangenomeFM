@@ -1,0 +1,27 @@
+name: pangenomefm-server
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - pip>=24
+  - curl
+  - aria2
+  - pigz
+  - zstd
+  - tmux
+  - git
+  - vg>=1.58
+  - pip:
+      - numpy>=1.26
+      - pandas>=2.2
+      - scikit-learn>=1.4
+      - networkx
+      - tqdm>=4.66
+      - pyarrow>=16.0
+      - matplotlib
+      - seaborn
+      - scipy
+      - statsmodels
+      - psutil>=5.9
+      - pytest

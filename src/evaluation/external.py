@@ -25,13 +25,13 @@ except ImportError:
     TORCH_AVAILABLE = False
 
 from graph.features import build_oid_metadata_from_segments
-from graph.io import read_segments_csv
 from graph.slicing import build_global_index
 from models.dual_stream_gat import DualStreamPangenomeGAT
 from training.pretrain import (
     ExpressiveLinkPredictor,
     _compute_adaptive_window_k,
     load_slice,
+    mask_positive_query_edges,
     tensorize_slice,
 )
 from utils.versioning import resolve_run_dir
@@ -137,31 +137,65 @@ def _score_slice(
         for layer in model.linear_layers:
             layer.window_k = eff_wk
 
-    h = model.encode_nodes(
-        sd["X"],
-        sd["so"],
-        sd["src"],
-        sd["dst"],
-        sd["temps"],
-        sd["edge_attr"],
-        sd["orient"],
-        sd["pop_ids"],
-    )
-
     if split == "all":
         idx = torch.arange(len(sd["labels"]), dtype=torch.long, device=sd["labels"].device)
     else:
         idx = sd[f"{split}_idx"]
 
-    qu = sd["q_u"][idx]
-    qv = sd["q_v"][idx]
-    labels = sd["labels"][idx]
-    if predictor is not None:
-        logits = predictor(h[qu], h[qv])
-    else:
-        logits = model.edge_predictor(torch.cat([h[qu], h[qv]], dim=-1)).squeeze(-1)
-    probs = torch.sigmoid(logits).cpu().numpy()
-    y = labels.cpu().numpy()
+    # Score fixed-size masked batches. Masking every positive in an external
+    # graph at once would erase its topology; not masking the current batch
+    # would expose the answers. The batch size is fixed and reported so cohort
+    # comparisons receive equivalent structural access.
+    mask_batch_size = max(1, int(getattr(args, "mask_batch_size", 512)))
+    probability_batches = []
+    label_batches = []
+    qu_batches = []
+    qv_batches = []
+    for start in range(0, len(idx), mask_batch_size):
+        batch_idx = idx[start : start + mask_batch_size]
+        src_for_mp = sd["src"]
+        dst_for_mp = sd["dst"]
+        edge_attr_for_mp = sd["edge_attr"]
+        if getattr(args, "mask_query_edges", False):
+            src_for_mp, dst_for_mp, edge_attr_for_mp = mask_positive_query_edges(
+                src_for_mp,
+                dst_for_mp,
+                edge_attr_for_mp,
+                sd["q_u"],
+                sd["q_v"],
+                sd["labels"],
+                batch_idx,
+            )
+
+        h = model.encode_nodes(
+            sd["X"],
+            sd["so"],
+            src_for_mp,
+            dst_for_mp,
+            sd["temps"],
+            edge_attr_for_mp,
+            sd["orient"],
+            sd["pop_ids"],
+        )
+
+        qu = sd["q_u"][batch_idx]
+        qv = sd["q_v"][batch_idx]
+        labels = sd["labels"][batch_idx]
+        if predictor is not None:
+            logits = predictor(h[qu], h[qv])
+        else:
+            logits = model.edge_predictor(
+                torch.cat([h[qu], h[qv]], dim=-1)
+            ).squeeze(-1)
+        probability_batches.append(torch.sigmoid(logits).cpu().numpy())
+        label_batches.append(labels.cpu().numpy())
+        qu_batches.append(qu.cpu().numpy())
+        qv_batches.append(qv.cpu().numpy())
+
+    probs = np.concatenate(probability_batches)
+    y = np.concatenate(label_batches)
+    qu_array = np.concatenate(qu_batches)
+    qv_array = np.concatenate(qv_batches)
 
     row = {
         "name": sd["name"],
@@ -177,8 +211,8 @@ def _score_slice(
             "slice": sd["name"],
             "target_sn": sd["target_sn"],
             "closure": sd["closure"],
-            "u_local": qu.cpu().numpy(),
-            "v_local": qv.cpu().numpy(),
+            "u_local": qu_array,
+            "v_local": qv_array,
             "y_true": y,
             "p_edge": probs,
         }
@@ -196,6 +230,9 @@ def run_external_eval(
     split: str,
     seed: int,
     device_name: str,
+    mask_query_edges: bool,
+    mask_batch_size: int = 512,
+    dataset_name: str = "external",
 ) -> Dict:
     if not TORCH_AVAILABLE:
         raise ImportError("PyTorch is required.")
@@ -207,6 +244,8 @@ def run_external_eval(
 
     ckpt = torch.load(checkpoint, map_location=device)
     eval_args = _namespace_from_checkpoint(ckpt, seed=seed)
+    eval_args.mask_query_edges = mask_query_edges
+    eval_args.mask_batch_size = int(mask_batch_size)
     ckpt_closure = str(ckpt.get("closure", "all"))
     requested_closure = closure or ckpt_closure
 
@@ -214,9 +253,15 @@ def run_external_eval(
     print(f"[external] checkpoint closure: {ckpt_closure}")
     print(f"[external] evaluation closure: {requested_closure}")
     print(f"[external] split: {split}")
+    print(f"[external] mask_query_edges: {mask_query_edges}")
+    print(f"[external] mask_batch_size: {mask_batch_size}")
     print(f"[external] output: {out_dir}")
 
-    segments = read_segments_csv(full_segments)
+    segments = pd.read_csv(
+        full_segments,
+        compression="infer",
+        usecols=["id", "name", "LN", "SN", "SO", "SR"],
+    )
     seg_index, _ = build_global_index(segments)
     md = build_oid_metadata_from_segments(segments, seg_index)
 
@@ -246,6 +291,9 @@ def run_external_eval(
 
     per_slice = pd.DataFrame(rows)
     pooled_preds = pd.concat(pred_frames, ignore_index=True)
+    per_slice.insert(0, "dataset", dataset_name)
+    pooled_preds.insert(0, "dataset", dataset_name)
+    pooled_preds.insert(1, "split", split)
     pooled_metrics = _metrics(
         pooled_preds["y_true"].to_numpy(np.float32),
         pooled_preds["p_edge"].to_numpy(np.float32),
@@ -272,6 +320,9 @@ def run_external_eval(
         "closure": requested_closure,
         "split": split,
         "seed": seed,
+        "dataset": dataset_name,
+        "mask_query_edges": bool(mask_query_edges),
+        "mask_batch_size": int(mask_batch_size),
         "n_slices": int(len(per_slice)),
         "pooled_metrics": pooled_metrics,
         "per_target_metrics": by_target.to_dict(orient="records"),
@@ -290,11 +341,24 @@ def main() -> None:
     ap.add_argument("--checkpoint", required=True)
     ap.add_argument("--manifest", required=True)
     ap.add_argument("--full_segments", required=True)
+    ap.add_argument("--full_links", default=None, help=argparse.SUPPRESS)
     ap.add_argument("--out_dir", required=True)
     ap.add_argument("--closure", default=None, choices=["strict", "1hop", "all"])
     ap.add_argument("--split", default="all", choices=["all", "train", "val", "test"])
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--dataset_name", default="external")
     ap.add_argument("--device", default="cpu", choices=["cpu", "cuda", "mps"])
+    ap.add_argument(
+        "--mask_query_edges",
+        action="store_true",
+        help="Remove positive query edges from the message-passing graph before scoring.",
+    )
+    ap.add_argument(
+        "--mask_batch_size",
+        type=int,
+        default=512,
+        help="Fixed number of external candidate edges masked per encoder pass.",
+    )
     args = ap.parse_args()
 
     run_external_eval(
@@ -306,6 +370,9 @@ def main() -> None:
         split=args.split,
         seed=args.seed,
         device_name=args.device,
+        mask_query_edges=args.mask_query_edges,
+        mask_batch_size=args.mask_batch_size,
+        dataset_name=args.dataset_name,
     )
 
 

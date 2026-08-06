@@ -1,0 +1,181 @@
+{
+  "schema_version": 2,
+  "analysis_id": "server_full_multicohort_all_chromosomes_20260806",
+  "primary_chromosomes": [
+    "chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8",
+    "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15",
+    "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22",
+    "chrX", "chrY"
+  ],
+  "datasets": {
+    "hprc_r2": {
+      "role": "current_hprc_primary_training_graph",
+      "release": "HPRC Release 2.0 Minigraph-Cactus SV graph, GRCh38 coordinates",
+      "source_format": "complete released SV GFA for all R2 samples/chromosomes; path-rich GBZ downloaded separately",
+      "variant_representation": "structural-variant-scale Minigraph topology; full small-variant GFA is an optional archival profile",
+      "functional_annotations": "none embedded; downstream annotations must be build-matched and joined separately",
+      "data_use_notes": "public HPRC Release II; follow HPRC data-use and publication best practices",
+      "raw_gfa": "${PANGENOMEFM_DATA_ROOT}/raw/hprc/v2.0/hprc-v2.0-mc-grch38.sv.gfa.gz",
+      "raw_gbz": "${PANGENOMEFM_DATA_ROOT}/raw/hprc/v2.0/hprc-v2.0-mc-grch38.gbz",
+      "data_dir": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_sv",
+      "segments": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_sv/full_segments.csv.gz",
+      "links": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_sv/full_links.csv.gz",
+      "path_metadata": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_paths/path_metadata.tsv",
+      "benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r2_eval_50kb",
+      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r2_pretrain_5mb",
+      "reference_prefix": "GRCh38#0",
+      "graph_donors": 231,
+      "graph_haplotypes": 462,
+      "supersedes": "hprc_r1_1"
+    },
+    "hgsvc3": {
+      "role": "independent_cohort_training_and_transfer_graph",
+      "release": "HGSVC3 Minigraph-Cactus graph, 2024-02-23, CHM13 coordinates",
+      "source_format": "complete released SV GFA; official clipped GBZ downloaded separately",
+      "variant_representation": "structural-variant-scale Minigraph topology",
+      "functional_annotations": "none embedded in this graph release",
+      "data_use_notes": "versioned public IGSR/HGSVC3 FTP release; retain release README and manifest",
+      "raw_gfa": "${PANGENOMEFM_DATA_ROOT}/raw/hgsvc3/2024-02-23/hgsvc3-2024-02-23-mc-chm13.sv.gfa.gz",
+      "raw_gbz": "${PANGENOMEFM_DATA_ROOT}/raw/hgsvc3/2024-02-23/hgsvc3-2024-02-23-mc-chm13.gbz",
+      "data_dir": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_sv",
+      "segments": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_sv/full_segments.csv.gz",
+      "links": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_sv/full_links.csv.gz",
+      "path_metadata": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_paths/path_metadata.tsv",
+      "benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_eval_50kb",
+      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_pretrain_5mb",
+      "reference_prefix": "CHM13#0",
+      "graph_donors": 65,
+      "graph_haplotypes": 130
+    },
+    "hprc_r1_1": {
+      "role": "release_transfer_only",
+      "release": "HPRC Release 1.1 Minigraph-Cactus SV graph, GRCh38 coordinates",
+      "source_format": "complete released SV GFA; never pooled with R2",
+      "variant_representation": "structural-variant-scale Minigraph topology",
+      "functional_annotations": "none embedded in this graph release",
+      "data_use_notes": "public HPRC release; superseded/overlapping with R2 and restricted here to release-transfer analysis",
+      "raw_gfa": "${PANGENOMEFM_DATA_ROOT}/raw/hprc/v1.1/hprc-v1.1-mc-grch38.sv.gfa.gz",
+      "raw_gbz": "${PANGENOMEFM_DATA_ROOT}/raw/hprc/v1.1/hprc-v1.1-mc-grch38.gbz",
+      "data_dir": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r1_1_sv",
+      "segments": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r1_1_sv/full_segments.csv.gz",
+      "links": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r1_1_sv/full_links.csv.gz",
+      "path_metadata": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r1_1_paths/path_metadata.tsv",
+      "benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r1_1_eval_50kb",
+      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r1_1_pretrain_5mb",
+      "reference_prefix": "GRCh38#0",
+      "combination_policy": "Release-transfer only: pooling with R2 duplicates donors and superseded assemblies."
+    },
+    "hgsvc3_hprc1_combined": {
+      "role": "official_integrated_graph_stress_test",
+      "release": "Official HGSVC3 plus HPRC-v1 Minigraph-Cactus graph, 2024-02-23",
+      "source_format": "complete released integrated SV GFA in CHM13 coordinates; README reports 216 haplotypes total",
+      "variant_representation": "structural-variant-scale integrated Minigraph topology",
+      "functional_annotations": "none embedded in this graph release",
+      "data_use_notes": "versioned public IGSR FTP release combining HGSVC3 with HPRC-v1; retain README and manifest",
+      "raw_gfa": "${PANGENOMEFM_DATA_ROOT}/raw/hgsvc3_hprc1/2024-02-23/hgsvc3-hprc-2024-02-23-mc-chm13.sv.gfa.gz",
+      "raw_gbz": "${PANGENOMEFM_DATA_ROOT}/raw/hgsvc3_hprc1/2024-02-23/hgsvc3-hprc-2024-02-23-mc-chm13.gbz",
+      "data_dir": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_hprc1_combined_sv",
+      "segments": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_hprc1_combined_sv/full_segments.csv.gz",
+      "links": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_hprc1_combined_sv/full_links.csv.gz",
+      "path_metadata": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_hprc1_paths/path_metadata.tsv",
+      "benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_hprc1_combined_eval_50kb",
+      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_hprc1_combined_pretrain_5mb",
+      "reference_prefix": "CHM13#0",
+      "graph_haplotypes_total_including_references": 216,
+      "combination_policy": "Train as its own official integrated release. It contains HPRC-v1, not HPRC-v2, and is not counted as an extra independent cohort."
+    }
+  },
+  "combined_unique_graph_cohort": {
+    "datasets": ["hprc_r2", "hgsvc3"],
+    "hprc_graph_donors": 231,
+    "hgsvc3_graph_donors": 65,
+    "verified_overlap_donors": 4,
+    "unique_donors": 292,
+    "phased_haplotypes_before_overlap_deduplication": 592,
+    "interpretation": "A multi-dataset shared model over two released aggregate graphs, not a newly rebuilt integrated R2+HGSVC graph. Four overlapping donors prevent calling aggregate HPRC-to-HGSVC evaluation strictly donor-held-out."
+  },
+  "benchmark": {
+    "window_bp": 50000,
+    "windows_per_chromosome": 10,
+    "closures": ["strict", "1hop"],
+    "negative_sampler": "distance_matched",
+    "negative_coord_band": 5000,
+    "negative_tolerance_bp": 1000,
+    "negative_tolerance_fraction": 0.1,
+    "negative_degree_matched": true,
+    "non_overlapping_windows": true,
+    "matched_closure_windows": true,
+    "seed": 20260806
+  },
+  "full_coverage_pretraining": {
+    "window_bp": 5000000,
+    "tile_stride_bp": 5000000,
+    "closures": ["strict", "1hop"],
+    "negative_sampler": "distance_matched",
+    "negative_coord_band": 5000,
+    "negative_tolerance_bp": 1000,
+    "negative_tolerance_fraction": 0.1,
+    "negative_degree_matched": true,
+    "matched_closure_windows": true,
+    "seed": 20260806,
+    "coverage_definition": "Deterministic 5 Mb tiles across every canonical chromosome present in each released graph."
+  },
+  "training": {
+    "seeds": [42, 314159, 20260806],
+    "split_seed": 20260806,
+    "epochs": 100,
+    "patience": 20,
+    "hidden_dim": 48,
+    "heads": 4,
+    "layers": 2,
+    "candidate_mask_batch_size": 512,
+    "contexts": ["strict", "1hop"],
+    "device_default": "auto",
+    "query_edge_masking": true,
+    "save_predictions": true,
+    "recovery_every_epochs": 1
+  },
+  "rotating_chromosome_folds": [
+    {"name": "fold_a", "test": ["chr1", "chr6", "chr11", "chr16", "chr21"], "validation": ["chr2", "chr7", "chr12", "chr17", "chr22"]},
+    {"name": "fold_b", "test": ["chr2", "chr7", "chr12", "chr17", "chr22"], "validation": ["chr3", "chr8", "chr13", "chr18", "chrX"]},
+    {"name": "fold_c", "test": ["chr3", "chr8", "chr13", "chr18", "chrX"], "validation": ["chr4", "chr9", "chr14", "chr19", "chrY"]},
+    {"name": "fold_d", "test": ["chr4", "chr9", "chr14", "chr19", "chrY"], "validation": ["chr5", "chr10", "chr15", "chr20"]},
+    {"name": "fold_e", "test": ["chr5", "chr10", "chr15", "chr20"], "validation": ["chr1", "chr6", "chr11", "chr16", "chr21"]}
+  ],
+  "experiment_matrix": {
+    "final_regimes": [
+      {"name": "hprc_r2", "primary": "hprc_r2", "extras": []},
+      {"name": "hgsvc3", "primary": "hgsvc3", "extras": []},
+      {"name": "combined_hprc_r2_hgsvc3", "primary": "hprc_r2", "extras": ["hgsvc3"]},
+      {"name": "combined_hprc_r2_hgsvc3_dann", "primary": "hprc_r2", "extras": ["hgsvc3"], "domain_adversarial": true},
+      {"name": "official_hgsvc3_hprc1_integrated", "primary": "hgsvc3_hprc1_combined", "extras": []}
+    ],
+    "fold_regimes": [
+      {"name": "hprc_r2", "primary": "hprc_r2", "extras": []},
+      {"name": "hgsvc3", "primary": "hgsvc3", "extras": []},
+      {"name": "combined_hprc_r2_hgsvc3", "primary": "hprc_r2", "extras": ["hgsvc3"]},
+      {"name": "official_hgsvc3_hprc1_integrated", "primary": "hgsvc3_hprc1_combined", "extras": []}
+    ],
+    "cohort_transfer_pairs": [
+      {"name": "hprc_r2_to_hgsvc3", "source": "hprc_r2", "target": "hgsvc3"},
+      {"name": "hgsvc3_to_hprc_r2", "source": "hgsvc3", "target": "hprc_r2"},
+      {"name": "official_integrated_to_hprc_r2", "source": "hgsvc3_hprc1_combined", "target": "hprc_r2", "model_regime": "official_hgsvc3_hprc1_integrated"}
+    ],
+    "release_transfer_pairs": [
+      {"name": "hprc_r1_1_to_hprc_r2", "source": "hprc_r1_1", "target": "hprc_r2"},
+      {"name": "hprc_r2_to_hprc_r1_1", "source": "hprc_r2", "target": "hprc_r1_1", "reuse_final_regime": "hprc_r2"}
+    ]
+  },
+  "release_3_policy": {
+    "status_as_of_2026_08_06": "official timeline targets Summer 2026 but no stable versioned integrated Release-3 graph was discoverable",
+    "expected_scale": "more than 350 assemblies and more than 700 haplotypes",
+    "training_decision": "inventory-only until a stable integrated graph and manifest are published",
+    "reason": "Downloading mutable pre-release assemblies and independently rebuilding a graph would not be release-equivalent to HPRC R2 or HGSVC3 and could violate publication coordination expectations."
+  },
+  "outputs": {
+    "root": "${PANGENOMEFM_RESULTS_ROOT}/full_multicohort_server_20260806",
+    "logs": "${PANGENOMEFM_RESULTS_ROOT}/full_multicohort_server_20260806/logs",
+    "validation": "${PANGENOMEFM_RESULTS_ROOT}/full_multicohort_server_20260806/validation",
+    "state": "${PANGENOMEFM_RESULTS_ROOT}/full_multicohort_server_20260806/execution_state.json"
+  }
+}

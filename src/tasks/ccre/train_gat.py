@@ -7,8 +7,9 @@ Key design:
   * Reuses per-slice loading from 06b (node features, edge index, SO tensor,
     orient, pop_ids, branching_frac, adaptive window_k).
   * Swaps the final edge_predictor for NodeClsHead (softmax over 9 cCRE classes).
-  * Drops is_grch38 from node features (feature index 3 in models.gat.build_node_features)
-    to avoid a cCRE-label shortcut once we later extend to alt-haplotype nodes.
+  * Drops reference/path-status shortcuts from node features for paper-facing
+    cCRE runs.  The default ``leakage_safe`` policy removes both SR and
+    is_grch38.
   * Trains with multi-class focal loss (models.heads.multiclass_focal_loss) and
     inverse-frequency class weights computed from the train split.
   * Held-out chromosome evaluation matches 06b's protocol so the number is
@@ -71,6 +72,7 @@ from models.attention_window import compute_branching_distances
 from models.gat import build_node_features, build_edge_features, build_dense_edge_index
 from models.dual_stream_gat import DualStreamPangenomeGAT, build_pop_ids_array
 from models.heads import NodeClsHead, multiclass_focal_loss
+from tasks.ccre.feature_policy import resolve_feature_policy, select_node_features
 from utils.versioning import resolve_run_dir
 from tasks.ccre.encoding import CCRE_CLASSES, CCRE_CLASS_TO_IDX, N_CCRE_CLASSES
 from tasks.ccre.label_groups import (
@@ -78,17 +80,6 @@ from tasks.ccre.label_groups import (
     map_label_indices,
     n_classes_for_scheme,
 )
-
-# -------- Drop `is_grch38` (feature index 3) from build_node_features output -----
-
-IS_GRCH38_IDX: int = 3  # from models.gat feature layout
-
-
-def _drop_is_grch38(X: np.ndarray) -> np.ndarray:
-    """Remove the is_grch38 column from a (N, 7) feature matrix -> (N, 6)."""
-    keep = [i for i in range(X.shape[1]) if i != IS_GRCH38_IDX]
-    return X[:, keep]
-
 
 # ---------------------------------------------------------------------------
 # Slice loader (adapted from 06b_shared_train.load_slice)
@@ -118,7 +109,7 @@ def load_slice_ccre(
 
     Differences from 06b.load_slice:
       * Builds per-node cCRE label vector from segid_to_label.
-      * Drops the is_grch38 column from node features.
+      * Applies the requested cCRE feature policy to remove shortcut features.
       * No edge_pred data needed (we don't do link prediction here).
     """
     seg_sub = pd.read_csv(row["segments_path"], compression="infer")
@@ -144,7 +135,7 @@ def load_slice_ccre(
         oid_to_degree=deg_map,
         oid_to_component_id=stats.oid_to_component_id,
     )
-    X = _drop_is_grch38(X7) if args.drop_is_grch38 else X7
+    X = select_node_features(X7, args.feature_policy)
 
     so_arr = np.array([md["oid_to_so"].get(int(n), 0) for n in nodes], dtype=np.int64)
     orient_arr = (nodes % 2).astype(np.int8)
@@ -223,6 +214,9 @@ def tensorize_slice(sd: Dict, device, args) -> Dict:
         "closure": sd["closure"],
         "n_nodes": sd["n_nodes"],
         "n_labeled": sd["n_labeled"],
+        # Keep stable oriented IDs on CPU so pooled predictions can be joined
+        # exactly to sequence/structural baselines by segid.
+        "nodes": np.asarray(sd["nodes"], dtype=np.int64),
     }
     return t
 
@@ -390,6 +384,9 @@ def evaluate(
     all_pred: List[np.ndarray] = []
     all_prob: List[np.ndarray] = []
     all_chrom: List[str] = []
+    all_slices: List[str] = []
+    all_oids: List[int] = []
+    all_segids: List[int] = []
     per_slice_rows: List[Dict] = []
     n_classes = n_classes_for_scheme(args.task)
 
@@ -457,6 +454,10 @@ def evaluate(
         if p_pos is not None:
             all_prob.append(p_pos)
         all_chrom.extend([chrom_name] * len(y_t))
+        selected_oids = np.asarray(sd["nodes"], dtype=np.int64)[mask]
+        all_slices.extend([str(sd["name"])] * len(y_t))
+        all_oids.extend(selected_oids.astype(int).tolist())
+        all_segids.extend((selected_oids // 2).astype(int).tolist())
 
     if not per_slice_rows:
         return 0.0, pd.DataFrame(), pd.DataFrame()
@@ -474,11 +475,61 @@ def evaluate(
     )
 
     per_slice = pd.DataFrame(per_slice_rows)
-    pooled_data = {"chrom": all_chrom, "y_true": y_t, "y_pred": y_p}
+    pooled_data = {
+        "segid": all_segids,
+        "oid": all_oids,
+        "slice": all_slices,
+        "chrom": all_chrom,
+        "y_true": y_t,
+        "y_pred": y_p,
+    }
     if n_classes == 2 and all_prob:
         pooled_data["p_ccre"] = np.concatenate(all_prob)
     pooled = pd.DataFrame(pooled_data)
     return pooled_f1, per_slice, pooled
+
+
+def _adapt_pretrained_input_layer(
+    *,
+    model_state: dict,
+    ckpt_in_dim: int,
+    target_in_dim: int,
+    keep_indices: list[int],
+) -> tuple[dict, dict[str, object]]:
+    """Adapt a 7-feature pretraining checkpoint to a cCRE feature policy.
+
+    Only the first node-encoder linear layer depends on the raw feature count.
+    Filtering its input columns is equivalent to initializing the safer cCRE
+    model from the corresponding pretrained feature weights while removing
+    shortcut columns.
+    """
+    report: dict[str, object] = {
+        "adapted": False,
+        "checkpoint_in_dim": int(ckpt_in_dim),
+        "target_in_dim": int(target_in_dim),
+        "kept_raw_feature_indices": list(keep_indices),
+    }
+    if ckpt_in_dim == target_in_dim:
+        return model_state, report
+
+    key = "node_encoder.0.weight"
+    if ckpt_in_dim != 7 or target_in_dim != len(keep_indices) or key not in model_state:
+        raise RuntimeError(
+            "Pretrained checkpoint input dimension does not match cCRE model and "
+            "cannot be adapted automatically. "
+            f"checkpoint in_dim={ckpt_in_dim}, cCRE in_dim={target_in_dim}."
+        )
+
+    adapted = dict(model_state)
+    weight = adapted[key]
+    if int(weight.shape[1]) != ckpt_in_dim:
+        raise RuntimeError(
+            f"Checkpoint {key} has {int(weight.shape[1])} input columns, "
+            f"but checkpoint in_dim says {ckpt_in_dim}."
+        )
+    adapted[key] = weight[:, keep_indices].clone()
+    report["adapted"] = True
+    return adapted, report
 
 
 # ---------------------------------------------------------------------------
@@ -537,16 +588,25 @@ def main():
 
     # Feature toggles
     ap.add_argument(
-        "--drop_is_grch38",
-        action="store_true",
-        default=True,
-        help="Drop is_grch38 from node features (default: on).",
+        "--feature_policy",
+        choices=["leakage_safe", "legacy_sr", "legacy_reference"],
+        default="leakage_safe",
+        help=(
+            "cCRE feature policy. leakage_safe removes both SR and is_grch38; "
+            "legacy_sr keeps SR; legacy_reference keeps SR and is_grch38."
+        ),
     )
     ap.add_argument(
         "--keep_is_grch38",
         action="store_true",
         default=False,
-        help="Override: keep is_grch38 (not recommended for cCRE).",
+        help="Compatibility alias for --feature_policy legacy_reference.",
+    )
+    ap.add_argument(
+        "--keep_sr",
+        action="store_true",
+        default=False,
+        help="Compatibility alias for --feature_policy legacy_sr unless --keep_is_grch38 is set.",
     )
     ap.add_argument("--use_edge_features", action="store_true", default=False)
     ap.add_argument(
@@ -599,7 +659,10 @@ def main():
 
     args = ap.parse_args()
     if args.keep_is_grch38:
-        args.drop_is_grch38 = False
+        args.feature_policy = "legacy_reference"
+    elif args.keep_sr:
+        args.feature_policy = "legacy_sr"
+    feature_policy = resolve_feature_policy(args.feature_policy)
 
     device = torch.device(args.device)
 
@@ -607,7 +670,8 @@ def main():
     print(f"[12] output: {out_dir}")
     print(f"[12] device: {device}")
     print(f"[12] task: {args.task}")
-    print(f"[12] drop_is_grch38: {args.drop_is_grch38}")
+    print(f"[12] feature_policy: {feature_policy.name}")
+    print(f"[12] features: {feature_policy.feature_names}")
     if args.test_chrs:
         print(f"[12] test_chrs: {args.test_chrs}")
 
@@ -724,15 +788,19 @@ def main():
     if args.pretrained_checkpoint:
         ckpt = torch.load(args.pretrained_checkpoint, map_location=device)
         ckpt_in_dim = int(ckpt.get("in_dim", in_dim))
-        if ckpt_in_dim != int(in_dim):
-            raise RuntimeError(
-                "Pretrained checkpoint input dimension does not match cCRE model. "
-                f"checkpoint in_dim={ckpt_in_dim}, cCRE in_dim={int(in_dim)}. "
-                "Use --keep_is_grch38 for checkpoints trained with the full 7 features, "
-                "or train a compatible checkpoint."
-            )
-        missing, unexpected = model.load_state_dict(ckpt["model_state"], strict=False)
+        model_state, input_adapt_report = _adapt_pretrained_input_layer(
+            model_state=ckpt["model_state"],
+            ckpt_in_dim=ckpt_in_dim,
+            target_in_dim=int(in_dim),
+            keep_indices=feature_policy.keep_indices,
+        )
+        missing, unexpected = model.load_state_dict(model_state, strict=False)
         print(f"[12] loaded pretrained backbone: {args.pretrained_checkpoint}")
+        if input_adapt_report["adapted"]:
+            print(
+                "[12] adapted pretrained input layer to cCRE feature policy "
+                f"{feature_policy.name}: kept raw columns {feature_policy.keep_indices}"
+            )
         if missing:
             print(f"[12] missing checkpoint keys: {len(missing)}")
         if unexpected:
@@ -882,6 +950,10 @@ def main():
     pd.DataFrame(history).to_csv(out_dir / "history.csv", index=False)
     summary = {
         "task": args.task,
+        "feature_policy": feature_policy.name,
+        "feature_names": feature_policy.feature_names,
+        "excludes_sr": feature_policy.excludes_sr,
+        "excludes_is_grch38": feature_policy.excludes_is_grch38,
         "best_val_macro_f1": float(best_val_f1),
         "test_macro_f1": float(test_f1),
         "test_metrics": test_metrics,

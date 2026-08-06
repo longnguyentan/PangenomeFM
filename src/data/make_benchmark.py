@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import sys
 import argparse
+import re
 from pathlib import Path
 from typing import Optional, List, Dict, Tuple
 
@@ -29,6 +30,8 @@ from graph.slicing import (
     choose_window_gap_aware,
     segids_in_window_by_sn,
     induced_subgraph,
+    build_incident_edge_index,
+    map_links_to_segids,
     qc_slice,
 )
 from graph.neg_sampling import (
@@ -45,6 +48,25 @@ from graph.features import build_oid_metadata_from_segments
 SEGMENT_REQUIRED = {"id", "name", "seq", "LN", "SN", "SO", "SR"}
 LINK_REQUIRED = {"from_seg", "from_orient", "to_seg", "to_orient", "overlap"}
 CANONICAL_CHROMS = [f"chr{i}" for i in range(1, 23)] + ["chrX", "chrY"]
+
+
+def plan_tiled_ranges(
+    sn_df: pd.DataFrame, *, window_bp: int, stride_bp: int
+) -> list[tuple[int, int]]:
+    """Cover a reference sequence with deterministic fixed-width windows."""
+    if window_bp < 1 or stride_bp < 1:
+        raise ValueError("window_bp and stride_bp must be positive")
+    if stride_bp > window_bp:
+        raise ValueError(
+            "stride_bp cannot exceed window_bp for full-coordinate coverage"
+        )
+    start_min = max(0, int(sn_df["SO"].min()))
+    end_max = int(sn_df["END"].max())
+    first = (start_min // stride_bp) * stride_bp
+    return [
+        (start, start + window_bp)
+        for start in range(first, end_max, stride_bp)
+    ]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -272,6 +294,9 @@ def build_manifest(
     negative_tol_bp: int = 1_000,
     negative_tol_frac: float = 0.10,
     negative_degree_matched: bool = False,
+    non_overlapping_windows: bool = False,
+    matched_closure_windows: bool = False,
+    tile_stride_bp: int | None = None,
 ) -> pd.DataFrame:
 
     print("\n" + "=" * 60)
@@ -281,10 +306,22 @@ def build_manifest(
         f"  window_bp={window_bp:,}  n_windows={n_windows}  "
         f"closures={closures}  targets={len(targets)}"
     )
-    print(
-        f"  Expected slices: {len(targets)} × {n_windows} × {len(closures)} "
-        f"= {len(targets)*n_windows*len(closures)}"
-    )
+    if non_overlapping_windows:
+        print("  non_overlapping_windows=True")
+    if matched_closure_windows:
+        print("  matched_closure_windows=True (identical target intervals across closures)")
+    if tile_stride_bp is not None:
+        print(
+            f"  tile_stride_bp={tile_stride_bp:,} "
+            "(deterministic full reference-coordinate coverage)"
+        )
+    if tile_stride_bp is None:
+        print(
+            f"  Expected slices: {len(targets)} × {n_windows} × {len(closures)} "
+            f"= {len(targets)*n_windows*len(closures)}"
+        )
+    else:
+        print("  Expected slices: determined from each reference sequence extent")
 
     out_dir.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(seed)
@@ -305,6 +342,12 @@ def build_manifest(
     if dropped:
         print(f"\n  ⚠ Dropped {dropped:,} links whose endpoints are not in segments.")
     print(f"  Using {len(links_filtered):,} links for slicing.\n")
+    # Endpoint mapping is invariant across windows. Computing it once changes
+    # whole-genome tiling from O(windows × all links) to O(all links + windows).
+    from_id_all, to_id_all = map_links_to_segids(links_filtered, seg_index)
+    incident_indptr, incident_edge_ids = build_incident_edge_index(
+        from_id_all, to_id_all, len(seg_index)
+    )
 
     manifest_rows: List[Dict] = []
 
@@ -315,15 +358,71 @@ def build_manifest(
             print(f"    ✗ No segments found — skipping.")
             continue
 
-        for closure in closures:
-            made = 0
-            attempts = 0
-            while made < n_windows and attempts < n_windows * 15:
-                attempts += 1
-                picked = choose_window_gap_aware(sn_df, window_bp, rng)
+        shared_ranges: List[tuple[int, int]] | None = None
+        target_n_windows = n_windows
+        if tile_stride_bp is not None:
+            shared_ranges = plan_tiled_ranges(
+                sn_df, window_bp=window_bp, stride_bp=tile_stride_bp
+            )
+            target_n_windows = len(shared_ranges)
+            print(f"    planned {target_n_windows:,} deterministic tiles")
+        elif matched_closure_windows:
+            shared_ranges = []
+            planning_attempts = 0
+            while len(shared_ranges) < n_windows and planning_attempts < n_windows * 15:
+                planning_attempts += 1
+                picked = choose_window_gap_aware(
+                    sn_df,
+                    window_bp,
+                    rng,
+                    prefer_dense=not non_overlapping_windows,
+                )
                 if picked is None:
                     continue
                 start, end, _ = picked
+                if non_overlapping_windows and any(
+                    max(start, old_start) < min(end, old_end)
+                    for old_start, old_end in shared_ranges
+                ):
+                    continue
+                shared_ranges.append((int(start), int(end)))
+            if len(shared_ranges) < n_windows:
+                print(
+                    f"    ⚠ planned only {len(shared_ranges)}/{n_windows} matched intervals "
+                    "for this target."
+                )
+
+        for closure in closures:
+            made = 0
+            attempts = 0
+            accepted_ranges: List[tuple[int, int]] = []
+            max_attempts = (
+                target_n_windows
+                if tile_stride_bp is not None
+                else target_n_windows * 15
+            )
+            while made < target_n_windows and attempts < max_attempts:
+                if shared_ranges is not None:
+                    if attempts >= len(shared_ranges):
+                        break
+                    start, end = shared_ranges[attempts]
+                    attempts += 1
+                else:
+                    attempts += 1
+                    picked = choose_window_gap_aware(
+                        sn_df,
+                        window_bp,
+                        rng,
+                        prefer_dense=not non_overlapping_windows,
+                    )
+                    if picked is None:
+                        continue
+                    start, end, _ = picked
+                    if non_overlapping_windows and any(
+                        max(start, old_start) < min(end, old_end)
+                        for old_start, old_end in accepted_ranges
+                    ):
+                        continue
 
                 segids_core = segids_in_window_by_sn(
                     SN_arr, SO_arr, LN_arr, target_sn, start, end
@@ -332,19 +431,22 @@ def build_manifest(
                     continue
 
                 segs_sub, links_sub, _ = induced_subgraph(
-                    segments=segs,
+                    segments=seg_u,
                     links=links_filtered,
                     seg_index=seg_index,
                     segids_core=segids_core,
                     add_one_hop=(closure == "1hop"),
+                    from_id=from_id_all,
+                    to_id=to_id_all,
+                    incident_indptr=incident_indptr,
+                    incident_edge_ids=incident_edge_ids,
+                    segments_aligned_to_index=True,
                 )
                 if len(links_sub) == 0:
                     continue
 
                 qc = qc_slice(segs_sub, links_sub)
-                safe = (
-                    str(target_sn).replace("#", "_").replace("/", "_").replace(" ", "_")
-                )
+                safe = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(target_sn)).strip("_")
                 name = f"slice_{safe}_{start}_{end}_{closure}"[:120]
 
                 seg_out = out_dir / f"{name}_segments.csv.gz"
@@ -370,6 +472,14 @@ def build_manifest(
                         "negative_tol_bp": negative_tol_bp,
                         "negative_tol_frac": negative_tol_frac,
                         "negative_degree_matched": negative_degree_matched,
+                        "non_overlapping_windows": non_overlapping_windows,
+                        "matched_closure_windows": matched_closure_windows,
+                        "tile_stride_bp": tile_stride_bp,
+                        "context_regime": (
+                            "core-node-induced-subgraph"
+                            if closure == "strict"
+                            else "endpoint-expanded-induced-subgraph"
+                        ),
                         **qc,
                     },
                     meta_out,
@@ -453,6 +563,13 @@ def build_manifest(
                         "name": name,
                         "target_sn": target_sn,
                         "closure": closure,
+                        "context_regime": (
+                            "core-node-induced-subgraph"
+                            if closure == "strict"
+                            else "endpoint-expanded-induced-subgraph"
+                        ),
+                        "start": int(start),
+                        "end": int(end),
                         "segments_path": str(seg_out),
                         "links_path": str(link_out),
                         "meta_path": str(meta_out),
@@ -465,11 +582,15 @@ def build_manifest(
                         "negative_tol_bp": negative_tol_bp,
                         "negative_tol_frac": negative_tol_frac,
                         "negative_degree_matched": negative_degree_matched,
+                        "non_overlapping_windows": non_overlapping_windows,
+                        "matched_closure_windows": matched_closure_windows,
+                        "tile_stride_bp": tile_stride_bp,
                     }
                 )
                 made += 1
+                accepted_ranges.append((int(start), int(end)))
                 print(
-                    f"    [{closure}] {made}/{n_windows}: "
+                    f"    [{closure}] {made}/{target_n_windows}: "
                     f"{qc['n_segments']} segs, {qc['n_links']} links  "
                     f"({start}–{end}, negatives={negative_sampler})"
                 )
@@ -705,6 +826,28 @@ def main():
         action="store_true",
         help="Also match endpoint degree pairs for hard negative samplers.",
     )
+    ap.add_argument(
+        "--non_overlapping_windows",
+        action="store_true",
+        help="Reject sampled windows that overlap prior windows for the same target and closure.",
+    )
+    ap.add_argument(
+        "--matched_closure_windows",
+        action="store_true",
+        help=(
+            "Reuse identical target intervals for every closure so context-regime "
+            "comparisons are locus matched."
+        ),
+    )
+    ap.add_argument(
+        "--tile_stride_bp",
+        type=int,
+        default=None,
+        help=(
+            "Deterministically tile each target reference sequence at this stride. "
+            "This overrides --n_windows and is intended for full-coverage pretraining."
+        ),
+    )
     ap.add_argument("--no_network_analysis", action="store_true")
     ap.add_argument("--no_viz", action="store_true")
     args = ap.parse_args()
@@ -731,6 +874,9 @@ def main():
         negative_tol_bp=args.negative_tol_bp,
         negative_tol_frac=args.negative_tol_frac,
         negative_degree_matched=args.negative_degree_matched,
+        non_overlapping_windows=args.non_overlapping_windows,
+        matched_closure_windows=args.matched_closure_windows,
+        tile_stride_bp=args.tile_stride_bp,
     )
 
     if not args.no_network_analysis:

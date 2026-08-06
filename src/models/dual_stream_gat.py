@@ -762,17 +762,25 @@ if TORCH_AVAILABLE:
             eff_orient = orient if self.use_orientation else None
 
             for i in range(self.n_layers):
-                h_lin = self.linear_layers[i](h, so, orient=eff_orient)
-                h_gph = self.graph_layers[i](h, src, dst, temps, edge_attr)
-
                 if self.stream_mode == "coordinate":
-                    h_fused = h_lin
+                    # A coordinate-only checkpoint has no dependency on graph
+                    # messages.  Avoid constructing them: on chromosome-scale
+                    # inference the unused edge tensors can consume gigabytes.
+                    h_fused = self.linear_layers[i](h, so, orient=eff_orient)
                 elif self.stream_mode == "graph":
-                    h_fused = h_gph
-                elif self.fusion_modules is not None:
-                    h_fused = self.fusion_modules[i](h_lin, h_gph)
+                    # Likewise, graph-only checkpoints never trained or used
+                    # the linear stream.  Skipping its sparse genomic attention
+                    # is numerically identical for the active branch.
+                    h_fused = self.graph_layers[i](
+                        h, src, dst, temps, edge_attr
+                    )
                 else:
-                    h_fused = h_lin + h_gph
+                    h_lin = self.linear_layers[i](h, so, orient=eff_orient)
+                    h_gph = self.graph_layers[i](h, src, dst, temps, edge_attr)
+                    if self.fusion_modules is not None:
+                        h_fused = self.fusion_modules[i](h_lin, h_gph)
+                    else:
+                        h_fused = h_lin + h_gph
 
                 h = self.layer_norms[i](h_fused + h)
 
