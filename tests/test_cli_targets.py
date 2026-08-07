@@ -9,6 +9,7 @@ def test_expand_chroms_supports_hash_prefix():
 
 def test_expand_chroms_supports_pipe_prefix_and_full_sn():
     assert _expand_chroms(["chr22"], "id=CHM13|") == ["id=CHM13|chr22"]
+    assert _expand_chroms(["chr22"], "id=GRCh38|") == ["id=GRCh38|chr22"]
     assert _expand_chroms(["id=CHM13|chr22"], "GRCh38#0") == ["id=CHM13|chr22"]
 
 

@@ -22,7 +22,7 @@
       "links": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_sv/full_links.csv.gz",
       "path_metadata": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_paths/path_metadata.tsv",
       "benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r2_eval_50kb",
-      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r2_pretrain_5mb",
+      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r2_pretrain_5mb_paired",
       "reference_prefix": "GRCh38#0",
       "graph_donors": 231,
       "graph_haplotypes": 462,
@@ -42,8 +42,8 @@
       "links": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_sv/full_links.csv.gz",
       "path_metadata": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_paths/path_metadata.tsv",
       "benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_eval_50kb",
-      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_pretrain_5mb",
-      "reference_prefix": "CHM13#0",
+      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_pretrain_5mb_paired",
+      "reference_prefix": "id=CHM13|",
       "graph_donors": 65,
       "graph_haplotypes": 130
     },
@@ -61,8 +61,8 @@
       "links": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r1_1_sv/full_links.csv.gz",
       "path_metadata": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r1_1_paths/path_metadata.tsv",
       "benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r1_1_eval_50kb",
-      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r1_1_pretrain_5mb",
-      "reference_prefix": "GRCh38#0",
+      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r1_1_pretrain_5mb_paired",
+      "reference_prefix": "id=GRCh38|",
       "combination_policy": "Release-transfer only: pooling with R2 duplicates donors and superseded assemblies."
     },
     "hgsvc3_hprc1_combined": {
@@ -79,8 +79,8 @@
       "links": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_hprc1_combined_sv/full_links.csv.gz",
       "path_metadata": "${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_hprc1_paths/path_metadata.tsv",
       "benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_hprc1_combined_eval_50kb",
-      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_hprc1_combined_pretrain_5mb",
-      "reference_prefix": "CHM13#0",
+      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_hprc1_combined_pretrain_5mb_paired",
+      "reference_prefix": "id=CHM13|",
       "graph_haplotypes_total_including_references": 216,
       "combination_policy": "Train as its own official integrated release. It contains HPRC-v1, not HPRC-v2, and is not counted as an extra independent cohort."
     }
@@ -116,6 +116,7 @@
     "negative_tolerance_bp": 1000,
     "negative_tolerance_fraction": 0.1,
     "negative_degree_matched": true,
+    "negative_shortfall_policy": "paired_subsample",
     "matched_closure_windows": true,
     "seed": 20260806,
     "coverage_definition": "Deterministic 5 Mb tiles across every canonical chromosome present in each released graph."

@@ -251,3 +251,76 @@ def neg_distance_matched(
         tries += 1
 
     return neg
+
+
+def neg_distance_matched_paired(
+    nodes: np.ndarray,
+    pos_pairs: np.ndarray,
+    pos_set: Set[Tuple[int, int]],
+    oid_to_sn: Dict[int, str],
+    oid_to_so: Dict[int, int],
+    oid_to_deg: Dict[int, int],
+    rng: np.random.Generator,
+    same_sn: bool,
+    tol_bp: int,
+    tol_frac: float,
+    degree_matched: bool,
+    max_tries_per_positive: int = 400,
+) -> Tuple[List[Tuple[int, int]], np.ndarray]:
+    """Return unique negatives paired to the positives they match.
+
+    Each positive is considered once in seeded random order and contributes at
+    most one negative satisfying the same distance/degree constraints. Callers
+    can retain the returned positive indices to keep a balanced, genuinely
+    paired candidate set without discarding an entire deterministic tile.
+    """
+    if max_tries_per_positive < 1:
+        raise ValueError("max_tries_per_positive must be positive")
+
+    nodes_by_sn: Dict[str, np.ndarray] = {}
+    if same_sn:
+        grouped: Dict[str, List[int]] = {}
+        for node in nodes.tolist():
+            grouped.setdefault(oid_to_sn[int(node)], []).append(int(node))
+        nodes_by_sn = {
+            sn: np.asarray(values, dtype=np.int64) for sn, values in grouped.items()
+        }
+
+    negatives: List[Tuple[int, int]] = []
+    positive_indices: List[int] = []
+    used_negatives: Set[Tuple[int, int]] = set()
+
+    for index in rng.permutation(len(pos_pairs)).tolist():
+        u_pos, v_pos = (int(value) for value in pos_pairs[index])
+        sn_u = oid_to_sn[u_pos]
+        distance_pos = abs(int(oid_to_so[u_pos]) - int(oid_to_so[v_pos]))
+        tolerance = max(int(tol_bp), int(tol_frac * distance_pos))
+        candidate_nodes = nodes_by_sn.get(sn_u, nodes) if same_sn else nodes
+        if len(candidate_nodes) < 2:
+            continue
+
+        for _ in range(max_tries_per_positive):
+            uu = int(candidate_nodes[rng.integers(0, len(candidate_nodes))])
+            vv = int(candidate_nodes[rng.integers(0, len(candidate_nodes))])
+            pair = (uu, vv)
+            if uu == vv or pair in pos_set or pair in used_negatives:
+                continue
+            if same_sn and oid_to_sn[uu] != oid_to_sn[vv]:
+                continue
+            distance_neg = abs(int(oid_to_so[uu]) - int(oid_to_so[vv]))
+            if abs(distance_neg - distance_pos) > tolerance:
+                continue
+            if degree_matched:
+                degree_pair = (oid_to_deg[uu], oid_to_deg[vv])
+                positive_degree_pair = (oid_to_deg[u_pos], oid_to_deg[v_pos])
+                if degree_pair not in {
+                    positive_degree_pair,
+                    positive_degree_pair[::-1],
+                }:
+                    continue
+            used_negatives.add(pair)
+            negatives.append(pair)
+            positive_indices.append(int(index))
+            break
+
+    return negatives, np.asarray(positive_indices, dtype=np.int64)

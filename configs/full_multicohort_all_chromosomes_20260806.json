@@ -18,7 +18,7 @@
       "segments": "data/hprc/full_segments.csv",
       "links": "data/hprc/full_links.csv",
       "benchmark": "data/hprc/benchmark_full_multicohort_20260806",
-      "pretrain_benchmark": "data/hprc/benchmark_full_coverage_5mb_20260806",
+      "pretrain_benchmark": "data/hprc/benchmark_full_coverage_5mb_paired_20260806",
       "reference_prefix": "GRCh38#0",
       "graph_donors": 231,
       "graph_haplotypes": 462,
@@ -33,8 +33,8 @@
       "segments": "data/hgsvc3_sv_all_20260806/full_segments.csv.gz",
       "links": "data/hgsvc3_sv_all_20260806/full_links.csv.gz",
       "benchmark": "data/hgsvc3_sv_all_20260806/benchmark_full_multicohort_20260806",
-      "pretrain_benchmark": "data/hgsvc3_sv_all_20260806/benchmark_full_coverage_5mb_20260806",
-      "reference_prefix": "CHM13#0",
+      "pretrain_benchmark": "data/hgsvc3_sv_all_20260806/benchmark_full_coverage_5mb_paired_20260806",
+      "reference_prefix": "id=CHM13|",
       "path_metadata": "data/hgsvc3/path_index_full/path_metadata.csv.gz",
       "graph_donors": 65,
       "graph_haplotypes": 130
@@ -50,8 +50,8 @@
       "segments": "data/hprc_r1_1_sv_all_20260806/full_segments.csv.gz",
       "links": "data/hprc_r1_1_sv_all_20260806/full_links.csv.gz",
       "benchmark": "data/hprc_r1_1_sv_all_20260806/benchmark_full_multicohort_20260806",
-      "pretrain_benchmark": "data/hprc_r1_1_sv_all_20260806/benchmark_full_coverage_5mb_20260806",
-      "reference_prefix": "GRCh38#0",
+      "pretrain_benchmark": "data/hprc_r1_1_sv_all_20260806/benchmark_full_coverage_5mb_paired_20260806",
+      "reference_prefix": "id=GRCh38|",
       "combination_policy": "Do not pool with R2: overlapping donors and superseded assemblies would duplicate biological samples. Use only for release-transfer stress testing."
     }
   },
@@ -86,6 +86,7 @@
     "negative_tolerance_bp": 1000,
     "negative_tolerance_fraction": 0.1,
     "negative_degree_matched": true,
+    "negative_shortfall_policy": "paired_subsample",
     "matched_closure_windows": true,
     "seed": 20260806,
     "coverage_definition": "Deterministic non-overlapping 5 Mb tiles from coordinate 0 through the maximum primary-reference segment end for every chr1-chr22, chrX, and chrY present in each graph."

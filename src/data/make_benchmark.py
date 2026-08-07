@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import sys
 import argparse
+import json
 import re
 from pathlib import Path
 from typing import Optional, List, Dict, Tuple
@@ -42,12 +43,56 @@ from graph.neg_sampling import (
     neg_random,
     neg_hard_coord_degree,
     neg_distance_matched,
+    neg_distance_matched_paired,
 )
 from graph.features import build_oid_metadata_from_segments
 
 SEGMENT_REQUIRED = {"id", "name", "seq", "LN", "SN", "SO", "SR"}
 LINK_REQUIRED = {"from_seg", "from_orient", "to_seg", "to_orient", "overlap"}
 CANONICAL_CHROMS = [f"chr{i}" for i in range(1, 23)] + ["chrX", "chrY"]
+REFERENCE_TARGET_RE = re.compile(
+    r"^(?:id=)?(?P<reference>GRCh38|CHM13)(?:#0#|\|)"
+    r"(?P<chrom>chr(?:[1-9]|1[0-9]|2[0-2]|X|Y))$"
+)
+
+
+def resolve_reference_target_aliases(
+    targets: List[str], available_sns: set[str]
+) -> List[str]:
+    """Resolve equivalent reference-path spellings across graph releases.
+
+    Released Minigraph-Cactus graphs use both ``GRCh38#0#chr1`` and
+    ``id=GRCh38|chr1`` (likewise for CHM13).  A configured spelling that is
+    absent must not silently yield an empty benchmark when the equivalent
+    reference path is present.
+    """
+    resolved: List[str] = []
+    for target in targets:
+        value = str(target)
+        if value in available_sns:
+            resolved.append(value)
+            continue
+        match = REFERENCE_TARGET_RE.fullmatch(value)
+        if match is None:
+            resolved.append(value)
+            continue
+        reference = match.group("reference")
+        chrom = match.group("chrom")
+        aliases = [
+            f"{reference}#0#{chrom}",
+            f"id={reference}|{chrom}",
+        ]
+        present = [alias for alias in aliases if alias in available_sns]
+        if len(present) == 1:
+            print(f"  ⚠ Resolved reference target alias: {value} -> {present[0]}")
+            resolved.append(present[0])
+        elif len(present) > 1:
+            raise ValueError(
+                f"Ambiguous reference target {value!r}; available aliases: {present}"
+            )
+        else:
+            resolved.append(value)
+    return resolved
 
 
 def plan_tiled_ranges(
@@ -253,10 +298,14 @@ def inspect_data(
     # Choose target SNs: all canonical reference chromosomes when possible.
     sn_set = {str(s) for s in sn_counts.index}
     grch = [f"GRCh38#0#{chrom}" for chrom in CANONICAL_CHROMS]
+    grch_pipe = [f"id=GRCh38|{chrom}" for chrom in CANONICAL_CHROMS]
     chm13_hash = [f"CHM13#0#{chrom}" for chrom in CANONICAL_CHROMS]
     chm13_pipe = [f"id=CHM13|{chrom}" for chrom in CANONICAL_CHROMS]
     if any(s in sn_set for s in grch):
         targets = [s for s in grch if s in sn_set]
+        target_note = "canonical GRCh38 chromosomes"
+    elif any(s in sn_set for s in grch_pipe):
+        targets = [s for s in grch_pipe if s in sn_set]
         target_note = "canonical GRCh38 chromosomes"
     elif any(s in sn_set for s in chm13_hash):
         targets = [s for s in chm13_hash if s in sn_set]
@@ -297,6 +346,7 @@ def build_manifest(
     non_overlapping_windows: bool = False,
     matched_closure_windows: bool = False,
     tile_stride_bp: int | None = None,
+    negative_shortfall_policy: str = "reject_window",
 ) -> pd.DataFrame:
 
     print("\n" + "=" * 60)
@@ -322,6 +372,20 @@ def build_manifest(
         )
     else:
         print("  Expected slices: determined from each reference sequence extent")
+    if negative_shortfall_policy not in {"reject_window", "paired_subsample"}:
+        raise ValueError(
+            f"Unknown negative_shortfall_policy={negative_shortfall_policy!r}"
+        )
+    if negative_shortfall_policy == "paired_subsample":
+        if tile_stride_bp is None or negative_sampler != "distance_matched":
+            raise ValueError(
+                "paired_subsample requires deterministic tiling and "
+                "negative_sampler=distance_matched"
+            )
+        print(
+            "  negative_shortfall_policy=paired_subsample "
+            "(retain feasible tiles with balanced, directly matched pairs)"
+        )
 
     out_dir.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(seed)
@@ -342,6 +406,7 @@ def build_manifest(
     if dropped:
         print(f"\n  ⚠ Dropped {dropped:,} links whose endpoints are not in segments.")
     print(f"  Using {len(links_filtered):,} links for slicing.\n")
+    targets = resolve_reference_target_aliases(targets, set(SN_arr.astype(str)))
     # Endpoint mapping is invariant across windows. Computing it once changes
     # whole-genome tiling from O(windows × all links) to O(all links + windows).
     from_id_all, to_id_all = map_links_to_segids(links_filtered, seg_index)
@@ -488,6 +553,7 @@ def build_manifest(
                 # Edge prediction dataset
                 u, v = oriented_ids_from_links(links_sub, seg_index)
                 pos = np.stack([u, v], axis=1)
+                original_positive_count = len(pos)
                 nodes = slice_oriented_node_set(u, v)
                 pos_set = build_pos_set(u, v)
                 rng_neg = np.random.default_rng(seed + made)
@@ -515,23 +581,51 @@ def build_manifest(
                     )
                 elif negative_sampler == "distance_matched":
                     deg_map = compute_oriented_degrees(u, v, nodes)
-                    neg = neg_distance_matched(
-                        nodes=nodes,
-                        pos_pairs=pos,
-                        pos_set=pos_set,
-                        oid_to_sn=md["oid_to_sn"],
-                        oid_to_so=md["oid_to_so"],
-                        oid_to_deg=deg_map,
-                        n_neg=len(pos),
-                        rng=rng_neg,
-                        same_sn=negative_same_sn,
-                        tol_bp=negative_tol_bp,
-                        tol_frac=negative_tol_frac,
-                        degree_matched=negative_degree_matched,
-                    )
+                    if negative_shortfall_policy == "paired_subsample":
+                        neg, matched_positive_indices = neg_distance_matched_paired(
+                            nodes=nodes,
+                            pos_pairs=pos,
+                            pos_set=pos_set,
+                            oid_to_sn=md["oid_to_sn"],
+                            oid_to_so=md["oid_to_so"],
+                            oid_to_deg=deg_map,
+                            rng=rng_neg,
+                            same_sn=negative_same_sn,
+                            tol_bp=negative_tol_bp,
+                            tol_frac=negative_tol_frac,
+                            degree_matched=negative_degree_matched,
+                        )
+                        pos = pos[matched_positive_indices]
+                        if 0 < len(pos) < original_positive_count:
+                            print(
+                                "    ⚠ retained tile with "
+                                f"{len(pos):,}/{original_positive_count:,} directly "
+                                "matched positive-negative pairs."
+                            )
+                    else:
+                        neg = neg_distance_matched(
+                            nodes=nodes,
+                            pos_pairs=pos,
+                            pos_set=pos_set,
+                            oid_to_sn=md["oid_to_sn"],
+                            oid_to_so=md["oid_to_so"],
+                            oid_to_deg=deg_map,
+                            n_neg=len(pos),
+                            rng=rng_neg,
+                            same_sn=negative_same_sn,
+                            tol_bp=negative_tol_bp,
+                            tol_frac=negative_tol_frac,
+                            degree_matched=negative_degree_matched,
+                        )
                 else:
                     raise ValueError(f"Unknown negative_sampler={negative_sampler!r}")
 
+                if len(pos) == 0:
+                    print(
+                        "    ✗ no positive edge had a valid directly matched "
+                        "negative — skipping infeasible tile."
+                    )
+                    continue
                 if len(neg) < len(pos):
                     print(
                         f"    ✗ {negative_sampler} produced only {len(neg)}/{len(pos)} "
@@ -540,6 +634,21 @@ def build_manifest(
                     continue
 
                 neg = neg[: len(pos)]
+                retention_fraction = (
+                    float(len(pos) / original_positive_count)
+                    if original_positive_count
+                    else 0.0
+                )
+                meta_payload = json.loads(meta_out.read_text(encoding="utf-8"))
+                meta_payload.update(
+                    {
+                        "negative_shortfall_policy": negative_shortfall_policy,
+                        "n_positive_edges_original": int(original_positive_count),
+                        "n_positive_edges_retained": int(len(pos)),
+                        "positive_retention_fraction": retention_fraction,
+                    }
+                )
+                save_json(meta_payload, meta_out)
                 df_pos = pd.DataFrame(
                     {"u_oid": pos[:, 0], "v_oid": pos[:, 1], "label": 1}
                 )
@@ -582,6 +691,10 @@ def build_manifest(
                         "negative_tol_bp": negative_tol_bp,
                         "negative_tol_frac": negative_tol_frac,
                         "negative_degree_matched": negative_degree_matched,
+                        "negative_shortfall_policy": negative_shortfall_policy,
+                        "n_positive_edges_original": int(original_positive_count),
+                        "n_positive_edges_retained": int(len(pos)),
+                        "positive_retention_fraction": retention_fraction,
                         "non_overlapping_windows": non_overlapping_windows,
                         "matched_closure_windows": matched_closure_windows,
                         "tile_stride_bp": tile_stride_bp,
@@ -848,6 +961,16 @@ def main():
             "This overrides --n_windows and is intended for full-coverage pretraining."
         ),
     )
+    ap.add_argument(
+        "--negative_shortfall_policy",
+        choices=["reject_window", "paired_subsample"],
+        default="reject_window",
+        help=(
+            "How to handle fewer matched negatives than positives. "
+            "paired_subsample retains a deterministic tile using only "
+            "positives with a directly matched negative."
+        ),
+    )
     ap.add_argument("--no_network_analysis", action="store_true")
     ap.add_argument("--no_viz", action="store_true")
     args = ap.parse_args()
@@ -877,6 +1000,7 @@ def main():
         non_overlapping_windows=args.non_overlapping_windows,
         matched_closure_windows=args.matched_closure_windows,
         tile_stride_bp=args.tile_stride_bp,
+        negative_shortfall_policy=args.negative_shortfall_policy,
     )
 
     if not args.no_network_analysis:

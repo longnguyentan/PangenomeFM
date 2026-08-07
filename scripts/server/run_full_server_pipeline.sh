@@ -58,10 +58,10 @@ if [[ "${SKIP_SCALING:-0}" != "1" ]]; then
   FIRST_GPU="${CUDA_GPUS%%,*}"
   for DATASET in hprc_r2 hgsvc3; do
     if [[ "${DATASET}" == "hprc_r2" ]]; then
-      MANIFEST="${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r2_pretrain_5mb/manifest.csv"
+      MANIFEST="${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv"
       SEGMENTS="${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_sv/full_segments.csv.gz"
     else
-      MANIFEST="${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_pretrain_5mb/manifest.csv"
+      MANIFEST="${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_pretrain_5mb_paired/manifest.csv"
       SEGMENTS="${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_sv/full_segments.csv.gz"
     fi
     CUDA_VISIBLE_DEVICES="${FIRST_GPU}" python scripts/run_scaling_benchmark.py \

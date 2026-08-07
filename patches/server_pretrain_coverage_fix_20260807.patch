@@ -1,0 +1,393 @@
+diff --git a/scripts/run_full_multicohort_all_chromosomes.py b/scripts/run_full_multicohort_all_chromosomes.py
+index 4537d50..c782eaf 100644
+--- a/scripts/run_full_multicohort_all_chromosomes.py
++++ b/scripts/run_full_multicohort_all_chromosomes.py
+@@ -351,6 +351,8 @@ class Runner:
+                         "--negative-tol-frac",
+                         str(full["negative_tolerance_fraction"]),
+                         "--negative-degree-matched",
++                        "--negative-shortfall-policy",
++                        full.get("negative_shortfall_policy", "paired_subsample"),
+                         "--matched-closure-windows",
+                         "--seed",
+                         str(full["seed"]),
+diff --git a/scripts/server/run_full_server_pipeline.sh b/scripts/server/run_full_server_pipeline.sh
+index d24f904..fe259ed 100755
+--- a/scripts/server/run_full_server_pipeline.sh
++++ b/scripts/server/run_full_server_pipeline.sh
+@@ -58,10 +58,10 @@ if [[ "${SKIP_SCALING:-0}" != "1" ]]; then
+   FIRST_GPU="${CUDA_GPUS%%,*}"
+   for DATASET in hprc_r2 hgsvc3; do
+     if [[ "${DATASET}" == "hprc_r2" ]]; then
+-      MANIFEST="${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r2_pretrain_5mb/manifest.csv"
++      MANIFEST="${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv"
+       SEGMENTS="${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_sv/full_segments.csv.gz"
+     else
+-      MANIFEST="${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_pretrain_5mb/manifest.csv"
++      MANIFEST="${PANGENOMEFM_DATA_ROOT}/benchmarks/hgsvc3_pretrain_5mb_paired/manifest.csv"
+       SEGMENTS="${PANGENOMEFM_DATA_ROOT}/processed/hgsvc3_sv/full_segments.csv.gz"
+     fi
+     CUDA_VISIBLE_DEVICES="${FIRST_GPU}" python scripts/run_scaling_benchmark.py \
+diff --git a/src/cli.py b/src/cli.py
+index 3ead00e..184268e 100644
+--- a/src/cli.py
++++ b/src/cli.py
+@@ -166,6 +166,7 @@ def make_benchmark(args: argparse.Namespace) -> int:
+         "non_overlapping_windows": args.non_overlapping_windows,
+         "matched_closure_windows": args.matched_closure_windows,
+         "tile_stride_bp": args.tile_stride_bp,
++        "negative_shortfall_policy": args.negative_shortfall_policy,
+         "no_network_analysis": args.no_network_analysis,
+         "no_viz": args.no_viz,
+     }
+@@ -634,6 +635,15 @@ def main(argv: list[str] | None = None) -> int:
+             "overrides --n-windows for full-coverage pretraining."
+         ),
+     )
++    p.add_argument(
++        "--negative-shortfall-policy",
++        choices=["reject_window", "paired_subsample"],
++        default="reject_window",
++        help=(
++            "For deterministic pretraining tiles, retain a balanced subset of "
++            "directly matched positive-negative pairs instead of dropping the tile."
++        ),
++    )
+     p.add_argument("--no-network-analysis", action="store_true")
+     p.add_argument("--no-viz", action="store_true")
+     p.set_defaults(func=make_benchmark)
+diff --git a/src/data/make_benchmark.py b/src/data/make_benchmark.py
+index 26f9afe..4d6777f 100644
+--- a/src/data/make_benchmark.py
++++ b/src/data/make_benchmark.py
+@@ -16,6 +16,7 @@ from __future__ import annotations
+ 
+ import sys
+ import argparse
++import json
+ import re
+ from pathlib import Path
+ from typing import Optional, List, Dict, Tuple
+@@ -42,12 +43,56 @@ from graph.neg_sampling import (
+     neg_random,
+     neg_hard_coord_degree,
+     neg_distance_matched,
++    neg_distance_matched_paired,
+ )
+ from graph.features import build_oid_metadata_from_segments
+ 
+ SEGMENT_REQUIRED = {"id", "name", "seq", "LN", "SN", "SO", "SR"}
+ LINK_REQUIRED = {"from_seg", "from_orient", "to_seg", "to_orient", "overlap"}
+ CANONICAL_CHROMS = [f"chr{i}" for i in range(1, 23)] + ["chrX", "chrY"]
++REFERENCE_TARGET_RE = re.compile(
++    r"^(?:id=)?(?P<reference>GRCh38|CHM13)(?:#0#|\|)"
++    r"(?P<chrom>chr(?:[1-9]|1[0-9]|2[0-2]|X|Y))$"
++)
++
++
++def resolve_reference_target_aliases(
++    targets: List[str], available_sns: set[str]
++) -> List[str]:
++    """Resolve equivalent reference-path spellings across graph releases.
++
++    Released Minigraph-Cactus graphs use both ``GRCh38#0#chr1`` and
++    ``id=GRCh38|chr1`` (likewise for CHM13).  A configured spelling that is
++    absent must not silently yield an empty benchmark when the equivalent
++    reference path is present.
++    """
++    resolved: List[str] = []
++    for target in targets:
++        value = str(target)
++        if value in available_sns:
++            resolved.append(value)
++            continue
++        match = REFERENCE_TARGET_RE.fullmatch(value)
++        if match is None:
++            resolved.append(value)
++            continue
++        reference = match.group("reference")
++        chrom = match.group("chrom")
++        aliases = [
++            f"{reference}#0#{chrom}",
++            f"id={reference}|{chrom}",
++        ]
++        present = [alias for alias in aliases if alias in available_sns]
++        if len(present) == 1:
++            print(f"  ⚠ Resolved reference target alias: {value} -> {present[0]}")
++            resolved.append(present[0])
++        elif len(present) > 1:
++            raise ValueError(
++                f"Ambiguous reference target {value!r}; available aliases: {present}"
++            )
++        else:
++            resolved.append(value)
++    return resolved
+ 
+ 
+ def plan_tiled_ranges(
+@@ -253,11 +298,15 @@ def inspect_data(
+     # Choose target SNs: all canonical reference chromosomes when possible.
+     sn_set = {str(s) for s in sn_counts.index}
+     grch = [f"GRCh38#0#{chrom}" for chrom in CANONICAL_CHROMS]
++    grch_pipe = [f"id=GRCh38|{chrom}" for chrom in CANONICAL_CHROMS]
+     chm13_hash = [f"CHM13#0#{chrom}" for chrom in CANONICAL_CHROMS]
+     chm13_pipe = [f"id=CHM13|{chrom}" for chrom in CANONICAL_CHROMS]
+     if any(s in sn_set for s in grch):
+         targets = [s for s in grch if s in sn_set]
+         target_note = "canonical GRCh38 chromosomes"
++    elif any(s in sn_set for s in grch_pipe):
++        targets = [s for s in grch_pipe if s in sn_set]
++        target_note = "canonical GRCh38 chromosomes"
+     elif any(s in sn_set for s in chm13_hash):
+         targets = [s for s in chm13_hash if s in sn_set]
+         target_note = "canonical CHM13 chromosomes"
+@@ -297,6 +346,7 @@ def build_manifest(
+     non_overlapping_windows: bool = False,
+     matched_closure_windows: bool = False,
+     tile_stride_bp: int | None = None,
++    negative_shortfall_policy: str = "reject_window",
+ ) -> pd.DataFrame:
+ 
+     print("\n" + "=" * 60)
+@@ -322,6 +372,20 @@ def build_manifest(
+         )
+     else:
+         print("  Expected slices: determined from each reference sequence extent")
++    if negative_shortfall_policy not in {"reject_window", "paired_subsample"}:
++        raise ValueError(
++            f"Unknown negative_shortfall_policy={negative_shortfall_policy!r}"
++        )
++    if negative_shortfall_policy == "paired_subsample":
++        if tile_stride_bp is None or negative_sampler != "distance_matched":
++            raise ValueError(
++                "paired_subsample requires deterministic tiling and "
++                "negative_sampler=distance_matched"
++            )
++        print(
++            "  negative_shortfall_policy=paired_subsample "
++            "(retain feasible tiles with balanced, directly matched pairs)"
++        )
+ 
+     out_dir.mkdir(parents=True, exist_ok=True)
+     rng = np.random.default_rng(seed)
+@@ -342,6 +406,7 @@ def build_manifest(
+     if dropped:
+         print(f"\n  ⚠ Dropped {dropped:,} links whose endpoints are not in segments.")
+     print(f"  Using {len(links_filtered):,} links for slicing.\n")
++    targets = resolve_reference_target_aliases(targets, set(SN_arr.astype(str)))
+     # Endpoint mapping is invariant across windows. Computing it once changes
+     # whole-genome tiling from O(windows × all links) to O(all links + windows).
+     from_id_all, to_id_all = map_links_to_segids(links_filtered, seg_index)
+@@ -488,6 +553,7 @@ def build_manifest(
+                 # Edge prediction dataset
+                 u, v = oriented_ids_from_links(links_sub, seg_index)
+                 pos = np.stack([u, v], axis=1)
++                original_positive_count = len(pos)
+                 nodes = slice_oriented_node_set(u, v)
+                 pos_set = build_pos_set(u, v)
+                 rng_neg = np.random.default_rng(seed + made)
+@@ -515,23 +581,51 @@ def build_manifest(
+                     )
+                 elif negative_sampler == "distance_matched":
+                     deg_map = compute_oriented_degrees(u, v, nodes)
+-                    neg = neg_distance_matched(
+-                        nodes=nodes,
+-                        pos_pairs=pos,
+-                        pos_set=pos_set,
+-                        oid_to_sn=md["oid_to_sn"],
+-                        oid_to_so=md["oid_to_so"],
+-                        oid_to_deg=deg_map,
+-                        n_neg=len(pos),
+-                        rng=rng_neg,
+-                        same_sn=negative_same_sn,
+-                        tol_bp=negative_tol_bp,
+-                        tol_frac=negative_tol_frac,
+-                        degree_matched=negative_degree_matched,
+-                    )
++                    if negative_shortfall_policy == "paired_subsample":
++                        neg, matched_positive_indices = neg_distance_matched_paired(
++                            nodes=nodes,
++                            pos_pairs=pos,
++                            pos_set=pos_set,
++                            oid_to_sn=md["oid_to_sn"],
++                            oid_to_so=md["oid_to_so"],
++                            oid_to_deg=deg_map,
++                            rng=rng_neg,
++                            same_sn=negative_same_sn,
++                            tol_bp=negative_tol_bp,
++                            tol_frac=negative_tol_frac,
++                            degree_matched=negative_degree_matched,
++                        )
++                        pos = pos[matched_positive_indices]
++                        if 0 < len(pos) < original_positive_count:
++                            print(
++                                "    ⚠ retained tile with "
++                                f"{len(pos):,}/{original_positive_count:,} directly "
++                                "matched positive-negative pairs."
++                            )
++                    else:
++                        neg = neg_distance_matched(
++                            nodes=nodes,
++                            pos_pairs=pos,
++                            pos_set=pos_set,
++                            oid_to_sn=md["oid_to_sn"],
++                            oid_to_so=md["oid_to_so"],
++                            oid_to_deg=deg_map,
++                            n_neg=len(pos),
++                            rng=rng_neg,
++                            same_sn=negative_same_sn,
++                            tol_bp=negative_tol_bp,
++                            tol_frac=negative_tol_frac,
++                            degree_matched=negative_degree_matched,
++                        )
+                 else:
+                     raise ValueError(f"Unknown negative_sampler={negative_sampler!r}")
+ 
++                if len(pos) == 0:
++                    print(
++                        "    ✗ no positive edge had a valid directly matched "
++                        "negative — skipping infeasible tile."
++                    )
++                    continue
+                 if len(neg) < len(pos):
+                     print(
+                         f"    ✗ {negative_sampler} produced only {len(neg)}/{len(pos)} "
+@@ -540,6 +634,21 @@ def build_manifest(
+                     continue
+ 
+                 neg = neg[: len(pos)]
++                retention_fraction = (
++                    float(len(pos) / original_positive_count)
++                    if original_positive_count
++                    else 0.0
++                )
++                meta_payload = json.loads(meta_out.read_text(encoding="utf-8"))
++                meta_payload.update(
++                    {
++                        "negative_shortfall_policy": negative_shortfall_policy,
++                        "n_positive_edges_original": int(original_positive_count),
++                        "n_positive_edges_retained": int(len(pos)),
++                        "positive_retention_fraction": retention_fraction,
++                    }
++                )
++                save_json(meta_payload, meta_out)
+                 df_pos = pd.DataFrame(
+                     {"u_oid": pos[:, 0], "v_oid": pos[:, 1], "label": 1}
+                 )
+@@ -582,6 +691,10 @@ def build_manifest(
+                         "negative_tol_bp": negative_tol_bp,
+                         "negative_tol_frac": negative_tol_frac,
+                         "negative_degree_matched": negative_degree_matched,
++                        "negative_shortfall_policy": negative_shortfall_policy,
++                        "n_positive_edges_original": int(original_positive_count),
++                        "n_positive_edges_retained": int(len(pos)),
++                        "positive_retention_fraction": retention_fraction,
+                         "non_overlapping_windows": non_overlapping_windows,
+                         "matched_closure_windows": matched_closure_windows,
+                         "tile_stride_bp": tile_stride_bp,
+@@ -848,6 +961,16 @@ def main():
+             "This overrides --n_windows and is intended for full-coverage pretraining."
+         ),
+     )
++    ap.add_argument(
++        "--negative_shortfall_policy",
++        choices=["reject_window", "paired_subsample"],
++        default="reject_window",
++        help=(
++            "How to handle fewer matched negatives than positives. "
++            "paired_subsample retains a deterministic tile using only "
++            "positives with a directly matched negative."
++        ),
++    )
+     ap.add_argument("--no_network_analysis", action="store_true")
+     ap.add_argument("--no_viz", action="store_true")
+     args = ap.parse_args()
+@@ -877,6 +1000,7 @@ def main():
+         non_overlapping_windows=args.non_overlapping_windows,
+         matched_closure_windows=args.matched_closure_windows,
+         tile_stride_bp=args.tile_stride_bp,
++        negative_shortfall_policy=args.negative_shortfall_policy,
+     )
+ 
+     if not args.no_network_analysis:
+diff --git a/src/graph/neg_sampling.py b/src/graph/neg_sampling.py
+index 60a67cc..ffe9a21 100644
+--- a/src/graph/neg_sampling.py
++++ b/src/graph/neg_sampling.py
+@@ -251,3 +251,76 @@ def neg_distance_matched(
+         tries += 1
+ 
+     return neg
++
++
++def neg_distance_matched_paired(
++    nodes: np.ndarray,
++    pos_pairs: np.ndarray,
++    pos_set: Set[Tuple[int, int]],
++    oid_to_sn: Dict[int, str],
++    oid_to_so: Dict[int, int],
++    oid_to_deg: Dict[int, int],
++    rng: np.random.Generator,
++    same_sn: bool,
++    tol_bp: int,
++    tol_frac: float,
++    degree_matched: bool,
++    max_tries_per_positive: int = 400,
++) -> Tuple[List[Tuple[int, int]], np.ndarray]:
++    """Return unique negatives paired to the positives they match.
++
++    Each positive is considered once in seeded random order and contributes at
++    most one negative satisfying the same distance/degree constraints. Callers
++    can retain the returned positive indices to keep a balanced, genuinely
++    paired candidate set without discarding an entire deterministic tile.
++    """
++    if max_tries_per_positive < 1:
++        raise ValueError("max_tries_per_positive must be positive")
++
++    nodes_by_sn: Dict[str, np.ndarray] = {}
++    if same_sn:
++        grouped: Dict[str, List[int]] = {}
++        for node in nodes.tolist():
++            grouped.setdefault(oid_to_sn[int(node)], []).append(int(node))
++        nodes_by_sn = {
++            sn: np.asarray(values, dtype=np.int64) for sn, values in grouped.items()
++        }
++
++    negatives: List[Tuple[int, int]] = []
++    positive_indices: List[int] = []
++    used_negatives: Set[Tuple[int, int]] = set()
++
++    for index in rng.permutation(len(pos_pairs)).tolist():
++        u_pos, v_pos = (int(value) for value in pos_pairs[index])
++        sn_u = oid_to_sn[u_pos]
++        distance_pos = abs(int(oid_to_so[u_pos]) - int(oid_to_so[v_pos]))
++        tolerance = max(int(tol_bp), int(tol_frac * distance_pos))
++        candidate_nodes = nodes_by_sn.get(sn_u, nodes) if same_sn else nodes
++        if len(candidate_nodes) < 2:
++            continue
++
++        for _ in range(max_tries_per_positive):
++            uu = int(candidate_nodes[rng.integers(0, len(candidate_nodes))])
++            vv = int(candidate_nodes[rng.integers(0, len(candidate_nodes))])
++            pair = (uu, vv)
++            if uu == vv or pair in pos_set or pair in used_negatives:
++                continue
++            if same_sn and oid_to_sn[uu] != oid_to_sn[vv]:
++                continue
++            distance_neg = abs(int(oid_to_so[uu]) - int(oid_to_so[vv]))
++            if abs(distance_neg - distance_pos) > tolerance:
++                continue
++            if degree_matched:
++                degree_pair = (oid_to_deg[uu], oid_to_deg[vv])
++                positive_degree_pair = (oid_to_deg[u_pos], oid_to_deg[v_pos])
++                if degree_pair not in {
++                    positive_degree_pair,
++                    positive_degree_pair[::-1],
++                }:
++                    continue
++            used_negatives.add(pair)
++            negatives.append(pair)
++            positive_indices.append(int(index))
++            break
++
++    return negatives, np.asarray(positive_indices, dtype=np.int64)

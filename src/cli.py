@@ -166,6 +166,7 @@ def make_benchmark(args: argparse.Namespace) -> int:
         "non_overlapping_windows": args.non_overlapping_windows,
         "matched_closure_windows": args.matched_closure_windows,
         "tile_stride_bp": args.tile_stride_bp,
+        "negative_shortfall_policy": args.negative_shortfall_policy,
         "no_network_analysis": args.no_network_analysis,
         "no_viz": args.no_viz,
     }
@@ -632,6 +633,15 @@ def main(argv: list[str] | None = None) -> int:
         help=(
             "Deterministically tile every target chromosome at this stride; "
             "overrides --n-windows for full-coverage pretraining."
+        ),
+    )
+    p.add_argument(
+        "--negative-shortfall-policy",
+        choices=["reject_window", "paired_subsample"],
+        default="reject_window",
+        help=(
+            "For deterministic pretraining tiles, retain a balanced subset of "
+            "directly matched positive-negative pairs instead of dropping the tile."
         ),
     )
     p.add_argument("--no-network-analysis", action="store_true")

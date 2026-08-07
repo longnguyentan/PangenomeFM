@@ -351,6 +351,8 @@ class Runner:
                         "--negative-tol-frac",
                         str(full["negative_tolerance_fraction"]),
                         "--negative-degree-matched",
+                        "--negative-shortfall-policy",
+                        full.get("negative_shortfall_policy", "paired_subsample"),
                         "--matched-closure-windows",
                         "--seed",
                         str(full["seed"]),
