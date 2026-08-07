@@ -114,6 +114,63 @@ def plan_tiled_ranges(
     ]
 
 
+def retain_locus_matched_closures(
+    manifest: pd.DataFrame, closures: list[str]
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Keep only target intervals successfully built for every context closure.
+
+    Planning the same intervals is insufficient: a closure can still be
+    ineligible because it has no target edges or no feasible matched negative.
+    Context comparisons must therefore intersect *successful* intervals after
+    slice construction.  The second returned frame records otherwise valid
+    slices excluded from the comparison.
+    """
+    if manifest.empty or len(closures) < 2:
+        return manifest.copy(), manifest.iloc[0:0].copy()
+
+    key_columns = ["target_sn", "start", "end"]
+    required = set(map(str, closures))
+    observed = set(manifest["closure"].astype(str).unique())
+    unexpected = observed - required
+    if unexpected:
+        raise ValueError(f"Manifest contains unexpected closures: {sorted(unexpected)}")
+    if manifest.duplicated(key_columns + ["closure"]).any():
+        duplicates = manifest.loc[
+            manifest.duplicated(key_columns + ["closure"], keep=False),
+            key_columns + ["closure"],
+        ]
+        raise ValueError(
+            "Duplicate target interval/closure rows prevent locus matching: "
+            f"{duplicates.to_dict(orient='records')[:5]}"
+        )
+
+    closure_sets = manifest.groupby(key_columns, sort=False)["closure"].agg(
+        lambda values: set(map(str, values))
+    )
+    eligible_keys = {
+        key for key, present in closure_sets.items() if required.issubset(present)
+    }
+    row_keys = list(
+        zip(
+            manifest["target_sn"].astype(str),
+            manifest["start"].astype(int),
+            manifest["end"].astype(int),
+        )
+    )
+    keep = pd.Series(
+        [key in eligible_keys for key in row_keys], index=manifest.index
+    )
+    retained = manifest.loc[keep].copy().reset_index(drop=True)
+    excluded = manifest.loc[~keep].copy().reset_index(drop=True)
+    if not excluded.empty:
+        excluded["exclusion_reason"] = "successful_slice_missing_required_closure"
+        excluded["missing_closures"] = [
+            ",".join(sorted(required - closure_sets[key]))
+            for key in (row_keys[index] for index in np.flatnonzero(~keep.to_numpy()))
+        ]
+    return retained, excluded
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Step 1 — Find files
 # ─────────────────────────────────────────────────────────────────────────────
@@ -415,6 +472,28 @@ def build_manifest(
     )
 
     manifest_rows: List[Dict] = []
+    exclusion_rows: List[Dict] = []
+    planned_ranges_by_target: dict[str, list[tuple[int, int]]] = {}
+
+    def record_exclusion(
+        *,
+        target_sn: str,
+        closure: str,
+        start: int,
+        end: int,
+        reason: str,
+        **details,
+    ) -> None:
+        exclusion_rows.append(
+            {
+                "target_sn": str(target_sn),
+                "closure": str(closure),
+                "start": int(start),
+                "end": int(end),
+                "exclusion_reason": reason,
+                **details,
+            }
+        )
 
     for target_sn in targets:
         print(f"  Target SN: {target_sn}")
@@ -456,6 +535,8 @@ def build_manifest(
                     f"    ⚠ planned only {len(shared_ranges)}/{n_windows} matched intervals "
                     "for this target."
                 )
+        if shared_ranges is not None:
+            planned_ranges_by_target[str(target_sn)] = list(shared_ranges)
 
         for closure in closures:
             made = 0
@@ -493,6 +574,13 @@ def build_manifest(
                     SN_arr, SO_arr, LN_arr, target_sn, start, end
                 )
                 if len(segids_core) == 0:
+                    record_exclusion(
+                        target_sn=target_sn,
+                        closure=closure,
+                        start=start,
+                        end=end,
+                        reason="no_core_segments",
+                    )
                     continue
 
                 segs_sub, links_sub, _ = induced_subgraph(
@@ -508,6 +596,14 @@ def build_manifest(
                     segments_aligned_to_index=True,
                 )
                 if len(links_sub) == 0:
+                    record_exclusion(
+                        target_sn=target_sn,
+                        closure=closure,
+                        start=start,
+                        end=end,
+                        reason="no_induced_subgraph_links",
+                        n_core_segments=int(len(segids_core)),
+                    )
                     continue
 
                 qc = qc_slice(segs_sub, links_sub)
@@ -625,11 +721,29 @@ def build_manifest(
                         "    ✗ no positive edge had a valid directly matched "
                         "negative — skipping infeasible tile."
                     )
+                    record_exclusion(
+                        target_sn=target_sn,
+                        closure=closure,
+                        start=start,
+                        end=end,
+                        reason="no_valid_directly_matched_negative",
+                        n_positive_edges_original=int(original_positive_count),
+                    )
                     continue
                 if len(neg) < len(pos):
                     print(
                         f"    ✗ {negative_sampler} produced only {len(neg)}/{len(pos)} "
                         "negatives — retrying another window."
+                    )
+                    record_exclusion(
+                        target_sn=target_sn,
+                        closure=closure,
+                        start=start,
+                        end=end,
+                        reason="negative_sampling_shortfall",
+                        negative_sampler=negative_sampler,
+                        n_positive_edges_original=int(original_positive_count),
+                        n_negative_edges_generated=int(len(neg)),
                     )
                     continue
 
@@ -708,11 +822,129 @@ def build_manifest(
                     f"({start}–{end}, negatives={negative_sampler})"
                 )
 
-    if not manifest_rows:
-        print("\n  ✗ No slices built. Try --window_bp 20000 or a smaller value.")
+    successful_manifest = pd.DataFrame(manifest_rows)
+    manifest = successful_manifest
+    if matched_closure_windows and not successful_manifest.empty:
+        manifest, unmatched_successes = retain_locus_matched_closures(
+            successful_manifest, closures
+        )
+        if not unmatched_successes.empty:
+            print(
+                "\n  ⚠ Excluding "
+                f"{len(unmatched_successes):,} otherwise successful slices because "
+                "their target intervals were unavailable in another requested closure."
+            )
+            for row in unmatched_successes.to_dict(orient="records"):
+                exclusion_rows.append(row)
+
+    exclusion_columns = [
+        "target_sn",
+        "closure",
+        "start",
+        "end",
+        "exclusion_reason",
+        "missing_closures",
+    ]
+    exclusions = pd.DataFrame(exclusion_rows)
+    if exclusions.empty:
+        exclusions = pd.DataFrame(columns=exclusion_columns)
+    else:
+        leading = [column for column in exclusion_columns if column in exclusions]
+        trailing = [column for column in exclusions if column not in leading]
+        exclusions = exclusions[leading + trailing].sort_values(
+            ["target_sn", "start", "end", "closure"], na_position="last"
+        )
+    exclusions_path = out_dir / "exclusions.csv"
+    exclusions.to_csv(exclusions_path, index=False)
+
+    coverage_targets: dict[str, dict] = {}
+    total_planned = 0
+    total_retained = 0
+    for target_sn, planned_ranges in planned_ranges_by_target.items():
+        planned = {(int(start), int(end)) for start, end in planned_ranges}
+        total_planned += len(planned)
+        successful_by_closure: dict[str, set[tuple[int, int]]] = {}
+        for closure in closures:
+            if successful_manifest.empty:
+                closure_rows = successful_manifest
+            else:
+                closure_rows = successful_manifest.loc[
+                    (successful_manifest["target_sn"].astype(str) == target_sn)
+                    & (successful_manifest["closure"].astype(str) == str(closure))
+                ]
+            successful_by_closure[str(closure)] = {
+                (int(row.start), int(row.end))
+                for row in closure_rows.itertuples(index=False)
+            }
+
+        retained_rows = (
+            manifest.loc[manifest["target_sn"].astype(str) == target_sn]
+            if not manifest.empty
+            else manifest
+        )
+        retained = {
+            (int(row.start), int(row.end))
+            for row in retained_rows.itertuples(index=False)
+        }
+        total_retained += len(retained)
+        coverage_targets[target_sn] = {
+            "planned_tile_count": len(planned),
+            "planned_intervals": [
+                {"start": start, "end": end} for start, end in sorted(planned)
+            ],
+            "successful_tile_count_before_locus_matching_by_closure": {
+                closure: len(ranges)
+                for closure, ranges in successful_by_closure.items()
+            },
+            "missing_intervals_before_locus_matching_by_closure": {
+                closure: [
+                    {"start": start, "end": end}
+                    for start, end in sorted(planned - ranges)
+                ]
+                for closure, ranges in successful_by_closure.items()
+            },
+            "retained_locus_matched_tile_count": len(retained),
+            "retained_locus_matched_intervals": [
+                {"start": start, "end": end} for start, end in sorted(retained)
+            ],
+            "paired_task_eligible_tile_fraction": (
+                float(len(retained) / len(planned)) if planned else None
+            ),
+        }
+
+    coverage_report = {
+        "schema_version": 1,
+        "matched_closure_windows": bool(matched_closure_windows),
+        "closures": list(map(str, closures)),
+        "tile_stride_bp": tile_stride_bp,
+        "negative_shortfall_policy": negative_shortfall_policy,
+        "planned_tile_count": total_planned,
+        "retained_locus_matched_tile_count": total_retained,
+        "paired_task_eligible_tile_fraction": (
+            float(total_retained / total_planned) if total_planned else None
+        ),
+        "excluded_attempt_or_slice_count": int(len(exclusions)),
+        "exclusion_reason_counts": {
+            str(reason): int(count)
+            for reason, count in exclusions["exclusion_reason"]
+            .value_counts(dropna=False)
+            .items()
+        },
+        "targets": coverage_targets,
+    }
+    coverage_path = out_dir / "coverage_report.json"
+    save_json(coverage_report, coverage_path)
+
+    print(f"\n  ✓ Exclusions saved: {exclusions_path}  ({len(exclusions)} rows)")
+    print(f"  ✓ Coverage report saved: {coverage_path}")
+
+    if manifest.empty:
+        print(
+            "\n  ✗ No locus-matched slices built. Inspect exclusions.csv and "
+            "coverage_report.json."
+        )
         sys.exit(1)
 
-    manifest = pd.DataFrame(manifest_rows)
     mpath = out_dir / "manifest.csv"
     manifest.to_csv(mpath, index=False)
     print(f"\n  ✓ Manifest saved: {mpath}  ({len(manifest)} slices total)")

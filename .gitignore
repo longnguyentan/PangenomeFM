@@ -238,6 +238,12 @@ docs/PSB_EXPERIMENT_PLAN.md
 /paper
 /docs
 /grant
+
+# Server-local data, results, and safety backups (kept inside the repository
+# directory operationally, but never version controlled).
+/server_workspace/
+/configs/*.bak
+/configs/*.before_*
 /output
 /paper
 /docs
