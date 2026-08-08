@@ -10,6 +10,7 @@ it with R2 would duplicate donors and superseded assemblies.
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import os
 import shlex
@@ -123,8 +124,12 @@ class Runner:
     @staticmethod
     def _glob_exists(patterns: Iterable[str]) -> bool:
         for pattern in patterns:
-            path = _path(pattern)
-            if any(path.parent.glob(path.name)):
+            # ``Path.parent.glob(path.name)`` only expands wildcards in the
+            # final component.  Training outputs are versioned below an
+            # intermediate ``run_*`` directory, so that implementation falsely
+            # marked successful jobs as failed even when their checkpoints
+            # existed.  Expand the complete absolute pattern instead.
+            if glob.glob(str(_path(pattern))):
                 continue
             return False
         return True
