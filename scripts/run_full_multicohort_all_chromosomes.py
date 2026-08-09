@@ -48,6 +48,34 @@ def _path(value: str | Path) -> Path:
     return path if path.is_absolute() else REPO_ROOT / path
 
 
+def _deep_merge(base: dict, override: dict) -> dict:
+    """Recursively merge a compact experiment override into a base config."""
+
+    merged = dict(base)
+    for key, value in override.items():
+        if key == "extends":
+            continue
+        if isinstance(value, dict) and isinstance(merged.get(key), dict):
+            merged[key] = _deep_merge(merged[key], value)
+        else:
+            merged[key] = value
+    return merged
+
+
+def load_config(path: str | Path) -> dict:
+    """Load a JSON config, including an optional relative ``extends`` file."""
+
+    config_path = _path(path)
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    parent = payload.get("extends")
+    if parent:
+        parent_path = Path(parent)
+        if not parent_path.is_absolute():
+            parent_path = config_path.parent / parent_path
+        payload = _deep_merge(load_config(parent_path), payload)
+    return _expand_environment(payload)
+
+
 @dataclass
 class StepRecord:
     name: str
@@ -445,10 +473,49 @@ class Runner:
         test: tuple[str, ...] = (),
         validation: tuple[str, ...] = (),
         domain_adversarial: bool = False,
+        training_variant: dict | None = None,
         resume_recovery: str | None = None,
     ) -> list[str]:
         cfg = self.config["training"]
         ds = self.config["datasets"][primary]
+        variant = training_variant or {}
+
+        known_variant_keys = {
+            "adaptive_window",
+            "candidate_mask_batch_size",
+            "drop_edge",
+            "dual_stream",
+            "hidden_dim",
+            "heads",
+            "layers",
+            "focal_loss",
+            "multiscale_rope",
+            "no_fusion_gate",
+            "no_rope",
+            "orientation_rope",
+            "stream_mode",
+        }
+        unknown_variant_keys = sorted(set(variant) - known_variant_keys)
+        if unknown_variant_keys:
+            raise ValueError(
+                "Unknown training_variant keys: " + ", ".join(unknown_variant_keys)
+            )
+        stream_mode = str(variant.get("stream_mode", "full"))
+        if stream_mode not in {"full", "coordinate", "graph"}:
+            raise ValueError(f"Unsupported training_variant stream_mode: {stream_mode}")
+        hidden_dim = int(variant.get("hidden_dim", cfg["hidden_dim"]))
+        heads = int(variant.get("heads", cfg["heads"]))
+        layers = int(variant.get("layers", cfg["layers"]))
+        candidate_batch_size = int(
+            variant.get("candidate_mask_batch_size", cfg["candidate_mask_batch_size"])
+        )
+        if min(hidden_dim, heads, layers, candidate_batch_size) <= 0:
+            raise ValueError("Architecture and candidate batch values must be positive")
+        if hidden_dim % heads:
+            raise ValueError(
+                f"training_variant hidden_dim={hidden_dim} must be divisible by heads={heads}"
+            )
+
         command = [
             str(self.python),
             "-m",
@@ -464,11 +531,11 @@ class Runner:
             "--closures",
             closure,
             "--hidden_dim",
-            str(cfg["hidden_dim"]),
+            str(hidden_dim),
             "--n_heads",
-            str(cfg["heads"]),
+            str(heads),
             "--n_layers",
-            str(cfg["layers"]),
+            str(layers),
             "--epochs",
             str(cfg["epochs"]),
             "--patience",
@@ -479,22 +546,6 @@ class Runner:
             str(cfg["split_seed"]),
             "--device",
             self.device,
-            "--dual_stream",
-            "--adaptive_window",
-            "--adaptive_window_base",
-            "32",
-            "--adaptive_window_alpha",
-            "4.0",
-            "--multiscale_rope",
-            "--n_rope_scales",
-            "3",
-            "--orientation_rope",
-            "--focal_loss",
-            "--focal_gamma",
-            "2.0",
-            "--drop_edge",
-            "--drop_edge_rate",
-            "0.1",
             "--warmup_epochs",
             "5",
             "--mask_query_edges",
@@ -502,9 +553,35 @@ class Runner:
             "--recovery_every",
             str(cfg["recovery_every_epochs"]),
             "--batch_size",
-            str(cfg["candidate_mask_batch_size"]),
+            str(candidate_batch_size),
             "--lazy_tensorize",
         ]
+        if bool(variant.get("dual_stream", True)):
+            command.append("--dual_stream")
+        if bool(variant.get("adaptive_window", True)):
+            command.extend(
+                [
+                    "--adaptive_window",
+                    "--adaptive_window_base",
+                    "32",
+                    "--adaptive_window_alpha",
+                    "4.0",
+                ]
+            )
+        if bool(variant.get("no_rope", False)):
+            command.append("--no_rope")
+        if bool(variant.get("multiscale_rope", True)):
+            command.extend(["--multiscale_rope", "--n_rope_scales", "3"])
+        if bool(variant.get("orientation_rope", True)):
+            command.append("--orientation_rope")
+        if bool(variant.get("focal_loss", True)):
+            command.extend(["--focal_loss", "--focal_gamma", "2.0"])
+        if bool(variant.get("drop_edge", True)):
+            command.extend(["--drop_edge", "--drop_edge_rate", "0.1"])
+        if bool(variant.get("no_fusion_gate", False)):
+            command.append("--no_fusion_gate")
+        if stream_mode != "full":
+            command.extend(["--stream_mode", stream_mode])
         if extras:
             command.append("--extra_datasets")
             for extra in extras:
@@ -564,6 +641,7 @@ class Runner:
                             seed=seed,
                             extras=extras,
                             domain_adversarial=bool(spec.get("domain_adversarial", False)),
+                            training_variant=spec.get("training_variant"),
                             resume_recovery=self.latest_recovery(out, closure),
                         ),
                         output_globs=[f"{out}/run_*/ckpt_{closure}__*.pt"],
@@ -598,6 +676,7 @@ class Runner:
                                 extras=extras,
                                 test=tuple(fold["test"]),
                                 validation=tuple(fold["validation"]),
+                                training_variant=spec.get("training_variant"),
                                 resume_recovery=self.latest_recovery(out, closure),
                             ),
                             output_globs=[f"{out}/run_*/ckpt_{closure}__*.pt"],
@@ -685,6 +764,7 @@ class Runner:
                                 output_root=model_out,
                                 closure=closure,
                                 seed=seed,
+                                training_variant=pair.get("training_variant"),
                                 resume_recovery=self.latest_recovery(model_out, closure),
                             ),
                             output_globs=[f"{model_out}/run_*/ckpt_{closure}__*.pt"],
@@ -754,9 +834,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    config = _expand_environment(
-        json.loads(_path(args.config).read_text(encoding="utf-8"))
-    )
+    config = load_config(args.config)
     runner = Runner(
         config,
         execute=args.execute,

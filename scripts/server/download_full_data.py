@@ -248,8 +248,11 @@ def main() -> int:
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument(
         "--profile",
-        choices=["sv-core", "analysis-full", "archive-full-resolution"],
         default="analysis-full",
+        help=(
+            "Manifest profile to download. Profiles are validated dynamically so "
+            "downstream-only resources can be added without changing this CLI."
+        ),
     )
     parser.add_argument("--jobs", type=int, default=2)
     parser.add_argument("--list", action="store_true")

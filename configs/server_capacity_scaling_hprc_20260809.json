@@ -1,0 +1,50 @@
+{
+  "extends": "server_full_multicohort_20260806.json",
+  "analysis_id": "server_capacity_scaling_hprc_20260809",
+  "training": {
+    "contexts": ["strict"]
+  },
+  "experiment_matrix": {
+    "fold_regimes": [
+      {
+        "name": "hprc_r2_capacity_tiny_h24_l1",
+        "primary": "hprc_r2",
+        "extras": [],
+        "training_variant": {
+          "hidden_dim": 24,
+          "heads": 4,
+          "layers": 1,
+          "candidate_mask_batch_size": 512
+        }
+      },
+      {
+        "name": "hprc_r2_capacity_medium_h96_l4",
+        "primary": "hprc_r2",
+        "extras": [],
+        "training_variant": {
+          "hidden_dim": 96,
+          "heads": 8,
+          "layers": 4,
+          "candidate_mask_batch_size": 256
+        }
+      },
+      {
+        "name": "hprc_r2_capacity_large_h192_l6",
+        "primary": "hprc_r2",
+        "extras": [],
+        "training_variant": {
+          "hidden_dim": 192,
+          "heads": 8,
+          "layers": 6,
+          "candidate_mask_batch_size": 128
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "root": "${PANGENOMEFM_RESULTS_ROOT}/capacity_scaling_hprc_20260809",
+    "logs": "${PANGENOMEFM_RESULTS_ROOT}/capacity_scaling_hprc_20260809/logs",
+    "validation": "${PANGENOMEFM_RESULTS_ROOT}/capacity_scaling_hprc_20260809/validation",
+    "state": "${PANGENOMEFM_RESULTS_ROOT}/capacity_scaling_hprc_20260809/execution_state.json"
+  }
+}

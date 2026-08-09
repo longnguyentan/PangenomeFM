@@ -247,3 +247,10 @@ docs/PSB_EXPERIMENT_PLAN.md
 /output
 /paper
 /docs
+
+# Keep the submission-tier server handoff under version control while retaining
+# the historical default of ignoring other newly generated documentation.
+!/docs/
+/docs/*
+!/docs/RUN_SUBMISSION_TIER_EXPERIMENTS.md
+/analysis

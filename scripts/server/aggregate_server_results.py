@@ -102,6 +102,35 @@ def bootstrap_slices(per_slice: pd.DataFrame, n_boot: int, seed: int) -> list[di
     return rows
 
 
+def collect_execution_steps(root: Path) -> tuple[list[dict], list[dict]]:
+    """Collect runner steps from JSON payloads containing a ``steps`` map.
+
+    Server state basenames are experiment names (for example,
+    ``folds_hprc_r2_fold_a_seed42_strict.json``), so a ``*state*.json``
+    basename glob misses them even though they live in ``*_states``
+    directories.
+    """
+
+    rows: list[dict] = []
+    failures: list[dict] = []
+    for state_path in root.glob("**/*.json"):
+        try:
+            payload = json.loads(state_path.read_text(encoding="utf-8"))
+            steps = payload.get("steps")
+            if not isinstance(steps, dict):
+                continue
+            for name, step in steps.items():
+                if isinstance(step, dict):
+                    rows.append(
+                        {"state_file": str(state_path), "step": name, **step}
+                    )
+        except Exception as error:
+            failures.append(
+                {"prediction_file": str(state_path), "error": str(error)}
+            )
+    return rows, failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results-root", type=Path, required=True)
@@ -236,14 +265,8 @@ def main() -> int:
             figure.savefig(out_dir / "chromosome_auprc_heatmap.pdf")
             plt.close(figure)
 
-    state_rows = []
-    for state_path in root.glob("**/*state*.json"):
-        try:
-            payload = json.loads(state_path.read_text(encoding="utf-8"))
-            for name, step in payload.get("steps", {}).items():
-                state_rows.append({"state_file": str(state_path), "step": name, **step})
-        except Exception as error:
-            failures.append({"prediction_file": str(state_path), "error": str(error)})
+    state_rows, state_failures = collect_execution_steps(root)
+    failures.extend(state_failures)
     state_frame = pd.DataFrame(state_rows)
     state_frame.to_csv(out_dir / "execution_steps.csv", index=False)
     if not state_frame.empty and "wall_seconds" in state_frame:
@@ -254,8 +277,18 @@ def main() -> int:
             steps=("step", "size"), wall_seconds=("wall_seconds", "sum")
         ).reset_index().to_csv(out_dir / "execution_runtime_summary.csv", index=False)
     failed_steps = [row for row in state_rows if row.get("status") == "failed"]
-    pd.DataFrame(failed_steps).to_csv(out_dir / "failed_execution_steps.csv", index=False)
-    pd.DataFrame(failures).to_csv(out_dir / "aggregation_failures.csv", index=False)
+    pd.DataFrame(
+        failed_steps,
+        columns=(
+            list(state_frame.columns)
+            if not state_frame.empty
+            else ["state_file", "step", "status"]
+        ),
+    ).to_csv(out_dir / "failed_execution_steps.csv", index=False)
+    pd.DataFrame(
+        failures,
+        columns=["prediction_file", "error"],
+    ).to_csv(out_dir / "aggregation_failures.csv", index=False)
 
     storage_rows = []
     for path in root.rglob("*"):

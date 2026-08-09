@@ -14,8 +14,60 @@ from pathlib import Path
 
 import pandas as pd
 import psutil
+import numpy as np
 
 from evaluation.splits import normalize_chrom
+
+
+def project_full_runtime(
+    train_slices: list[int],
+    seconds_per_epoch: list[float],
+    *,
+    full_train_slices: int,
+    projected_epochs: int,
+) -> dict[str, float | int | str]:
+    """Project a full run from measured one-epoch probes.
+
+    The measured wall time includes a largely fixed cost for loading the full
+    segment table plus validation/test evaluation.  Scaling the largest probe
+    by ``full_slices / total_slices`` therefore substantially overestimates the
+    slice-dependent cost.  Fit an intercept and per-training-slice slope when
+    at least two probes are available; retain a conservative proportional
+    fallback for a single successful probe.
+    """
+
+    if not train_slices or len(train_slices) != len(seconds_per_epoch):
+        raise ValueError("Runtime projection requires paired non-empty probes")
+    if full_train_slices <= 0 or projected_epochs <= 0:
+        raise ValueError("Full slice and epoch counts must be positive")
+
+    counts = np.asarray(train_slices, dtype=float)
+    seconds = np.asarray(seconds_per_epoch, dtype=float)
+    if np.any(counts <= 0) or np.any(seconds <= 0):
+        raise ValueError("Measured slice counts and runtimes must be positive")
+
+    if len(counts) >= 2 and np.ptp(counts) > 0:
+        slope, intercept = np.polyfit(counts, seconds, deg=1)
+        # A negative fitted component is physically meaningless and usually
+        # indicates noisy probes.  Clamp both components at zero while keeping
+        # the estimate explicit and reproducible.
+        slope = max(float(slope), 0.0)
+        intercept = max(float(intercept), 0.0)
+        method = "ols_intercept_plus_training_slice_slope"
+    else:
+        slope = float(seconds[-1] / counts[-1])
+        intercept = 0.0
+        method = "single_probe_proportional_fallback"
+
+    projected_per_epoch = intercept + slope * full_train_slices
+    return {
+        "projection_method": method,
+        "fitted_fixed_seconds_per_epoch": intercept,
+        "fitted_seconds_per_training_slice": slope,
+        "full_training_slices_selected_closure": int(full_train_slices),
+        "estimated_seconds_per_epoch_at_full_scale": projected_per_epoch,
+        "linear_projection_seconds": projected_per_epoch * projected_epochs,
+    }
 
 
 def gpu_memory_mib(pid: int) -> int | None:
@@ -49,8 +101,10 @@ def gpu_memory_mib(pid: int) -> int | None:
 
 
 def run(args: argparse.Namespace) -> dict[str, object]:
-    manifest = pd.read_csv(args.manifest)
-    manifest = manifest[manifest["closure"] == args.closure].copy()
+    complete_manifest = pd.read_csv(args.manifest)
+    manifest = complete_manifest[
+        complete_manifest["closure"] == args.closure
+    ].copy()
     normalized = manifest["target_sn"].astype(str).map(normalize_chrom)
     train_chromosomes = {normalize_chrom(value) for value in args.train_chromosomes}
     train = manifest[normalized.isin(train_chromosomes)]
@@ -184,18 +238,25 @@ def run(args: argparse.Namespace) -> dict[str, object]:
     }
     if not successful.empty:
         largest = successful.sort_values("train_slices").iloc[-1]
-        full_slices = int(len(manifest))
+        full_slices_selected_closure = int(len(manifest))
+        projection = project_full_runtime(
+            successful["train_slices"].astype(int).tolist(),
+            successful["seconds_per_epoch"].astype(float).tolist(),
+            full_train_slices=full_slices_selected_closure,
+            projected_epochs=args.project_epochs,
+        )
         summary["rough_full_run_projection"] = {
-            "full_manifest_rows_all_closures": full_slices,
+            "full_manifest_rows_all_closures": int(len(complete_manifest)),
+            "full_manifest_rows_selected_closure": full_slices_selected_closure,
             "largest_measured_train_slices": int(largest["train_slices"]),
             "largest_measured_seconds_per_epoch": float(largest["seconds_per_epoch"]),
             "requested_full_epochs": args.project_epochs,
-            "linear_projection_seconds": float(
-                largest["seconds_per_epoch"]
-                * (full_slices / int(largest["total_slices"]))
-                * args.project_epochs
+            **projection,
+            "warning": (
+                "Planning estimate only. It separates fitted fixed overhead "
+                "from the training-slice slope, but graph sizes, caching, "
+                "early stopping, and multi-epoch behavior remain nonlinear."
             ),
-            "warning": "Planning estimate only; validate with a multi-epoch pilot because graph sizes and early stopping are nonlinear.",
         }
     (args.out_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary

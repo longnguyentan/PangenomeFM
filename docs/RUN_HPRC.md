@@ -161,7 +161,7 @@ python -m graphgenomefm ccre-gat \
   --out-dir results/hprc/ccre_gat_pretrained_frozen \
   --pretrained-checkpoint results/hprc/pretrain/run_001/ckpt_strict_...pt \
   --freeze-backbone \
-  --keep-is-grch38 \
+  --feature-policy leakage_safe \
   --epochs 60 \
   --patience 15 \
   --device cpu

@@ -49,6 +49,24 @@ from evaluation.external import _build_model_from_checkpoint, _namespace_from_ch
 from utils.versioning import resolve_run_dir
 
 
+def _manifest_target_chromosome(target: object) -> str:
+    """Return a canonical chromosome from GRCh38/CHM13 target identifiers."""
+
+    raw = str(target)
+    if "#" in raw:
+        raw = raw.rsplit("#", 1)[-1]
+    elif "|" in raw:
+        raw = raw.rsplit("|", 1)[-1]
+    normalized = _norm_chrom(raw)
+    if not normalized.startswith("chr") and normalized in {
+        *(str(index) for index in range(1, 23)),
+        "X",
+        "Y",
+    }:
+        normalized = f"chr{normalized}"
+    return normalized
+
+
 def _build_labels(
     labels: pd.DataFrame,
     *,
@@ -82,6 +100,7 @@ def _extract_embeddings(
     device_name: str,
     seed: int,
     max_slices: int | None = None,
+    target_chrs: set[str] | None = None,
 ) -> tuple[dict[int, np.ndarray], dict[int, int]]:
     if not TORCH_AVAILABLE:
         raise ImportError("PyTorch is required for frozen embedding extraction.")
@@ -98,6 +117,11 @@ def _extract_embeddings(
     manifest_df = pd.read_csv(manifest)
     if closure != "all":
         manifest_df = manifest_df[manifest_df["closure"].astype(str) == closure]
+    if target_chrs is not None:
+        normalized_targets = {_manifest_target_chromosome(chrom) for chrom in target_chrs}
+        manifest_df = manifest_df[
+            manifest_df["target_sn"].map(_manifest_target_chromosome).isin(normalized_targets)
+        ]
     if max_slices is not None:
         manifest_df = manifest_df.head(max_slices)
 

@@ -25,6 +25,15 @@ def test_server_manifest_profiles_are_nested_and_unique():
         "hprc_r1_1_sv_gfa",
         "hgsvc3_hprc1_combined_sv_gfa",
     } <= core
+    downstream = {
+        resource.resource_id for resource in select_profile(resources, "downstream-sv")
+    }
+    assert {
+        "hprc_r2_wave_vcf",
+        "hgsvc3_sv_alt_vcf",
+        "hgsvc3_sv_annotation",
+        "hgsvc3_inv_vcf",
+    } <= downstream
 
 
 def test_every_resource_has_safe_relative_destination_and_https_url():

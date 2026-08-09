@@ -16,6 +16,9 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT))
+
+from scripts.run_full_multicohort_all_chromosomes import load_config
 
 
 def expand(value):
@@ -100,7 +103,7 @@ def main() -> int:
     config_path = Path(args.config)
     if not config_path.is_absolute():
         config_path = REPO_ROOT / config_path
-    config = expand(json.loads(config_path.read_text(encoding="utf-8")))
+    config = load_config(config_path)
     output_root = Path(config["outputs"]["root"])
     jobs = build_jobs(config, args.phase, args)
     if args.job_index is not None:

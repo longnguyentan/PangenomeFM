@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import sys
 import time
 from pathlib import Path
 
@@ -14,6 +15,9 @@ from download_full_data import load_manifest, select_profile
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT))
+
+from scripts.run_full_multicohort_all_chromosomes import load_config
 
 
 def file_sha256(path: Path) -> str:
@@ -26,7 +30,7 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, default=REPO_ROOT / "configs/server_full_data_manifest.tsv")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
-    config = json.loads(args.config.read_text(encoding="utf-8"))
+    config = load_config(args.config)
     resources = load_manifest(args.manifest)
     profile_rows = {}
     for profile in ["sv-core", "analysis-full", "archive-full-resolution"]:

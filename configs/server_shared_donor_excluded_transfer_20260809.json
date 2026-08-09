@@ -1,0 +1,58 @@
+{
+  "extends": "server_full_multicohort_20260806.json",
+  "analysis_id": "server_shared_donor_excluded_transfer_20260809",
+  "datasets": {
+    "hprc_r2_no_hgsvc_overlap": {
+      "role": "HPRC_R2_training_graph_rematerialized_without_four_HGSVC3_shared_donors",
+      "release": "HPRC Release 2.0 Minigraph-Cactus SV graph, path-union filtered",
+      "source_format": "derived GFA containing only nodes and links traversed by retained embedded W/P paths",
+      "variant_representation": "structural-variant-scale Minigraph topology after path-union filtering",
+      "functional_annotations": "none embedded",
+      "data_use_notes": "derived from public HPRC R2; preserve source graph and filtering audit",
+      "raw_gfa": "${PANGENOMEFM_DATA_ROOT}/derived/hprc_r2_no_hgsvc_overlap/hprc-v2.0-mc-grch38.no-HG00733-HG02818-NA19036-NA19240.sv.gfa.gz",
+      "raw_gbz": "${PANGENOMEFM_DATA_ROOT}/raw/hprc/v2.0/hprc-v2.0-mc-grch38.gbz",
+      "data_dir": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_no_hgsvc_overlap_sv",
+      "segments": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_no_hgsvc_overlap_sv/full_segments.csv.gz",
+      "links": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_no_hgsvc_overlap_sv/full_links.csv.gz",
+      "path_metadata": "${PANGENOMEFM_DATA_ROOT}/processed/hprc_r2_paths/path_metadata.tsv",
+      "benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r2_no_hgsvc_overlap_eval_50kb",
+      "pretrain_benchmark": "${PANGENOMEFM_DATA_ROOT}/benchmarks/hprc_r2_no_hgsvc_overlap_pretrain_5mb_paired",
+      "reference_prefix": "GRCh38#0",
+      "graph_donors": 227,
+      "graph_haplotypes": 454,
+      "excluded_donors": ["HG00733", "HG02818", "NA19036", "NA19240"],
+      "derivation_policy": "union of links traversed by retained embedded paths; excludes nodes/links unique to excluded paths"
+    }
+  },
+  "experiment_matrix": {
+    "final_regimes": [
+      {
+        "name": "hprc_r2_no_hgsvc_overlap",
+        "primary": "hprc_r2_no_hgsvc_overlap",
+        "extras": []
+      }
+    ],
+    "fold_regimes": [
+      {
+        "name": "hprc_r2_no_hgsvc_overlap",
+        "primary": "hprc_r2_no_hgsvc_overlap",
+        "extras": []
+      }
+    ],
+    "cohort_transfer_pairs": [
+      {
+        "name": "hprc_r2_no_hgsvc_overlap_to_hgsvc3",
+        "source": "hprc_r2_no_hgsvc_overlap",
+        "target": "hgsvc3",
+        "model_regime": "hprc_r2_no_hgsvc_overlap"
+      }
+    ],
+    "release_transfer_pairs": []
+  },
+  "outputs": {
+    "root": "${PANGENOMEFM_RESULTS_ROOT}/shared_donor_excluded_transfer_20260809",
+    "logs": "${PANGENOMEFM_RESULTS_ROOT}/shared_donor_excluded_transfer_20260809/logs",
+    "validation": "${PANGENOMEFM_RESULTS_ROOT}/shared_donor_excluded_transfer_20260809/validation",
+    "state": "${PANGENOMEFM_RESULTS_ROOT}/shared_donor_excluded_transfer_20260809/execution_state.json"
+  }
+}

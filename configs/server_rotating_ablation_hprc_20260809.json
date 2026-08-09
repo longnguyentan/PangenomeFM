@@ -1,0 +1,48 @@
+{
+  "extends": "server_full_multicohort_20260806.json",
+  "analysis_id": "server_rotating_ablation_hprc_20260809",
+  "experiment_matrix": {
+    "fold_regimes": [
+      {
+        "name": "hprc_r2_coordinate_only",
+        "primary": "hprc_r2",
+        "extras": [],
+        "training_variant": {"stream_mode": "coordinate"}
+      },
+      {
+        "name": "hprc_r2_graph_only",
+        "primary": "hprc_r2",
+        "extras": [],
+        "training_variant": {"stream_mode": "graph"}
+      },
+      {
+        "name": "hprc_r2_no_fusion_gate",
+        "primary": "hprc_r2",
+        "extras": [],
+        "training_variant": {"no_fusion_gate": true}
+      },
+      {
+        "name": "hprc_r2_no_positional_encoding",
+        "primary": "hprc_r2",
+        "extras": [],
+        "training_variant": {
+          "no_rope": true,
+          "multiscale_rope": false,
+          "orientation_rope": false
+        }
+      },
+      {
+        "name": "hprc_r2_no_adaptive_window",
+        "primary": "hprc_r2",
+        "extras": [],
+        "training_variant": {"adaptive_window": false}
+      }
+    ]
+  },
+  "outputs": {
+    "root": "${PANGENOMEFM_RESULTS_ROOT}/rotating_ablation_hprc_20260809",
+    "logs": "${PANGENOMEFM_RESULTS_ROOT}/rotating_ablation_hprc_20260809/logs",
+    "validation": "${PANGENOMEFM_RESULTS_ROOT}/rotating_ablation_hprc_20260809/validation",
+    "state": "${PANGENOMEFM_RESULTS_ROOT}/rotating_ablation_hprc_20260809/execution_state.json"
+  }
+}
