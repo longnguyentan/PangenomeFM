@@ -69,6 +69,34 @@ def test_donor_split_preserves_reference_chromosome_blocks(tmp_path: Path) -> No
                 "LOCUS": "JAHKSE010000001.1",
             },
             {
+                "#NAME": "GRCh38#0#chr22_KI270736v1_random",
+                "SENSE": "REFERENCE",
+                "SAMPLE": "GRCh38",
+                "HAPLOTYPE": 0,
+                "LOCUS": "chr22_KI270736v1_random",
+            },
+            {
+                "#NAME": "HG003#1#assembly-contig-22#0",
+                "SENSE": "HAPLOTYPE",
+                "SAMPLE": "HG003",
+                "HAPLOTYPE": 1,
+                "LOCUS": "assembly-contig-22",
+            },
+            {
+                "#NAME": "GRCh38#0#chrUn_KI270743v1",
+                "SENSE": "REFERENCE",
+                "SAMPLE": "GRCh38",
+                "HAPLOTYPE": 0,
+                "LOCUS": "chrUn_KI270743v1",
+            },
+            {
+                "#NAME": "HG003#2#unplaced-contig#0",
+                "SENSE": "HAPLOTYPE",
+                "SAMPLE": "HG003",
+                "HAPLOTYPE": 2,
+                "LOCUS": "unplaced-contig",
+            },
+            {
                 "#NAME": "GRCh38#0#chrX",
                 "SENSE": "REFERENCE",
                 "SAMPLE": "GRCh38",
@@ -96,4 +124,9 @@ def test_donor_split_preserves_reference_chromosome_blocks(tmp_path: Path) -> No
     )
 
     paths = pd.read_csv(tmp_path / "out/path_records.csv.gz")
-    assert paths["chromosome"].tolist() == ["chr22", "chrX"]
+    assert paths["chromosome"].fillna("unassigned").tolist() == [
+        "chr22",
+        "chr22",
+        "unassigned",
+        "chrX",
+    ]

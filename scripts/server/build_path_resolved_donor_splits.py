@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -25,6 +26,26 @@ PRIMARY_CHROMOSOMES = {
     "chrM",
 }
 
+PRIMARY_CHROMOSOME_PATTERN = re.compile(
+    r"^(chr(?:[1-9]|1[0-9]|2[0-2]|X|Y|M))(?:$|_)"
+)
+
+
+def primary_chromosome(value: object) -> str | None:
+    """Resolve a primary chromosome from a reference path or locus name.
+
+    GRCh38 alternate/reference contigs such as ``chr1_KI270706v1_random``
+    remain part of the chr1 metadata block, while ``chrUn_*`` records are
+    intentionally left unassigned.
+    """
+
+    raw = str(value).split("[", 1)[0]
+    for token in raw.replace("|", "#").split("#"):
+        match = PRIMARY_CHROMOSOME_PATTERN.match(token)
+        if match:
+            return match.group(1)
+    return None
+
 
 def annotate_reference_chromosome_blocks(frame: pd.DataFrame) -> pd.Series:
     """Record the primary reference chromosome governing each metadata row.
@@ -37,10 +58,11 @@ def annotate_reference_chromosome_blocks(frame: pd.DataFrame) -> pd.Series:
 
     current: str | None = None
     blocks: list[str | None] = []
-    for sense, locus in zip(frame["SENSE"], frame["LOCUS"], strict=True):
+    for sense, locus, name in zip(
+        frame["SENSE"], frame["LOCUS"], frame["#NAME"], strict=True
+    ):
         if str(sense) == "REFERENCE":
-            candidate = str(locus)
-            current = candidate if candidate in PRIMARY_CHROMOSOMES else None
+            current = primary_chromosome(locus) or primary_chromosome(name)
         blocks.append(current)
     return pd.Series(blocks, index=frame.index, dtype="string")
 
@@ -105,9 +127,7 @@ def build(
     elif {"path_name", "sample", "haplotype", "contig"}.issubset(frame):
         frame = frame.rename(columns={"contig": "locus"})
         frame["sense"] = "HAPLOTYPE"
-        frame["chromosome"] = frame["locus"].where(
-            frame["locus"].astype(str).isin(PRIMARY_CHROMOSOMES)
-        )
+        frame["chromosome"] = frame["locus"].map(primary_chromosome)
     else:
         raise ValueError(f"Unsupported path metadata columns: {frame.columns.tolist()}")
     frame["sample"] = frame["sample"].astype(str)
