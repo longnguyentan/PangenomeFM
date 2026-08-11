@@ -36,17 +36,20 @@ CANONICAL_CHROMOSOMES = {f"chr{index}" for index in range(1, 23)} | {"chrX", "ch
 
 def canonical_chromosome(value: object) -> str:
     raw = str(value)
-    if "#" in raw:
-        raw = raw.split("#")[-1]
-    if "|" in raw:
-        raw = raw.split("|")[-1]
-    if "[" in raw:
-        raw = raw.split("[", 1)[0]
-    if raw.startswith("chr"):
-        return raw
-    if raw in {*(str(index) for index in range(1, 23)), "X", "Y", "M", "MT"}:
-        return f"chr{raw}"
-    return raw
+    # Haplotype paths may append a phase-block coordinate after the
+    # chromosome, for example HG002#1#chr22#13698806. Prefer an explicit
+    # ``chr*`` token: the preceding bare numeric token is a haplotype, not a
+    # chromosome.
+    tokens = raw.replace("|", "#").split("#")
+    for token in tokens:
+        candidate = token.split("[", 1)[0]
+        if candidate in CANONICAL_CHROMOSOMES:
+            return candidate
+
+    fallback = tokens[-1].split("[", 1)[0]
+    if fallback in {*(str(index) for index in range(1, 23)), "X", "Y", "M", "MT"}:
+        return "chrM" if fallback in {"M", "MT"} else f"chr{fallback}"
+    return fallback
 
 
 def iter_path_handles(path_field: str) -> Iterable[tuple[str, str]]:
