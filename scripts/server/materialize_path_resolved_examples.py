@@ -94,14 +94,22 @@ def load_path_records(
     if missing:
         raise ValueError(f"Path records miss columns: {sorted(missing)}")
     frame = frame.loc[frame["donor_split"].astype(str).isin(splits)].copy()
+    stored_chromosome = (
+        frame["chromosome"].map(canonical_chromosome)
+        if "chromosome" in frame
+        else pd.Series("", index=frame.index)
+    )
     locus_chromosome = frame["locus"].map(canonical_chromosome)
     path_chromosome = frame["path_name"].map(canonical_chromosome)
     # GBZ metadata from some releases uses assembly-contig identifiers in
     # LOCUS even when the canonical chromosome remains encoded in #NAME.
     # Prefer canonical LOCUS values, then fall back to the path name.
-    frame["chromosome"] = locus_chromosome.where(
-        locus_chromosome.isin(CANONICAL_CHROMOSOMES),
-        path_chromosome,
+    frame["chromosome"] = stored_chromosome.where(
+        stored_chromosome.isin(CANONICAL_CHROMOSOMES),
+        locus_chromosome.where(
+            locus_chromosome.isin(CANONICAL_CHROMOSOMES),
+            path_chromosome,
+        ),
     )
     if chromosomes:
         frame = frame.loc[frame["chromosome"].isin(chromosomes)].copy()

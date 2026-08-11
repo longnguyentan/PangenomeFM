@@ -18,6 +18,33 @@ import pandas as pd
 from scripts.server.audit_path_sample_overlap import REFERENCE_SAMPLES, sha256_file
 
 
+PRIMARY_CHROMOSOMES = {
+    *(f"chr{number}" for number in range(1, 23)),
+    "chrX",
+    "chrY",
+    "chrM",
+}
+
+
+def annotate_reference_chromosome_blocks(frame: pd.DataFrame) -> pd.Series:
+    """Record the primary reference chromosome governing each metadata row.
+
+    ``vg paths -M`` emits HPRC haplotype paths with assembly-contig LOCUS
+    values inside blocks introduced by REFERENCE rows.  The block label must
+    be retained before those reference rows are removed; it cannot generally
+    be reconstructed from an assembly-contig accession afterwards.
+    """
+
+    current: str | None = None
+    blocks: list[str | None] = []
+    for sense, locus in zip(frame["SENSE"], frame["LOCUS"], strict=True):
+        if str(sense) == "REFERENCE":
+            candidate = str(locus)
+            current = candidate if candidate in PRIMARY_CHROMOSOMES else None
+        blocks.append(current)
+    return pd.Series(blocks, index=frame.index, dtype="string")
+
+
 def deterministic_split(
     samples: list[str],
     *,
@@ -65,6 +92,7 @@ def build(
     separator = "\t" if path_metadata.name.endswith(".tsv") or path_metadata.name.endswith(".tsv.gz") else ","
     frame = pd.read_csv(path_metadata, sep=separator, compression="infer")
     if {"#NAME", "SENSE", "SAMPLE", "HAPLOTYPE", "LOCUS"}.issubset(frame):
+        frame["chromosome"] = annotate_reference_chromosome_blocks(frame)
         frame = frame.rename(
             columns={
                 "#NAME": "path_name",
@@ -77,6 +105,9 @@ def build(
     elif {"path_name", "sample", "haplotype", "contig"}.issubset(frame):
         frame = frame.rename(columns={"contig": "locus"})
         frame["sense"] = "HAPLOTYPE"
+        frame["chromosome"] = frame["locus"].where(
+            frame["locus"].astype(str).isin(PRIMARY_CHROMOSOMES)
+        )
     else:
         raise ValueError(f"Unsupported path metadata columns: {frame.columns.tolist()}")
     frame["sample"] = frame["sample"].astype(str)
@@ -99,6 +130,7 @@ def build(
         "sample",
         "haplotype",
         "locus",
+        "chromosome",
         "path_name",
     ]
     for optional in ("PHASE_BLOCK", "SUBRANGE"):
@@ -147,6 +179,17 @@ def build(
         "donors": int(donors["sample"].nunique()),
         "phased_haplotypes": int(donors["haplotypes"].sum()),
         "path_records": int(len(path_records)),
+        "chromosome_path_record_counts": {
+            str(key): int(value)
+            for key, value in path_records["chromosome"]
+            .fillna("unassigned")
+            .value_counts()
+            .sort_index()
+            .items()
+        },
+        "unassigned_chromosome_path_records": int(
+            (~path_records["chromosome"].isin(PRIMARY_CHROMOSOMES)).sum()
+        ),
         "split_summary": split_summary.to_dict("records"),
         "leakage_check": "each sample occurs in exactly one split",
         "blocking_note": (
