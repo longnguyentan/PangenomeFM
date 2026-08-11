@@ -62,6 +62,31 @@ def build_pair_matrix(
     return pair_features(left, right)
 
 
+def complete_feature_mask(
+    examples: pd.DataFrame,
+    *,
+    embedded_segids: set[int] | dict[int, object],
+    cached_segids: set[int] | dict[int, object],
+) -> np.ndarray:
+    """Return a writable mask for examples with both endpoint feature sets.
+
+    Recent pandas/NumPy combinations may expose ``Series.to_numpy()`` as a
+    read-only view.  Building the four conditions as a pandas expression and
+    requesting an explicit copy avoids an in-place ``&=`` failure while
+    preserving the exact eligible-example universe across all baselines.
+    """
+
+    start = examples["start_segid"].astype(int)
+    end = examples["end_segid"].astype(int)
+    keep = (
+        start.isin(embedded_segids)
+        & end.isin(embedded_segids)
+        & start.isin(cached_segids)
+        & end.isin(cached_segids)
+    )
+    return keep.to_numpy(dtype=bool, copy=True)
+
+
 def stratified_metrics(
     predictions: pd.DataFrame,
     examples: pd.DataFrame,
@@ -149,10 +174,11 @@ def run_probe(
     with np.load(feature_cache, allow_pickle=False) as cache:
         cache_segids = cache["segid"].astype(np.int64)
         cache_positions = {int(segid): index for index, segid in enumerate(cache_segids)}
-        keep = examples["start_segid"].astype(int).isin(embeddings).to_numpy()
-        keep &= examples["end_segid"].astype(int).isin(embeddings).to_numpy()
-        keep &= examples["start_segid"].astype(int).isin(cache_positions).to_numpy()
-        keep &= examples["end_segid"].astype(int).isin(cache_positions).to_numpy()
+        keep = complete_feature_mask(
+            examples,
+            embedded_segids=embeddings,
+            cached_segids=cache_positions,
+        )
         examples = examples.loc[keep].sort_values("example_id").reset_index(drop=True)
         if examples.empty:
             raise RuntimeError("No SV examples have both breakpoint embeddings and cached features")

@@ -8,6 +8,7 @@ import pandas as pd
 from scripts.server.materialize_path_resolved_examples import (
     canonical_chromosome,
     iter_path_handles,
+    load_path_records,
     materialize,
 )
 
@@ -20,6 +21,30 @@ def test_path_handle_parser_and_chromosome_aliases() -> None:
     ]
     assert canonical_chromosome("GRCh38#0#chr22") == "chr22"
     assert canonical_chromosome("id=CHM13|chrY") == "chrY"
+
+
+def test_path_selection_falls_back_to_chromosome_in_path_name(tmp_path: Path) -> None:
+    records = pd.DataFrame(
+        {
+            "donor_split": ["train", "train"],
+            "sample": ["HG001", "HG002"],
+            "haplotype": ["1", "2"],
+            "locus": ["assembly_contig_1", "chr21"],
+            "path_name": ["HG001#1#chr22[0-100]", "HG002#2#chr21"],
+        }
+    )
+    path = tmp_path / "paths.csv.gz"
+    records.to_csv(path, index=False, compression="gzip")
+
+    selected = load_path_records(
+        path,
+        chromosomes={"chr22"},
+        splits={"train"},
+        max_paths=100,
+    )
+
+    assert selected["path_name"].tolist() == ["HG001#1#chr22[0-100]"]
+    assert selected["chromosome"].tolist() == ["chr22"]
 
 
 def test_materialize_from_cached_gaf(tmp_path: Path) -> None:

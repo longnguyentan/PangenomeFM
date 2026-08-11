@@ -3,7 +3,11 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from scripts.server.run_sv_frozen_probe_fold import pair_features, stratified_metrics
+from scripts.server.run_sv_frozen_probe_fold import (
+    complete_feature_mask,
+    pair_features,
+    stratified_metrics,
+)
 
 
 def test_pair_features() -> None:
@@ -12,6 +16,28 @@ def test_pair_features() -> None:
     result = pair_features(left, right)
     assert result.shape == (1, 8)
     np.testing.assert_allclose(result[0], [1, 2, 3, 1, 2, 1, 3, 2])
+
+
+def test_complete_feature_mask_is_writable_and_requires_both_endpoints() -> None:
+    examples = pd.DataFrame(
+        {
+            "start_segid": [1, 1, 4, 5],
+            "end_segid": [2, 3, 2, 6],
+        }
+    )
+    result = complete_feature_mask(
+        examples,
+        embedded_segids={1, 2, 4, 5, 6},
+        cached_segids={1, 2, 3, 5, 6},
+    )
+
+    np.testing.assert_array_equal(result, [True, False, False, True])
+    assert result.flags.writeable
+
+    # Regression check for the server failure: callers can safely refine the
+    # returned mask with in-place boolean operations.
+    result &= np.array([True, True, True, False])
+    np.testing.assert_array_equal(result, [True, False, False, False])
 
 
 def test_sv_stratified_metrics() -> None:

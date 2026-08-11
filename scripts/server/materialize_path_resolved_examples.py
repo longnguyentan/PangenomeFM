@@ -31,6 +31,9 @@ from typing import Iterable, TextIO
 import pandas as pd
 
 
+CANONICAL_CHROMOSOMES = {f"chr{index}" for index in range(1, 23)} | {"chrX", "chrY", "chrM"}
+
+
 def canonical_chromosome(value: object) -> str:
     raw = str(value)
     if "#" in raw:
@@ -88,7 +91,15 @@ def load_path_records(
     if missing:
         raise ValueError(f"Path records miss columns: {sorted(missing)}")
     frame = frame.loc[frame["donor_split"].astype(str).isin(splits)].copy()
-    frame["chromosome"] = frame["locus"].map(canonical_chromosome)
+    locus_chromosome = frame["locus"].map(canonical_chromosome)
+    path_chromosome = frame["path_name"].map(canonical_chromosome)
+    # GBZ metadata from some releases uses assembly-contig identifiers in
+    # LOCUS even when the canonical chromosome remains encoded in #NAME.
+    # Prefer canonical LOCUS values, then fall back to the path name.
+    frame["chromosome"] = locus_chromosome.where(
+        locus_chromosome.isin(CANONICAL_CHROMOSOMES),
+        path_chromosome,
+    )
     if chromosomes:
         frame = frame.loc[frame["chromosome"].isin(chromosomes)].copy()
     frame = frame.drop_duplicates("path_name").sort_values("path_name").reset_index(drop=True)
