@@ -253,4 +253,7 @@ docs/PSB_EXPERIMENT_PLAN.md
 !/docs/
 /docs/*
 !/docs/RUN_SUBMISSION_TIER_EXPERIMENTS.md
+!/docs/group_discussion_20260811/
+!/docs/group_discussion_20260811/**
 /analysis
+/docs
