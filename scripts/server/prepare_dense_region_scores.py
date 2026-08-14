@@ -27,6 +27,8 @@ import pandas as pd
 
 from evaluation.calibration import apply_temperature, fit_temperature
 from evaluation.splits import normalize_chrom
+from graph.neg_sampling import oriented_ids_from_links, slice_oriented_node_set
+from graph.slicing import build_global_index
 from scripts.run_full_multicohort_all_chromosomes import load_config
 
 
@@ -34,7 +36,8 @@ CANONICAL_CHROMOSOMES = tuple(
     [f"chr{index}" for index in range(1, 23)] + ["chrX", "chrY"]
 )
 REQUIRED_NEURAL_COLUMNS = {
-    "dataset", "slice", "target_sn", "split", "y_true", "p_edge",
+    "dataset", "slice", "target_sn", "split", "u_local", "v_local",
+    "y_true", "p_edge",
 }
 REQUIRED_BASELINE_COLUMNS = {
     "slice", "chromosome", "fold_evaluation_split", "candidate_row_index",
@@ -42,6 +45,7 @@ REQUIRED_BASELINE_COLUMNS = {
 }
 REQUIRED_MANIFEST_COLUMNS = {
     "name", "target_sn", "closure", "start", "end", "n_segments", "n_links",
+    "links_path",
 }
 
 
@@ -141,8 +145,85 @@ def load_tile_inventory(
         [
             "region_id", "name", "chromosome", "start", "end", "region_length",
             "fold", "target_sn", "n_segments", "n_links", "graph_complexity",
+            "links_path",
         ]
     ].sort_values(["chromosome", "start", "end", "region_id"]).reset_index(drop=True)
+
+
+def resolve_manifest_path(value: object, manifest_dir: Path) -> Path:
+    path = Path(str(value))
+    if path.is_absolute() or path.exists():
+        return path
+    candidate = manifest_dir / path
+    return candidate if candidate.exists() else path
+
+
+def load_slice_node_cache(
+    inventory: pd.DataFrame,
+    *,
+    full_segments_path: Path,
+    manifest_dir: Path,
+) -> dict[str, np.ndarray]:
+    """Recreate the exact oriented-node order used by neural evaluation."""
+
+    segments = pd.read_csv(
+        full_segments_path,
+        compression="infer",
+        usecols=["name"],
+    )
+    segment_index, _ = build_global_index(segments)
+    progress(
+        f"loaded {len(segment_index):,} canonical segment IDs for edge reconstruction"
+    )
+    cache: dict[str, np.ndarray] = {}
+    total = len(inventory)
+    for position, row in enumerate(inventory.itertuples(index=False), start=1):
+        links_path = resolve_manifest_path(row.links_path, manifest_dir)
+        links = pd.read_csv(links_path, compression="infer")
+        u_structural, v_structural = oriented_ids_from_links(links, segment_index)
+        if np.any(u_structural < 0) or np.any(v_structural < 0):
+            raise ValueError(f"Slice links contain unknown segment names: {links_path}")
+        cache[str(row.region_id)] = slice_oriented_node_set(
+            u_structural, v_structural
+        )
+        if position % 50 == 0 or position == total:
+            progress(f"reconstructed oriented-node identities for {position}/{total} tiles")
+    return cache
+
+
+def attach_oriented_edge_ids(
+    neural: pd.DataFrame,
+    *,
+    slice_nodes: dict[str, np.ndarray],
+) -> pd.DataFrame:
+    """Map neural local endpoint indices back to stable oriented graph IDs."""
+
+    result = neural.copy()
+    result["u_oid"] = -1
+    result["v_oid"] = -1
+    for slice_name, indices in result.groupby("slice", sort=False).groups.items():
+        name = str(slice_name)
+        if name not in slice_nodes:
+            raise ValueError(f"No oriented-node reconstruction for neural slice {name}")
+        nodes = slice_nodes[name]
+        u_local = pd.to_numeric(result.loc[indices, "u_local"], errors="raise").to_numpy(
+            np.int64
+        )
+        v_local = pd.to_numeric(result.loc[indices, "v_local"], errors="raise").to_numpy(
+            np.int64
+        )
+        if (
+            np.any(u_local < 0)
+            or np.any(v_local < 0)
+            or np.any(u_local >= len(nodes))
+            or np.any(v_local >= len(nodes))
+        ):
+            raise ValueError(f"Neural local endpoint index is out of range for {name}")
+        result.loc[indices, "u_oid"] = nodes[u_local]
+        result.loc[indices, "v_oid"] = nodes[v_local]
+    result["u_oid"] = result["u_oid"].astype("int64")
+    result["v_oid"] = result["v_oid"].astype("int64")
+    return result
 
 
 def align_heldout_predictions(
@@ -151,8 +232,9 @@ def align_heldout_predictions(
     *,
     baseline_name: str,
     chromosomes: set[str],
-) -> pd.DataFrame:
-    """Align identical held-out candidates without using their labels as keys."""
+    slice_nodes: dict[str, np.ndarray],
+) -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
+    """Align exact edges within the audited common set of scored slices."""
 
     missing_neural = REQUIRED_NEURAL_COLUMNS - set(neural)
     missing_baseline = REQUIRED_BASELINE_COLUMNS - set(baseline)
@@ -164,6 +246,7 @@ def align_heldout_predictions(
     neural_test = neural.loc[neural["split"].astype(str).eq("heldout_chr_test")].copy()
     neural_test["chromosome"] = neural_test["target_sn"].map(normalize_chrom)
     neural_test = neural_test.loc[neural_test["chromosome"].isin(chromosomes)].copy()
+    neural_test = attach_oriented_edge_ids(neural_test, slice_nodes=slice_nodes)
     base_test = baseline.loc[
         baseline["baseline"].astype(str).eq(baseline_name)
         & baseline["fold_evaluation_split"].astype(str).eq("heldout")
@@ -175,37 +258,93 @@ def align_heldout_predictions(
             f"Empty held-out alignment: neural={len(neural_test)}, baseline={len(base_test)}"
         )
 
-    # Both producers traverse the fixed split-seed candidate indices in the
-    # same manifest order.  candidate_order is intentionally independent of
-    # y_true, so labels are available only for the subsequent identity audit.
-    neural_test["candidate_order"] = neural_test.groupby("slice", sort=False).cumcount()
-    base_test["candidate_order"] = base_test.groupby("slice", sort=False).cumcount()
+    neural_slices = set(neural_test["slice"].astype(str))
+    baseline_slices = set(base_test["slice"].astype(str))
+    common_slices = neural_slices & baseline_slices
+    if not common_slices:
+        raise ValueError("Neural and baseline predictions have no common held-out slices")
+
+    for frame in (neural_test, base_test):
+        frame["u_oid"] = pd.to_numeric(frame["u_oid"], errors="raise").astype("int64")
+        frame["v_oid"] = pd.to_numeric(frame["v_oid"], errors="raise").astype("int64")
+        frame["candidate_occurrence"] = frame.groupby(
+            ["slice", "u_oid", "v_oid"], sort=False
+        ).cumcount()
+    identity = ["slice", "u_oid", "v_oid", "candidate_occurrence"]
     merged = neural_test.merge(
         base_test[
             [
-                "slice", "candidate_order", "candidate_row_index", "u_oid", "v_oid",
-                "y_true", "p_calibrated", "chromosome",
+                *identity, "candidate_row_index", "y_true", "p_calibrated",
+                "chromosome",
             ]
         ],
-        on=["slice", "candidate_order"],
+        on=identity,
         how="outer",
         validate="one_to_one",
         suffixes=("_neural", "_baseline"),
         indicator=True,
     )
-    if not merged["_merge"].eq("both").all():
-        counts = merged["_merge"].value_counts().to_dict()
-        raise ValueError(f"Neural/baseline candidate coverage differs: {counts}")
-    if not merged["chromosome_neural"].eq(merged["chromosome_baseline"]).all():
+    counts = {
+        str(key): int(value) for key, value in merged["_merge"].value_counts().items()
+    }
+    both = int(counts.get("both", 0))
+    neural_total = both + int(counts.get("left_only", 0))
+    baseline_total = both + int(counts.get("right_only", 0))
+    common_fraction = both / max(neural_total, baseline_total, 1)
+    common_slice_rows = merged["slice"].astype(str).isin(common_slices)
+    common_slice_merge = merged.loc[common_slice_rows, "_merge"]
+    common_slice_counts = {
+        str(key): int(value)
+        for key, value in common_slice_merge.value_counts().items()
+    }
+    common_slice_both = int(common_slice_counts.get("both", 0))
+    common_slice_neural = common_slice_both + int(
+        common_slice_counts.get("left_only", 0)
+    )
+    common_slice_baseline = common_slice_both + int(
+        common_slice_counts.get("right_only", 0)
+    )
+    common_slice_exact_fraction = common_slice_both / max(
+        common_slice_neural, common_slice_baseline, 1
+    )
+    coverage = {
+        "neural_slices": len(neural_slices),
+        "baseline_slices": len(baseline_slices),
+        "common_slices": len(common_slices),
+        "neural_only_slices": len(neural_slices - baseline_slices),
+        "baseline_only_slices": len(baseline_slices - neural_slices),
+        "neural_only_slice_names": ",".join(sorted(neural_slices - baseline_slices)),
+        "baseline_only_slice_names": ",".join(
+            sorted(baseline_slices - neural_slices)
+        ),
+        "neural_candidates": neural_total,
+        "baseline_candidates": baseline_total,
+        "common_candidates": both,
+        "neural_only_candidates": int(counts.get("left_only", 0)),
+        "baseline_only_candidates": int(counts.get("right_only", 0)),
+        "common_fraction": common_fraction,
+        "common_slice_neural_candidates": common_slice_neural,
+        "common_slice_baseline_candidates": common_slice_baseline,
+        "common_slice_exact_candidates": common_slice_both,
+        "common_slice_exact_fraction": common_slice_exact_fraction,
+    }
+    if not common_slice_merge.eq("both").all():
+        raise ValueError(
+            "Neural/baseline exact-edge coverage differs within common slices: "
+            f"{coverage}"
+        )
+    mismatches = merged.loc[~merged["_merge"].eq("both")].copy()
+    matched = merged.loc[common_slice_rows & merged["_merge"].eq("both")].copy()
+    if not matched["chromosome_neural"].eq(matched["chromosome_baseline"]).all():
         raise ValueError("Neural/baseline chromosome assignments differ")
     if not np.array_equal(
-        merged["y_true_neural"].to_numpy(np.int8),
-        merged["y_true_baseline"].to_numpy(np.int8),
+        matched["y_true_neural"].to_numpy(np.int8),
+        matched["y_true_baseline"].to_numpy(np.int8),
     ):
         raise ValueError(
             "Neural/baseline held-out labels differ; refusing a non-identical comparison"
         )
-    return merged.drop(columns="_merge")
+    return matched.drop(columns="_merge"), coverage, mismatches
 
 
 def score_one_run(
@@ -215,9 +354,10 @@ def score_one_run(
     baseline_name: str,
     chromosomes: set[str],
     dataset: str,
+    slice_nodes: dict[str, np.ndarray],
     expected_test_chromosomes: set[str] | None = None,
     expected_validation_chromosomes: set[str] | None = None,
-) -> tuple[pd.DataFrame, float]:
+) -> tuple[pd.DataFrame, float, dict[str, object], pd.DataFrame]:
     neural = pd.read_csv(neural_path, compression="infer")
     if "dataset" in neural:
         neural = neural.loc[neural["dataset"].astype(str).eq(dataset)].copy()
@@ -265,11 +405,12 @@ def score_one_run(
                 f"Baseline held-out chromosomes {sorted(observed_baseline)} differ "
                 f"from fold definition {sorted(expected_test_chromosomes)}"
             )
-    aligned = align_heldout_predictions(
+    aligned, coverage, mismatches = align_heldout_predictions(
         neural,
         baseline,
         baseline_name=baseline_name,
         chromosomes=chromosomes,
+        slice_nodes=slice_nodes,
     )
     model_probability = apply_temperature(
         aligned["p_edge"].to_numpy(float), temperature
@@ -314,7 +455,7 @@ def score_one_run(
                 "mean_baseline_probability": float(group["baseline_probability"].mean()),
             }
         )
-    return pd.DataFrame(rows), float(temperature)
+    return pd.DataFrame(rows), float(temperature), coverage, mismatches
 
 
 def find_one(pattern: Path, label: str) -> Path:
@@ -431,10 +572,19 @@ def main() -> int:
         f"loaded {len(inventory)} native tiles across "
         f"{inventory['chromosome'].nunique()} chromosomes"
     )
+    full_segments_path = Path(dataset_config["segments"])
+    progress("reconstructing exact oriented-node identities for native tiles")
+    slice_nodes = load_slice_node_cache(
+        inventory,
+        full_segments_path=full_segments_path,
+        manifest_dir=manifest_path.parent,
+    )
 
     seed_frames = []
     sources = []
     temperatures = []
+    coverage_rows = []
+    mismatch_frames = []
     required_folds = sorted(inventory["fold"].unique())
     for fold in required_folds:
         fold_chromosomes = set(
@@ -453,12 +603,13 @@ def main() -> int:
             if not baseline_path.is_file():
                 raise FileNotFoundError(f"Missing baseline predictions: {baseline_path}")
             progress(f"scoring fold={fold} seed={seed} chromosomes={sorted(fold_chromosomes)}")
-            frame, temperature = score_one_run(
+            frame, temperature, coverage, mismatches = score_one_run(
                 neural_path,
                 baseline_path,
                 baseline_name=args.baseline,
                 chromosomes=fold_chromosomes,
                 dataset=args.dataset,
+                slice_nodes=slice_nodes,
                 expected_test_chromosomes=set(fold_metadata[fold]["test"]),
                 expected_validation_chromosomes=set(
                     fold_metadata[fold]["validation"]
@@ -471,6 +622,11 @@ def main() -> int:
             frame["temperature"] = temperature
             seed_frames.append(frame)
             temperatures.append({"fold": fold, "seed": seed, "temperature": temperature})
+            coverage_rows.append({"fold": fold, "seed": seed, **coverage})
+            if not mismatches.empty:
+                mismatches.insert(0, "fold", fold)
+                mismatches.insert(1, "seed", seed)
+                mismatch_frames.append(mismatches)
             for role, path in (("neural", neural_path), ("baseline", baseline_path)):
                 sources.append(
                     {
@@ -505,10 +661,29 @@ def main() -> int:
     region_scores.to_csv(args.out_dir / "region_scores.csv", index=False)
     exclusions = region_scores.loc[~region_scores["is_eligible"]].copy()
     exclusions.to_csv(args.out_dir / "region_score_exclusions.csv", index=False)
+    pd.DataFrame(coverage_rows).to_csv(
+        args.out_dir / "candidate_coverage_summary.csv", index=False
+    )
+    mismatch_columns = [
+        "fold", "seed", "slice", "u_oid", "v_oid", "candidate_occurrence",
+        "_merge", "y_true_neural", "y_true_baseline",
+    ]
+    mismatch_output = (
+        pd.concat(mismatch_frames, ignore_index=True)
+        if mismatch_frames
+        else pd.DataFrame(columns=mismatch_columns)
+    )
+    mismatch_output.to_csv(
+        args.out_dir / "candidate_coverage_exclusions.csv.gz",
+        index=False,
+        compression="gzip",
+    )
     output_paths = [
         args.out_dir / "region_seed_scores.csv.gz",
         args.out_dir / "region_scores.csv",
         args.out_dir / "region_score_exclusions.csv",
+        args.out_dir / "candidate_coverage_summary.csv",
+        args.out_dir / "candidate_coverage_exclusions.csv.gz",
     ]
     audit = {
         "schema_version": 1,
@@ -518,6 +693,8 @@ def main() -> int:
         "config_sha256": sha256sum(args.config),
         "manifest": str(manifest_path.resolve()),
         "manifest_sha256": sha256sum(manifest_path),
+        "full_segments": str(full_segments_path.resolve()),
+        "full_segments_sha256": sha256sum(full_segments_path),
         "results_root": str(args.results_root.resolve()),
         "baseline_root": str(args.baseline_root.resolve()),
         "regime": args.regime,
@@ -536,6 +713,12 @@ def main() -> int:
         "model_calibration": "temperature fit only on val_chr_test for the same fold/seed",
         "baseline_calibration": "existing Platt calibration fit only on validation chromosomes",
         "minimum_test_candidates": args.minimum_test_candidates,
+        "candidate_alignment_policy": (
+            "exact oriented-edge identity is required within every slice produced by "
+            "both methods; whole slices absent from one method are audited and excluded"
+        ),
+        "candidate_coverage_by_run": coverage_rows,
+        "candidate_coverage_exclusions": int(len(mismatch_output)),
         "tiles": int(len(region_scores)),
         "eligible_tiles": int(region_scores["is_eligible"].sum()),
         "exclusion_reason_counts": {

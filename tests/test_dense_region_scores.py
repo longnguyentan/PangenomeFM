@@ -27,6 +27,8 @@ def synthetic_neural() -> pd.DataFrame:
             "slice": ["validation"] * 4 + ["tile_chr1_0"] * 12,
             "target_sn": ["GRCh38#0#chr2"] * 4 + ["GRCh38#0#chr1"] * 12,
             "split": ["val_chr_test"] * 4 + ["heldout_chr_test"] * 12,
+            "u_local": [0, 2, 4, 6] + list(range(0, 24, 2)),
+            "v_local": [1, 3, 5, 7] + list(range(1, 25, 2)),
             "y_true": validation_y + heldout_y,
             "p_edge": [0.2, 0.3, 0.7, 0.8] + [0.1, 0.9] * 6,
         }
@@ -71,6 +73,7 @@ def test_native_inventory_rejects_overlapping_tiles(tmp_path: Path) -> None:
             "end": [10, 20],
             "n_segments": [4, 5],
             "n_links": [3, 4],
+            "links_path": ["a.links.csv.gz", "b.links.csv.gz"],
         }
     ).to_csv(manifest, index=False)
     with pytest.raises(ValueError, match="overlap"):
@@ -91,6 +94,66 @@ def test_alignment_refuses_label_mismatch() -> None:
             baseline,
             baseline_name="sequence_composition_sgd",
             chromosomes={"chr1"},
+            slice_nodes={"tile_chr1_0": np.arange(24)},
+        )
+
+
+def test_alignment_uses_exact_edge_common_support_and_audits_exclusion() -> None:
+    baseline = pd.concat(
+        [
+            synthetic_baseline(),
+            pd.DataFrame(
+                {
+                    "slice": ["tile_chr1_missing"],
+                    "chromosome": ["chr1"],
+                    "fold_evaluation_split": ["heldout"],
+                    "candidate_row_index": [12],
+                    "u_oid": [100],
+                    "v_oid": [101],
+                    "y_true": [0],
+                    "baseline": ["sequence_composition_sgd"],
+                    "p_calibrated": [0.3],
+                }
+            ),
+        ],
+        ignore_index=True,
+    )
+    matched, coverage, exclusions = align_heldout_predictions(
+        synthetic_neural(),
+        baseline,
+        baseline_name="sequence_composition_sgd",
+        chromosomes={"chr1"},
+        slice_nodes={"tile_chr1_0": np.arange(24)},
+    )
+    assert len(matched) == 12
+    assert coverage["neural_slices"] == 1
+    assert coverage["baseline_slices"] == 2
+    assert coverage["common_slices"] == 1
+    assert coverage["baseline_only_slices"] == 1
+    assert coverage["baseline_only_candidates"] == 1
+    assert coverage["common_fraction"] == pytest.approx(12 / 13)
+    assert coverage["common_slice_exact_fraction"] == 1
+    assert len(exclusions) == 1
+    assert exclusions.iloc[0]["_merge"] == "right_only"
+
+    baseline.loc[len(baseline)] = {
+        "slice": "tile_chr1_0",
+        "chromosome": "chr1",
+        "fold_evaluation_split": "heldout",
+        "candidate_row_index": 13,
+        "u_oid": 100,
+        "v_oid": 101,
+        "y_true": 0,
+        "baseline": "sequence_composition_sgd",
+        "p_calibrated": 0.3,
+    }
+    with pytest.raises(ValueError, match="within common slices"):
+        align_heldout_predictions(
+            synthetic_neural(),
+            baseline,
+            baseline_name="sequence_composition_sgd",
+            chromosomes={"chr1"},
+            slice_nodes={"tile_chr1_0": np.arange(24)},
         )
 
 
@@ -101,12 +164,13 @@ def test_scoring_uses_validation_calibration_and_identical_candidates(
     baseline_path = tmp_path / "baseline.csv.gz"
     synthetic_neural().to_csv(neural_path, index=False, compression="gzip")
     synthetic_baseline().to_csv(baseline_path, index=False, compression="gzip")
-    scores, temperature = score_one_run(
+    scores, temperature, coverage, exclusions = score_one_run(
         neural_path,
         baseline_path,
         baseline_name="sequence_composition_sgd",
         chromosomes={"chr1"},
         dataset="hprc_r2",
+        slice_nodes={"tile_chr1_0": np.arange(24)},
     )
     assert len(scores) == 1
     assert scores.loc[0, "region_id"] == "tile_chr1_0"
@@ -114,6 +178,8 @@ def test_scoring_uses_validation_calibration_and_identical_candidates(
     assert scores.loc[0, "n_positive_test_candidates"] == 6
     assert scores.loc[0, "log_loss_advantage"] > 0
     assert np.isfinite(temperature) and temperature > 0
+    assert coverage["common_fraction"] == 1
+    assert exclusions.empty
 
 
 def test_aggregation_requires_seed_coverage_and_two_classes() -> None:
@@ -161,6 +227,19 @@ def test_aggregation_requires_seed_coverage_and_two_classes() -> None:
 def test_command_line_round_trip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     benchmark = tmp_path / "benchmark"
     benchmark.mkdir()
+    segments = tmp_path / "full_segments.csv.gz"
+    pd.DataFrame({"name": [f"s{index}" for index in range(12)]}).to_csv(
+        segments, index=False, compression="gzip"
+    )
+    links = benchmark / "slice.links.csv.gz"
+    pd.DataFrame(
+        {
+            "from_seg": [f"s{index}" for index in range(12)],
+            "from_orient": ["+"] * 12,
+            "to_seg": [f"s{index}" for index in range(12)],
+            "to_orient": ["-"] * 12,
+        }
+    ).to_csv(links, index=False, compression="gzip")
     pd.DataFrame(
         {
             "name": ["tile_chr1_0", "validation"],
@@ -170,6 +249,7 @@ def test_command_line_round_trip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch
             "end": [5_000_000, 5_000_000],
             "n_segments": [100, 100],
             "n_links": [120, 120],
+            "links_path": [str(links), str(links)],
         }
     ).to_csv(benchmark / "manifest.csv", index=False)
     config = tmp_path / "config.json"
@@ -177,7 +257,10 @@ def test_command_line_round_trip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch
         json.dumps(
             {
                 "datasets": {
-                    "hprc_r2": {"pretrain_benchmark": str(benchmark)}
+                    "hprc_r2": {
+                        "pretrain_benchmark": str(benchmark),
+                        "segments": str(segments),
+                    }
                 },
                 "training": {"seeds": [42]},
                 "rotating_chromosome_folds": [
@@ -229,4 +312,7 @@ def test_command_line_round_trip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     audit = json.loads((output / "audit.json").read_text())
     assert audit["status"] == "complete"
     assert audit["downstream_signal_access"].startswith("none")
+    assert audit["candidate_coverage_exclusions"] == 0
+    coverage = pd.read_csv(output / "candidate_coverage_summary.csv")
+    assert coverage.loc[0, "common_fraction"] == 1
     assert (output / "SHA256SUMS").is_file()
