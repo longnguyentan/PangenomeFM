@@ -9,6 +9,7 @@ import pandas as pd
 from scripts.server.prepare_model_prioritized_regions import (
     FINAL_REQUIRED_COLUMNS,
     assign_priorities,
+    clip_regions_to_reference,
     count_variant_anchors,
     distance_to_nearest_gene,
     fasta_covariates,
@@ -44,10 +45,11 @@ def test_streaming_covariates_and_priority_rule(tmp_path: Path) -> None:
     regions = validate_regions(synthetic_regions())
     fasta = tmp_path / "reference.fa.gz"
     write_gzip(fasta, ">chr1\nGCGCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
-    gc, acgt, observed = fasta_covariates(regions, fasta)
+    gc, acgt, observed, chromosome_lengths = fasta_covariates(regions, fasta)
     assert observed.tolist() == [10] * 6
     assert acgt.tolist() == [10] * 6
     assert gc[0] == 4
+    assert chromosome_lengths == {"chr1": 60}
     regions["gc_content"] = gc / acgt
 
     bedgraph = tmp_path / "map.bedgraph.gz"
@@ -92,6 +94,28 @@ def test_streaming_covariates_and_priority_rule(tmp_path: Path) -> None:
     assert prioritized["is_prioritized"].sum() == 1
     assert prioritized.loc[prioritized["is_prioritized"], "region_id"].iloc[0] == "r0"
     assert set(FINAL_REQUIRED_COLUMNS).issubset(prioritized.columns)
+
+
+def test_terminal_benchmark_region_is_clipped_to_reference_boundary(
+    tmp_path: Path,
+) -> None:
+    regions = validate_regions(synthetic_regions().iloc[:2].copy())
+    fasta = tmp_path / "reference.fa.gz"
+    write_gzip(fasta, ">chr1\nAAAAAAAAAAAAAAA\n")
+
+    gc, acgt, observed, chromosome_lengths = fasta_covariates(regions, fasta)
+    clipped, clipping = clip_regions_to_reference(regions, chromosome_lengths)
+
+    assert gc.tolist() == [0, 0]
+    assert acgt.tolist() == [10, 5]
+    assert observed.tolist() == [10, 5]
+    assert clipped["end"].tolist() == [10, 15]
+    assert clipped["region_length"].tolist() == [10, 5]
+    assert clipped["benchmark_end"].tolist() == [10, 20]
+    assert clipped["reference_clipped"].tolist() == [False, True]
+    assert len(clipping) == 1
+    assert clipping.loc[0, "region_id"] == "r1"
+    assert clipping.loc[0, "reference_clipped_bp"] == 5
 
 
 def test_ineligible_scores_never_become_cases() -> None:

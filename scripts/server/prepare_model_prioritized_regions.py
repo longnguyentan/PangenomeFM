@@ -7,10 +7,13 @@ the top score fraction within each chromosome.  It never reads QTL, GWAS, or
 other enrichment signals, so the case/control universe is fixed before those
 signals are evaluated.
 
-Coordinates are zero-based and half-open.  GC excludes ambiguous reference
-bases from its denominator.  Umap/Bismap omits zero-valued intervals, so bases
-absent from the bedGraph contribute zero to the full region-length denominator.
-Variant density counts normalized HPRC records by their one-based POS anchor.
+Coordinates are zero-based and half-open.  Terminal fixed-width benchmark bins
+are intersected with the canonical GRCh38 chromosome interval before any
+covariate, signal overlap, or matching variable is computed.  GC excludes
+ambiguous reference bases from its denominator.  Umap/Bismap omits zero-valued
+intervals, so bases absent from the bedGraph contribute zero to the clipped
+region-length denominator.  Variant density counts normalized HPRC records by
+their one-based POS anchor.
 """
 
 from __future__ import annotations
@@ -135,7 +138,7 @@ def overlapping_interval_positions(
 def fasta_covariates(
     regions: pd.DataFrame,
     fasta: Path,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, dict[str, int]]:
     """Read compressed FASTA once and accumulate bases per interval.
 
     UCSC FASTA uses short wrapped lines.  Iterating over roughly sixty million
@@ -148,6 +151,7 @@ def fasta_covariates(
     gc = np.zeros(len(regions), dtype=np.int64)
     acgt = np.zeros(len(regions), dtype=np.int64)
     observed = np.zeros(len(regions), dtype=np.int64)
+    chromosome_lengths: dict[str, int] = {}
     if fasta.suffix in {".gz", ".bgz"}:
         with gzip.open(fasta, "rb") as handle:
             payload = handle.read()
@@ -175,6 +179,9 @@ def fasta_covariates(
                 .replace(b"\r", b"")
                 .upper()
             )
+            if chrom in chromosome_lengths:
+                raise ValueError(f"Reference FASTA contains duplicate record for {chrom}")
+            chromosome_lengths[chrom] = len(sequence)
             item = index[chrom]
             for offset, row in enumerate(item["row_indices"]):
                 start = int(item["starts"][offset])
@@ -185,7 +192,50 @@ def fasta_covariates(
                 acgt[row] = sum(piece.count(base) for base in (b"A", b"C", b"G", b"T"))
                 observed[row] = len(piece)
         cursor = record_end
-    return gc, acgt, observed
+    return gc, acgt, observed, chromosome_lengths
+
+
+def clip_regions_to_reference(
+    regions: pd.DataFrame,
+    chromosome_lengths: dict[str, int],
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Intersect benchmark bins with canonical reference chromosome bounds."""
+
+    result = regions.copy()
+    missing = sorted(set(result["chromosome"]) - set(chromosome_lengths))
+    if missing:
+        raise ValueError(f"Reference FASTA misses canonical chromosomes: {missing}")
+    reference_end = result["chromosome"].map(chromosome_lengths).astype("int64")
+    outside = result["start"].to_numpy(np.int64) >= reference_end.to_numpy(np.int64)
+    if np.any(outside):
+        examples = result.loc[outside, "region_id"].astype(str).tolist()
+        raise ValueError(
+            "Benchmark regions start outside their reference chromosome: "
+            + ", ".join(examples[:10])
+        )
+
+    result["benchmark_start"] = result["start"].astype("int64")
+    result["benchmark_end"] = result["end"].astype("int64")
+    result["benchmark_region_length"] = result["region_length"].astype("int64")
+    result["reference_chromosome_length"] = reference_end
+    result["end"] = np.minimum(
+        result["end"].to_numpy(np.int64), reference_end.to_numpy(np.int64)
+    )
+    result["region_length"] = result["end"] - result["start"]
+    result["reference_clipped_bp"] = result["benchmark_end"] - result["end"]
+    result["reference_clipped"] = result["reference_clipped_bp"].gt(0)
+    if (result["region_length"] <= 0).any():
+        raise ValueError("Reference clipping produced an empty region")
+
+    clipping = result.loc[
+        result["reference_clipped"],
+        [
+            "region_id", "chromosome", "benchmark_start", "benchmark_end",
+            "start", "end", "benchmark_region_length", "region_length",
+            "reference_chromosome_length", "reference_clipped_bp",
+        ],
+    ].copy()
+    return result, clipping.reset_index(drop=True)
 
 
 def mappability_covariates(
@@ -478,7 +528,12 @@ def main() -> int:
     progress("validating dense scores and their signal-blind audit")
     regions = validate_regions(pd.read_csv(args.dense_scores))
     progress(f"computing GC for {len(regions)} regions from reference FASTA")
-    gc, acgt, observed = fasta_covariates(regions, args.reference_fasta)
+    gc, acgt, observed, chromosome_lengths = fasta_covariates(
+        regions, args.reference_fasta
+    )
+    regions, reference_clipping = clip_regions_to_reference(
+        regions, chromosome_lengths
+    )
     expected = regions["region_length"].to_numpy(np.int64)
     if not np.array_equal(observed, expected):
         bad = regions.loc[observed != expected, "region_id"].astype(str).tolist()
@@ -490,7 +545,12 @@ def main() -> int:
         bad = regions.loc[acgt <= 0, "region_id"].astype(str).tolist()
         raise ValueError(f"Regions have no canonical reference bases: {bad[:10]}")
     regions["gc_content"] = gc / acgt
-    progress("computing full-length mean k=100 mappability (omitted bases are zero)")
+    if len(reference_clipping):
+        progress(
+            f"clipped {len(reference_clipping)} terminal benchmark bins to "
+            "canonical GRCh38 chromosome ends"
+        )
+    progress("computing clipped-length mean k=100 mappability (omitted bases are zero)")
     mappability, reported = mappability_covariates(
         regions,
         args.mappability_bedgraph,
@@ -544,6 +604,9 @@ def main() -> int:
     chromosome_exclusions.to_csv(
         args.out_dir / "chromosome_priority_exclusions.csv", index=False
     )
+    reference_clipping.to_csv(
+        args.out_dir / "reference_boundary_clipping.csv", index=False
+    )
     covariate_summary = retained[
         [
             "gc_content", "mappability", "graph_complexity", "variant_density",
@@ -555,6 +618,7 @@ def main() -> int:
         args.out_dir / "regions.csv",
         args.out_dir / "region_exclusions.csv",
         args.out_dir / "chromosome_priority_exclusions.csv",
+        args.out_dir / "reference_boundary_clipping.csv",
         args.out_dir / "covariate_summary.csv",
     ]
     progress("hashing multi-gigabyte inputs and output tables for the final audit")
@@ -579,6 +643,15 @@ def main() -> int:
             "normalized_variants": sha256sum(args.normalized_variants),
         },
         "input_regions": int(len(regions)),
+        "reference_chromosome_lengths": chromosome_lengths,
+        "reference_clipped_regions": int(len(reference_clipping)),
+        "reference_clipped_bases": int(
+            reference_clipping["reference_clipped_bp"].sum()
+        ),
+        "reference_boundary_policy": (
+            "intersect each native benchmark interval with [0, canonical GRCh38 "
+            "chromosome length) before all covariates, signal overlaps, and matching"
+        ),
         "retained_regions": int(len(retained)),
         "excluded_regions": int(len(priority_exclusions)),
         "prioritized_regions": int(retained["is_prioritized"].sum()),
@@ -601,7 +674,7 @@ def main() -> int:
         "controls_per_case_reserved": args.controls_per_case,
         "gc_definition": "(G+C)/(A+C+G+T) from the GRCh38 reference",
         "mappability_definition": (
-            "mean Umap/Bismap k=100 multi-read mappability over full region length; "
+            "mean Umap/Bismap k=100 multi-read mappability over clipped region length; "
             "bedGraph-omitted bases are zero"
         ),
         "graph_complexity_definition": "2 * strict native-tile link count / segment count",
