@@ -184,13 +184,19 @@ def test_scoring_uses_validation_calibration_and_identical_candidates(
     assert exclusions.empty
 
 
-def test_canonical_conflicts_fail_or_are_explicitly_excluded() -> None:
+def test_canonical_conflicts_fail_or_are_explicitly_excluded(
+    tmp_path: Path,
+) -> None:
     neural = synthetic_neural()
     neural.loc[4, ["u_local", "v_local"]] = [10, 20]
     neural.loc[5, ["u_local", "v_local"]] = [21, 11]
+    neural.loc[6, ["u_local", "v_local"]] = [12, 14]
+    neural.loc[8, ["u_local", "v_local"]] = [15, 13]
     baseline = synthetic_baseline()
     baseline.loc[0, ["u_oid", "v_oid"]] = [10, 20]
     baseline.loc[1, ["u_oid", "v_oid"]] = [21, 11]
+    baseline.loc[2, ["u_oid", "v_oid"]] = [12, 14]
+    baseline.loc[4, ["u_oid", "v_oid"]] = [15, 13]
     nodes = np.arange(24)
 
     with pytest.raises(ValueError, match="orientation-equivalent"):
@@ -215,6 +221,29 @@ def test_canonical_conflicts_fail_or_are_explicitly_excluded() -> None:
     assert coverage["canonical_label_conflict_rows"] == 2
     assert len(exclusions) == 2
     assert set(exclusions["_merge"]) == {"canonical_label_conflict"}
+
+    neural_path = tmp_path / "neural.csv.gz"
+    baseline_path = tmp_path / "baseline.csv.gz"
+    neural.to_csv(neural_path, index=False, compression="gzip")
+    baseline.to_csv(baseline_path, index=False, compression="gzip")
+    scores, _, score_coverage, score_exclusions = score_one_run(
+        neural_path,
+        baseline_path,
+        baseline_name="sequence_composition_sgd",
+        chromosomes={"chr1"},
+        dataset="hprc_r2",
+        slice_nodes={"tile_chr1_0": nodes},
+        canonical_conflict_policy="exclude",
+    )
+    assert len(scores) == 1
+    assert scores.loc[0, "n_test_candidates"] == 9
+    assert len(score_exclusions) == 2
+    assert score_coverage["canonical_label_conflict_identities"] == 1
+    assert score_coverage[
+        "canonical_label_conflict_identities_after_audit"
+    ] == 0
+    assert score_coverage["canonical_duplicate_rows_after_collapse"] == 0
+    assert score_coverage["canonical_duplicate_rows_collapsed"] == 1
 
 
 def test_aggregation_requires_seed_coverage_and_two_classes() -> None:

@@ -78,15 +78,19 @@ strict reference population before model or baseline performance is loaded.
 Expanded-context node and edge exposure ratios are descriptive covariates, not
 components of the frozen locus score.
 
-## Legacy expanded candidates
+## Legacy native-matrix candidates
 
-The historical native 5-Mb expanded predictions contain a very small number of
-reverse-equivalent duplicate/conflicting identities. New generation forbids
-them. For analysis of the already completed matrix, strict context uses a hard
-error policy. Expanded context uses an explicit legacy-exclusion policy:
-every representation of a conflicting canonical identity is excluded from both
-methods, same-label reverse representations are averaged into one biological
-candidate, and all removals are written to the candidate-coverage audit.
+The historical native 5-Mb predictions contain a very small number of
+reverse-equivalent duplicate/conflicting identities in both the integrity gate
+and potentially the completed score artifacts. The server audit observed eight
+affected strict slices, 12 reverse-equivalent duplicate rows, and nine
+conflicting canonical identities. New generation forbids them. For analysis of
+the already completed matrix, both strict and expanded contexts use the same
+explicit legacy-exclusion policy: every representation of a conflicting
+canonical identity is excluded from both methods, same-label reverse
+representations are averaged into one biological candidate, and all removals
+are written to the candidate-coverage audit. Graph-integrity failures and
+invalid candidate labels remain fatal.
 
 This is preferable to silently selecting a label or counting the same
 biological relation twice. A future full rerun should instead use regenerated

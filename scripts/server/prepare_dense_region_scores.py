@@ -488,11 +488,32 @@ def score_one_run(
             equivalent_representation_count=("y_true_neural", "size"),
         )
     )
+    post_audit_conflicts = int(
+        (
+            aligned.groupby(canonical_columns, sort=False)["y_true_neural"]
+            .nunique()
+            .gt(1)
+            .sum()
+        )
+    )
+    post_collapse_duplicate_rows = int(
+        aligned.duplicated(canonical_columns, keep=False).sum()
+    )
+    if post_audit_conflicts or post_collapse_duplicate_rows:
+        raise AssertionError(
+            "canonical candidate remediation left conflicts or duplicates"
+        )
     coverage["canonical_candidates_after_audit"] = int(len(aligned))
     coverage["canonical_duplicate_rows_collapsed"] = int(
         coverage["common_candidates"]
         - coverage["canonical_label_conflict_rows"]
         - len(aligned)
+    )
+    coverage["canonical_label_conflict_identities_after_audit"] = (
+        post_audit_conflicts
+    )
+    coverage["canonical_duplicate_rows_after_collapse"] = (
+        post_collapse_duplicate_rows
     )
     raw_labels = aligned["y_true_neural"].to_numpy(float)
     if not set(np.unique(raw_labels)).issubset({0.0, 1.0}):

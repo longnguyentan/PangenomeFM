@@ -121,6 +121,7 @@ set -o pipefail
 
 RUN_TAG=20260815 \
 MAX_CONCURRENT=2 \
+CANONICAL_CONFLICT_POLICY=exclude \
 bash scripts/server/run_complexity_context_pipeline.sh \
   2>&1 | tee server_workspace/results/complexity_context_v2_20260815.console.log
 
@@ -144,9 +145,15 @@ free -h
 '
 ```
 
-The complexity stage intentionally reads only strict candidates. Strict graph
-structure freezes the locus categories. Expanded score runs explicitly exclude
-the few audited legacy canonical-label conflicts; they do not choose a label.
+The complexity stage intentionally reads only strict graph slices, and strict
+graph structure freezes the locus categories. Candidate rows do not contribute
+to that score. The historical matrix is analyzed with the explicit `exclude`
+policy in both strict and expanded contexts: every representation of a
+conflicting canonical identity is removed from both methods, and remaining
+same-label reverse representations are collapsed. Raw findings, exclusions,
+and zero post-remediation conflicts/duplicates are retained in the audits. The
+pipeline never chooses one label from a conflict. Structural graph failures and
+invalid candidate labels remain fatal.
 
 ## Wave 7 verification
 
@@ -164,6 +171,9 @@ complexity = json.loads(
 )
 assert complexity["status"] == "PASS", complexity
 assert complexity["performance_columns_read"] == [], complexity
+assert complexity["canonical_conflict_policy"] == "exclude", complexity
+assert not any(complexity["integrity_failures"].values()), complexity
+print("Legacy candidate findings:", complexity["legacy_candidate_findings"])
 
 baselines = [
     "topology_preferential_attachment",
@@ -179,13 +189,17 @@ for baseline in baselines:
         assert audit["status"] == "complete", path
         assert audit["baseline"] == baseline, path
         assert audit["closure"] == context, path
+        assert audit["canonical_conflict_policy"] == "exclude", path
         runs = audit["candidate_coverage_by_run"]
         assert all(row["common_slice_exact_fraction"] == 1 for row in runs), path
-        if context == "strict":
-            assert all(
-                row["canonical_label_conflict_identities"] == 0
-                for row in runs
-            ), path
+        assert all(
+            row["canonical_label_conflict_identities_after_audit"] == 0
+            for row in runs
+        ), path
+        assert all(
+            row["canonical_duplicate_rows_after_collapse"] == 0
+            for row in runs
+        ), path
 
 analysis = json.loads((root / "exact_analysis/audit.json").read_text())
 assert analysis["status"] == "complete", analysis

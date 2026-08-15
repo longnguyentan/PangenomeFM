@@ -8,6 +8,7 @@ from analysis.complexity import (
     compute_slice_complexity,
     fit_complexity_definition,
 )
+from scripts.extract_graph_complexity import build_integrity_audit
 
 
 def test_slice_complexity_is_deterministic_and_includes_isolates() -> None:
@@ -66,6 +67,51 @@ def test_complexity_surfaces_reverse_equivalent_label_conflicts() -> None:
     )
     assert result["reverse_equivalent_candidate_duplicates"] == 1
     assert result["orientation_equivalent_candidate_label_conflicts"] == 1
+
+
+def test_legacy_candidate_policy_never_waives_graph_or_label_failures() -> None:
+    features = pd.DataFrame(
+        {
+            "duplicate_segment_ids": [0, 0],
+            "missing_link_endpoint_rows": [0, 0],
+            "invalid_orientation_rows": [0, 0],
+            "invalid_candidate_labels": [0, 0],
+            "duplicate_candidate_pairs": [0, 0],
+            "reverse_equivalent_candidate_duplicates": [5, 7],
+            "orientation_equivalent_candidate_label_conflicts": [4, 5],
+        }
+    )
+
+    strict = build_integrity_audit(
+        features, canonical_conflict_policy="error"
+    )
+    assert strict["status"] == "FAIL"
+    assert strict["integrity_failures"][
+        "orientation_equivalent_candidate_label_conflicts"
+    ] == 9
+
+    legacy = build_integrity_audit(
+        features, canonical_conflict_policy="exclude"
+    )
+    assert legacy["status"] == "PASS"
+    assert legacy["legacy_candidate_affected_slices"] == 2
+    assert legacy["legacy_candidate_findings"] == {
+        "duplicate_candidate_pairs": 0,
+        "reverse_equivalent_candidate_duplicates": 12,
+        "orientation_equivalent_candidate_label_conflicts": 9,
+    }
+    assert not any(legacy["integrity_failures"].values())
+
+    features.loc[0, "missing_link_endpoint_rows"] = 1
+    assert build_integrity_audit(
+        features, canonical_conflict_policy="exclude"
+    )["status"] == "FAIL"
+
+    features.loc[0, "missing_link_endpoint_rows"] = 0
+    features.loc[0, "invalid_candidate_labels"] = 1
+    assert build_integrity_audit(
+        features, canonical_conflict_policy="exclude"
+    )["status"] == "FAIL"
 
 
 def test_frozen_complexity_ignores_model_performance_columns() -> None:

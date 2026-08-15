@@ -5,6 +5,7 @@ REPO_ROOT="${REPO_ROOT:-$PWD}"
 PYTHON_BIN="${PYTHON_BIN:-python}"
 RUN_TAG="${RUN_TAG:-20260815}"
 MAX_CONCURRENT="${MAX_CONCURRENT:-2}"
+CANONICAL_CONFLICT_POLICY="${CANONICAL_CONFLICT_POLICY:-exclude}"
 
 CONFIG="${CONFIG:-configs/server_full_multicohort_20260806.json}"
 RESULTS_ROOT="${RESULTS_ROOT:-server_workspace/results/full_multicohort_server_20260806}"
@@ -53,6 +54,11 @@ if [[ "$MAX_CONCURRENT" -lt 1 || "$MAX_CONCURRENT" -gt 4 ]]; then
   echo "MAX_CONCURRENT must be between 1 and 4" >&2
   exit 2
 fi
+if [[ "$CANONICAL_CONFLICT_POLICY" != "error" \
+      && "$CANONICAL_CONFLICT_POLICY" != "exclude" ]]; then
+  echo "CANONICAL_CONFLICT_POLICY must be error or exclude" >&2
+  exit 2
+fi
 
 cd "$REPO_ROOT"
 export PYTHONPATH="$PWD:$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
@@ -71,6 +77,7 @@ if ! audit_is_complete "$COMPLEXITY_OUT/complexity_audit.json"; then
     --manifest "$MANIFEST" \
     --dataset hprc_r2_native_5mb \
     --contexts strict \
+    --canonical-conflict-policy "$CANONICAL_CONFLICT_POLICY" \
     --config configs/complexity_definition_v2.yaml \
     --out-dir "$COMPLEXITY_OUT" \
     2>&1 | tee "$OUT_ROOT/logs/complexity.log"
@@ -80,10 +87,6 @@ run_score() {
   local baseline="$1"
   local context="$2"
   local out_dir="$OUT_ROOT/scores/${baseline}/${context}"
-  local policy="error"
-  if [[ "$context" == "1hop" ]]; then
-    policy="exclude"
-  fi
   if audit_is_complete "$out_dir/audit.json"; then
     echo "SKIP complete score: $baseline $context"
     return 0
@@ -98,7 +101,7 @@ run_score() {
     --dataset hprc_r2 \
     --closure "$context" \
     --baseline "$baseline" \
-    --canonical-conflict-policy "$policy" \
+    --canonical-conflict-policy "$CANONICAL_CONFLICT_POLICY" \
     --minimum-test-candidates 10 \
     > "$OUT_ROOT/logs/${baseline}.${context}.log" 2>&1
 }

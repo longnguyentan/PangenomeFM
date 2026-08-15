@@ -24,6 +24,18 @@ from evaluation.splits import normalize_chrom
 
 ROOT = Path(__file__).resolve().parents[1]
 
+STRUCTURAL_INTEGRITY_FIELDS = (
+    "duplicate_segment_ids",
+    "missing_link_endpoint_rows",
+    "invalid_orientation_rows",
+)
+CANDIDATE_FATAL_FIELDS = ("invalid_candidate_labels",)
+LEGACY_CANONICAL_FINDING_FIELDS = (
+    "duplicate_candidate_pairs",
+    "reverse_equivalent_candidate_duplicates",
+    "orientation_equivalent_candidate_label_conflicts",
+)
+
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -111,6 +123,71 @@ def extract(
     return pd.DataFrame(rows)
 
 
+def build_integrity_audit(
+    features: pd.DataFrame,
+    *,
+    canonical_conflict_policy: str,
+) -> dict[str, object]:
+    """Separate graph failures from explicitly remediated legacy candidates.
+
+    Candidate rows are audited here but are not inputs to the graph-complexity
+    score. Under ``exclude``, the dense-score stage must exclude every
+    representation of conflicting canonical identities and collapse remaining
+    same-label equivalents. Structural corruption and invalid labels are never
+    permitted by either policy.
+    """
+
+    if canonical_conflict_policy not in {"error", "exclude"}:
+        raise ValueError(
+            "canonical_conflict_policy must be either 'error' or 'exclude'"
+        )
+    fields = (
+        STRUCTURAL_INTEGRITY_FIELDS
+        + CANDIDATE_FATAL_FIELDS
+        + LEGACY_CANONICAL_FINDING_FIELDS
+    )
+    missing = set(fields) - set(features)
+    if missing:
+        raise ValueError(
+            f"complexity features lack integrity columns: {sorted(missing)}"
+        )
+    findings = {
+        field: int(pd.to_numeric(features[field], errors="raise").sum())
+        for field in fields
+    }
+    fatal_fields = set(STRUCTURAL_INTEGRITY_FIELDS + CANDIDATE_FATAL_FIELDS)
+    if canonical_conflict_policy == "error":
+        fatal_fields.update(LEGACY_CANONICAL_FINDING_FIELDS)
+    failures = {
+        field: value if field in fatal_fields else 0
+        for field, value in findings.items()
+    }
+    legacy_findings = {
+        field: findings[field] for field in LEGACY_CANONICAL_FINDING_FIELDS
+    }
+    affected = features.loc[
+        features[list(LEGACY_CANONICAL_FINDING_FIELDS)].gt(0).any(axis=1)
+    ]
+    return {
+        "status": "FAIL" if any(failures.values()) else "PASS",
+        "canonical_conflict_policy": canonical_conflict_policy,
+        "canonical_identity_policy": "(u,v) == (v^1,u^1)",
+        "integrity_findings_before_policy": findings,
+        "integrity_failures": failures,
+        "legacy_candidate_findings": legacy_findings,
+        "legacy_candidate_affected_slices": int(len(affected)),
+        "legacy_candidate_policy_action": (
+            "none; any duplicate or conflicting canonical candidate is fatal"
+            if canonical_conflict_policy == "error"
+            else (
+                "candidate rows are not used to define graph complexity; every "
+                "conflicting canonical identity must be excluded and remaining "
+                "same-label equivalents collapsed by the downstream scorer"
+            )
+        ),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -142,6 +219,16 @@ def main() -> None:
         "--out-dir",
         type=Path,
         default=ROOT / "results/complexity/graph_window_complexity_v1",
+    )
+    parser.add_argument(
+        "--canonical-conflict-policy",
+        choices=["error", "exclude"],
+        default="error",
+        help=(
+            "Hard-fail on any legacy duplicate/conflicting canonical candidate, "
+            "or record those findings while requiring audited downstream "
+            "exclusion/collapse. Structural failures and invalid labels remain fatal."
+        ),
     )
     parser.add_argument("--overwrite", action="store_true")
     args = parser.parse_args()
@@ -216,6 +303,7 @@ def main() -> None:
             "manifest_sha256": sha256(args.manifest),
             "dataset": args.dataset,
             "contexts_requested": args.contexts,
+            "canonical_conflict_policy": args.canonical_conflict_policy,
             "config": str(args.config),
             "config_sha256": sha256(args.config),
             "primary_category_column": "locus_complexity_category",
@@ -236,8 +324,12 @@ def main() -> None:
     pd.DataFrame(definition_rows).to_csv(
         out_dir / "complexity_feature_definitions.tsv", sep="\t", index=False
     )
+    integrity = build_integrity_audit(
+        output,
+        canonical_conflict_policy=args.canonical_conflict_policy,
+    )
     audit = {
-        "status": "PASS",
+        **integrity,
         "rows": int(len(output)),
         "reference_rows": int(len(reference)),
         "contexts": output["context"].value_counts().sort_index().to_dict(),
@@ -247,25 +339,8 @@ def main() -> None:
             .sort_index()
             .to_dict()
         ),
-        "integrity_failures": {
-            "duplicate_segment_ids": int(output["duplicate_segment_ids"].sum()),
-            "missing_link_endpoint_rows": int(output["missing_link_endpoint_rows"].sum()),
-            "invalid_orientation_rows": int(output["invalid_orientation_rows"].sum()),
-            "invalid_candidate_labels": int(output["invalid_candidate_labels"].sum()),
-            "duplicate_candidate_pairs": int(
-                output["duplicate_candidate_pairs"].sum()
-            ),
-            "reverse_equivalent_candidate_duplicates": int(
-                output["reverse_equivalent_candidate_duplicates"].sum()
-            ),
-            "orientation_equivalent_candidate_label_conflicts": int(
-                output["orientation_equivalent_candidate_label_conflicts"].sum()
-            ),
-        },
         "performance_columns_read": [],
     }
-    if any(audit["integrity_failures"].values()):
-        audit["status"] = "FAIL"
     (out_dir / "complexity_audit.json").write_text(
         json.dumps(audit, indent=2) + "\n", encoding="utf-8"
     )
