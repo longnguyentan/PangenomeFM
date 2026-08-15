@@ -1,0 +1,74 @@
+schema_version: 1
+benchmark_task: masked_oriented_graph_relation_reconstruction
+compatibility_levels:
+  exact: Same biological examples, labels, chromosome folds, metrics, and native task.
+  approximate: Same examples and labels after a documented representation/task adapter.
+  contextual: Published method answers a different biological task and is not ranked on the edge benchmark.
+
+methods:
+  pangenomefm:
+    display_name: PangenomeFM
+    compatibility: exact
+    implementation: repository_native
+    repository: local
+    revision: current_git_commit
+    published_task: masked_oriented_graph_relation_reconstruction
+    expected_input:
+      - pangenome_slice_segments
+      - pangenome_slice_links
+      - oriented_candidate_endpoint_pairs
+    output: candidate_edge_probability
+    checkpoint_required: true
+
+  deepgene:
+    display_name: DeepGene
+    compatibility: approximate
+    paper_title: "DeepGene: An Efficient Foundation Model for Genomics based on Pan-genome Graph Transformer"
+    authors:
+      - Xiang Zhang
+      - Mingjie Yang
+      - Xunhang Yin
+      - Yining Qian
+      - Fei Sun
+    publication: bioRxiv 2024.04.24.590879
+    repository: https://github.com/wds-seu/DeepGene
+    audited_commit: 486343e5212361d6cd7ed03c624f430ed3d5f02e
+    published_task: masked_language_modeling_then_sequence_classification
+    published_dataset: HPRC_v1.0_Minigraph_GRCh38_47_individuals
+    expected_input:
+      - serialized_decycled_pangenome_sequence
+      - DeepGene_BPE_tokenizer
+    output: downstream_sequence_classification_score
+    exact_edge_task_blocker: Official code has no candidate-edge scoring objective or adapter.
+    approximate_adapter: supervised_endpoint_sequence_pair_classification
+    checkpoint_required: true
+    checkpoint_present: false
+    environment_notes: Python 3.8 era code; released requirements pin torch 1.7.1+cu110, pandas 1.2.4, transformers 4.29.2 and assume four GPUs.
+
+  pangenomex:
+    display_name: PangenomeX
+    compatibility: contextual
+    paper_title: "PangenomeX: a graph convolutional network-based pangenome framework for unbiased population-scale genomic variation analysis"
+    authors:
+      - Zhengfa Xue
+      - Yu Wang
+      - Xuwen Wang
+      - Jiajing Yuan
+      - Lin Wang
+      - Jingyu Zeng
+      - Xin Jin
+      - Huanhuan Zhu
+      - Jiayin Wang
+    publication: Briefings in Bioinformatics 26(5), bbaf550 (2025)
+    repository: https://github.com/Nevermore233/PangenomeX
+    audited_commit: 1b2b193e76a83e917098c0fc9086967467b9e8be
+    published_task: shallow_WGS_large_CNV_detection
+    expected_input:
+      - train_test_and_baseline_BAMs
+      - CNV_truth_from_VCF
+      - reference_FASTA_and_chromosome_lengths
+      - Newick_phylogenetic_tree
+    output: CNV_detection_report
+    exact_edge_task_blocker: Endpoint adjacency candidates cannot be converted into the published CNV-node task without changing the task and supervision.
+    task_faithful_benchmark_required: separate_same_sample_large_CNV_benchmark
+

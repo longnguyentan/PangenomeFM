@@ -257,3 +257,45 @@ docs/PSB_EXPERIMENT_PLAN.md
 !/docs/group_discussion_20260811/**
 /analysis
 /docs
+
+# Next-stage manuscript workflow: retain the narrowly scoped, reproducible
+# audit/configuration/output artifacts while continuing to ignore historical
+# bulk result and paper directories.
+!/docs/
+/docs/*
+!/docs/NEXT_STAGE_PHASE0_AUDIT_20260814.md
+!/docs/NEXT_STAGE_COMMANDS.md
+!/docs/NEXT_STAGE_CHANGELOG_20260814.md
+!/docs/NEXT_STAGE_DECISION_AUDIT_20260815.md
+!/docs/RUN_CANONICAL_COMPLEXITY_CONTEXT_20260815.md
+!/paper/
+/paper/*
+!/paper/next_stage/
+!/paper/next_stage/**
+!/paper/figures/
+/paper/figures/*
+!/paper/figures/next_stage/
+!/paper/figures/next_stage/**
+!/results/
+/results/*
+!/results/canonical_primary_results.tsv
+!/results/canonical_primary_results.parquet
+!/results/canonical_primary_results_audit.json
+!/results/comparative_benchmark/
+/results/comparative_benchmark/*
+!/results/comparative_benchmark/pilot/
+!/results/comparative_benchmark/pilot/**
+!/results/complexity/
+/results/complexity/*
+!/results/complexity/graph_window_complexity_v1/
+!/results/complexity/graph_window_complexity_v1/**
+!/data/
+/data/*
+!/data/annotations/
+/data/annotations/*
+!/data/annotations/complex_regions_v1.tsv
+/results/comparative_benchmark/pilot/pangenomefm_smoke/
+/paper
+/server_downloads
+/server_imports
+/results

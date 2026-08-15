@@ -1,0 +1,5 @@
+region_id	chromosome	start	end	reference_build	category	complexity_reason	source_paper	source_figure_or_table	annotation_type	notes
+MHC_HLA_TODO	chr6			GRCh38	HLA/MHC	high polymorphism and structural diversity	TODO	TODO	curated_difficult_region	Coordinates intentionally blank pending source verification.
+HGSVC_INVERSION_TODO				TODO	inversion-rich	inversion-associated structural complexity	TODO	TODO	curated_difficult_region	Add only a source-verified build and interval.
+HPRC_COMPLEX_LOCUS_TODO				TODO	pangenome_complex	region highlighted by an HPRC publication	TODO	TODO	curated_difficult_region	Add only a source-verified build and interval.
+

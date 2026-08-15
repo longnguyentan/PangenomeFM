@@ -1,0 +1,4 @@
+section	status	output_path	reason
+11	blocked	shared_donor_excluded_transfer_20260809	The available HPRC SV-scale GFA contains no embedded W/P paths; the previous derived graph failed its audit. No Section 11 GPU jobs are scientifically valid until a path-bearing SV-scale graph is obtained or rebuilt without the four shared donors.
+10_hgsvc_chromosome_provenance	partial	path_examples_20260809/hgsvc3_all	Path materialization is complete with zero missing handles, but 13,543 of 27,223 path records lack a resolved primary-chromosome assignment.
+13_matched_enrichment	complete_null_or_uninformative	matched_enrichment_20260809	No positive matched enrichment was detected. The all-trait GWAS analysis was saturated because every case and control region overlapped a signal.
