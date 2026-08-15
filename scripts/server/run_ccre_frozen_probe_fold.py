@@ -31,20 +31,25 @@ from sklearn.metrics import (
 )
 
 from evaluation.calibration import apply_temperature, expected_calibration_error, fit_temperature
+from evaluation.modality_factorial import (
+    build_modality_factorial,
+    factorial_feature_access,
+    load_frozen_node_embedding_cache,
+    select_feature_sets,
+)
 from tasks.ccre.aligned_baselines import _fit_model
-from tasks.ccre.baselines import _norm_chrom
 from tasks.ccre.binary import _choose_threshold
 from tasks.ccre.embedding_baseline import _extract_embeddings
 from tasks.ccre.embedding_baseline import _manifest_target_chromosome as _canonical_chrom
 
 
 FEATURE_ACCESS = {
+    **factorial_feature_access(),
     "coordinate": "reference coordinate, node length, and constant orientation",
     "graph": "global node degree only",
     "structural": "coordinate, node length, degree, and orientation; excludes SR and reference identity",
     "sequence_kmer": "mono/di/tri-nucleotide composition; no graph adjacency",
     "frozen_pangenomefm": "frozen topology-pretrained node embedding; current encoder has no nucleotide input",
-    "sequence_plus_frozen_pangenomefm": "concatenated sequence-composition and frozen topology embedding",
     "training_prevalence": "constant probability estimated from downstream training chromosomes",
     "random_uniform": "seeded U(0,1) score independent of all inputs",
 }
@@ -232,6 +237,9 @@ def run_probe(
     device: str,
     seed: int,
     max_slices: int | None,
+    external_sequence_cache: Path | None = None,
+    minimum_external_coverage: float = 0.95,
+    feature_sets: list[str] | None = None,
 ) -> dict[str, object]:
     if (out_dir / "audit.json").exists():
         raise FileExistsError(f"Refusing to overwrite completed output: {out_dir}")
@@ -264,6 +272,26 @@ def run_probe(
     if labels_frame.empty:
         raise RuntimeError("No cCRE-labeled reference nodes received embeddings")
 
+    external_values: np.ndarray | None = None
+    external_positions: dict[int, int] = {}
+    external_audit: dict[str, object] | None = None
+    n_embedded_before_external_filter = len(labels_frame)
+    if external_sequence_cache is not None:
+        external_segids, external_values, external_audit = load_frozen_node_embedding_cache(
+            external_sequence_cache
+        )
+        external_positions = {
+            int(segid): index for index, segid in enumerate(external_segids)
+        }
+        has_external = labels_frame["segid"].astype(int).isin(external_positions)
+        external_coverage = float(has_external.mean())
+        if external_coverage < minimum_external_coverage:
+            raise ValueError(
+                "External sequence-model coverage is below the prespecified gate: "
+                f"{external_coverage:.6f} < {minimum_external_coverage:.6f}"
+            )
+        labels_frame = labels_frame.loc[has_external].reset_index(drop=True)
+
     with np.load(feature_cache, allow_pickle=False) as cache:
         cache_segids = cache["segid"].astype(np.int64)
         cache_position = {int(segid): index for index, segid in enumerate(cache_segids)}
@@ -271,20 +299,34 @@ def run_probe(
         if missing_cache:
             raise KeyError(f"Feature cache misses {len(missing_cache)} embedded nodes")
         indices = np.asarray([cache_position[int(segid)] for segid in labels_frame["segid"]])
-        features = {
+        cached_features = {
             name: cache[name][indices].astype(np.float32)
             for name in ("coordinate", "graph", "structural", "sequence_kmer")
         }
     frozen = np.stack(
         [embedding_map[int(segid)] for segid in labels_frame["segid"]], axis=0
     ).astype(np.float32)
-    features["frozen_pangenomefm"] = frozen
-    features["sequence_plus_frozen_pangenomefm"] = np.concatenate(
-        [features["sequence_kmer"], frozen], axis=1
+    components = {
+        "coordinate": cached_features["coordinate"],
+        "sequence_kmer": cached_features["sequence_kmer"],
+        "frozen_pangenomefm": frozen,
+    }
+    if external_values is not None:
+        external_indices = np.asarray(
+            [external_positions[int(segid)] for segid in labels_frame["segid"]]
+        )
+        components["frozen_sequence_fm"] = external_values[external_indices]
+    features = build_modality_factorial(
+        components,
+        include_external_sequence=external_values is not None,
     )
+    features["graph"] = cached_features["graph"]
+    features["structural"] = cached_features["structural"]
     # Empty matrices are deliberate sentinels; these baselines do not fit features.
     features["training_prevalence"] = np.empty((len(labels_frame), 0), dtype=np.float32)
     features["random_uniform"] = np.empty((len(labels_frame), 0), dtype=np.float32)
+    features = select_feature_sets(features, feature_sets)
+    selected_feature_access = {name: FEATURE_ACCESS[name] for name in features}
 
     metrics, per_chromosome, predictions = evaluate_feature_sets(
         segids=labels_frame["segid"].to_numpy(np.int64),
@@ -294,6 +336,7 @@ def run_probe(
         test_chrs=test_chrs,
         val_chrs=val_chrs,
         seed=seed,
+        feature_access=selected_feature_access,
     )
     for frame in (metrics, per_chromosome, predictions):
         frame.insert(0, "fold", fold)
@@ -327,12 +370,32 @@ def run_probe(
         "n_labeled_nodes_total": int(len(labeled_segids)),
         "n_labeled_nodes_embedded": int(len(labels_frame)),
         "embedding_coverage_fraction": float(len(labels_frame) / len(labeled_segids)),
-        "feature_sets": FEATURE_ACCESS,
+        "feature_sets": selected_feature_access,
+        "feature_dimensions": {
+            name: int(matrix.shape[1]) for name, matrix in features.items()
+        },
         "fairness_policy": "all feature sets use the identical embedded-node universe and chromosome split",
         "upstream_leakage_control": "checkpoint pretraining excluded every downstream test chromosome",
         "checkpoint_validation": checkpoint_validation,
         "calibration_policy": "temperature and F1 threshold fit on validation chromosomes only",
         "sequence_note": "PangenomeFM checkpoint itself has no nucleotide input; sequence is supplied only to explicit downstream baselines",
+        "modality_factorial": {
+            "C": "coordinate",
+            "S": "sequence_kmer",
+            "T": "frozen_pangenomefm",
+            "comparisons": ["C", "S", "T", "C+S", "C+T", "S+T", "C+S+T"],
+        },
+        "external_sequence_cache": (
+            str(external_sequence_cache.resolve()) if external_sequence_cache else None
+        ),
+        "external_sequence_cache_audit": external_audit,
+        "minimum_external_coverage": minimum_external_coverage,
+        "n_embedded_before_external_filter": n_embedded_before_external_filter,
+        "external_coverage_fraction": (
+            float(len(labels_frame) / n_embedded_before_external_filter)
+            if external_sequence_cache is not None
+            else None
+        ),
         "max_slices": max_slices,
         "wall_seconds": time.monotonic() - started,
     }
@@ -356,6 +419,9 @@ def main() -> int:
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--max-slices", type=int)
+    parser.add_argument("--external-sequence-cache", type=Path)
+    parser.add_argument("--minimum-external-coverage", type=float, default=0.95)
+    parser.add_argument("--feature-sets", nargs="+")
     args = parser.parse_args()
     run_probe(
         checkpoint=args.checkpoint,
@@ -371,6 +437,9 @@ def main() -> int:
         device=args.device,
         seed=args.seed,
         max_slices=args.max_slices,
+        external_sequence_cache=args.external_sequence_cache,
+        minimum_external_coverage=args.minimum_external_coverage,
+        feature_sets=args.feature_sets,
     )
     return 0
 

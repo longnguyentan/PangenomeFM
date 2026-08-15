@@ -18,6 +18,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from evaluation.modality_factorial import (
+    build_modality_factorial,
+    factorial_feature_access,
+    load_frozen_node_embedding_cache,
+    select_feature_sets,
+)
 from scripts.server.run_ccre_frozen_probe_fold import (
     _canonical_chrom,
     binary_metrics,
@@ -28,12 +34,12 @@ from tasks.ccre.embedding_baseline import _extract_embeddings
 
 
 FEATURE_ACCESS = {
+    **factorial_feature_access(suffix="_pair"),
     "coordinate_pair": "both breakpoint reference coordinates and node lengths; no graph or nucleotide input",
     "graph_pair": "both breakpoint node degrees; no coordinates or nucleotide input",
     "structural_pair": "both breakpoint coordinate/length/degree/orientation features",
     "sequence_kmer_pair": "both breakpoint mono/di/tri-nucleotide composition; no graph adjacency",
     "frozen_pangenomefm_pair": "both frozen topology-pretrained breakpoint embeddings; current encoder has no nucleotide input",
-    "sequence_plus_frozen_pangenomefm_pair": "sequence-composition and frozen topology embeddings at both breakpoints",
     "training_prevalence": "constant insertion prevalence estimated from downstream training chromosomes",
     "random_uniform": "seeded U(0,1) score independent of all inputs",
 }
@@ -144,6 +150,9 @@ def run_probe(
     device: str,
     seed: int,
     max_slices: int | None,
+    external_sequence_cache: Path | None = None,
+    minimum_external_coverage: float = 0.95,
+    feature_sets: list[str] | None = None,
 ) -> dict[str, object]:
     if out_dir.exists():
         raise FileExistsError(f"Refusing to overwrite output: {out_dir}")
@@ -171,6 +180,17 @@ def run_probe(
         seed=seed,
         max_slices=max_slices,
     )
+    external_values: np.ndarray | None = None
+    external_positions: dict[int, int] = {}
+    external_audit: dict[str, object] | None = None
+    if external_sequence_cache is not None:
+        external_segids, external_values, external_audit = load_frozen_node_embedding_cache(
+            external_sequence_cache
+        )
+        external_positions = {
+            int(segid): index for index, segid in enumerate(external_segids)
+        }
+
     with np.load(feature_cache, allow_pickle=False) as cache:
         cache_segids = cache["segid"].astype(np.int64)
         cache_positions = {int(segid): index for index, segid in enumerate(cache_segids)}
@@ -179,6 +199,21 @@ def run_probe(
             embedded_segids=embeddings,
             cached_segids=cache_positions,
         )
+        n_complete_before_external_filter = int(keep.sum())
+        if external_sequence_cache is not None:
+            external_keep = (
+                examples["start_segid"].astype(int).isin(external_positions)
+                & examples["end_segid"].astype(int).isin(external_positions)
+            ).to_numpy(dtype=bool, copy=True)
+            external_coverage = float(
+                (keep & external_keep).sum() / max(n_complete_before_external_filter, 1)
+            )
+            if external_coverage < minimum_external_coverage:
+                raise ValueError(
+                    "External sequence-model endpoint coverage is below the prespecified gate: "
+                    f"{external_coverage:.6f} < {minimum_external_coverage:.6f}"
+                )
+            keep &= external_keep
         examples = examples.loc[keep].sort_values("example_id").reset_index(drop=True)
         if examples.empty:
             raise RuntimeError("No SV examples have both breakpoint embeddings and cached features")
@@ -190,16 +225,28 @@ def run_probe(
     embedding_positions = {int(segid): index for index, segid in enumerate(embedding_segids)}
     embedding_values = np.stack([embeddings[int(segid)] for segid in embedding_segids]).astype(np.float32)
     frozen = build_pair_matrix(examples, node_values=embedding_values, positions=embedding_positions)
-    features = {
-        "coordinate_pair": cached["coordinate"],
-        "graph_pair": cached["graph"],
-        "structural_pair": cached["structural"],
-        "sequence_kmer_pair": cached["sequence_kmer"],
-        "frozen_pangenomefm_pair": frozen,
-        "sequence_plus_frozen_pangenomefm_pair": np.concatenate([cached["sequence_kmer"], frozen], axis=1),
-        "training_prevalence": np.empty((len(examples), 0), dtype=np.float32),
-        "random_uniform": np.empty((len(examples), 0), dtype=np.float32),
+    components = {
+        "coordinate": cached["coordinate"],
+        "sequence_kmer": cached["sequence_kmer"],
+        "frozen_pangenomefm": frozen,
     }
+    if external_values is not None:
+        components["frozen_sequence_fm"] = build_pair_matrix(
+            examples,
+            node_values=external_values,
+            positions=external_positions,
+        )
+    features = build_modality_factorial(
+        components,
+        suffix="_pair",
+        include_external_sequence=external_values is not None,
+    )
+    features["graph_pair"] = cached["graph"]
+    features["structural_pair"] = cached["structural"]
+    features["training_prevalence"] = np.empty((len(examples), 0), dtype=np.float32)
+    features["random_uniform"] = np.empty((len(examples), 0), dtype=np.float32)
+    features = select_feature_sets(features, feature_sets)
+    selected_feature_access = {name: FEATURE_ACCESS[name] for name in features}
     metrics, per_chromosome, predictions = evaluate_feature_sets(
         segids=examples["example_id"].to_numpy(np.int64),
         chromosomes=examples["chrom"].to_numpy(),
@@ -208,7 +255,7 @@ def run_probe(
         test_chrs=test_chrs,
         val_chrs=val_chrs,
         seed=seed,
-        feature_access=FEATURE_ACCESS,
+        feature_access=selected_feature_access,
     )
     predictions = predictions.rename(columns={"segid": "example_id"})
     strata = stratified_metrics(predictions, examples)
@@ -238,12 +285,32 @@ def run_probe(
         "n_examples_with_complete_features": int(len(examples)),
         "n_unique_embedded_breakpoint_nodes": int(len(embedded_nodes)),
         "mean_embedding_occurrences": float(np.mean([occurrences[node] for node in embedded_nodes])),
-        "feature_sets": FEATURE_ACCESS,
+        "feature_sets": selected_feature_access,
+        "feature_dimensions": {
+            name: int(matrix.shape[1]) for name, matrix in features.items()
+        },
         "target": "insertion versus deletion among versioned SV records of length >=50 bp",
         "fairness_policy": "all feature sets use identical mapped variants and chromosome splits",
         "calibration_policy": "temperature and F1 threshold fit on validation chromosomes only",
         "upstream_leakage_control": "checkpoint pretraining excluded every downstream test chromosome",
         "important_limitation": "variant records are graph-derived/assembly-derived truth, not a donor-held-out molecular phenotype",
+        "modality_factorial": {
+            "C": "coordinate_pair",
+            "S": "sequence_kmer_pair",
+            "T": "frozen_pangenomefm_pair",
+            "comparisons": ["C", "S", "T", "C+S", "C+T", "S+T", "C+S+T"],
+        },
+        "external_sequence_cache": (
+            str(external_sequence_cache.resolve()) if external_sequence_cache else None
+        ),
+        "external_sequence_cache_audit": external_audit,
+        "minimum_external_coverage": minimum_external_coverage,
+        "n_complete_before_external_filter": n_complete_before_external_filter,
+        "external_coverage_fraction": (
+            float(len(examples) / max(n_complete_before_external_filter, 1))
+            if external_sequence_cache is not None
+            else None
+        ),
         "checkpoint_validation": checkpoint_validation,
         "max_slices": max_slices,
         "wall_seconds": time.monotonic() - started,
@@ -268,6 +335,9 @@ def main() -> int:
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--max-slices", type=int)
+    parser.add_argument("--external-sequence-cache", type=Path)
+    parser.add_argument("--minimum-external-coverage", type=float, default=0.95)
+    parser.add_argument("--feature-sets", nargs="+")
     args = parser.parse_args()
     run_probe(
         checkpoint=args.checkpoint,
@@ -283,6 +353,9 @@ def main() -> int:
         device=args.device,
         seed=args.seed,
         max_slices=args.max_slices,
+        external_sequence_cache=args.external_sequence_cache,
+        minimum_external_coverage=args.minimum_external_coverage,
+        feature_sets=args.feature_sets,
     )
     return 0
 

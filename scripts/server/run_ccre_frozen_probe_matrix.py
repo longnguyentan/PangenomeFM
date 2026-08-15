@@ -85,6 +85,9 @@ def main() -> int:
     parser.add_argument("--contexts", nargs="+", choices=["strict", "1hop"])
     parser.add_argument("--max-jobs", type=int)
     parser.add_argument("--max-slices", type=int)
+    parser.add_argument("--external-sequence-cache", type=Path)
+    parser.add_argument("--minimum-external-coverage", type=float, default=0.95)
+    parser.add_argument("--feature-sets", nargs="+")
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args()
     config = load_config(args.config)
@@ -100,7 +103,10 @@ def main() -> int:
     if not gpu_ids:
         parser.error("--gpus must contain at least one GPU ID")
     if args.execute:
-        for required in (args.results_root, args.node_labels, args.feature_cache):
+        required_paths = [args.results_root, args.node_labels, args.feature_cache]
+        if args.external_sequence_cache is not None:
+            required_paths.append(args.external_sequence_cache)
+        for required in required_paths:
             if not required.exists():
                 parser.error(f"required path does not exist: {required}")
 
@@ -139,6 +145,17 @@ def main() -> int:
             ]
             if args.max_slices is not None:
                 command.extend(["--max-slices", str(args.max_slices)])
+            if args.external_sequence_cache is not None:
+                command.extend(
+                    [
+                        "--external-sequence-cache",
+                        str(args.external_sequence_cache),
+                        "--minimum-external-coverage",
+                        str(args.minimum_external_coverage),
+                    ]
+                )
+            if args.feature_sets:
+                command.extend(["--feature-sets", *args.feature_sets])
             print(f"[gpu {gpu}] {job.name}: {' '.join(command)}", flush=True)
             started = time.monotonic()
             status = "planned"

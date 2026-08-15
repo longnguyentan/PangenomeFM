@@ -9,7 +9,10 @@ from pathlib import Path
 
 import pandas as pd
 
-from scripts.server.aggregate_ccre_frozen_probes import hierarchical_summary
+from scripts.server.aggregate_ccre_frozen_probes import (
+    hierarchical_summary,
+    paired_modality_contribution_summary,
+)
 
 
 def main() -> int:
@@ -28,6 +31,12 @@ def main() -> int:
     metrics = pd.concat([pd.read_csv(path) for path in metric_paths], ignore_index=True)
     strata = pd.concat([pd.read_csv(path) for path in stratum_paths], ignore_index=True)
     summary = hierarchical_summary(metrics, n_bootstrap=args.n_bootstrap, seed=args.seed)
+    contributions = paired_modality_contribution_summary(
+        metrics,
+        n_bootstrap=args.n_bootstrap,
+        seed=args.seed,
+        suffix="_pair",
+    )
     stratum_summary = (
         strata.groupby(["closure", "feature_set", "stratum", "stratum_value"], dropna=False)
         .agg(
@@ -45,6 +54,7 @@ def main() -> int:
     args.out_dir.mkdir(parents=True, exist_ok=True)
     metrics.to_csv(args.out_dir / "sv_fold_metrics.csv", index=False)
     summary.to_csv(args.out_dir / "sv_summary.csv", index=False)
+    contributions.to_csv(args.out_dir / "sv_modality_contributions.csv", index=False)
     strata.to_csv(args.out_dir / "sv_stratified_fold_metrics.csv", index=False)
     stratum_summary.to_csv(args.out_dir / "sv_stratified_summary.csv", index=False)
     audit = {
@@ -55,6 +65,7 @@ def main() -> int:
         "seeds": sorted(int(value) for value in metrics["seed"].unique()),
         "contexts": sorted(metrics["closure"].unique()),
         "feature_sets": sorted(metrics["feature_set"].unique()),
+        "modality_contrasts": sorted(contributions["contrast"].unique()) if not contributions.empty else [],
         "strata": sorted(strata["stratum"].unique()),
         "n_bootstrap": args.n_bootstrap,
         "bootstrap_seed": args.seed,
