@@ -24,10 +24,15 @@ from typing import Iterable
 
 import numpy as np
 import pandas as pd
+from sklearn.metrics import average_precision_score, roc_auc_score
 
 from evaluation.calibration import apply_temperature, fit_temperature
 from evaluation.splits import normalize_chrom
-from graph.neg_sampling import oriented_ids_from_links, slice_oriented_node_set
+from graph.neg_sampling import (
+    canonical_oriented_pair,
+    oriented_ids_from_links,
+    slice_oriented_node_set,
+)
 from graph.slicing import build_global_index
 from scripts.run_full_multicohort_all_chromosomes import load_config
 
@@ -233,6 +238,7 @@ def align_heldout_predictions(
     baseline_name: str,
     chromosomes: set[str],
     slice_nodes: dict[str, np.ndarray],
+    canonical_conflict_policy: str = "error",
 ) -> tuple[pd.DataFrame, dict[str, object], pd.DataFrame]:
     """Align exact edges within the audited common set of scored slices."""
 
@@ -334,6 +340,7 @@ def align_heldout_predictions(
             f"{coverage}"
         )
     mismatches = merged.loc[~merged["_merge"].eq("both")].copy()
+    mismatches["_merge"] = mismatches["_merge"].astype(str)
     matched = merged.loc[common_slice_rows & merged["_merge"].eq("both")].copy()
     if not matched["chromosome_neural"].eq(matched["chromosome_baseline"]).all():
         raise ValueError("Neural/baseline chromosome assignments differ")
@@ -344,6 +351,55 @@ def align_heldout_predictions(
         raise ValueError(
             "Neural/baseline held-out labels differ; refusing a non-identical comparison"
         )
+    canonical_pairs = [
+        canonical_oriented_pair(u_oid, v_oid)
+        for u_oid, v_oid in zip(matched["u_oid"], matched["v_oid"])
+    ]
+    matched["_canonical_u"] = [pair[0] for pair in canonical_pairs]
+    matched["_canonical_v"] = [pair[1] for pair in canonical_pairs]
+    canonical_group = ["slice", "_canonical_u", "_canonical_v"]
+    label_counts = matched.groupby(canonical_group, sort=False)[
+        "y_true_neural"
+    ].nunique()
+    conflict_keys = label_counts.loc[label_counts > 1].index
+    conflict_key_set = set(conflict_keys.tolist())
+    conflict_mask = pd.Series(
+        [
+            (str(slice_name), int(u_oid), int(v_oid)) in conflict_key_set
+            for slice_name, u_oid, v_oid in zip(
+                matched["slice"], matched["_canonical_u"], matched["_canonical_v"]
+            )
+        ],
+        index=matched.index,
+    )
+    canonical_duplicate_rows = int(
+        matched.duplicated(canonical_group, keep=False).sum()
+    )
+    coverage.update(
+        {
+            "canonical_identity_policy": "(u,v) == (v^1,u^1)",
+            "canonical_duplicate_rows": canonical_duplicate_rows,
+            "canonical_label_conflict_identities": int(len(conflict_key_set)),
+            "canonical_label_conflict_rows": int(conflict_mask.sum()),
+            "canonical_conflict_policy": canonical_conflict_policy,
+        }
+    )
+    if conflict_key_set and canonical_conflict_policy == "error":
+        raise ValueError(
+            "orientation-equivalent held-out candidates have conflicting labels: "
+            f"identities={len(conflict_key_set)}, rows={int(conflict_mask.sum())}"
+        )
+    if conflict_key_set:
+        if canonical_conflict_policy != "exclude":
+            raise ValueError(
+                f"unknown canonical conflict policy: {canonical_conflict_policy}"
+            )
+        canonical_exclusions = matched.loc[conflict_mask].copy()
+        canonical_exclusions["_merge"] = "canonical_label_conflict"
+        mismatches = pd.concat([mismatches, canonical_exclusions], ignore_index=True)
+        matched = matched.loc[~conflict_mask].copy()
+    if matched.empty:
+        raise ValueError("No candidates remain after canonical identity auditing")
     return matched.drop(columns="_merge"), coverage, mismatches
 
 
@@ -357,6 +413,7 @@ def score_one_run(
     slice_nodes: dict[str, np.ndarray],
     expected_test_chromosomes: set[str] | None = None,
     expected_validation_chromosomes: set[str] | None = None,
+    canonical_conflict_policy: str = "error",
 ) -> tuple[pd.DataFrame, float, dict[str, object], pd.DataFrame]:
     neural = pd.read_csv(neural_path, compression="infer")
     if "dataset" in neural:
@@ -411,6 +468,7 @@ def score_one_run(
         baseline_name=baseline_name,
         chromosomes=chromosomes,
         slice_nodes=slice_nodes,
+        canonical_conflict_policy=canonical_conflict_policy,
     )
     model_probability = apply_temperature(
         aligned["p_edge"].to_numpy(float), temperature
@@ -418,10 +476,30 @@ def score_one_run(
     baseline_probability = np.clip(
         aligned["p_calibrated"].to_numpy(float), 1e-7, 1 - 1e-7
     )
+    aligned["model_probability"] = model_probability
+    aligned["baseline_probability"] = baseline_probability
+    canonical_columns = ["slice", "_canonical_u", "_canonical_v"]
+    aligned = (
+        aligned.groupby(canonical_columns, sort=False, as_index=False)
+        .agg(
+            y_true_neural=("y_true_neural", "first"),
+            model_probability=("model_probability", "mean"),
+            baseline_probability=("baseline_probability", "mean"),
+            equivalent_representation_count=("y_true_neural", "size"),
+        )
+    )
+    coverage["canonical_candidates_after_audit"] = int(len(aligned))
+    coverage["canonical_duplicate_rows_collapsed"] = int(
+        coverage["common_candidates"]
+        - coverage["canonical_label_conflict_rows"]
+        - len(aligned)
+    )
     raw_labels = aligned["y_true_neural"].to_numpy(float)
     if not set(np.unique(raw_labels)).issubset({0.0, 1.0}):
         raise ValueError("Held-out labels must be binary")
     labels = raw_labels.astype(np.int8)
+    model_probability = aligned["model_probability"].to_numpy(float)
+    baseline_probability = aligned["baseline_probability"].to_numpy(float)
     if not np.isfinite(model_probability).all() or not np.isfinite(
         baseline_probability
     ).all():
@@ -442,6 +520,24 @@ def score_one_run(
     aligned["log_loss_advantage"] = baseline_loss - model_loss
     rows = []
     for region_id, group in aligned.groupby("slice", sort=True):
+        group_labels = group["y_true_neural"].to_numpy(np.int8)
+        model_scores = group["model_probability"].to_numpy(float)
+        baseline_scores = group["baseline_probability"].to_numpy(float)
+        has_two_classes = np.unique(group_labels).size == 2
+        model_auprc = float(average_precision_score(group_labels, model_scores))
+        baseline_auprc = float(
+            average_precision_score(group_labels, baseline_scores)
+        )
+        model_auroc = (
+            float(roc_auc_score(group_labels, model_scores))
+            if has_two_classes
+            else float("nan")
+        )
+        baseline_auroc = (
+            float(roc_auc_score(group_labels, baseline_scores))
+            if has_two_classes
+            else float("nan")
+        )
         rows.append(
             {
                 "region_id": str(region_id),
@@ -451,6 +547,12 @@ def score_one_run(
                 "model_nll": float(group["model_log_loss"].mean()),
                 "baseline_nll": float(group["baseline_log_loss"].mean()),
                 "log_loss_advantage": float(group["log_loss_advantage"].mean()),
+                "model_auprc": model_auprc,
+                "baseline_auprc": baseline_auprc,
+                "auprc_advantage": model_auprc - baseline_auprc,
+                "model_auroc": model_auroc,
+                "baseline_auroc": baseline_auroc,
+                "auroc_advantage": model_auroc - baseline_auroc,
                 "mean_model_probability": float(group["model_probability"].mean()),
                 "mean_baseline_probability": float(group["baseline_probability"].mean()),
             }
@@ -478,11 +580,20 @@ def aggregate_region_scores(
         raise ValueError("No per-seed tile scores were produced")
     aggregates = []
     for region_id, group in seed_scores.groupby("region_id", sort=True):
+        baselines = sorted(group["baseline"].astype(str).unique())
+        contexts = sorted(group["closure"].astype(str).unique())
+        folds = sorted(group["fold"].astype(str).unique())
+        if len(baselines) != 1 or len(contexts) != 1 or len(folds) != 1:
+            raise ValueError(
+                f"region {region_id} mixes baseline, context, or fold identities"
+            )
         counts = group["n_test_candidates"].astype(int)
         positives = group["n_positive_test_candidates"].astype(int)
         aggregates.append(
             {
                 "region_id": str(region_id),
+                "baseline": baselines[0],
+                "context": contexts[0],
                 "n_seeds": int(group["seed"].nunique()),
                 "seeds": ",".join(str(value) for value in sorted(group["seed"].unique())),
                 "n_test_candidates_min": int(counts.min()),
@@ -496,6 +607,12 @@ def aggregate_region_scores(
                     float(group["log_loss_advantage"].std(ddof=1))
                     if len(group) > 1 else 0.0
                 ),
+                "model_auprc": float(group["model_auprc"].mean()),
+                "baseline_auprc": float(group["baseline_auprc"].mean()),
+                "auprc_advantage": float(group["auprc_advantage"].mean()),
+                "model_auroc": float(group["model_auroc"].mean()),
+                "baseline_auroc": float(group["baseline_auroc"].mean()),
+                "auroc_advantage": float(group["auroc_advantage"].mean()),
                 "mean_model_probability": float(group["mean_model_probability"].mean()),
                 "mean_baseline_probability": float(
                     group["mean_baseline_probability"].mean()
@@ -533,11 +650,20 @@ def main() -> int:
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument("--regime", default="hprc_r2")
     parser.add_argument("--dataset", default="hprc_r2")
-    parser.add_argument("--closure", choices=["strict"], default="strict")
+    parser.add_argument("--closure", choices=["strict", "1hop"], default="strict")
     parser.add_argument("--baseline", default="sequence_composition_sgd")
     parser.add_argument("--seeds", nargs="+", type=int)
     parser.add_argument("--chromosomes", nargs="+")
     parser.add_argument("--minimum-test-candidates", type=int, default=10)
+    parser.add_argument(
+        "--canonical-conflict-policy",
+        choices=["error", "exclude"],
+        default="error",
+        help=(
+            "Hard-fail on orientation-equivalent label conflicts, or explicitly "
+            "exclude every representation of each conflicting identity."
+        ),
+    )
     args = parser.parse_args()
     if args.out_dir.exists():
         raise FileExistsError(f"Refusing to overwrite output directory: {args.out_dir}")
@@ -614,6 +740,7 @@ def main() -> int:
                 expected_validation_chromosomes=set(
                     fold_metadata[fold]["validation"]
                 ),
+                canonical_conflict_policy=args.canonical_conflict_policy,
             )
             frame["fold"] = fold
             frame["seed"] = seed
@@ -701,6 +828,7 @@ def main() -> int:
         "dataset": args.dataset,
         "closure": args.closure,
         "baseline": args.baseline,
+        "canonical_conflict_policy": args.canonical_conflict_policy,
         "seeds": seeds,
         "chromosomes": sorted(chromosomes, key=chromosome_sort_key),
         "folds": required_folds,
@@ -715,7 +843,9 @@ def main() -> int:
         "minimum_test_candidates": args.minimum_test_candidates,
         "candidate_alignment_policy": (
             "exact oriented-edge identity is required within every slice produced by "
-            "both methods; whole slices absent from one method are audited and excluded"
+            "both methods; reverse-complement-equivalent representations are collapsed; "
+            "whole slices absent from one method and explicitly permitted legacy label "
+            "conflicts are audited and excluded"
         ),
         "candidate_coverage_by_run": coverage_rows,
         "candidate_coverage_exclusions": int(len(mismatch_output)),

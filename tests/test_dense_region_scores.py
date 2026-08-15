@@ -177,9 +177,44 @@ def test_scoring_uses_validation_calibration_and_identical_candidates(
     assert scores.loc[0, "n_test_candidates"] == 12
     assert scores.loc[0, "n_positive_test_candidates"] == 6
     assert scores.loc[0, "log_loss_advantage"] > 0
+    assert np.isfinite(scores.loc[0, "auprc_advantage"])
+    assert np.isfinite(scores.loc[0, "auroc_advantage"])
     assert np.isfinite(temperature) and temperature > 0
     assert coverage["common_fraction"] == 1
     assert exclusions.empty
+
+
+def test_canonical_conflicts_fail_or_are_explicitly_excluded() -> None:
+    neural = synthetic_neural()
+    neural.loc[4, ["u_local", "v_local"]] = [10, 20]
+    neural.loc[5, ["u_local", "v_local"]] = [21, 11]
+    baseline = synthetic_baseline()
+    baseline.loc[0, ["u_oid", "v_oid"]] = [10, 20]
+    baseline.loc[1, ["u_oid", "v_oid"]] = [21, 11]
+    nodes = np.arange(24)
+
+    with pytest.raises(ValueError, match="orientation-equivalent"):
+        align_heldout_predictions(
+            neural,
+            baseline,
+            baseline_name="sequence_composition_sgd",
+            chromosomes={"chr1"},
+            slice_nodes={"tile_chr1_0": nodes},
+        )
+
+    matched, coverage, exclusions = align_heldout_predictions(
+        neural,
+        baseline,
+        baseline_name="sequence_composition_sgd",
+        chromosomes={"chr1"},
+        slice_nodes={"tile_chr1_0": nodes},
+        canonical_conflict_policy="exclude",
+    )
+    assert len(matched) == 10
+    assert coverage["canonical_label_conflict_identities"] == 1
+    assert coverage["canonical_label_conflict_rows"] == 2
+    assert len(exclusions) == 2
+    assert set(exclusions["_merge"]) == {"canonical_label_conflict"}
 
 
 def test_aggregation_requires_seed_coverage_and_two_classes() -> None:
@@ -204,11 +239,20 @@ def test_aggregation_requires_seed_coverage_and_two_classes() -> None:
             {
                 "region_id": "good",
                 "seed": seed,
+                "baseline": "sequence_composition_sgd",
+                "closure": "strict",
+                "fold": "fold_a",
                 "n_test_candidates": 12,
                 "n_positive_test_candidates": 6,
                 "model_nll": 0.2,
                 "baseline_nll": 0.4,
                 "log_loss_advantage": 0.2,
+                "model_auprc": 0.8,
+                "baseline_auprc": 0.7,
+                "auprc_advantage": 0.1,
+                "model_auroc": 0.8,
+                "baseline_auroc": 0.7,
+                "auroc_advantage": 0.1,
                 "mean_model_probability": 0.5,
                 "mean_baseline_probability": 0.5,
             }

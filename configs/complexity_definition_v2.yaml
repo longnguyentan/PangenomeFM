@@ -1,0 +1,58 @@
+schema_version: 2
+name: native_graph_window_complexity_v2
+independence_rule: This definition must not read model predictions, losses, biological signal sets, or performance metrics.
+unit_of_analysis: native_genomic_window
+fit_population:
+  dataset: hprc_r2_native_5mb
+  reference_context: strict
+  rationale: Strict core-node-induced graph structure defines locus complexity before endpoint expansion is exposed.
+normalization:
+  method: robust_z
+  center: median
+  scale: 1.4826_x_median_absolute_deviation
+  zero_scale_policy: set_normalized_feature_to_zero
+  winsorize: [-5.0, 5.0]
+composite:
+  method: equal_weight_mean
+  features:
+    - name: log1p_edges_per_kb
+      source_feature: edges_per_kb
+      transform: log1p
+      weight: 1.0
+    - name: branching_fraction
+      source_feature: branching_fraction
+      transform: identity
+      weight: 1.0
+    - name: log1p_max_degree
+      source_feature: max_degree
+      transform: log1p
+      weight: 1.0
+    - name: log1p_cycle_rank_per_kb
+      source_feature: cycle_rank_per_kb
+      transform: log1p
+      weight: 1.0
+    - name: log1p_nodes_per_kb
+      source_feature: nodes_per_kb
+      transform: log1p
+      weight: 1.0
+    - name: log1p_node_length_iqr_over_median
+      source_feature: node_length_iqr_over_median
+      transform: log1p
+      weight: 1.0
+categories:
+  method: reference_population_tertiles
+  labels: [low, medium, high]
+reported_but_not_fitted:
+  - alternate_node_fraction
+  - connected_components
+  - largest_component_fraction
+  - local_density
+  - node_exposure_ratio_to_reference_context
+  - edge_exposure_ratio_to_reference_context
+forbidden_inputs:
+  - model_probability
+  - baseline_probability
+  - AUROC
+  - AUPRC
+  - log_loss
+  - QTL_or_GWAS_overlap

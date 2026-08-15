@@ -7,6 +7,33 @@ import numpy as np
 import pandas as pd
 
 
+def oriented_reverse_complement(u_oid: int, v_oid: int) -> Tuple[int, int]:
+    """Return the equivalent reverse traversal in a bidirected graph."""
+
+    return int(v_oid) ^ 1, int(u_oid) ^ 1
+
+
+def canonical_oriented_pair(u_oid: int, v_oid: int) -> Tuple[int, int]:
+    """Identify a traversal with its reverse-complement equivalent."""
+
+    directed = (int(u_oid), int(v_oid))
+    return min(directed, oriented_reverse_complement(*directed))
+
+
+def canonicalize_oriented_pairs(pairs: np.ndarray) -> np.ndarray:
+    """Return sorted, unique canonical pairs as an ``(n, 2)`` array."""
+
+    values = np.asarray(pairs, dtype=np.int64)
+    if values.size == 0:
+        return np.empty((0, 2), dtype=np.int64)
+    if values.ndim != 2 or values.shape[1] != 2:
+        raise ValueError("oriented pairs must have shape (n, 2)")
+    unique = sorted(
+        {canonical_oriented_pair(u, v) for u, v in values.tolist()}
+    )
+    return np.asarray(unique, dtype=np.int64).reshape(-1, 2)
+
+
 def oriented_ids_from_links(
     links_sub: pd.DataFrame, seg_index: pd.Index
 ) -> Tuple[np.ndarray, np.ndarray]:
@@ -22,7 +49,12 @@ def oriented_ids_from_links(
 
 
 def build_pos_set(u: np.ndarray, v: np.ndarray) -> Set[Tuple[int, int]]:
-    return set(map(tuple, np.stack([u, v], axis=1).tolist()))
+    """Return biological edge identities, including reverse equivalence."""
+
+    return {
+        canonical_oriented_pair(a, b)
+        for a, b in zip(np.asarray(u).tolist(), np.asarray(v).tolist())
+    }
 
 
 def slice_oriented_node_set(u: np.ndarray, v: np.ndarray) -> np.ndarray:
@@ -55,6 +87,7 @@ def neg_random(
     rng: np.random.Generator,
 ) -> List[Tuple[int, int]]:
     neg: List[Tuple[int, int]] = []
+    used_negatives: Set[Tuple[int, int]] = set()
     tries = 0
     max_tries = max(10_000, n_neg * 80)
     n_nodes = len(nodes)
@@ -65,9 +98,11 @@ def neg_random(
         if uu == vv:
             tries += 1
             continue
-        if (uu, vv) in pos_set:
+        canonical = canonical_oriented_pair(uu, vv)
+        if canonical in pos_set or canonical in used_negatives:
             tries += 1
             continue
+        used_negatives.add(canonical)
         neg.append((uu, vv))
         tries += 1
 
@@ -97,6 +132,7 @@ def neg_hard_coord_degree(
     This is your v2 "hardneg".
     """
     neg: List[Tuple[int, int]] = []
+    used_negatives: Set[Tuple[int, int]] = set()
     tries = 0
     max_tries = max(20_000, n_neg * 200)
 
@@ -133,7 +169,8 @@ def neg_hard_coord_degree(
         if uu == vv:
             tries += 1
             continue
-        if (uu, vv) in pos_set:
+        canonical = canonical_oriented_pair(uu, vv)
+        if canonical in pos_set or canonical in used_negatives:
             tries += 1
             continue
 
@@ -161,6 +198,7 @@ def neg_hard_coord_degree(
                 tries += 1
                 continue
 
+        used_negatives.add(canonical)
         neg.append((uu, vv))
         tries += 1
 
@@ -191,6 +229,7 @@ def neg_distance_matched(
     This is what made AUC drop in strict slices in your results.
     """
     neg: List[Tuple[int, int]] = []
+    used_negatives: Set[Tuple[int, int]] = set()
     tries = 0
     max_tries = max(50_000, n_neg * 400)
 
@@ -223,7 +262,8 @@ def neg_distance_matched(
         if uu == vv:
             tries += 1
             continue
-        if (uu, vv) in pos_set:
+        canonical = canonical_oriented_pair(uu, vv)
+        if canonical in pos_set or canonical in used_negatives:
             tries += 1
             continue
         if same_sn and (oid_to_sn[uu] != oid_to_sn[vv]):
@@ -247,6 +287,7 @@ def neg_distance_matched(
                 tries += 1
                 continue
 
+        used_negatives.add(canonical)
         neg.append((uu, vv))
         tries += 1
 
@@ -302,7 +343,7 @@ def neg_distance_matched_paired(
         for _ in range(max_tries_per_positive):
             uu = int(candidate_nodes[rng.integers(0, len(candidate_nodes))])
             vv = int(candidate_nodes[rng.integers(0, len(candidate_nodes))])
-            pair = (uu, vv)
+            pair = canonical_oriented_pair(uu, vv)
             if uu == vv or pair in pos_set or pair in used_negatives:
                 continue
             if same_sn and oid_to_sn[uu] != oid_to_sn[vv]:
@@ -319,7 +360,7 @@ def neg_distance_matched_paired(
                 }:
                     continue
             used_negatives.add(pair)
-            negatives.append(pair)
+            negatives.append((uu, vv))
             positive_indices.append(int(index))
             break
 

@@ -38,6 +38,8 @@ from graph.slicing import (
 from graph.neg_sampling import (
     oriented_ids_from_links,
     build_pos_set,
+    canonicalize_oriented_pairs,
+    canonical_oriented_pair,
     slice_oriented_node_set,
     compute_oriented_degrees,
     neg_random,
@@ -648,8 +650,13 @@ def build_manifest(
 
                 # Edge prediction dataset
                 u, v = oriented_ids_from_links(links_sub, seg_index)
-                pos = np.stack([u, v], axis=1)
-                original_positive_count = len(pos)
+                raw_pos = np.stack([u, v], axis=1)
+                original_positive_count = len(raw_pos)
+                pos = canonicalize_oriented_pairs(raw_pos)
+                canonical_positive_count = len(pos)
+                reverse_equivalent_positive_duplicates = (
+                    original_positive_count - canonical_positive_count
+                )
                 nodes = slice_oriented_node_set(u, v)
                 pos_set = build_pos_set(u, v)
                 rng_neg = np.random.default_rng(seed + made)
@@ -749,7 +756,12 @@ def build_manifest(
 
                 neg = neg[: len(pos)]
                 retention_fraction = (
-                    float(len(pos) / original_positive_count)
+                    float(len(pos) / canonical_positive_count)
+                    if canonical_positive_count
+                    else 0.0
+                )
+                canonicalization_fraction = (
+                    float(canonical_positive_count / original_positive_count)
                     if original_positive_count
                     else 0.0
                 )
@@ -758,8 +770,17 @@ def build_manifest(
                     {
                         "negative_shortfall_policy": negative_shortfall_policy,
                         "n_positive_edges_original": int(original_positive_count),
+                        "n_positive_edges_canonical": int(canonical_positive_count),
+                        "reverse_equivalent_positive_duplicates_removed": int(
+                            reverse_equivalent_positive_duplicates
+                        ),
                         "n_positive_edges_retained": int(len(pos)),
+                        "positive_canonicalization_fraction": canonicalization_fraction,
                         "positive_retention_fraction": retention_fraction,
+                        "candidate_identity_policy": (
+                            "(u,v) is identical to reverse-complement "
+                            "(v^1,u^1); conflicting labels are forbidden"
+                        ),
                     }
                 )
                 save_json(meta_payload, meta_out)
@@ -773,8 +794,29 @@ def build_manifest(
                         "label": 0,
                     }
                 )
+                candidate_frame = pd.concat([df_pos, df_neg], ignore_index=True)
+                candidate_frame["_canonical_pair"] = [
+                    canonical_oriented_pair(u_oid, v_oid)
+                    for u_oid, v_oid in zip(
+                        candidate_frame["u_oid"], candidate_frame["v_oid"]
+                    )
+                ]
+                canonical_label_counts = candidate_frame.groupby(
+                    "_canonical_pair", sort=False
+                )["label"].nunique()
+                canonical_conflicts = int((canonical_label_counts > 1).sum())
+                canonical_duplicates = int(
+                    candidate_frame["_canonical_pair"].duplicated().sum()
+                )
+                if canonical_conflicts or canonical_duplicates:
+                    raise ValueError(
+                        "candidate generation violated canonical edge identity: "
+                        f"conflicts={canonical_conflicts}, "
+                        f"duplicates={canonical_duplicates}"
+                    )
+                candidate_frame = candidate_frame.drop(columns="_canonical_pair")
                 (
-                    pd.concat([df_pos, df_neg])
+                    candidate_frame
                     .sample(frac=1, random_state=seed)
                     .reset_index(drop=True)
                     .to_csv(edge_out, index=False, compression="gzip")
@@ -807,8 +849,14 @@ def build_manifest(
                         "negative_degree_matched": negative_degree_matched,
                         "negative_shortfall_policy": negative_shortfall_policy,
                         "n_positive_edges_original": int(original_positive_count),
+                        "n_positive_edges_canonical": int(canonical_positive_count),
+                        "reverse_equivalent_positive_duplicates_removed": int(
+                            reverse_equivalent_positive_duplicates
+                        ),
                         "n_positive_edges_retained": int(len(pos)),
+                        "positive_canonicalization_fraction": canonicalization_fraction,
                         "positive_retention_fraction": retention_fraction,
+                        "candidate_identity_policy": "canonical_reverse_complement",
                         "non_overlapping_windows": non_overlapping_windows,
                         "matched_closure_windows": matched_closure_windows,
                         "tile_stride_bp": tile_stride_bp,

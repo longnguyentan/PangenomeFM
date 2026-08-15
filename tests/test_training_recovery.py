@@ -6,9 +6,11 @@ torch = pytest.importorskip("torch")
 
 from training.pretrain import (
     WarmupCosineScheduler,
+    deduplicate_candidate_edges,
     leakage_safe_mask_indices,
     mask_positive_query_edges,
     maybe_tensorize_slice,
+    seed_everything,
     split_candidate_indices,
 )
 from evaluation.splits import normalize_chrom, validate_chromosome_split
@@ -55,6 +57,20 @@ def test_candidate_split_is_controlled_only_by_split_seed() -> None:
     assert [len(values) for values in first] == [71, 10, 20]
 
 
+def test_seed_everything_controls_torch_and_numpy_rngs() -> None:
+    import numpy as np
+
+    seed_everything(20260806)
+    torch_first = torch.rand(4)
+    numpy_first = np.random.random(4)
+    seed_everything(20260806)
+    torch_second = torch.rand(4)
+    numpy_second = np.random.random(4)
+
+    assert torch.equal(torch_first, torch_second)
+    assert np.array_equal(numpy_first, numpy_second)
+
+
 @pytest.mark.parametrize(
     ("value", "expected"),
     [
@@ -99,6 +115,61 @@ def test_query_edge_masking_vectorizes_multiple_positive_edges() -> None:
     assert masked_attr is not None and masked_attr.shape == (3, 2)
 
 
+def test_query_edge_masking_removes_reverse_complement_and_duplicates() -> None:
+    # Local dense indices 0..5 correspond to oriented IDs shown below.
+    # The reverse-complement of 10 -> 20 is 21 -> 11.
+    node_oids = torch.tensor([10, 20, 21, 11, 30, 31])
+    src = torch.tensor([0, 2, 0, 4, 2])
+    dst = torch.tensor([1, 3, 1, 5, 3])
+    edge_attr = torch.arange(10, dtype=torch.float32).reshape(5, 2)
+    query_u = torch.tensor([0, 4])
+    query_v = torch.tensor([1, 5])
+    labels = torch.tensor([1.0, 0.0])
+    idx = torch.tensor([0, 1])
+
+    masked_src, masked_dst, masked_attr = mask_positive_query_edges(
+        src,
+        dst,
+        edge_attr,
+        query_u,
+        query_v,
+        labels,
+        idx,
+        node_oids=node_oids,
+    )
+
+    assert list(zip(masked_src.tolist(), masked_dst.tolist())) == [(4, 5)]
+    assert masked_attr is not None
+    assert masked_attr.tolist() == edge_attr[[3]].tolist()
+
+
+def test_candidate_deduplication_collapses_reverse_complement_traversals() -> None:
+    import pandas as pd
+
+    candidates = pd.DataFrame(
+        {
+            "u_oid": [10, 21, 10, 30],
+            "v_oid": [20, 11, 20, 32],
+            "label": [1, 1, 1, 0],
+        }
+    )
+    deduplicated = deduplicate_candidate_edges(candidates)
+    assert deduplicated[["u_oid", "v_oid", "label"]].values.tolist() == [
+        [10, 20, 1],
+        [30, 32, 0],
+    ]
+
+
+def test_candidate_deduplication_rejects_conflicting_equivalent_labels() -> None:
+    import pandas as pd
+
+    candidates = pd.DataFrame(
+        {"u_oid": [10, 21], "v_oid": [20, 11], "label": [1, 0]}
+    )
+    with pytest.raises(ValueError, match="conflicting labels"):
+        deduplicate_candidate_edges(candidates)
+
+
 def test_lazy_tensorization_converts_raw_slice_without_mutating_it() -> None:
     import argparse
     import numpy as np
@@ -133,6 +204,7 @@ def test_lazy_tensorization_converts_raw_slice_without_mutating_it() -> None:
     assert temporary is True
     assert tensorized["X"].shape == (2, 3)
     assert tensorized["orient"].tolist() == [0, 1]
+    assert tensorized["node_oids"].tolist() == [0, 1]
     assert "X" not in raw
 
 

@@ -1,0 +1,44 @@
+schema_version: 1
+name: graph_window_complexity_v1
+independence_rule: This definition must not read model predictions or performance metrics.
+unit_of_analysis: genomic_window
+fit_population:
+  dataset: hprc_local_matched_benchmark
+  manifest: data/hprc/benchmark_matched_nonoverlap_v2_review_20260804/manifest.csv
+  reference_context: strict
+  rationale: Core-node-induced features define locus complexity without expanded-context exposure.
+normalization:
+  method: robust_z
+  center: median
+  scale: 1.4826_x_median_absolute_deviation
+  zero_scale_policy: set_normalized_feature_to_zero
+  winsorize: [-5.0, 5.0]
+composite:
+  method: equal_weight_mean
+  features:
+    - name: log1p_edges_per_kb
+      source_feature: edges_per_kb
+      transform: log1p
+      weight: 1.0
+    - name: branching_fraction
+      source_feature: branching_fraction
+      transform: identity
+      weight: 1.0
+    - name: log1p_max_degree
+      source_feature: max_degree
+      transform: log1p
+      weight: 1.0
+    - name: log1p_cycle_rank_per_kb
+      source_feature: cycle_rank_per_kb
+      transform: log1p
+      weight: 1.0
+categories:
+  method: reference_population_tertiles
+  labels: [low, medium, high]
+excluded_from_v1_score:
+  - nodes_per_kb: Reported but omitted from the score to reduce redundancy with edges per kb.
+  - path_entropy: No complete per-window path-support table is available.
+  - bubble_count: No validated bubble decomposition exists for these slices.
+  - sv_density: Requires a build-matched, verified SV catalogue join.
+  - alternate_node_fraction: Reported, but the strict/core fit population has zero variance in the local SR tag.
+  - model_performance: Forbidden by the independence rule.

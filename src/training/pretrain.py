@@ -50,6 +50,8 @@ import argparse
 import copy
 import math
 import json
+import os
+import random
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -68,6 +70,7 @@ except ImportError:
 from graph.slicing import build_global_index
 from graph.features import build_oid_metadata_from_segments
 from graph.neg_sampling import (
+    canonical_oriented_pair,
     oriented_ids_from_links,
     slice_oriented_node_set,
     compute_oriented_degrees,
@@ -86,6 +89,29 @@ from evaluation.splits import normalize_chrom, validate_chromosome_split
 # ---------------------------------------------------------------------------
 # Drop-edge augmentation
 # ---------------------------------------------------------------------------
+
+
+def seed_everything(seed: int) -> None:
+    """Seed every RNG used by initialization, augmentation, and training.
+
+    Historical code used ``args.seed`` for candidate partitions and slice
+    order but did not seed PyTorch, so model initialization and DropEdge were
+    not reproducible.  Deterministic algorithms are requested in warn-only
+    mode to surface unsupported GPU kernels without making CPU/GPU portability
+    a hard failure.
+    """
+
+    seed = int(seed)
+    os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    if hasattr(torch.backends, "cudnn"):
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+    torch.use_deterministic_algorithms(True, warn_only=True)
 
 
 def drop_edges(
@@ -125,12 +151,20 @@ def mask_positive_query_edges(
     q_v: "torch.Tensor",
     labels: "torch.Tensor",
     idx: "torch.Tensor",
+    node_oids: Optional["torch.Tensor"] = None,
 ) -> Tuple["torch.Tensor", "torch.Tensor", Optional["torch.Tensor"]]:
     """Remove positive query edges from the message-passing graph.
 
     This supports leakage-audited link prediction: the model may use the
     surrounding observed topology, but the candidate positive edge currently
     being scored is not available as a structural GAT edge.
+
+    When ``node_oids`` is supplied, oriented node IDs are used to remove both
+    the directed query ``u -> v`` and its reverse-complement traversal
+    ``(v ^ 1) -> (u ^ 1)``.  This matters for canonicalized bidirected graphs,
+    where both traversal rows can be materialized.  The optional argument
+    preserves the historical exact-directed behavior for older callers that
+    only have dense local node indices.
     """
     if idx.numel() == 0:
         return src, dst, edge_attr
@@ -139,17 +173,39 @@ def mask_positive_query_edges(
     if pos_idx.numel() == 0:
         return src, dst, edge_attr
 
-    # Hash directed pairs into one integer key.  The previous per-query loop
+    # Hash directed pairs into one integer key. The previous per-query loop
     # was quadratic in the number of structural/query edges and made
     # chromosome-scale windows effectively unusable.
+    if node_oids is not None:
+        if node_oids.ndim != 1:
+            raise ValueError("node_oids must be a one-dimensional tensor")
+        if src.numel() and int(torch.max(torch.cat([src, dst]))) >= len(node_oids):
+            raise ValueError("structural edge index is outside node_oids")
+        if int(torch.max(torch.cat([q_u[pos_idx], q_v[pos_idx]]))) >= len(node_oids):
+            raise ValueError("query edge index is outside node_oids")
+
+        structural_u = node_oids[src].to(torch.int64)
+        structural_v = node_oids[dst].to(torch.int64)
+        query_u_oids = node_oids[q_u[pos_idx]].to(torch.int64)
+        query_v_oids = node_oids[q_v[pos_idx]].to(torch.int64)
+        positive_u = torch.cat(
+            [query_u_oids, torch.bitwise_xor(query_v_oids, 1)]
+        )
+        positive_v = torch.cat(
+            [query_v_oids, torch.bitwise_xor(query_u_oids, 1)]
+        )
+    else:
+        structural_u = src.to(torch.int64)
+        structural_v = dst.to(torch.int64)
+        positive_u = q_u[pos_idx].to(torch.int64)
+        positive_v = q_v[pos_idx].to(torch.int64)
+
     max_node = torch.max(
-        torch.cat([src, dst, q_u[pos_idx], q_v[pos_idx]])
+        torch.cat([structural_u, structural_v, positive_u, positive_v])
     ).to(torch.int64)
     key_base = max_node + 1
-    structural_keys = src.to(torch.int64) * key_base + dst.to(torch.int64)
-    positive_keys = (
-        q_u[pos_idx].to(torch.int64) * key_base + q_v[pos_idx].to(torch.int64)
-    )
+    structural_keys = structural_u * key_base + structural_v
+    positive_keys = positive_u * key_base + positive_v
     keep = ~torch.isin(structural_keys, torch.unique(positive_keys))
 
     edge_attr_masked = edge_attr[keep] if edge_attr is not None else None
@@ -259,6 +315,35 @@ def split_candidate_indices(
     return train_idx, val_idx, test_idx
 
 
+def deduplicate_candidate_edges(edge_df: pd.DataFrame) -> pd.DataFrame:
+    """Remove exact and reverse-complement-equivalent candidate repeats.
+
+    A repeated biological relation must never land in two candidate
+    partitions. Conflicting labels for equivalent traversals are a hard data
+    error rather than something to resolve by row order.
+    """
+
+    required = {"u_oid", "v_oid", "label"}
+    missing = required - set(edge_df.columns)
+    if missing:
+        raise ValueError(f"candidate edges missing columns: {sorted(missing)}")
+    work = edge_df.copy()
+    canonical_pairs = [
+        canonical_oriented_pair(u, v)
+        for u, v in zip(work["u_oid"], work["v_oid"])
+    ]
+    work["_canonical_u"] = [pair[0] for pair in canonical_pairs]
+    work["_canonical_v"] = [pair[1] for pair in canonical_pairs]
+    label_counts = work.groupby(["_canonical_u", "_canonical_v"])["label"].nunique()
+    conflicts = int((label_counts > 1).sum())
+    if conflicts:
+        raise ValueError(
+            f"candidate table has {conflicts} orientation-equivalent pairs with conflicting labels"
+        )
+    work = work.drop_duplicates(["_canonical_u", "_canonical_v"], keep="first")
+    return work.drop(columns=["_canonical_u", "_canonical_v"]).reset_index(drop=True)
+
+
 def load_slice(
     row: pd.Series,
     seg_index,
@@ -270,6 +355,7 @@ def load_slice(
     seg_sub = pd.read_csv(row["segments_path"], compression="infer")
     links_sub = pd.read_csv(row["links_path"], compression="infer")
     edge_df = pd.read_csv(row["edge_pred_path"], compression="infer")
+    edge_df = deduplicate_candidate_edges(edge_df)
 
     if len(links_sub) == 0 or len(edge_df) == 0:
         return None
@@ -371,6 +457,9 @@ def tensorize_slice(slice_data: Dict, device: "torch.device", args) -> Dict:
     d["labels"] = torch.tensor(slice_data["labels"], dtype=torch.float32, device=device)
     d["q_u"] = torch.tensor(slice_data["query_u"], dtype=torch.long, device=device)
     d["q_v"] = torch.tensor(slice_data["query_v"], dtype=torch.long, device=device)
+    d["node_oids"] = torch.tensor(
+        slice_data["nodes"], dtype=torch.long, device=device
+    )
     d["train_idx"] = torch.tensor(
         slice_data["train_idx"], dtype=torch.long, device=device
     )
@@ -514,6 +603,7 @@ def train_one_epoch_shared(
                     sd["q_v"],
                     sd["labels"],
                     mask_idx,
+                    sd["node_oids"],
                 )
 
             src_aug, dst_aug, edge_attr_aug = drop_edges(
@@ -672,6 +762,7 @@ def evaluate_shared(
                 sd["q_v"],
                 sd["labels"],
                 mask_idx,
+                sd["node_oids"],
             )
 
         h = model.encode_nodes(
@@ -1040,6 +1131,7 @@ def main():
         raise ValueError(
             "--resume_recovery requires exactly one value in --closures."
         )
+    seed_everything(args.seed)
     device = torch.device(args.device)
 
     # ── Experiment label ─────────────────────────────────────────────────────
