@@ -37,6 +37,11 @@ def main() -> int:
     parser.add_argument("--external-sequence-cache", type=Path)
     parser.add_argument("--minimum-external-coverage", type=float, default=0.95)
     parser.add_argument("--feature-sets", nargs="+")
+    parser.add_argument(
+        "--canonical-conflict-policy",
+        choices=["error", "exclude"],
+        default="exclude",
+    )
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args()
     config = load_config(args.config)
@@ -91,6 +96,7 @@ def main() -> int:
                 "--closure", job.closure,
                 "--device", "cuda",
                 "--seed", str(job.seed),
+                "--canonical-conflict-policy", args.canonical_conflict_policy,
             ]
             if args.max_slices is not None:
                 command.extend(["--max-slices", str(args.max_slices)])

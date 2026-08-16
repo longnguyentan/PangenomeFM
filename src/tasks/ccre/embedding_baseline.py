@@ -101,12 +101,17 @@ def _extract_embeddings(
     seed: int,
     max_slices: int | None = None,
     target_chrs: set[str] | None = None,
-) -> tuple[dict[int, np.ndarray], dict[int, int]]:
+    canonical_conflict_policy: str = "error",
+    return_canonical_audit: bool = False,
+):
     if not TORCH_AVAILABLE:
         raise ImportError("PyTorch is required for frozen embedding extraction.")
     device = torch.device(device_name)
     ckpt = torch.load(checkpoint, map_location=device)
     eval_args = _namespace_from_checkpoint(ckpt, seed=seed)
+    if canonical_conflict_policy not in {"error", "exclude"}:
+        raise ValueError("canonical_conflict_policy must be 'error' or 'exclude'")
+    eval_args.canonical_conflict_policy = canonical_conflict_policy
 
     segments = read_segments_csv(full_segments)
     seg_index, _ = build_global_index(segments)
@@ -127,10 +132,28 @@ def _extract_embeddings(
 
     sums: dict[int, np.ndarray] = {}
     counts: dict[int, int] = defaultdict(int)
+    canonical_audit = {
+        "canonical_conflict_policy": canonical_conflict_policy,
+        "slices_with_conflicting_pairs": 0,
+        "orientation_equivalent_conflicting_pairs": 0,
+        "conflicting_candidate_rows_excluded": 0,
+        "same_label_equivalent_rows_collapsed": 0,
+    }
     for i, row in manifest_df.iterrows():
         sd_raw = load_slice(row, seg_index, md, segments, eval_args)
         if sd_raw is None:
             continue
+        slice_audit = sd_raw.get("canonical_candidate_audit", {})
+        conflicts = int(
+            slice_audit.get("orientation_equivalent_conflicting_pairs", 0)
+        )
+        canonical_audit["slices_with_conflicting_pairs"] += int(conflicts > 0)
+        for key in (
+            "orientation_equivalent_conflicting_pairs",
+            "conflicting_candidate_rows_excluded",
+            "same_label_equivalent_rows_collapsed",
+        ):
+            canonical_audit[key] += int(slice_audit.get(key, 0))
         sd = tensorize_slice(sd_raw, device, eval_args)
         if eval_args.adaptive_window:
             from training.pretrain import _compute_adaptive_window_k
@@ -166,6 +189,8 @@ def _extract_embeddings(
             print(f"[ccre-emb] processed {i + 1} manifest rows; embedded {len(sums):,} labeled segids")
 
     means = {segid: (vec / max(counts[segid], 1)).astype(np.float32) for segid, vec in sums.items()}
+    if return_canonical_audit:
+        return means, dict(counts), canonical_audit
     return means, dict(counts)
 
 

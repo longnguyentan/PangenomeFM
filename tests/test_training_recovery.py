@@ -170,6 +170,30 @@ def test_candidate_deduplication_rejects_conflicting_equivalent_labels() -> None
         deduplicate_candidate_edges(candidates)
 
 
+def test_candidate_deduplication_can_exclude_every_conflicting_representation() -> None:
+    import pandas as pd
+
+    candidates = pd.DataFrame(
+        {
+            "u_oid": [10, 21, 30, 33, 40],
+            "v_oid": [20, 11, 32, 31, 42],
+            "label": [1, 0, 1, 1, 0],
+        }
+    )
+    result = deduplicate_candidate_edges(candidates, conflict_policy="exclude")
+
+    assert result[["u_oid", "v_oid", "label"]].values.tolist() == [
+        [30, 32, 1],
+        [40, 42, 0],
+    ]
+    assert result.attrs["canonical_candidate_audit"] == {
+        "canonical_conflict_policy": "exclude",
+        "orientation_equivalent_conflicting_pairs": 1,
+        "conflicting_candidate_rows_excluded": 2,
+        "same_label_equivalent_rows_collapsed": 1,
+    }
+
+
 def test_lazy_tensorization_converts_raw_slice_without_mutating_it() -> None:
     import argparse
     import numpy as np

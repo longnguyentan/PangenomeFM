@@ -206,6 +206,7 @@ python scripts/server/run_ccre_frozen_probe_matrix.py \
   --node-labels $CCRE_LABELS \
   --feature-cache $CCRE_CACHE \
   --out-root $CCRE_FACTORIAL \
+  --canonical-conflict-policy exclude \
   --gpus 0 --seeds 42 --contexts strict --max-jobs 1 --execute \
   2>&1 | tee ${CCRE_FACTORIAL}.pilot.console.log
 echo CCRE_FACTORIAL_PILOT_EXIT_CODE=\${PIPESTATUS[0]}
@@ -225,6 +226,7 @@ python scripts/server/run_sv_frozen_probe_matrix.py \
   --examples $SV_EXAMPLES \
   --feature-cache $SV_CACHE \
   --out-root $SV_FACTORIAL \
+  --canonical-conflict-policy exclude \
   --gpus 2 --seeds 42 --contexts strict --max-jobs 1 --execute \
   2>&1 | tee ${SV_FACTORIAL}.pilot.console.log
 echo SV_FACTORIAL_PILOT_EXIT_CODE=\${PIPESTATUS[0]}
@@ -264,6 +266,7 @@ set -o pipefail
   --node-labels $CCRE_LABELS \
   --feature-cache $CCRE_CACHE \
   --out-root $CCRE_FACTORIAL \
+  --canonical-conflict-policy exclude \
   --gpus 0,1 --execute \
   2>&1 | tee ${CCRE_FACTORIAL}.full.console.log
 echo CCRE_FACTORIAL_FULL_EXIT_CODE=\${PIPESTATUS[0]}
@@ -283,6 +286,7 @@ set -o pipefail
   --examples $SV_EXAMPLES \
   --feature-cache $SV_CACHE \
   --out-root $SV_FACTORIAL \
+  --canonical-conflict-policy exclude \
   --gpus 2,3 --execute \
   2>&1 | tee ${SV_FACTORIAL}.full.console.log
 echo SV_FACTORIAL_FULL_EXIT_CODE=\${PIPESTATUS[0]}
@@ -501,6 +505,7 @@ python scripts/server/run_ccre_frozen_probe_matrix.py \
   --config $CONFIG --results-root $MAIN_RESULTS \
   --node-labels $CCRE_LABELS --feature-cache $CCRE_CACHE \
   --external-sequence-cache $SEQ_CACHE --minimum-external-coverage 0.999 \
+  --canonical-conflict-policy exclude \
   --out-root $CCRE_SEQ --gpus 0,1 --execute \
   2>&1 | tee ${CCRE_SEQ}.console.log
 exec bash
@@ -515,6 +520,7 @@ python scripts/server/run_sv_frozen_probe_matrix.py \
   --config $CONFIG --results-root $MAIN_RESULTS \
   --examples $SV_EXAMPLES --feature-cache $SV_CACHE \
   --external-sequence-cache $SEQ_CACHE --minimum-external-coverage 0.999 \
+  --canonical-conflict-policy exclude \
   --out-root $SV_SEQ --gpus 2,3 --execute \
   2>&1 | tee ${SV_SEQ}.console.log
 exec bash

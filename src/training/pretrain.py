@@ -315,7 +315,11 @@ def split_candidate_indices(
     return train_idx, val_idx, test_idx
 
 
-def deduplicate_candidate_edges(edge_df: pd.DataFrame) -> pd.DataFrame:
+def deduplicate_candidate_edges(
+    edge_df: pd.DataFrame,
+    *,
+    conflict_policy: str = "error",
+) -> pd.DataFrame:
     """Remove exact and reverse-complement-equivalent candidate repeats.
 
     A repeated biological relation must never land in two candidate
@@ -323,6 +327,10 @@ def deduplicate_candidate_edges(edge_df: pd.DataFrame) -> pd.DataFrame:
     error rather than something to resolve by row order.
     """
 
+    if conflict_policy not in {"error", "exclude"}:
+        raise ValueError(
+            f"canonical conflict policy must be 'error' or 'exclude', got {conflict_policy!r}"
+        )
     required = {"u_oid", "v_oid", "label"}
     missing = required - set(edge_df.columns)
     if missing:
@@ -335,13 +343,39 @@ def deduplicate_candidate_edges(edge_df: pd.DataFrame) -> pd.DataFrame:
     work["_canonical_u"] = [pair[0] for pair in canonical_pairs]
     work["_canonical_v"] = [pair[1] for pair in canonical_pairs]
     label_counts = work.groupby(["_canonical_u", "_canonical_v"])["label"].nunique()
-    conflicts = int((label_counts > 1).sum())
+    conflict_keys = set(label_counts.loc[label_counts > 1].index.tolist())
+    conflicts = len(conflict_keys)
+    conflict_mask = np.asarray(
+        [
+            (int(left), int(right)) in conflict_keys
+            for left, right in work[["_canonical_u", "_canonical_v"]].itertuples(
+                index=False, name=None
+            )
+        ],
+        dtype=bool,
+    )
+    conflicting_rows = int(conflict_mask.sum())
     if conflicts:
-        raise ValueError(
-            f"candidate table has {conflicts} orientation-equivalent pairs with conflicting labels"
-        )
+        if conflict_policy == "error":
+            raise ValueError(
+                f"candidate table has {conflicts} orientation-equivalent pairs with conflicting labels"
+            )
+        work = work.loc[~conflict_mask].copy()
+    rows_before_duplicate_collapse = len(work)
     work = work.drop_duplicates(["_canonical_u", "_canonical_v"], keep="first")
-    return work.drop(columns=["_canonical_u", "_canonical_v"]).reset_index(drop=True)
+    audit = {
+        "canonical_conflict_policy": conflict_policy,
+        "orientation_equivalent_conflicting_pairs": int(conflicts),
+        "conflicting_candidate_rows_excluded": (
+            conflicting_rows if conflict_policy == "exclude" else 0
+        ),
+        "same_label_equivalent_rows_collapsed": int(
+            rows_before_duplicate_collapse - len(work)
+        ),
+    }
+    result = work.drop(columns=["_canonical_u", "_canonical_v"]).reset_index(drop=True)
+    result.attrs["canonical_candidate_audit"] = audit
+    return result
 
 
 def load_slice(
@@ -355,7 +389,13 @@ def load_slice(
     seg_sub = pd.read_csv(row["segments_path"], compression="infer")
     links_sub = pd.read_csv(row["links_path"], compression="infer")
     edge_df = pd.read_csv(row["edge_pred_path"], compression="infer")
-    edge_df = deduplicate_candidate_edges(edge_df)
+    edge_df = deduplicate_candidate_edges(
+        edge_df,
+        conflict_policy=getattr(args, "canonical_conflict_policy", "error"),
+    )
+    canonical_candidate_audit = dict(
+        edge_df.attrs.get("canonical_candidate_audit", {})
+    )
 
     if len(links_sub) == 0 or len(edge_df) == 0:
         return None
@@ -438,6 +478,7 @@ def load_slice(
         "test_idx": test_idx,
         "n_pos": int(labels_arr.sum()),
         "n_neg": int((1 - labels_arr).sum()),
+        "canonical_candidate_audit": canonical_candidate_audit,
     }
 
 

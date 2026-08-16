@@ -153,6 +153,7 @@ def run_probe(
     external_sequence_cache: Path | None = None,
     minimum_external_coverage: float = 0.95,
     feature_sets: list[str] | None = None,
+    canonical_conflict_policy: str = "exclude",
 ) -> dict[str, object]:
     if out_dir.exists():
         raise FileExistsError(f"Refusing to overwrite output: {out_dir}")
@@ -170,7 +171,7 @@ def run_probe(
         raise ValueError(f"SV examples miss columns: {sorted(missing)}")
     examples["chrom"] = examples["chrom"].map(_canonical_chrom)
     required_nodes = set(examples["start_segid"].astype(int)) | set(examples["end_segid"].astype(int))
-    embeddings, occurrences = _extract_embeddings(
+    embeddings, occurrences, canonical_candidate_audit = _extract_embeddings(
         checkpoint=checkpoint,
         manifest=manifest,
         full_segments=full_segments,
@@ -179,6 +180,8 @@ def run_probe(
         device_name=device,
         seed=seed,
         max_slices=max_slices,
+        canonical_conflict_policy=canonical_conflict_policy,
+        return_canonical_audit=True,
     )
     external_values: np.ndarray | None = None
     external_positions: dict[int, int] = {}
@@ -312,6 +315,9 @@ def run_probe(
             else None
         ),
         "checkpoint_validation": checkpoint_validation,
+        "canonical_candidate_audit": canonical_candidate_audit,
+        "canonical_conflict_policy": canonical_conflict_policy,
+        "canonical_conflict_interpretation": "all representations of a conflicting canonical identity are excluded before frozen embedding extraction; remaining same-label equivalents are collapsed",
         "max_slices": max_slices,
         "wall_seconds": time.monotonic() - started,
     }
@@ -338,6 +344,11 @@ def main() -> int:
     parser.add_argument("--external-sequence-cache", type=Path)
     parser.add_argument("--minimum-external-coverage", type=float, default=0.95)
     parser.add_argument("--feature-sets", nargs="+")
+    parser.add_argument(
+        "--canonical-conflict-policy",
+        choices=["error", "exclude"],
+        default="exclude",
+    )
     args = parser.parse_args()
     run_probe(
         checkpoint=args.checkpoint,
@@ -356,6 +367,7 @@ def main() -> int:
         external_sequence_cache=args.external_sequence_cache,
         minimum_external_coverage=args.minimum_external_coverage,
         feature_sets=args.feature_sets,
+        canonical_conflict_policy=args.canonical_conflict_policy,
     )
     return 0
 

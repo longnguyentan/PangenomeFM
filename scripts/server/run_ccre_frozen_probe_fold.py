@@ -240,6 +240,7 @@ def run_probe(
     external_sequence_cache: Path | None = None,
     minimum_external_coverage: float = 0.95,
     feature_sets: list[str] | None = None,
+    canonical_conflict_policy: str = "exclude",
 ) -> dict[str, object]:
     if (out_dir / "audit.json").exists():
         raise FileExistsError(f"Refusing to overwrite completed output: {out_dir}")
@@ -257,7 +258,7 @@ def run_probe(
         raise ValueError("node_labels contains duplicate segid values")
 
     labeled_segids = set(labels_frame["segid"].astype(int))
-    embedding_map, occurrence_map = _extract_embeddings(
+    embedding_map, occurrence_map, canonical_candidate_audit = _extract_embeddings(
         checkpoint=checkpoint,
         manifest=manifest,
         full_segments=full_segments,
@@ -266,6 +267,8 @@ def run_probe(
         device_name=device,
         seed=seed,
         max_slices=max_slices,
+        canonical_conflict_policy=canonical_conflict_policy,
+        return_canonical_audit=True,
     )
     keep = labels_frame["segid"].astype(int).isin(embedding_map)
     labels_frame = labels_frame.loc[keep].sort_values("segid").reset_index(drop=True)
@@ -377,6 +380,9 @@ def run_probe(
         "fairness_policy": "all feature sets use the identical embedded-node universe and chromosome split",
         "upstream_leakage_control": "checkpoint pretraining excluded every downstream test chromosome",
         "checkpoint_validation": checkpoint_validation,
+        "canonical_candidate_audit": canonical_candidate_audit,
+        "canonical_conflict_policy": canonical_conflict_policy,
+        "canonical_conflict_interpretation": "all representations of a conflicting canonical identity are excluded before frozen embedding extraction; remaining same-label equivalents are collapsed",
         "calibration_policy": "temperature and F1 threshold fit on validation chromosomes only",
         "sequence_note": "PangenomeFM checkpoint itself has no nucleotide input; sequence is supplied only to explicit downstream baselines",
         "modality_factorial": {
@@ -422,6 +428,11 @@ def main() -> int:
     parser.add_argument("--external-sequence-cache", type=Path)
     parser.add_argument("--minimum-external-coverage", type=float, default=0.95)
     parser.add_argument("--feature-sets", nargs="+")
+    parser.add_argument(
+        "--canonical-conflict-policy",
+        choices=["error", "exclude"],
+        default="exclude",
+    )
     args = parser.parse_args()
     run_probe(
         checkpoint=args.checkpoint,
@@ -440,6 +451,7 @@ def main() -> int:
         external_sequence_cache=args.external_sequence_cache,
         minimum_external_coverage=args.minimum_external_coverage,
         feature_sets=args.feature_sets,
+        canonical_conflict_policy=args.canonical_conflict_policy,
     )
     return 0
 
