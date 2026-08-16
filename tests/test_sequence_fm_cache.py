@@ -1,12 +1,18 @@
 from __future__ import annotations
 
+import csv
+import gzip
 import json
 from pathlib import Path
 
 import numpy as np
 
 from scripts.server import merge_node_sequence_fm_caches as merge
-from scripts.server.prepare_node_sequence_fm_cache import balanced_sequence, sha256_file
+from scripts.server.prepare_node_sequence_fm_cache import (
+    balanced_sequence,
+    iter_segment_rows,
+    sha256_file,
+)
 
 
 def test_balanced_sequence_keeps_both_ends() -> None:
@@ -17,6 +23,28 @@ def test_balanced_sequence_keeps_both_ends() -> None:
     unchanged, changed = balanced_sequence("ACGT", 9)
     assert unchanged == "ACGT"
     assert not changed
+
+
+def test_segment_reader_accepts_sequence_larger_than_default_csv_limit(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "full_segments.csv.gz"
+    sequence = "A" * 200_000
+    assert len(sequence) > 131_072
+    with gzip.open(path, "wt", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["name", "seq"])
+        writer.writeheader()
+        writer.writerow({"name": "s1", "seq": sequence})
+
+    previous_limit = csv.field_size_limit(131_072)
+    try:
+        rows = list(iter_segment_rows(path))
+    finally:
+        csv.field_size_limit(previous_limit)
+
+    assert len(rows) == 1
+    assert rows[0]["name"] == "s1"
+    assert rows[0]["seq"] == sequence
 
 
 def test_merge_sequence_shards_requires_exact_target_union(

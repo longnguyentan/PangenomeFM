@@ -14,7 +14,9 @@ import gzip
 import hashlib
 import json
 import os
+import sys
 import time
+from collections.abc import Iterator
 from pathlib import Path
 from typing import TextIO
 
@@ -34,6 +36,36 @@ def open_text(path: Path) -> TextIO:
     if path.suffix == ".gz":
         return gzip.open(path, "rt", encoding="utf-8", newline="")
     return path.open("r", encoding="utf-8", newline="")
+
+
+def configure_csv_field_size_limit() -> int:
+    """Use the largest CSV field supported by the current Python build."""
+
+    limit = sys.maxsize
+    while limit > 0:
+        try:
+            csv.field_size_limit(limit)
+            return limit
+        except OverflowError:
+            limit //= 10
+    raise RuntimeError("Unable to configure a usable CSV field-size limit")
+
+
+def iter_segment_rows(path: Path) -> Iterator[dict[str, str]]:
+    """Yield segment rows without Python's 128-KiB default CSV-field ceiling."""
+
+    configure_csv_field_size_limit()
+    with open_text(path) as handle:
+        reader = csv.DictReader(handle)
+        required_columns = {"name", "seq"}
+        if reader.fieldnames is None or not required_columns.issubset(
+            reader.fieldnames
+        ):
+            raise ValueError(
+                f"full_segments needs columns {sorted(required_columns)}; "
+                f"got {reader.fieldnames}"
+            )
+        yield from reader
 
 
 def requested_segids(paths: list[Path]) -> tuple[set[int], list[dict[str, object]]]:
@@ -197,32 +229,25 @@ def prepare_cache(
 
     remaining = set(requested)
     fallback = 0
-    with open_text(full_segments) as handle:
-        reader = csv.DictReader(handle)
-        required_columns = {"name", "seq"}
-        if reader.fieldnames is None or not required_columns.issubset(reader.fieldnames):
-            raise ValueError(
-                f"full_segments needs columns {sorted(required_columns)}; got {reader.fieldnames}"
-            )
-        for row in reader:
-            segid = segment_id(row, fallback)
-            fallback += 1
-            if segid not in remaining:
-                continue
-            sequence = str(row["seq"]).upper()
-            if not sequence or sequence == "*":
-                sequence_less_requested += 1
-                remaining.remove(segid)
-                continue
-            sequence, sampled = balanced_sequence(sequence, max_bases)
-            raw_sequences_sampled += int(sampled)
-            batch_segids.append(segid)
-            batch_sequences.append(sequence)
+    for row in iter_segment_rows(full_segments):
+        segid = segment_id(row, fallback)
+        fallback += 1
+        if segid not in remaining:
+            continue
+        sequence = str(row["seq"]).upper()
+        if not sequence or sequence == "*":
+            sequence_less_requested += 1
             remaining.remove(segid)
-            if len(batch_segids) >= batch_size:
-                embed_batch()
-            if not remaining:
-                break
+            continue
+        sequence, sampled = balanced_sequence(sequence, max_bases)
+        raw_sequences_sampled += int(sampled)
+        batch_segids.append(segid)
+        batch_sequences.append(sequence)
+        remaining.remove(segid)
+        if len(batch_segids) >= batch_size:
+            embed_batch()
+        if not remaining:
+            break
     embed_batch()
     if remaining:
         raise KeyError(

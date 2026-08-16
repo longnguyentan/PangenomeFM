@@ -368,7 +368,23 @@ Run after Wave 2 so the four GPUs are free.
 
 ```bash
 cd ~/PangenomeFM
-python -c 'import transformers, huggingface_hub; print(transformers.__version__)'
+python -m pip install \
+  "transformers==4.57.6" \
+  "huggingface-hub==0.36.0" \
+  "sentencepiece==0.2.2" \
+  "safetensors==0.8.0"
+
+python - <<'PY'
+import transformers
+import huggingface_hub
+from transformers.pytorch_utils import find_pruneable_heads_and_indices
+
+print("transformers:", transformers.__version__)
+print("huggingface_hub:", huggingface_hub.__version__)
+assert transformers.__version__ == "4.57.6"
+assert huggingface_hub.__version__ == "0.36.0"
+print("SEQUENCE_FM_DEPENDENCY_GATE_PASSED")
+PY
 
 export SEQ_MODEL="InstaDeepAI/nucleotide-transformer-v2-50m-multi-species"
 export SEQ_MODEL_REVISION="$(python - <<'PY'
@@ -398,6 +414,10 @@ CUDA_VISIBLE_DEVICES=0 /usr/bin/time -v python \
   --max-nodes 10000 \
   2>&1 | tee "$SEQ_ROOT/pilot_10000.log"
 ```
+
+The pinned Nucleotide Transformer revision uses repository code written for the
+Transformers 4 API. Do not use Transformers 5 for this wave: its dynamic model
+import is incompatible with that pinned revision.
 
 The pilot deliberately uses a deterministic, ID-dispersed node sample and
 therefore scans the segment source rather than timing only early node IDs.
