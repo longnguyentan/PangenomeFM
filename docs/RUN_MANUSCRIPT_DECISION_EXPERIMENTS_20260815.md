@@ -553,9 +553,24 @@ The contribution tables will additionally contain:
 - `frozen_sequence_fm_vs_kmer_composition`
 - `frozen_sequence_fm_vs_kmer_given_topology`
 - `frozen_sequence_fm_vs_kmer_given_coordinate_and_topology`
+- `topology_given_frozen_sequence_fm`
+- `topology_given_coordinate_and_frozen_sequence_fm`
+- `frozen_sequence_fm_given_coordinate_and_topology`
+- `coordinate_given_frozen_sequence_fm_and_topology`
 
 These are paired comparisons, not claims that either pretrained model is an
 official DeepGene checkpoint.
+
+The manuscript-primary sequence-controlled topology test is
+`topology_given_coordinate_and_frozen_sequence_fm`. The aggregation also writes
+paired context comparisons and a difference-in-differences row named
+`one_hop_minus_strict__topology_given_coordinate_and_frozen_sequence_fm`.
+These compare downstream probes on matched folds/seeds and do not make the
+upstream strict and expanded reconstruction tasks a causal exposure contrast.
+
+After Wave 3 is complete, use
+`docs/RUN_SEQUENCE_FM_MANUSCRIPT_FINALIZE_20260817.md` for the one-command,
+restart-safe V2 aggregation, audit, manuscript artifacts, and evidence package.
 
 ## Wave 4 -- optional HGSVC focal branch-choice candidates
 
