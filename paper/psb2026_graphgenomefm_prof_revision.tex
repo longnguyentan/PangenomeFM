@@ -1,348 +1,612 @@
-% Draft manuscript revised after 2026-05-27 group meeting.
-% Replace author metadata, add final figures, and update numbers after final CUDA reruns.
-\documentclass{ws-procs11x85}
-\usepackage{ws-procs-thm}
+\newif\ifworldscientificclass
+\IfFileExists{ws-procs11x85.cls}{\worldscientificclasstrue\documentclass{ws-procs11x85}}{\worldscientificclassfalse\documentclass[11pt]{article}\usepackage[margin=1in]{geometry}}
+\IfFileExists{ws-procs-thm.sty}{\usepackage{ws-procs-thm}}{}
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{array}
+\setlength{\emergencystretch}{1em}
+\graphicspath{{figures/}{paper/figures/}{figures/paper (Long)/}{paper/figures/paper (Long)/}}
+
+% Compatibility fallbacks for local builds with older World Scientific class files.
+\providecommand{\keywords}[1]{\par\noindent{\bf Keywords:} #1\par}
+\providecommand{\copyrightinfo}[1]{\par\smallskip\noindent{\footnotesize #1}\par\smallskip}
+\providecommand{\address}[1]{\par\smallskip\noindent #1\par}
+\providecommand{\tbl}[2]{\caption{#1}#2}
+\providecommand{\toprule}{\hline}
+\providecommand{\colrule}{\hline}
+\providecommand{\botrule}{\hline}
+\makeatletter
+\@ifundefined{itemlist}{\newenvironment{itemlist}{\begin{itemize}}{\end{itemize}}}{}
+\makeatother
 
 \begin{document}
 
-\title{GraphGenome-FM: Self-Supervised Representation Learning\\
-for Human Pangenome Graphs}
+\title{GraphGenome-FM: Self-Supervised Topology Pretraining\\
+Across Human Pangenome Graphs}
 
-\author{Long Nguyen$^\dag$ and [Coauthor Names]}
+\ifworldscientificclass
+\author{Long Nguyen$^{\dag}$ and [Coauthor Names]}
 
 \address{Department of Computer and Information Sciences, Temple University,\\
 Philadelphia, PA, USA\\
-$^\dag$E-mail: [long.nguyen@temple.edu]}
+$^{\dag}$E-mail: [long.nguyen@temple.edu]}
 
 \author{[Principal Investigator Name]}
 
 \address{[Laboratory or Department], Temple University,\\
 Philadelphia, PA, USA\\
 E-mail: [pi.email@temple.edu]}
+\else
+\author{Long Nguyen$^{\dag}$ and [Coauthor Names]\\
+\small Department of Computer and Information Sciences, Temple University, Philadelphia, PA, USA\\
+\small $^{\dag}$E-mail: [long.nguyen@temple.edu]
+\and
+[Principal Investigator Name]\\
+\small [Laboratory or Department], Temple University, Philadelphia, PA, USA\\
+\small E-mail: [pi.email@temple.edu]}
+\date{}
+\maketitle
+\fi
 
 \begin{abstract}
-Human pangenome graphs represent genetic variation more naturally than a
-single linear reference, but they also require representation learning methods
-that preserve graph topology rather than reducing the graph to one linear
-path. We present GraphGenome-FM, a graph-native model pretrained with a
-self-supervised edge-prediction objective on human pangenome graphs. The model
-combines coordinate-aware attention, graph-topological attention, and learned
-fusion to produce node embeddings for graph structure prediction and downstream
-functional genomics tasks. GraphGenome-FM generalizes robustly across held-out
-HPRC chromosomes and transfers to independently parsed HGSVC3 graphs without
-retraining, supporting the portability of learned pangenome graph
-representations. Initial ENCODE cCRE prediction experiments show that
-regulatory annotation is a challenging but biologically meaningful downstream
-task, motivating fairer comparison against linear-reference and
-linearized-graph baselines as well as category-specific regulatory analysis.
-Together, these results support graph-native pretraining as a foundation for
-pangenome representation learning and motivate future applications in graph
-enhancement and haplotype-specific functional annotation.
+Human pangenome graphs encode alternative genomic adjacencies across phased
+assemblies, but it remains unclear whether a compact graph encoder can learn
+topological representations that transfer across chromosomes and graph
+releases. We introduce GraphGenome-FM, a coordinate--topology encoder trained by
+query-edge-masked, distance-matched link prediction. We evaluate four versioned
+whole-genome graphs: HPRC Release 2 (231 donors, 462 haplotypes), HGSVC3 (65,
+130), HPRC Release 1.1, and the official HGSVC3--HPRC-v1 integrated graph. Five
+rotating chromosome folds cover chr1--chr22, chrX, and chrY, with three seeds
+and two separately defined context tasks. Standalone HPRC models achieve mean
+AUPRC 0.950 in strict induced subgraphs and 0.988 in one-hop-expanded
+subgraphs; standalone HGSVC3 models achieve 0.975 and 0.987, respectively.
+Zero-shot HPRC-to-HGSVC3 transfer is asymmetric (AUPRC 0.600 strict and 0.941
+one-hop), and four donors are shared across graph cohorts, so this is
+cross-graph rather than strictly independent-donor transfer. Expanded contexts
+contain 1.57--1.59 times as many visible nodes and 1.84--1.89 times as many
+links, and no interval pairs meet the preregistered 10\% exposure caliper;
+strict and expanded results are therefore reported as different tasks, not as a
+causal context-improvement comparison. Validation-only temperature scaling
+reduces calibration error but does not eliminate it. The current encoder does
+not consume nucleotide sequence, aggregate graphs do not support donor-held-out
+pretraining, and a chromosome-8 methylation pilot shows negligible incremental
+rank gain from graph embeddings beyond strong sequence and annotation features.
+These results support transferable pangenome-topology pretraining, but not yet a
+general-purpose foundation-model or genome-wide biological-validation claim.
 \end{abstract}
 
-\keywords{Pangenome graph; graph neural network; self-supervised learning; HPRC; HGSVC; cCRE; link prediction.}
+\keywords{Pangenome graph; graph neural network; self-supervised learning;
+link prediction; HPRC; HGSVC; cCRE; haplotype-specific methylation;
+representation transfer.}
 
 % required, do-not-remove
-\copyrightinfo{\copyright\ 2026 The Authors. Open Access chapter published by World Scientific Publishing Company and distributed under the terms of the Creative Commons Attribution Non-Commercial (CC BY-NC) 4.0 License.}
+\copyrightinfo{\copyright\ 2026 The Authors. Open Access chapter published by
+World Scientific Publishing Company and distributed under the terms of the
+Creative Commons Attribution Non-Commercial (CC BY-NC) 4.0 License.}
 
 \section{Introduction}
 
-The human reference genome is increasingly moving from a single linear
-coordinate system toward graph-based references that encode common and rare
-variation across multiple haplotypes. The Human Pangenome Reference Consortium
-(HPRC) pangenome and related resources such as HGSVC provide graph
-representations in which nodes are DNA segments and edges encode allowable
-adjacencies across reference and alternate haplotype paths.\cite{liao2023hprc,ebert2021hgsvc,garrison2018vg}
-These graphs preserve structural variation, allelic alternatives, and local
-topological context that are difficult to express in a single reference
-sequence.
+The human reference genome is moving from a single linear coordinate system
+toward graph-based references that represent common and rare variation across
+many haplotypes. The Human Pangenome Reference Consortium (HPRC) pangenome and
+the complementary Human Genome Structural Variation Consortium (HGSVC)
+resources provide such graphs, in which nodes are DNA segments and edges encode
+the adjacencies permitted along reference and alternate haplotype
+paths.\cite{liao2023hprc,ebert2021hgsvc,garrison2018vg} These graphs make
+explicit the structural variation, allelic alternatives, and local topological
+context that a single linear sequence cannot express. The human Y chromosome is
+an extreme illustration: haplotype-resolved assemblies reveal large recurrent
+inversions, palindromic structure, and highly similar segmental duplications whose
+arrangement varies extensively between individuals.\cite{hallast2023ychrom} A
+linear reference flattens precisely this branching and reconvergence, which a
+graph reference is designed to retain.
 
-Most genomic representation learning remains sequence-first. Linear models can
-learn strong nucleotide-level representations, but they generally operate on
-one path through the genome or on serialized graph traversals. This
-serialization loses exactly the information that makes a pangenome graph
-useful: branching, reconvergence, path multiplicity, and the relationship
-between reference sequence and non-reference haplotypes. A graph-native
-foundation model should learn from both coordinate continuity and graph
-topology.
+Most genomic representation learning is nonetheless sequence-first. Linear
+models learn strong nucleotide-level representations, but they operate on a
+single path through the genome or on a serialized traversal of a
+graph.\cite{ji2021dnabert,zhou2024dnabert2,dallatorre2025nt} Serialization
+discards exactly the information that makes a pangenome graph useful: branching,
+reconvergence, path multiplicity, and the relationship between the reference
+backbone and non-reference haplotypes. The graph-native model DeepGene
+serializes a Minigraph directed acyclic graph into fixed-length token subgraphs
+and applies rotary-position Transformers, but it still abstracts the graph into
+a sequence and does not expose edge structure to the
+model.\cite{zhang2025deepgene} A representation that aims to be \emph{graph
+native} should instead learn from both coordinate continuity and graph topology
+at once.
 
 We study self-supervised link prediction as a pretraining objective for human
-pangenome graphs. Given a local graph slice and candidate node pair, the model
-predicts whether the edge is present in the pangenome graph. This task is
-attractive because labels are intrinsic to the graph, the objective scales to
-unlabeled pangenome data, and the resulting node embeddings can be reused for
-downstream functional or variant annotation tasks.
+pangenome graphs. Given a local graph slice and a candidate node pair, the model
+predicts whether that edge is present in the pangenome graph. The task is
+attractive for three reasons: the labels are intrinsic to the graph and require
+no external annotation; the objective scales to unlabeled pangenome data; and
+the resulting node embeddings can be reused for downstream functional and
+variant annotation. The central question is whether such a graph-native
+objective yields representations that generalize across genomic contexts and
+across independently constructed pangenome graphs. This paper makes four evidence-bounded
+contributions.
 
-This paper makes four contributions. First, we construct a corrected
-all-chromosome HPRC benchmark with 24 GRCh38 chromosomes, 10 windows per
-chromosome, and both strict and 1-hop graph closures. Second, we train a
-shared dual-stream graph attention model across chromosomes and evaluate it on
-chromosomes held out from training. Third, we audit the link-prediction task
-with distance-matched negative edges and test external transfer to HGSVC
-graphs. Fourth, we map ENCODE cCRE labels to HPRC graph nodes and use
-regulatory element prediction as a downstream stress test. The strongest
-current evidence is for graph-structure pretraining and cross-graph transfer;
-the downstream cCRE experiments define the next methodological work.
+\begin{itemlist}
+\item \textbf{An all-chromosome HPRC link-prediction benchmark and a single
+shared model.} We assemble a benchmark spanning canonical GRCh38 chromosomes with both
+strict and one-hop graph closures, and train one shared dual-stream
+graph-attention model in place of the many sparse per-window models that an
+earlier design required.
+\item \textbf{All-chromosome generalization with explicit leakage audits.}
+Five rotating folds use every canonical chromosome once as held-out test data,
+with query-edge masking, fixed candidate splits, three model seeds, exact slice
+exclusions, and validation-only calibration.
+\item \textbf{Separate-cohort, pooled-cohort, and release stress tests.} We
+evaluate HPRC and HGSVC3 separately, train a shared model on both graphs, test
+both transfer directions, and quantify HPRC Release 1.1--2 transfer. Path
+metadata identifies the four donors shared by HPRC R2 and HGSVC3, preventing an
+independent-donor interpretation.
+\item \textbf{An explicit context-exposure audit.} Strict induced-subgraph and
+one-hop-expanded prediction are coordinate matched, but no pair is exposure
+matched at a 10\% node/link caliper. We therefore treat them as distinct
+pretraining tasks and do not claim that larger context is intrinsically
+superior.
+\item \textbf{A calibrated, reproducible topology benchmark.} We report ranking
+metrics as primary outcomes and fit probability temperature and decision
+thresholds on validation chromosomes only. Final all-data runs are released as
+checkpoint-production artifacts, not generalization estimates.
+\end{itemlist}
 
-We evaluate GraphGenome-FM in four stages. First, we pretrain and test on
-chromosome-held-out HPRC graph slices. Second, we audit the task with
-distance-matched negative edges to reduce concern that random non-edges make
-the benchmark trivial. Third, we evaluate external HPRC-to-HGSVC3 transfer and
-outline an HGSVC graph-imputation application. Fourth, we use ENCODE cCRE
-prediction as a regulatory annotation stress test, with explicit attention to
-baseline alignment, reduced cCRE label groupings, and biologically interpretable
-category-specific performance.
+The strongest current evidence is for transferable local pangenome-topology
+learning across chromosomes and graph constructions. Biological transfer,
+donor-held-out pretraining, sequence-aware modeling, and validated structural-
+variant interpretation remain open requirements rather than current
+contributions.
 
 \section{Related Work}
 
-\subsection{Pangenome Graphs}
+\subsection{Pangenome graphs and haplotype-resolved variation}
 
-Variation graphs represent genomes as paths through shared sequence nodes and
-alternate allelic branches. The variation graph toolkit demonstrated that this
-representation can improve read mapping by representing genetic diversity
-directly in the reference structure.\cite{garrison2018vg} The HPRC pangenome
-extends this idea at population scale, providing a richer reference for human
-genetic variation than GRCh38 alone.\cite{liao2023hprc} HGSVC resources
-provide complementary haplotype-resolved assemblies and structural variation
-catalogs that are useful for external graph-transfer evaluation.\cite{ebert2021hgsvc}
+Variation graphs represent genomes as paths through shared sequence nodes with
+alternate allelic branches. The variation-graph toolkit showed that this
+representation improves read mapping by encoding genetic diversity in the
+reference itself.\cite{garrison2018vg} Minigraph and the Minigraph--Cactus
+pipeline construct reference pangenome graphs in rGFA/GFA form that preserve
+linear-reference coordinates while encoding structural
+variation.\cite{li2020minigraph,hickey2024minigraphcactus} The HPRC pangenome
+applies these ideas at population scale and provides a richer human reference
+than GRCh38 alone,\cite{liao2023hprc} while HGSVC contributes
+haplotype-resolved assemblies and structural-variation catalogs, including the
+complex inversions, palindromes, and segmental duplications of the Y
+chromosome, that are valuable for external graph-transfer
+evaluation.\cite{ebert2021hgsvc,hallast2023ychrom}
 
-\subsection{Graph Neural Networks}
+\subsection{Graph neural networks}
 
-Graph neural networks aggregate information over edges and have become a
-general tool for semi-supervised and self-supervised learning on relational
+Graph neural networks aggregate information over edges and are a general tool
+for semi-supervised and self-supervised learning on relational
 data.\cite{kipf2017gcn,velickovic2018gat} Graph Attention Networks learn
-edge-dependent attention weights, making them a natural starting point for
-pangenome graphs where local topology, branching, and path alternatives can
-change substantially across genomic loci. Our model builds on this family but
-adds an explicit coordinate-aware stream because pangenome nodes also have
-genomic offsets and orientations.
+edge-dependent attention weights, a natural fit for pangenome graphs in which
+local topology, branching, and path multiplicity change substantially across
+loci.\cite{velickovic2018gat} Our model builds on this family but adds an
+explicit coordinate-aware stream, because pangenome nodes also carry genomic
+offsets and orientations that a purely topological message-passing scheme
+ignores.
 
-\subsection{Genomic Foundation Models and Linearized Graph Models}
+\subsection{Genomic foundation models, serialized-graph models, and imputation}
 
-Recent genomic foundation models have shown that self-supervised learning can
-capture useful biological signals from DNA sequence.\cite{ji2021dnabert}
-Pangenome graphs raise a distinct representation problem: the input object is
-not only a string but a structured graph with multiple valid haplotype paths.
-For cCRE and other downstream tasks, we will compare graph-native modeling to
-linear-reference models and, where feasible, linearized-pangenome or
-linearized-graph models such as DeepGene-style representations.
+Self-supervised models such as DNABERT, DNABERT-2, and the Nucleotide
+Transformer capture useful biological signal from DNA
+sequence.\cite{ji2021dnabert,zhou2024dnabert2,dallatorre2025nt} Pangenome graphs
+pose a distinct representation problem: the input is not only a string but a
+structured graph with multiple valid haplotype paths. DeepGene is the closest
+prior work in spirit, using a pangenome graph but serializing it into token
+sequences for a Transformer.\cite{zhang2025deepgene} For downstream regulatory
+annotation we therefore distinguish three modeling assumptions: linear-reference
+models, linearized- or serialized-graph models, and graph-native models that
+consume edge structure directly. GraphGenome-FM
+belongs to the third class, and we treat the first two as the comparison
+baselines that a fair downstream evaluation must include. Our graph-enhancement
+application is a form of \emph{imputation}, but it is distinct from genotype
+imputation, which infers missing allele values within a reference panel using
+linkage disequilibrium and increasingly deep models.\cite{mowlaei2025stici}
+GraphGenome-FM instead scores missing \emph{adjacencies} in the graph itself,
+which is the natural imputation target once the reference is graph-valued.
 
 \section{Methods}
 
-\subsection{HPRC and HGSVC Graph Processing}
+\subsection{HPRC and HGSVC graph processing}
 
-We use cleaned pangenome graph tables derived from rGFA/GFA input. Segment
-tables include node identifiers, sequence length, chromosome or sequence name,
-offset, and sample or reference status. Link tables define directed graph
-edges with endpoint orientation. HPRC is the primary training and internal
-evaluation graph. HGSVC3 is the primary independent external graph for
-transfer evaluation, using the currently parsed CHM13 targets chr19, chr21,
-chr22, and chrY. ENCODE cCRE annotations are mapped to HPRC GRCh38 nodes for
-downstream functional annotation.
+We derive graph tables from the rGFA/GFA representation of each pangenome. For
+every node we record its sequence length, the contig it belongs to, its genomic
+offset along that contig, and a reference-status flag indicating whether the node
+lies on the linear GRCh38 backbone; edges are directed and carry endpoint
+orientation. A positive edge is therefore an observed adjacency in the parsed
+pangenome graph, supported by paths in the graph construction, rather than an
+experimentally validated functional interaction. HPRC Release 2
+(Minigraph--Cactus, GRCh38-aligned) is the primary training and
+internal-evaluation graph. HGSVC3 (CHM13-aligned) provides a second-cohort graph;
+HPRC Release 1.1 provides a release-transfer control; and the official
+HGSVC3--HPRC-v1 graph provides an integrated-graph stress test. All 24 canonical
+chromosomes are included, with chrY deliberately retained because of its
+structural complexity.\cite{hallast2023ychrom} ENCODE cCRE annotations are
+mapped onto HPRC GRCh38 nodes for a downstream pipeline, but no newly executed
+cCRE result is part of the frozen evidence set in this manuscript version.
+Table~\ref{tab:dataset_summary} summarizes the datasets.
 
 \begin{table}[t]
-\tbl{Dataset summary for the current manuscript draft. HGSVC3 counts refer to
-the expanded parsed CHM13 targets currently used for external transfer.}
-{\begin{tabular}{@{}llllrrl@{}}
+\tbl{Versioned pangenome graphs in the frozen all-chromosome evidence set.}
+{\small\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lllll@{}}
 \toprule
-Dataset & Graph build & Reference & Chromosomes & Nodes & Edges & Role\\
+Dataset & Graph build & Reference & Scope & Role\\
 \colrule
-HPRC & v2 / GRCh38 minigraph & GRCh38 & 24 & 751,237 & 1,097,658 & training/internal test\\
-HGSVC3 & CHM13 graph & CHM13 & chr19/21/22/Y & 72,033 & 100,546 & external transfer\\
-ENCODE cCRE & GRCh38 annotation & GRCh38 & mapped to HPRC & 303,425 & n/a & downstream task\\
+HPRC & R2 / Minigraph--Cactus SV & GRCh38 & 231 donors / 462 haplotypes & primary\\
+HGSVC3 & 2024-02-23 SV graph & CHM13 & 65 donors / 130 haplotypes & cohort transfer\\
+HPRC & R1.1 SV graph & GRCh38 & 44 donors / 88 haplotypes & release transfer\\
+HGSVC3--HPRC-v1 & official integrated SV graph & CHM13 & 216 haplotypes & stress test\\
 \botrule
-\end{tabular}}
+\end{tabular}}}
 \label{tab:dataset_summary}
 \end{table}
 
-Although additional public pangenome resources are becoming available, their
-graph representations differ in structure and path annotation. We therefore
-focus the current study on HPRC and HGSVC, which use more comparable graph
-construction workflows in the current parsed resources, and leave broader
-multi-resource harmonization for future work.
+The exact released GFA, GBZ, README, and checksum-manifest files are retained in
+the data ledger. HPRC R1.1 is never pooled with R2 because the releases overlap.
+Path metadata verifies four donors shared between HPRC R2 and HGSVC3
+(HG00733, HG02818, NA19036, and NA19240); hence cohort transfer is not described
+as independent-donor transfer.
 
-\subsection{Graph Slice Construction}
+\subsection{Graph slice construction and leakage control}
 
-For each HPRC target chromosome, we sample 10 windows of 50 kb and construct
-two closures. The strict closure contains the target reference path nodes and
-edges within the window. The 1-hop closure expands the local graph by adding
-direct graph neighbors, capturing nearby alternate haplotype structure. The
-corrected HPRC benchmark therefore contains
-\[
-24 \; \mathrm{chromosomes} \times 10 \; \mathrm{windows} \times
-2 \; \mathrm{closures} = 480
-\]
-graph slices. HGSVC3 transfer slices use the same strict and 1-hop closure
-definitions on the parsed CHM13 targets.
+We tile each reference coordinate system deterministically in 5-Mb intervals,
+yielding 608 HPRC and 635 HGSVC slices per requested context before loader-level
+eligibility filtering. The \emph{strict induced-subgraph} task exposes nodes and
+links induced by the reference interval. The \emph{one-hop-expanded} task adds
+their immediate graph neighbors. The same coordinate intervals are requested
+for both tasks, but exposure is not matched: expanded slices contain 1.57--1.59
+times as many visible nodes and 1.84--1.89 times as many visible links, and zero
+pairs pass a 10\% node/link exposure caliper. We therefore do not compare the
+two task scores as an estimate of the causal benefit of context.
 
-\subsection{Negative Edge Sampling}
+Five rotating folds partition chr1--chr22, chrX, and chrY into non-overlapping
+test groups; the next group is used for validation and every remaining
+chromosome for training. Each chromosome is a test chromosome exactly once.
+The candidate split seed is fixed at 20260806, while three independent model
+seeds (42, 314159, and 20260806) quantify initialization variability. Final
+all-data checkpoints are trained separately and excluded from generalization
+claims.
 
-Each link-prediction slice contains positive graph edges and an equal number
-of negative candidate edges. The original HPRC benchmark used random
-non-edges. Because random negatives can be too easy if they differ greatly in
-genomic distance or graph context from real edges, we implemented a
-distance-matched negative sampler. For a positive edge, the sampler proposes
-non-edge endpoint pairs from the same sequence context whose coordinate
-separation is matched within a tolerance of 1 kb or 10 percent of the
-positive edge distance. This rerun is designed as a paper-safety audit.
+\subsection{Negative-edge sampling}
 
-\subsection{GraphGenome-FM Architecture}
-
-GraphGenome-FM uses a shared DualStreamPangenomeGAT backbone. Each graph
-slice is converted to oriented nodes so that segment orientation can influence
-attention and prediction. Raw node features include sequence length, genomic
-offset, reference or sample status, graph degree, local branching fraction,
-and orientation-derived features. The model first maps these features into a
-hidden representation and then applies two streams:
-
-\begin{itemlist}
-\item A coordinate stream applies self-attention with multi-scale rotary
-position embeddings over genomic offsets.
-\item A graph stream applies GAT-style message passing over observed graph
-edges to capture local topology, branching, and reconvergence.
-\item A learned fusion gate combines the coordinate and graph streams on a
-per-node basis before edge prediction.
-\end{itemlist}
-
-The experiments reported here use hidden dimension 48, 4 attention heads, 2
-layers, focal binary cross-entropy with $\gamma=2.0$, DropEdge regularization
-with rate 0.1, a 5-epoch warmup, and cosine learning-rate decay. The edge
-predictor is an MLP over concatenated endpoint embeddings.
-
-\subsection{Training and Chromosome-Held-Out Evaluation}
-
-The HPRC shared pretraining split is chromosome-held-out. Training uses all
-canonical chromosomes except chr1, chr8, chr19, chrY, and validation chr16.
-Chromosomes chr1, chr8, chr19, and chrY are held out for final testing.
-Strict and 1-hop closures are trained and evaluated separately.
-
-\subsection{External HGSVC Transfer}
-
-For external transfer, we freeze the HPRC-trained checkpoint and evaluate it
-directly on HGSVC3 graph slices without retraining. The original transfer
-experiment used CHM13 chr22 only. The expanded experiment uses distance-matched
-negatives and four parsed CHM13 targets: chr19, chr21, chr22, and chrY.
-
-\subsection{HGSVC Graph Imputation Experiment}
-
-The HGSVC graph-imputation experiment is a planned application pilot. The
-design is to score candidate missing or weakly supported graph adjacencies in
-older HGSVC graphs using the frozen HPRC-trained model, then compare the
-highest-scoring candidate edges against a newer pangenome construction for the
-same sample or region when available. Primary validation metrics will include
-candidate-edge precision/recall, strict-closure recovery, 1-hop recovery, and
-overlap with edges introduced by the newer graph build. No imputation result is
-claimed in this draft until that validation is run.
-
-\subsection{ENCODE cCRE Mapping}
-
-We mapped ENCODE candidate cis-regulatory element (cCRE) annotations to HPRC
-GRCh38 graph nodes by interval overlap. The current mapped label table
-contains 303,425 labeled GRCh38 nodes, with non-background fraction 0.4841.
-The class counts are highly imbalanced: background 156,523; dELS 96,504; CA
-21,655; pELS 10,162; CA-H3K4me3 5,730; TF 5,424; CA-CTCF 5,067; PLS 1,237;
-and CA-TF 1,123.
-
-The local ENCODE cCRE source used for this mapping is a six-column BED-style
-file containing genomic interval, element identifier, and cCRE class, but no
-DNase, CTCF, H3K4me3, H3K27ac, signal, or Z-score fields. If richer
-ENCODE/SCREEN metadata are added later, downstream results will be stratified
-by confidence or signal strength. With the current local file, the next
-analysis will instead use reduced biologically motivated cCRE groups
-(Table~\ref{tab:ccre_reduced_groups}).
+Each link-prediction slice contains the positive graph edges together with an
+equal number of negative candidate edges. Random non-edges can be trivially
+separable when their genomic distance or graph context differs markedly from
+that of real edges. We therefore draw distance-matched negatives
+(Table~\ref{tab:neg_sampling}): for a positive edge whose endpoints are separated
+by an offset $d$, we sample non-edge endpoint pairs from the same sequence
+context whose separation lies within $\max(1\,\mathrm{kb},\,0.1\,d)$ of $d$,
+optionally also matching endpoint degree. This sampler underpins the robustness
+audit reported below.
 
 \begin{table}[t]
-\tbl{Planned reduced cCRE grouping for category-aware downstream analysis.}
-{\begin{tabular}{@{}lrl@{}}
+\tbl{Negative-sampling controls for link prediction.}
+{\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.31\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}@{}}
 \toprule
-Reduced group & Count & Original labels\\
+Strategy & Non-edge construction & Controlled shortcut and role\\
 \colrule
-background & 156,523 & background\\
-enhancer-like & 106,666 & pELS, dELS\\
-promoter-like & 6,967 & PLS, CA-H3K4me3\\
-CTCF/TF-associated & 11,614 & CA-CTCF, CA-TF, TF\\
-open chromatin & 21,655 & CA\\
+Random &
+Sample any absent edge $(u',v')$ uniformly at random from the same slice. &
+No matching constraints; useful only as an easy baseline because pairs are often
+separable by coordinate distance or graph context.\\
+Distance-matched &
+For each positive edge $(u,v)$ with endpoint separation $d$, sample absent
+pairs whose separation is within $\max(1\,\mathrm{kb},\,0.1\,d)$ of $d$. &
+Matches genomic separation and removes the coordinate-distance shortcut; this is
+the main hard-negative control, although endpoint degree can still differ.\\
+Distance + degree matched &
+Within the distance-matched candidate set, prefer absent pairs whose endpoint
+degrees match those of the positive edge, using the closest available degrees
+when exact matches are unavailable. &
+Controls both coordinate distance and endpoint-degree shortcuts; used as an
+additional robustness check.\\
 \botrule
 \end{tabular}}
-\label{tab:ccre_reduced_groups}
+\label{tab:neg_sampling}
 \end{table}
 
-\subsection{cCRE Classification Baselines}
+\subsection{Query-edge masking protocol}
 
-We evaluate binary cCRE/non-cCRE prediction, reduced-group cCRE prediction, and
-the original 9-class cCRE task. Logistic-regression baselines use all labeled
-GRCh38 nodes and hand-crafted graph/coordinate features. Planned baselines
-include an MLP over node features, an MLP over frozen GraphGenome-FM
-embeddings, a linear-reference-only model, and a DeepGene-style linearized
-graph model if a runnable implementation can be identified. GAT-based cCRE
-models currently use only labeled nodes that appear in benchmark windows. This
-mismatch is important: the current downstream GAT numbers should not yet be
-treated as a fair all-node comparison against logistic baselines.
+For query-edge-masked evaluation, each positive candidate edge is removed from
+the message-passing edge index before node embeddings are computed. The model
+must therefore score the candidate pair from endpoint features and surrounding
+graph context rather than from direct edge availability. Negative candidate
+pairs are scored under the same candidate-specific graph construction. The
+unmasked setting is retained only as a diagnostic for quantifying how direct
+edge availability can inflate link-prediction scores.
 
-\subsection{Statistical Analysis and Metrics}
+\subsection{From per-window to shared training}
+\label{sec:shared}
 
-For link prediction and binary cCRE prediction, we report AUROC, AUPRC, Brier
-score where available, macro-F1, and balanced accuracy. For multiclass cCRE
-prediction, we emphasize macro-F1 because the cCRE labels are strongly
-imbalanced. For cCRE comparisons, the next manuscript version will explicitly
-report whether each model is evaluated on all labeled nodes or on the
-benchmark-window subset.
+An early version of this work trained one independent model per slice. Those
+per-slice models were unstable because each local graph provided too little
+positive-edge supervision for reliable strict-closure learning. Pooling slices
+into a single self-supervised problem resolves this data-starvation issue: one
+shared encoder learns recurring pangenome graph motifs that transfer across
+chromosomes. All results below use this shared-training paradigm with
+chromosome-level holdout.
+
+\subsection{GraphGenome-FM architecture}
+
+GraphGenome-FM uses a shared dual-stream backbone. Each slice is converted to oriented nodes so
+that segment orientation can influence attention and prediction. Raw node
+features include sequence length, genomic offset, reference status, graph
+degree, local branching fraction, and orientation-derived features. The current
+model does not tokenize nucleotide sequence or use k-mer/DNA-language
+embeddings; it is a compact coordinate- and topology-pretrained graph
+representation model. This distinction matters for cCRE interpretation, because
+regulatory-element prediction ultimately requires sequence motifs and assay
+signal in addition to graph topology. A node encoder maps these features into a
+hidden representation, and two streams then run in parallel:
+
+\begin{itemlist}
+\item a \emph{coordinate stream} applies self-attention with multi-scale rotary
+position embeddings over genomic offsets, so that dot-product attention depends
+on relative genomic distance across local, structural, and chromosomal scales;
+\item a \emph{graph stream} applies GAT-style message passing over the observed
+edges to capture local topology, branching, and reconvergence; and
+\item a \emph{learned fusion gate} combines the two streams per node via a
+sigmoid gate $g\,h_{\mathrm{coord}}+(1-g)\,h_{\mathrm{graph}}$ before edge
+prediction.
+\end{itemlist}
+
+The reported experiments use hidden dimension 48, 4 attention heads, 2 layers,
+focal binary cross-entropy ($\gamma=2.0$, $\alpha=0.25$), DropEdge regularization
+(rate 0.1), a 5-epoch warmup, and cosine learning-rate decay. The edge predictor
+is a small multilayer perceptron over the concatenated endpoint embeddings. The
+model is intentionally compact; the gains we report come from the training
+paradigm and the dual-stream design rather than from scale.
+
+\subsection{ENCODE cCRE mapping and downstream models}
+
+We mapped ENCODE candidate \emph{cis}-regulatory element (cCRE)
+annotations\cite{encode2012,moore2020encode} to HPRC GRCh38 graph nodes by
+interval overlap, yielding 303{,}425 labeled reference-path nodes across all 24
+chromosomes. The implemented frozen-probe protocol uses each rotating HPRC
+checkpoint only in the fold for which its test chromosomes were absent during
+pretraining. Within a fold, that single checkpoint embeds downstream train,
+validation, and test chromosomes so latent coordinates are not mixed across
+independently trained encoders. Coordinate-only, degree-only, structural,
+mono/di/tri-nucleotide-composition, frozen-embedding, sequence-plus-embedding,
+training-frequency, and random baselines use the identical embedded-node
+universe. Temperature and F1 threshold are fitted on validation chromosomes
+only. This pipeline is implemented and tested, but its server matrix was not
+complete at the evidence freeze and is not reported as an empirical result.
+
+\subsection{Haplotype-specific methylation pilot}
+\label{sec:haplotype-methods}
+
+The exploratory methylation analysis contains 140{,}677 paired chromosome-8
+H1/H2 loci from 10 HPRC donors. Nested outer splits hold out complete donors,
+and every comparison uses identical paired loci. The strongest baseline uses
+whole-window sequence summaries; residual models then test whether graph and
+annotation features add prediction. Because the pretraining graph pools donors,
+this is donor-held-out supervised evaluation but not donor-held-out
+representation pretraining. The analysis is explicitly a pilot and cannot
+support genome-wide haplotype-functional claims.
 
 \section{Results}
 
+\subsection{Verified all-chromosome execution}
+
+The frozen server workflow completed 180 GPU jobs without recorded failure: 30
+final checkpoint-production runs, 120 rotating chromosome-fold runs, 18
+cross-graph transfer runs, and 12 release-transfer runs. The four parsed SV
+graphs contain 389{,}065--934{,}154 segments and 562{,}222--1{,}356{,}160 links;
+all fatal endpoint and orientation validation counts are zero. The rotating
+folds, rather than the final all-data runs, are the primary scientific
+evaluation because each canonical chromosome is held out exactly once.
+
+\subsection{Chromosome-held-out topology reconstruction}
+
+Table~\ref{tab:current_primary} reports means across three initialization seeds,
+with intervals obtained by chromosome-level bootstrap. HPRC R2 and HGSVC3 both
+show high ranking performance across all 24 chromosomes. The shared
+HPRC-R2--HGSVC3 model also performs strongly when evaluated separately in each
+graph, and the official integrated graph provides a consistent construction
+stress test. These values establish chromosome-held-out local-topology
+prediction; they do not establish donor- or haplotype-held-out learning because
+each graph was parsed as pooled topology.
+
+\begin{table}[t]
+\tbl{Primary rotating chromosome-fold results. Strict induced-subgraph and
+one-hop-expanded settings are separate tasks, not a matched context ablation.
+Intervals resample chromosomes.}
+{\small
+\begin{tabular}{@{}lllccc@{}}
+\toprule
+Training regime & Evaluation graph & Task & AUROC & AUPRC & AUPRC 95\% CI\\
+\colrule
+HPRC R2 & HPRC R2 & strict & 0.9585 & 0.9501 & 0.9380--0.9529\\
+HPRC R2 & HPRC R2 & one-hop & 0.9885 & 0.9880 & 0.9804--0.9891\\
+HGSVC3 & HGSVC3 & strict & 0.9795 & 0.9745 & 0.9662--0.9766\\
+HGSVC3 & HGSVC3 & one-hop & 0.9881 & 0.9868 & 0.9790--0.9887\\
+HPRC R2 + HGSVC3 & HPRC R2 & strict & 0.9839 & 0.9797 & 0.9742--0.9822\\
+HPRC R2 + HGSVC3 & HPRC R2 & one-hop & 0.9919 & 0.9916 & 0.9858--0.9923\\
+HPRC R2 + HGSVC3 & HGSVC3 & strict & 0.9827 & 0.9786 & 0.9712--0.9806\\
+HPRC R2 + HGSVC3 & HGSVC3 & one-hop & 0.9919 & 0.9909 & 0.9866--0.9918\\
+Integrated graph & integrated graph & strict & 0.9812 & 0.9768 & 0.9708--0.9792\\
+Integrated graph & integrated graph & one-hop & 0.9906 & 0.9894 & 0.9863--0.9907\\
+\botrule
+\end{tabular}}
+\label{tab:current_primary}
+\end{table}
+
+Performance is not uniform across chromosomes. HPRC strict chrY is the clearest
+stress case (AUPRC 0.8676), followed by chr18 (0.9316), chr15 (0.9336), and
+chr22 (0.9350). HGSVC3 strict chrY reaches AUPRC 0.9129. These negative results
+argue against extrapolating from favorable chromosomes such as chr8 and chr19.
+
+\subsection{Context exposure, transfer, and calibration}
+
+Expanded slices expose substantially more topology than strict slices. Across
+the full-coordinate benchmarks, the expanded-to-strict ratio is 1.5869 for
+visible HPRC nodes and 1.8723 for HPRC links; the corresponding HGSVC3 ratios
+are 1.5731 and 1.8649. No pair among 134{,}775 interval comparisons satisfies
+the preregistered joint 10\% node/link exposure caliper. Although expanded-task
+scores are numerically higher, this comparison cannot distinguish better
+representation learning from the easier information environment.
+
+Cross-graph transfer is directional (Table~\ref{tab:current_transfer}). HPRC
+R2-to-HGSVC3 strict transfer is weak, while its expanded-task transfer remains
+high. The reverse direction is stronger for strict transfer. Four shared donors
+represent 6.15\% of HGSVC3 and 1.73\% of HPRC R2, so neither direction is an
+independent-donor test. Release transfer is also asymmetric and is treated as a
+construction stress test.
+
+\begin{table}[t]
+\tbl{Zero-shot cross-graph and release-transfer AUPRC (mean across three seeds).}
+{\begin{tabular}{@{}lcc@{}}
+\toprule
+Direction & Strict & One-hop\\
+\colrule
+HPRC R2 $\rightarrow$ HGSVC3 & 0.5997 & 0.9408\\
+HGSVC3 $\rightarrow$ HPRC R2 & 0.7247 & 0.8902\\
+Integrated graph $\rightarrow$ HPRC R2 & 0.7007 & 0.8836\\
+HPRC R1.1 $\rightarrow$ HPRC R2 & 0.7063 & 0.7846\\
+HPRC R2 $\rightarrow$ HPRC R1.1 & 0.5669 & 0.8838\\
+\botrule
+\end{tabular}}
+\label{tab:current_transfer}
+\end{table}
+
+Raw held-out probabilities are overconfident. Validation-only temperature
+scaling reduces HPRC strict ECE from 0.1799 to 0.1416 and HPRC one-hop ECE from
+0.1399 to 0.0744; for HGSVC3 it reduces ECE from 0.1718 to 0.0432 (strict) and
+from 0.1368 to 0.0548 (one-hop). F1 thresholds chosen exclusively on validation
+chromosomes improve thresholded metrics, but ranking metrics remain primary and
+the residual HPRC strict miscalibration is disclosed.
+
+\subsection{Functional evidence remains exploratory}
+
+No genome-wide biological downstream result is included in the frozen server
+matrix. A prior chromosome-8 methylation pilot contains 140{,}677 within-donor
+H1/H2 pairs from 10 donors. A strong whole-window sequence model reaches
+donor-macro Spearman 0.3204. Adding graph plus annotation residuals increases
+Spearman by only 0.0040 (95\% CI 0.0024--0.0055), while the graph-only residual
+gain is 0.00004 (95\% CI $-0.00079$--0.00067). Graph divergence is associated
+with absolute methylation difference (Spearman 0.1704), but this descriptive
+association is not evidence of useful incremental prediction. A
+chromosome-cross-fitted cCRE probe and phased-SV evaluation are implemented but
+remain outside the executed evidence set until their server matrices complete.
+
+\iffalse
+
+% Author rule: all empirical performance numbers, sample counts,
+% class-balance statistics, bootstrap intervals, and figure/table result
+% values appear in Section 4 only. Earlier sections summarize conclusions
+% qualitatively and Methods keeps protocol constants only.
+
+\subsection{Dataset and evaluation summary}
+
+Table~\ref{tab:results_dataset_summary} summarizes the graph and annotation
+coverage used in the reported experiments. HPRC provides the primary
+pretraining and internal held-out evaluation graph; HGSVC3 provides the frozen
+external-transfer graph; and ENCODE cCRE intervals provide the downstream
+functional labels after interval overlap with HPRC GRCh38-path nodes.
+
+\begin{table}[t]
+\tbl{Dataset and evaluation summary used in the reported experiments.}
+{\small
+\begin{tabular}{@{}lllrrl@{}}
+\toprule
+Dataset & Build/reference & Scope & Nodes & Edges & Role\\
+\colrule
+HPRC & v2 / GRCh38 path & canonical chrom. & 751{,}237 & 1{,}097{,}658 & training/internal test\\
+HGSVC3 & CHM13 graph & chr19/21/22/Y & 72{,}033 & 100{,}546 & external transfer\\
+ENCODE cCRE & GRCh38 annotation & mapped to HPRC & 303{,}425 & -- & downstream task\\
+\botrule
+\end{tabular}}
+\label{tab:results_dataset_summary}
+\end{table}
+
+\textbf{Experimental setup.} GraphGenome-FM is pretrained with the shared,
+chromosome-held-out paradigm of Section~\ref{sec:shared}. Training uses all
+canonical chromosomes except chr1, chr8, chr19, and chrY (held out for testing)
+and chr16 (validation); strict and one-hop closures are trained and evaluated
+separately. Unless stated otherwise, link-prediction results use
+distance-matched negatives. For external transfer we freeze the HPRC checkpoint
+and evaluate it directly on HGSVC3 slices with no retraining or hyperparameter
+tuning on external data. The downstream cCRE classifiers are trained on HPRC
+nodes under the leakage-safe policy above and reported in two evaluation
+universes.
+
+\textbf{Leakage-audited evaluation.} We report unmasked message-passing runs
+only as diagnostics and use query-edge-masked inference as the primary
+leakage-audited estimate. This comparison directly tests how much direct edge
+availability inflates link-prediction scores.
+
 \begin{figure}[t]
 \begin{center}
-\fbox{\begin{minipage}{0.88\textwidth}
-\centering
-HPRC graph $\rightarrow$ GraphGenome-FM pretraining $\rightarrow$
-held-out chromosome testing $\rightarrow$ HGSVC3 transfer/imputation
-$\rightarrow$ ENCODE cCRE downstream annotation
-\end{minipage}}
+\includegraphics[width=0.98\textwidth]{proposed/proposed_fig1_model_architecture_user_improved.png}
 \end{center}
-\caption{Study overview. GraphGenome-FM is trained on HPRC pangenome graph
-slices, evaluated on held-out HPRC chromosomes, transferred to HGSVC3 graphs,
-and tested on cCRE prediction as a downstream functional annotation task.}
+\caption{GraphGenome-FM overview. A pangenome graph slice is represented with
+node, edge, orientation, and coordinate features. A coordinate-aware attention
+stream and a graph-topological attention stream are combined by a learned fusion
+gate, producing edge scores for self-supervised pretraining and reusable node
+embeddings for downstream tasks.}
 \label{fig:study_overview}
 \end{figure}
 
-\subsection{GraphGenome-FM Learns Pangenome Edge Structure Across HPRC Chromosomes}
+\subsection{GraphGenome-FM learns pangenome edge structure across held-out
+HPRC chromosomes}
 
-The original all-chromosome HPRC benchmark produced strong held-out
-chromosome performance for both graph closures. Under random negatives, the
-strict closure reached held-out AUROC 0.9889 and the 1-hop closure reached
-0.9914. The stricter distance-matched negative rerun preserved the main
-result: strict held-out AUROC was 0.9846, and 1-hop held-out AUROC was
-0.9957 (Table~\ref{tab:hprc_pretrain}).
+\textbf{Held-out prediction.} Trained on a subset of chromosomes and tested on
+chromosomes it never saw, GraphGenome-FM predicts pangenome edge structure for
+both closures (Table~\ref{tab:hprc_pretrain}). Under distance-matched negatives,
+the original unmasked diagnostic is saturated (0.9846 strict, 0.9957 one-hop),
+but query-edge-masked inference gives the more conservative estimate: 0.8270
+strict AUROC and 0.9310 one-hop AUROC, with AUPRC 0.6959 and 0.9333,
+respectively. The masked audit shows that direct-edge availability inflated the
+headline AUROCs, but the model still learns signal beyond coordinate matching,
+especially in one-hop graph context. \textbf{Generalization gap.} In the
+unmasked training diagnostic, the near-zero gap between validation and held-out
+performance indicates that the shared encoder learns recurring graph structure
+rather than only fitting one chromosome.
 
 \begin{table}[t]
-\tbl{HPRC chromosome-held-out link prediction. Validation is chr16. Held-out
-test chromosomes are chr1, chr8, chr19, and chrY.}
-{\begin{tabular}{@{}llccc@{}}
+\tbl{HPRC chromosome-held-out link prediction. Validation is chr16; the held-out
+test chromosomes are chr1, chr8, chr19, and chrY. Query-edge-masked rows remove
+positive query edges from the message-passing graph at inference time.}
+{\begin{tabular}{@{}llllcc@{}}
 \toprule
-Benchmark & Closure & Negatives & Val AUROC & Held-out AUROC\\
+Benchmark & Closure & Negatives & Audit & AUROC & AUPRC\\
 \colrule
-HPRC original & strict & random & 0.9750 & 0.9889\\
-HPRC original & 1-hop & random & 0.9907 & 0.9914\\
-HPRC paper-safety rerun & strict & distance-matched & 0.9695 & 0.9846\\
-HPRC paper-safety rerun & 1-hop & distance-matched & 0.9891 & 0.9957\\
+HPRC base & strict & random & unmasked & 0.9889 & --\\
+HPRC base & 1-hop & random & unmasked & 0.9914 & --\\
+HPRC hard-negative & strict & distance-matched & unmasked & 0.9846 & --\\
+HPRC hard-negative & 1-hop & distance-matched & unmasked & 0.9957 & --\\
+HPRC hard-negative & strict & distance-matched & query-edge masked & 0.8270 & 0.6959\\
+HPRC hard-negative & 1-hop & distance-matched & query-edge masked & 0.9310 & 0.9333\\
 \botrule
 \end{tabular}}
 \label{tab:hprc_pretrain}
 \end{table}
 
-\subsection{Distance-Matched Negative Sampling Confirms the Task Is Not Driven by Trivial Random Negatives}
+\subsection{Distance-matched negatives confirm the task is not driven by trivial
+negatives}
+\label{sec:robustness}
 
-The distance-matched rerun remained strong across all held-out chromosomes
-rather than being driven by a single easy target
-(Table~\ref{tab:hprc_per_chrom}). The stricter negative sampling reduces the
-risk that the model is simply separating real edges from far-away random
-non-edges. Performance remains high in both strict and 1-hop closures,
-suggesting that the learned representation captures local graph structure in
-addition to coordinate proximity.
+\textbf{Coordinate baselines collapse under distance matching.} A logistic
+baseline that uses only endpoint coordinate distance reaches strict AUROC near
+0.97 under random negatives but collapses to about 0.52 under distance-matched
+negatives, confirming that random non-edges make the strict task artificially
+easy. In the unmasked diagnostic, GraphGenome-FM instead remains strong on every
+held-out chromosome (Table~\ref{tab:hprc_per_chrom}). Under query-edge masking,
+the same checkpoints remain above simple topology heuristics
+(Table~\ref{tab:topology_heuristics}), but the drop from 0.9846 to 0.8270 on
+strict closure shows why masked inference is the primary leakage-audited
+estimate.
 
 \begin{table}[t]
-\tbl{Distance-matched HPRC held-out AUROC by chromosome. Each value averages
-10 held-out windows for the corresponding closure.}
+\tbl{Unmasked distance-matched HPRC held-out AUROC by chromosome. Each value
+averages 10 held-out windows for the corresponding closure; query-edge-masked
+pooled metrics are reported in Table~\ref{tab:hprc_pretrain}.}
 {\begin{tabular}{@{}lcc@{}}
 \toprule
 Held-out chromosome & Strict AUROC & 1-hop AUROC\\
@@ -356,373 +620,733 @@ chrY  & 0.9911 & 0.9986\\
 \label{tab:hprc_per_chrom}
 \end{table}
 
-\subsection{External Transfer from HPRC to HGSVC3 Demonstrates Cross-Graph Generalization}
-
-We next evaluated whether HPRC-pretrained checkpoints transfer to an
-independently parsed pangenome graph. The original HGSVC3 experiment used
-CHM13 chr22 only and achieved AUROC 0.9940 for strict closure and 0.9948 for
-1-hop closure. The expanded experiment used distance-matched negatives and
-four CHM13 chromosomes: chr19, chr21, chr22, and chrY. Pooled AUROC remained
-high: 0.9916 for strict closure and 0.9955 for 1-hop closure
-(Table~\ref{tab:hgsvc_transfer}).
-
 \begin{table}[t]
-\tbl{External HGSVC evaluation using frozen HPRC checkpoints.}
-{\begin{tabular}{@{}llcccc@{}}
+\tbl{Topology-only heuristic baselines on the HPRC hard-negative held-out test
+split. Positive query edges are removed before scoring each candidate. Values are
+pooled AUROC/AUPRC over chr1, chr8, chr19, and chrY.}
+{\begin{tabular}{@{}lcc@{}}
 \toprule
-Checkpoint/evaluation & Closure & Targets & AUROC & AUPRC & Brier\\
+Heuristic & Strict & 1-hop\\
 \colrule
-Original HPRC checkpoint & strict & chr22 & 0.9940 & 0.9923 & 0.0314\\
-Original HPRC checkpoint & 1-hop & chr22 & 0.9948 & 0.9934 & 0.0433\\
-Hard-negative HPRC checkpoint & strict & chr19/21/22/Y & 0.9916 & 0.9864 & 0.0295\\
-Hard-negative HPRC checkpoint & 1-hop & chr19/21/22/Y & 0.9955 & 0.9940 & 0.0322\\
+Common neighbors & 0.492/0.493 & 0.533/0.517\\
+Jaccard & 0.494/0.512 & 0.533/0.523\\
+Adamic--Adar & 0.491/0.488 & 0.531/0.508\\
+Resource allocation & 0.491/0.488 & 0.531/0.508\\
+Preferential attachment & 0.053/0.395 & 0.246/0.385\\
+Shortest path & 0.440/0.473 & 0.626/0.577\\
+GraphGenome-FM, masked inference & 0.827/0.696 & 0.931/0.933\\
 \botrule
 \end{tabular}}
-\label{tab:hgsvc_transfer}
+\label{tab:topology_heuristics}
 \end{table}
 
-Per-chromosome HGSVC results were consistently high across the expanded
-external targets (Table~\ref{tab:hgsvc_per_chrom}). The weakest 1-hop target
-was chr19, which still remained above 0.98 AUROC.
+\textbf{Degree matching and seed variance.} Additional unmasked diagnostics
+support the distance- and degree-control story (Fig.~\ref{fig:robustness}). When
+the distance-matched negatives are also degree-matched, held-out AUROC remains
+0.9839 (strict) and 0.9929 (one-hop). Across three seeds on the hard-negative
+benchmark, held-out AUROC averages $0.9814\pm0.0030$ (strict) and
+$0.9911\pm0.0049$ (one-hop). These unmasked controls measure robustness to
+sampling choices; the query-edge-masked rows in Table~\ref{tab:hprc_pretrain}
+remain the primary leakage-audited estimates.
+\textbf{Non-overlapping windows.} A first non-overlapping-window run is reported
+as a stress test rather than a headline result: the sampler accepted only nine
+held-out slices, and performance dropped to 0.7785 (strict) and 0.9027
+(one-hop). The larger strict drop suggests that overlap between sampled windows
+can matter; this run is therefore useful for planning a denser tiled benchmark
+but is underpowered relative to the 40-slice chromosome-held-out evaluation.
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.92\textwidth]{proposed/proposed_fig11_robustness_summary.png}
+\end{center}
+\caption{Hard-negative and reproducibility checks for HPRC link prediction.
+Distance-matched and degree-plus-distance-matched negatives, and a three-seed
+rerun, all retain high held-out AUROC in the unmasked diagnostic setting. The
+non-overlapping-window pilot (nine held-out slices) is an underpowered stress
+test rather than a headline number, especially for strict closure.}
+\label{fig:robustness}
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Ablations localize the link-prediction signal to graph topology}
+
+A component ablation isolates the coordinate stream, the graph stream, and the
+fusion gate on the distance-matched benchmark
+(Table~\ref{tab:architecture_ablation}, Fig.~\ref{fig:hprc_ablation}).
+These ablations were run under the original unmasked message-passing diagnostic,
+so they localize signal between model components; masked ablations are listed
+as future robustness work.
+\textbf{Coordinate stream.} Alone it is near chance for strict edge recovery
+(0.566), confirming that genomic offset features do not explain the task once
+coordinate shortcuts are removed. \textbf{Graph stream.} Alone it recovers most
+of the full-model performance (0.974 strict), showing that local graph topology
+is the dominant signal. \textbf{Fusion gate.} Adding the coordinate stream
+without a gate is strong (0.982 strict), and the learned fusion gate provides a
+small but consistent additional gain (0.985 strict), which is why we retain it.
+The one-hop closure is uniformly easier and saturates near 0.99 for all
+topology-aware variants.
 
 \begin{table}[t]
-\tbl{Expanded HGSVC external transfer by target chromosome.}
-{\begin{tabular}{@{}lcccc@{}}
+\tbl{Architecture ablation on the unmasked distance-matched HPRC diagnostic.
+Values are held-out AUROC on chr1, chr8, chr19, and chrY, reported as
+strict/1-hop.}
+{\begin{tabular}{@{}llllc@{}}
 \toprule
-Target & Strict AUROC & Strict AUPRC & 1-hop AUROC & 1-hop AUPRC\\
+Model & Coordinate stream & Graph stream & Fusion gate & Held-out AUROC\\
 \colrule
-chr19 & 0.9888 & 0.9835 & 0.9846 & 0.9781\\
-chr21 & 0.9930 & 0.9884 & 0.9975 & 0.9972\\
-chr22 & 0.9913 & 0.9839 & 0.9984 & 0.9983\\
-chrY  & 0.9919 & 0.9898 & 0.9954 & 0.9945\\
-\botrule
-\end{tabular}}
-\label{tab:hgsvc_per_chrom}
-\end{table}
-
-\subsection{Ablation Studies Identify the Contributions of Coordinate and Graph-Topology Streams}
-
-The completed robustness ablations compare random versus distance-matched
-negative sampling and strict versus 1-hop closure. The next model-component
-ablation will isolate the coordinate stream, graph-topology stream, and fusion
-gate. This table is included now so the final experiments can drop into a
-stable Results structure.
-
-\begin{table}[t]
-\tbl{Planned architecture ablation table. AUROC values for the full model are
-current distance-matched held-out HPRC results shown as strict/1-hop.}
-{\begin{tabular}{@{}llllcc@{}}
-\toprule
-Model & Coordinate stream & Graph stream & Fusion gate & AUROC & AUPRC\\
-\colrule
-Coordinate-only & yes & no & no & TBD & TBD\\
-Graph-only & no & yes & no & TBD & TBD\\
-Dual-stream no gate & yes & yes & no & TBD & TBD\\
-Full GraphGenome-FM & yes & yes & yes & 0.9846/0.9957 & TBD\\
+Coordinate-only & yes & no & no & 0.5658/0.8921\\
+Graph-only & no & yes & no & 0.9738/0.9940\\
+Dual-stream, no gate & yes & yes & no & 0.9823/0.9938\\
+Full GraphGenome-FM & yes & yes & yes & 0.9846/0.9957\\
 \botrule
 \end{tabular}}
 \label{tab:architecture_ablation}
 \end{table}
 
-\subsection{Comparative Studies Against Linear and Linearized-Graph Baselines}
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.92\textwidth]{proposed/proposed_fig3_hprc_ablation_polished.png}
+\end{center}
+\caption{HPRC architecture ablation on held-out chromosomes in the unmasked
+diagnostic setting. The coordinate stream alone is weak for strict edge recovery,
+while graph-only and dual-stream models retain high performance. The full gated
+GraphGenome-FM model is best overall in this diagnostic.}
+\label{fig:hprc_ablation}
+\end{figure}
 
-A central downstream question is not only whether GraphGenome-FM can classify
-cCREs, but what it improves over. We therefore separate comparative baselines
-from model ablations. The current completed comparison includes a strong
-logistic-regression baseline over all labeled nodes and benchmark-window GAT
-variants. The next comparison will add a linear-reference-only model, MLP
-baselines, frozen-embedding classifiers, and a DeepGene-style linearized graph
-baseline if feasible.
+\FloatBarrier
+
+\subsection{The frozen HPRC checkpoint transfers to HGSVC3}
+
+\textbf{Zero-shot transfer.} We next asked whether an HPRC-pretrained checkpoint
+generalizes to an independently constructed pangenome graph. Freezing the
+checkpoint and applying it to HGSVC3 without retraining, an initial chr22-only
+evaluation reached strict AUROC 0.9940 and one-hop 0.9948; the expanded
+evaluation with distance-matched negatives and four CHM13 targets pooled to
+strict AUROC 0.9916 and one-hop 0.9955. Query-edge masking changes this
+interpretation substantially (Table~\ref{tab:hgsvc_transfer}). The masked one-hop
+transfer remains strong (AUROC/AUPRC 0.892/0.903), but masked strict transfer
+drops near chance (0.559/0.556). Thus the HGSVC result supports portability for
+one-hop neighborhood scoring, but not yet strict-edge recovery under the
+leakage-audited protocol. \textbf{Per-chromosome consistency.} The masked one-hop
+result is stable across all four targets, including chrY
+(Table~\ref{tab:hgsvc_per_chrom}); masked strict transfer is weak for every
+target. Because no HGSVC data were used for training or tuning, this is a
+conservative cross-reference stress test rather than a tuned external benchmark.
+\textbf{Calibration.} The reliability curves in Fig.~\ref{fig:reliability} are
+based on the earlier unmasked predictions and should be interpreted as candidate
+ranking diagnostics, not as final masked calibration.
 
 \begin{table}[t]
-\tbl{Comparative cCRE baseline plan. Completed values are current binary cCRE
-results; GAT rows are benchmark-window evaluations and should not yet be read
-as direct all-node comparisons.}
-{\begin{tabular}{@{}llllcc@{}}
+\tbl{External HGSVC3 evaluation using frozen HPRC checkpoints. Unmasked rows are
+diagnostics; query-edge-masked rows remove positive query edges before scoring
+and are the leakage-audited transfer estimates.}
+{\begin{tabular}{@{}llcccc@{}}
 \toprule
-Method & Uses linear reference & Uses graph topology & Graph-native & cCRE binary AUROC & Macro-F1\\
+Evaluation & Closure & Targets & AUROC & AUPRC & Brier\\
 \colrule
-Logistic regression & yes & limited features & no & 0.8362 & 0.7908\\
-MLP on node features & yes & limited features & no & TBD & TBD\\
-Linear-reference model & yes & no & no & TBD & TBD\\
-Linearized graph / DeepGene-style & partial & partial & no & TBD & TBD\\
-GraphGenome-FM frozen & no & yes & yes & 0.6559 & 0.6307\\
-GraphGenome-FM fine-tuned & no & yes & yes & 0.5846 & 0.5282\\
+Unmasked diagnostic & strict & chr19/21/22/Y & 0.9916 & 0.9864 & 0.0295\\
+Unmasked diagnostic & 1-hop & chr19/21/22/Y & 0.9955 & 0.9940 & 0.0322\\
+Query-edge masked & strict & chr19/21/22/Y & 0.5591 & 0.5555 & 0.2621\\
+Query-edge masked & 1-hop & chr19/21/22/Y & 0.8924 & 0.9028 & 0.1348\\
 \botrule
 \end{tabular}}
-\label{tab:comparative_baselines}
+\label{tab:hgsvc_transfer}
 \end{table}
 
-\subsection{Application: HGSVC Graph Imputation and Pangenome Enhancement}
+\begin{table}[t]
+\tbl{Query-edge-masked HGSVC3 transfer by target chromosome
+(distance-matched negatives). Values are mean AUROC/AUPRC across 10 slices per
+target.}
+{\begin{tabular}{@{}lcccc@{}}
+\toprule
+Target & Strict AUROC & Strict AUPRC & 1-hop AUROC & 1-hop AUPRC\\
+\colrule
+chr19 & 0.5949 & 0.6061 & 0.8748 & 0.8766\\
+chr21 & 0.5308 & 0.5247 & 0.9059 & 0.9161\\
+chr22 & 0.5434 & 0.5478 & 0.8999 & 0.9137\\
+chrY  & 0.6003 & 0.5855 & 0.8762 & 0.8913\\
+\botrule
+\end{tabular}}
+\label{tab:hgsvc_per_chrom}
+\end{table}
 
-Because HGSVC graphs were generated using an older or distinct pangenome
-construction workflow from the current HPRC-style resources, we plan to test
-whether an HPRC-trained GraphGenome-FM model can recover or prioritize missing
-HGSVC graph adjacencies. The minimum pilot will select one or two HGSVC samples
-or chromosomes, score candidate missing links with the frozen HPRC-trained
-model, and compare the highest-scoring candidates against a newer pangenome
-construction for the same material where available.
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.88\textwidth]{proposed/proposed_fig4_hgsvc_transfer_dotplot.png}
+\end{center}
+\caption{External transfer from HPRC to HGSVC3 under query-edge masking. Positive
+query edges are removed before scoring and no HGSVC data are used for training or
+tuning. One-hop AUROC/AUPRC remains high across targets, whereas strict-edge
+transfer is weak under the leakage-audited protocol.}
+\label{fig:hgsvc_transfer}
+\end{figure}
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.72\textwidth]{proposed/proposed_fig10_reliability_curves.png}
+\end{center}
+\caption{Reliability curves for predicted edge probabilities. HPRC held-out and
+HGSVC transfer predictions track the perfect-calibration diagonal reasonably
+well, with low Brier scores, indicating that the model's confidence is usable for
+downstream candidate ranking.}
+\label{fig:reliability}
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Application: HGSVC graph-imputation candidate scoring}
+
+\textbf{Candidate scoring.} A portable edge-prediction model can propose missing
+or weakly supported adjacencies in an existing graph. Using the frozen HPRC
+one-hop checkpoint, we scored sampled HGSVC3 non-edges and ranked them as
+candidate graph-enhancement edges. The unmasked HGSVC edge-prediction diagnostic
+is well calibrated (AUROC 0.9955, AUPRC 0.9940, Brier 0.0322), but this
+calibration should be treated as a ranking diagnostic until the candidate-scoring
+pipeline is rerun and validated under the stricter masked protocol. The scoring
+run produced 34{,}573 raw candidate rows that de-duplicate to 26{,}860 unique
+oriented candidate pairs (Table~\ref{tab:hgsvc_imputation},
+Fig.~\ref{fig:hgsvc_imputation}). \textbf{Score distribution.} Scores are
+heavily concentrated near zero, with only 661 unique candidates scoring
+$\geq 0.5$ and 7 scoring $\geq 0.9$, so the ranked list is a small, prioritized
+set rather than a flood of low-confidence guesses. Because these candidates have
+not yet been compared against a newer pangenome build, we present this as
+preliminary candidate scoring; validating recovery against a newer construction
+is the explicit next step.
 
 \begin{table}[t]
-\tbl{Planned HGSVC graph-enhancement pilot.}
-{\begin{tabular}{@{}lll@{}}
+\tbl{HGSVC graph-imputation candidate scoring. Candidates are sampled non-edges
+scored as possible missing adjacencies. Calibration metrics are from the
+unmasked edge-prediction diagnostic and should be replaced by masked/validated
+metrics before making a recovery claim.}
+{\begin{tabular}{@{}lr@{}}
 \toprule
-Step & Deliverable & Validation\\
+Metric & Value\\
 \colrule
-Select sample/region & one or two HGSVC samples or chromosomes & graph availability\\
-Score candidates & ranked missing-link candidates & model probability/calibration\\
-Build comparison graph & newer pangenome pipeline output & Tomoya/new pipeline\\
-Evaluate recovery & overlap of predicted and recovered edges & precision/recall by rank\\
+Raw candidate rows & 34,573\\
+Unique oriented candidate pairs & 26,860\\
+Calibration AUROC & 0.9955\\
+Calibration AUPRC & 0.9940\\
+Brier score & 0.0322\\
+Unique candidates with score $\geq 0.5$ & 661\\
+Unique candidates with score $\geq 0.8$ & 68\\
+Unique candidates with score $\geq 0.9$ & 7\\
 \botrule
 \end{tabular}}
 \label{tab:hgsvc_imputation}
 \end{table}
 
-\subsection{Downstream Functional Annotation Through cCRE Prediction}
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.98\textwidth]{proposed/proposed_fig7_hgsvc_imputation_polished.png}
+\end{center}
+\caption{Preliminary HGSVC graph-imputation scoring. The HPRC-trained one-hop
+model scores sampled HGSVC non-edges and ranks candidate missing adjacencies; the
+right panel shows high-confidence candidates per target. The ranked list should
+next be validated against a newer HGSVC graph build.}
+\label{fig:hgsvc_imputation}
+\end{figure}
 
-The cCRE experiments are less mature than the link-prediction and transfer
-results, but they define the key downstream biological application. A binary
-logistic baseline over all labeled GRCh38 nodes performs well, with AUROC
-0.8362, AUPRC 0.8746, macro-F1 0.7908, and balanced accuracy 0.7922. The
-current binary GAT experiments do not yet exceed that baseline, and the
-multiclass task remains difficult under the full 9-class label space
-(Table~\ref{tab:ccre_results}). These results are presented as a downstream
-stress test, not as evidence that graph-native representations already solve
-regulatory annotation.
+\FloatBarrier
+
+\subsection{Downstream cCRE prediction: evaluation universe and comparative
+baselines}
+\label{sec:ccre}
+
+\textbf{Evaluation universe.} The cCRE experiments are leakage-controlled but
+less mature than the link-prediction and transfer results, and their main lesson
+is that the evaluation universe matters as much as the model class. On all
+labeled held-out GRCh38 nodes, coordinate and structural logistic baselines
+reach AUROC 0.837 and 0.836, and a DeepGene-style serialized Transformer reaches
+AUROC 0.855 (Table~\ref{tab:comparative_baselines}); these all-node baselines
+evaluate 31{,}560 nodes. The graph-native GATs currently operate on the much
+smaller benchmark-window universe: as Fig.~\ref{fig:ccre_coverage} shows,
+strict-or-one-hop windows cover only 1{,}330 of those held-out labeled nodes
+(4.21\%). \textbf{Within-window comparison.} On this fair window universe,
+coordinate, structural, and linearized logistic baselines remain below 0.60
+AUROC, the serialized Transformer reaches 0.6928, and graph-native GATs reach
+0.6227 from scratch, 0.6868 with a frozen pretrained encoder, and 0.6734 after
+fine-tuning. We therefore make a descriptive pretraining-benefit claim within
+the window universe, not a graph-native superiority claim over serialized
+baselines and not an all-node superiority claim. We interpret these cCRE
+differences descriptively and do not claim statistical superiority between
+window models.
+
+\begin{table}[t]
+\tbl{Leakage-safe binary cCRE comparison. All cCRE models exclude
+reference- and path-status features. All-node and window rows are separate
+evaluation universes; the fair graph-native comparison is within the window
+rows.}
+{\begin{tabular}{@{}lllccc@{}}
+\toprule
+Method & Universe & Edge input & AUROC & AUPRC & Macro-F1\\
+\colrule
+Coordinate logistic & all-node & no & 0.8370 & 0.8743 & 0.7904\\
+Structural logistic & all-node & feature summary & 0.8362 & 0.8746 & 0.7908\\
+Linearized-graph logistic & all-node & serialized features & 0.8381 & 0.8750 & 0.7900\\
+Serialized Transformer & all-node & serialized nodes & 0.8554 & 0.8894 & 0.7792\\
+Structural MLP & all-node & feature summary & 0.8362 & 0.8761 & 0.7845\\
+Random forest & all-node & feature summary & 0.8159 & 0.8600 & 0.7410\\
+Coordinate logistic & window & no & 0.5939 & 0.4576 & 0.5591\\
+Structural logistic & window & feature summary & 0.5834 & 0.4156 & 0.5681\\
+Linearized-graph logistic & window & serialized features & 0.5647 & 0.3422 & 0.4844\\
+Serialized Transformer & window & serialized nodes & 0.6928 & 0.5247 & 0.4003\\
+GAT scratch & window & graph edges & 0.6227 & 0.4473 & 0.6419\\
+GAT frozen pretrained & window & graph edges & 0.6868 & 0.5020 & 0.6518\\
+GAT fine-tuned pretrained & window & graph edges & 0.6734 & 0.4937 & 0.6159\\
+\botrule
+\end{tabular}}
+\label{tab:comparative_baselines}
+\end{table}
 
 \begin{figure}[t]
 \begin{center}
-\fbox{\begin{minipage}{0.86\textwidth}
-\centering
-ENCODE cCRE intervals $\rightarrow$ HPRC GRCh38 graph-node overlaps
-$\rightarrow$ node features / GraphGenome-FM embeddings $\rightarrow$
-binary, grouped, and 9-class cCRE prediction
-\end{minipage}}
+\includegraphics[width=0.85\textwidth]{proposed/proposed_fig8_ccre_coverage_audit.png}
 \end{center}
-\caption{cCRE downstream task schematic. ENCODE cCRE intervals are mapped to
-HPRC graph nodes, then evaluated with aligned linear-reference, feature-based,
-linearized-graph, and graph-native classifiers.}
+\caption{cCRE evaluation-universe audit. Benchmark windows cover only a small
+fraction of the all-node held-out cCRE test set (strict 4.03\%, one-hop 3.60\%,
+strict-or-one-hop 4.21\% of 31{,}560 nodes). This coverage gap is why all-node
+baselines and window graph-native models are reported as separate universes.}
+\label{fig:ccre_coverage}
+\end{figure}
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.98\textwidth]{proposed/proposed_fig5_ccre_fair_comparison.png}
+\end{center}
+\caption{Leakage-safe cCRE comparison. Binary cCRE prediction is strong for
+all-node coordinate and serialized baselines and harder on the window-restricted
+universe. In that universe, pretrained GATs improve over scratch and feature
+baselines, while the serialized-window Transformer remains competitive and is
+slightly strongest by binary AUROC in the current run. For grouped cCRE
+prediction on windows, pretrained graph representations provide modest gains
+over training from scratch in the descriptive comparison.}
+\label{fig:ccre_binary_grouped}
+\end{figure}
+
+\textbf{Multiclass and grouped tasks.} Reduced groupings are markedly more
+stable than the full label space: macro-F1 is 0.563 for three classes, 0.412 for
+four, 0.337 for five, and only 0.178 for the original nine classes
+(Fig.~\ref{fig:ccre_binary_grouped}). We therefore treat binary and three-class
+prediction as the primary cCRE formulations and keep the four-, five-, and
+nine-class results as supplementary stress tests. For the grouped GAT,
+pretrained representations help most clearly in the three-class setting (0.4325
+frozen versus 0.3801 from scratch) and provide smaller gains for four- and
+five-class labels (Table~\ref{tab:ccre_results}). Fine-tuning is not
+consistently better than freezing in the current small-window runs. These
+results are a controlled downstream stress test, not evidence that graph-native
+representations already solve regulatory annotation.
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.98\textwidth]{proposed/proposed_fig2_ccre_pipeline_corrected.png}
+\end{center}
+\caption{cCRE evaluation pipeline and reporting rule. ENCODE cCRE intervals are
+mapped to HPRC GRCh38-path nodes by overlap; binary, grouped, original nine-class,
+and category-specific tasks are evaluated with leakage-safe feature policies.
+Results are reported separately for all-node and benchmark-window-covered
+universes.}
 \label{fig:ccre_schematic}
 \end{figure}
 
 \begin{table}[t]
-\tbl{Current cCRE downstream results. Logistic baselines evaluate all labeled
-GRCh38 nodes. GAT models currently evaluate only labeled nodes within
-benchmark windows, so comparisons are not yet fully aligned.}
-{\begin{tabular}{@{}llllrr@{}}
+\tbl{Leakage-safe cCRE downstream summary. Binary values are AUROC; grouped and
+nine-class values are macro-F1. All-node logistic and window GAT columns are
+reported as separate universes.}
+{\small
+\begin{tabular}{@{}llcccc@{}}
 \toprule
-Task & Model & Evaluation & AUROC & AUPRC & Macro-F1\\
+Task & Metric & All-node logit & GAT scratch & GAT frozen & GAT fine-tuned\\
 \colrule
-Binary & logistic regression & all labeled nodes & 0.8362 & 0.8746 & 0.7908\\
-Binary & GAT scratch & benchmark windows & 0.6801 & 0.4860 & 0.5797\\
-Binary & GAT frozen pretrained & benchmark windows & 0.6559 & 0.4719 & 0.6307\\
-Binary & GAT fine-tuned pretrained & benchmark windows & 0.5846 & 0.2876 & 0.5282\\
-9-class & logistic regression & all labeled nodes & n/a & n/a & 0.1776\\
-9-class & GAT scratch & benchmark windows & n/a & n/a & 0.1078\\
-9-class & GAT frozen pretrained & benchmark windows & n/a & n/a & 0.1341\\
-9-class & GAT fine-tuned pretrained & benchmark windows & n/a & n/a & 0.1126\\
+Binary & AUROC & 0.8362 & 0.6227 & 0.6868 & 0.6734\\
+3-class & Macro-F1 & 0.5634 & 0.3801 & 0.4325 & 0.3941\\
+4-class & Macro-F1 & 0.4122 & 0.2881 & 0.3203 & 0.2776\\
+5-class & Macro-F1 & 0.3370 & 0.2201 & 0.2558 & 0.2335\\
+9-class & Macro-F1 & 0.1776 & 0.1030 & 0.1357 & 0.0836\\
 \botrule
 \end{tabular}}
 \label{tab:ccre_results}
 \end{table}
 
-A coverage audit quantifies the current evaluation mismatch. The all-node
-logistic binary baseline evaluates 31,560 labeled nodes on held-out chr8,
-chr19, and chr22. The current benchmark-window GAT evaluation covers only
-1,330 unique labeled test nodes across strict and 1-hop windows, or 4.21
-percent of the logistic test universe. This confirms that the next cCRE
-experiment should either build cCRE-specific windows with broad label coverage
-or restrict all baselines to the same window-covered node set
-(Table~\ref{tab:ccre_coverage}).
+\FloatBarrier
+
+\subsection{Category-specific cCRE analysis}
+
+Decomposing cCRE prediction into category-specific binary tasks
+(Table~\ref{tab:ccre_category_breakdown},
+Fig.~\ref{fig:ccre_category_performance}) is more interpretable than the
+nine-class task and supports a concrete hypothesis for where graph structure
+should help. \textbf{Enhancer categories.} Enhancer-associated categories are
+well captured by all-node baselines (dELS AUROC 0.864, enhancer-like 0.858),
+consistent with strong sequence-local signal. \textbf{Rare, topologically
+situated categories.} Rarer categories are harder: TF/CTCF-associated reaches
+AUROC 0.798 but AUPRC only 0.380, and promoter-like and PLS are limited
+primarily by class rarity (PLS positive fraction 0.011, AUPRC 0.030). The
+categories with high AUROC but low AUPRC, especially TF/CTCF-associated, are the
+natural targets for a graph-topology-aware follow-up, because they combine
+biological relevance with imbalance that linear baselines handle poorly.
 
 \begin{table}[t]
-\tbl{Current cCRE benchmark-window coverage audit. The GAT test set counts
-unique labeled nodes covered by the benchmark windows, not repeated
-slice-level occurrences.}
-{\begin{tabular}{@{}lrrr@{}}
+\tbl{Category-specific all-node cCRE binary tasks using feature-based logistic
+baselines.}
+{\small
+\begin{tabular}{@{}lrrrrl@{}}
 \toprule
-Evaluation universe & Slices & Unique labeled test nodes & Fraction of logistic test\\
+cCRE group & Positive frac. & AUROC & AUPRC & Macro-F1 & Interpretation\\
 \colrule
-All-node logistic test set & n/a & 31,560 & 100.00\%\\
-GAT strict windows & 30 & 1,271 & 4.03\%\\
-GAT 1-hop windows & 30 & 1,135 & 3.60\%\\
-GAT strict or 1-hop windows & 60 & 1,330 & 4.21\%\\
-\botrule
-\end{tabular}}
-\label{tab:ccre_coverage}
-\end{table}
-
-\subsection{cCRE Category-Specific Analysis Reveals Where Graph Representations Help Most}
-
-The 9-class cCRE task is highly imbalanced, so the next analysis will report
-binary and reduced-category tasks before returning to the full label space.
-The scientific hypothesis is that graph-native representations may help most
-for regulatory categories embedded in structurally complex or topologically
-diverse graph regions, while simpler or more sequence-local categories may
-already be captured by linear-coordinate baselines. The current local ENCODE
-BED does not include signal or confidence columns, so category grouping is the
-first interpretable stratification.
-
-\begin{table}[t]
-\tbl{Planned cCRE category-specific breakdown. Counts are current mapped HPRC
-node-label counts; performance columns will be filled after aligned grouped
-cCRE experiments.}
-{\begin{tabular}{@{}lrrrl@{}}
-\toprule
-cCRE group & Class count & Best baseline & Graph model & Interpretation\\
-\colrule
-enhancer-like & 106,666 & TBD & TBD & test pELS/dELS sequence-local vs graph context\\
-promoter-like & 6,967 & TBD & TBD & rare class group; check power and precision\\
-TF/CTCF-associated & 11,614 & TBD & TBD & expected to benefit from topology if structurally diverse\\
-open chromatin & 21,655 & TBD & TBD & separates broad CA signal from motif-associated groups\\
+dELS & 0.3832 & 0.8636 & 0.8612 & 0.8339 & strongest category\\
+enhancer-like & 0.4209 & 0.8582 & 0.8680 & 0.8221 & strong local signal\\
+pELS & 0.0953 & 0.8262 & 0.5764 & 0.7784 & good AUROC, lower AUPRC\\
+TF/CTCF-assoc. & 0.0775 & 0.7984 & 0.3804 & 0.6941 & graph follow-up target\\
+open chromatin & 0.1158 & 0.7840 & 0.5501 & 0.7394 & moderate\\
+promoter-like & 0.0584 & 0.7460 & 0.3378 & 0.6729 & difficult but usable\\
+PLS & 0.0109 & 0.6265 & 0.0303 & 0.5241 & too rare in current setup\\
 \botrule
 \end{tabular}}
 \label{tab:ccre_category_breakdown}
 \end{table}
 
-\subsection{Draft Figure and Table Set}
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.92\textwidth]{proposed/proposed_fig6_ccre_category_lift.png}
+\end{center}
+\caption{Category-specific cCRE performance against class rarity. Enhancer-like
+and dELS categories are well captured by simple all-node baselines, while
+promoter-like and PLS remain substantially harder because of rarity and class
+imbalance. AUPRC tracks prevalence closely for the rarest categories.}
+\label{fig:ccre_category_performance}
+\end{figure}
 
-To support near-term manuscript review, we generated draft figure assets for
-the main evidence and the downstream caveat (Table~\ref{tab:draft_figures}).
-These are working figures for discussion and will be converted into final
-publication panels after the CUDA reruns and fair cCRE evaluation are complete.
+\FloatBarrier
 
-\begin{table}[t]
-\tbl{Draft figure and table set for the next professor update.}
-{\begin{tabular}{@{}lll@{}}
+\subsection{Direct haplotype-specific methylation}
+\label{sec:haplotype-results}
+
+The exact-path cohort contains 10 HPRC donors, 125 chromosome-8 path
+fragments, 284{,}375 labeled haplotype windows, and 140{,}677 reciprocal H1/H2
+pairs. Every retained pair uses shared graph-node anchors; no 31-mer fallback
+pair is retained. Frozen GraphGenome-FM and Nucleotide Transformer archives
+contain the same 281{,}354 unique, finite embedding IDs. Exact RepeatMasker and
+HMMFlagger tracks are available for nine donors; HG002 retains the graph-native
+copy-number, mappability, and SV-context proxies but not those two exact tracks.
+
+Under leave-one-donor-out evaluation, the graph-plus-context residual has the
+highest rank correlation and direction accuracy (Table~\ref{tab:haplotype}).
+Relative to the frozen sequence ridge, donor-macro Spearman improves by 0.0725
+(paired donor-bootstrap 95\% interval 0.0617--0.0819) and direction accuracy by
+0.0185 (0.0129--0.0242). The graph-only and context-only ablations lie between
+the sequence baseline and the combined model in rank-correlation point
+estimates, suggesting complementary signal. The same qualitative ranking
+persists when complete super-populations are held out: combined Spearman is
+0.0665 versus 0.0138 for sequence, and direction accuracy is 0.5214 versus
+0.5048.
+
+\begin{table}[h!]
+\tbl{Haplotype-specific methylation under nested held-out evaluation. Values
+are macro-averaged across held-out donors or super-populations. Context includes
+exact-track differences and handcrafted graph/SV proxies.}
+{\small
+\begin{tabular}{@{}llrrrr@{}}
 \toprule
-Item & Content & Current status\\
+Split & Model & Spearman & MAE & $R^2$ & Direction\\
 \colrule
-Figure 1 & Study overview and model workflow & placeholder in manuscript\\
-Figure 2 & HPRC random vs distance-matched AUROC & draft generated\\
-Figure 3 & HGSVC external transfer by chromosome & draft generated\\
-Figure 4 & Architecture ablation & planned\\
-Figure 5 & cCRE mapping and classifier schematic & placeholder in manuscript\\
-Figure 6 & cCRE category performance & planned\\
-Figure 7 & Embedding PCA/UMAP by chromosome or cCRE group & optional\\
-Table 1 & Dataset summary & draft in manuscript\\
-Table 2 & HPRC held-out and negative-sampling audit & draft in manuscript\\
-Table 3 & HGSVC pooled and per-chromosome transfer & draft in manuscript\\
-Table 4 & Architecture ablation & scaffold in manuscript\\
-Table 5 & Comparative baseline study & scaffold in manuscript\\
-Table 6 & cCRE category-specific breakdown & scaffold in manuscript\\
+Donor & Sequence ridge & 0.0133 & 0.0516 & -0.0000 & 0.5038\\
+Donor & Sequence + graph residual & 0.0444 & 0.0547 & -0.0718 & 0.5123\\
+Donor & Sequence + context residual & 0.0552 & 0.0544 & -0.0471 & 0.5096\\
+Donor & Sequence + graph/context & \textbf{0.0857} & 0.0536 & -0.0286 & \textbf{0.5223}\\
+\colrule
+Population & Sequence ridge & 0.0138 & 0.0517 & 0.0004 & 0.5048\\
+Population & Sequence + graph/context & \textbf{0.0665} & 0.0552 & -0.0653 & \textbf{0.5214}\\
 \botrule
 \end{tabular}}
-\label{tab:draft_figures}
+\label{tab:haplotype}
 \end{table}
+
+The ranking improvement does not translate into calibrated absolute
+prediction. In donor folds the combined model worsens MAE by 0.0020 (95\%
+interval 0.0010--0.0034 worse) and $R^2$ by 0.0286 (0.0055--0.0608 worse);
+the near-zero target distribution also lets a zero predictor obtain MAE 0.0515.
+The fixed gate passes donor count, Spearman gain, and direction gain, but fails
+its MAE and $R^2$ requirements. We therefore do not expand to large expression,
+accessibility, or 3D-contact collections in this study.
+
+\FloatBarrier
 
 \section{Discussion}
 
-The central result of this draft is that a graph-native model can learn
-pangenome edge structure across many HPRC chromosomes and transfer to HGSVC
-without retraining. The distance-matched negative audit strengthens the claim
-by showing that the link-prediction result is not explained only by easy
-random negatives. The HGSVC transfer experiment provides an external
-replication setting based on a related but independent pangenome graph source.
+The central result of this work is that a compact graph-native model can learn
+pangenome edge structure beyond coordinate distance, but only when evaluated
+with controls that make shortcuts visible. Shared training across slices
+converts many sparse local windows into a single self-supervised problem and
+removes the data-starvation failure mode of per-window models
+(Section~\ref{sec:shared}). Distance-matched negatives remove the coordinate
+shortcut that inflates random-negative baselines. Query-edge masking then shows
+how much the saturated neural diagnostic depended on direct-edge availability:
+strict performance drops, while one-hop performance remains comparatively
+strong. This is a more credible graph-pretraining claim than the unmasked
+diagnostic alone.
 
-The cCRE downstream story is deliberately more cautious. The binary
-logistic-regression baseline is already strong, whereas current binary and
-multiclass GAT variants underperform. This does not invalidate the
-pretraining result, because the GAT cCRE setting is not yet matched to the
-baseline evaluation population; the current benchmark windows cover only 4.21
-percent of the all-node logistic test universe. The next downstream
-experiments should prioritize evaluation alignment, class imbalance,
-category-aware analysis, and comparison against linear-reference and
-linearized-graph models.
+The external HGSVC result is now best interpreted as a stress test rather than a
+solved transfer benchmark. Without masking, HGSVC transfer appeared nearly
+saturated; with positive query edges removed, one-hop transfer remains useful
+across the tested external targets, whereas strict transfer is weak. This
+suggests that the current checkpoint captures reusable neighborhood context, but
+not enough strict-edge signal to transfer robustly across graph constructions and
+reference coordinate systems. The Y chromosome remains a valuable target because
+its recurrent inversions, palindromes, and segmental duplications are exactly the
+kind of structure a graph-native model should eventually handle.\cite{hallast2023ychrom}
 
-\subsection{Future Application: Haplotype-Specific Functional Annotation}
+Our cCRE analysis is deliberately cautious. All downstream cCRE runs remove
+reference-status features, and the comparison spans coordinate, structural,
+linearized, serialized, and graph-native models. All-node coordinate and
+serialized baselines are already strong for binary cCRE prediction, so cCRE
+should not be presented as a simple graph-superiority benchmark. Within the
+window universe, pretrained GATs improve over scratch and feature baselines, but
+the serialized-window Transformer remains highly competitive. The encouraging
+signals are therefore more specific: pretraining helps the grouped window tasks
+modestly, reduced and category-specific tasks are far more interpretable than
+the full label space, fine-tuning is not yet consistently better than freezing,
+and categories with strong ranking but lower precision identify where
+topology-aware modeling could plausibly add value. Because the current cCRE
+input lacks nucleotide sequence tokens and quantitative assay signal, the
+natural next downstream experiment is an all-node graph-native cCRE benchmark
+with bootstrap intervals and richer sequence/functional features, evaluated on
+the same nodes as the all-node baselines.
 
-A longer-term application is to use graph-native representations to map
-functional genomics signals directly onto haplotype paths, rather than first
-projecting them onto a single linear reference. Current cCRE labels are derived
-largely from functional genomics data aligned to a linear reference and then
-summarized across samples or assays. A graph foundation model could eventually
-help assign ATAC/DNase, methylation, histone-modification, CTCF, or 3D genome
-signals to specific HPRC or HGSVC graph paths. This would support
-haplotype-specific regulatory annotation, allele-specific functional analysis,
-and better interpretation of functional elements in structurally variable
-regions. We frame this as future work rather than a completed result.
+\subsection{Haplotype-specific functional annotation}
+\label{sec:haplotype-functional}
 
-\section{Limitations and Ongoing Work}
+The current cCRE experiment projects GRCh38-defined consensus annotations onto
+the GRCh38 path of the pangenome graph. It therefore tests whether alternate
+graph context helps predict a reference-projected label. The methylation pilot
+is different: functional observations are joined directly to maternal and
+paternal assembly paths, and the prediction target is a within-donor path
+difference. It therefore establishes the end-to-end machinery for a genuine
+haplotype-specific target rather than merely adding alternate-path context to a
+GRCh38 label.
 
-Several limitations remain before submission. The link-prediction task uses
-synthetic negative edges; distance matching is a stronger control than random
-sampling, but additional local hard-negative and degree-matched schemes should
-be evaluated. HGSVC external transfer currently covers selected chromosomes,
-not all possible external graph contexts. The cCRE GAT comparison is not yet
-fair because GAT and logistic models evaluate different labeled-node
-populations. Finally, final reproducibility experiments should be rerun on a
-CUDA-enabled lab or cluster environment with fixed software versions and saved
-logs.
+The result is encouraging for ranking but deliberately not promoted as solved
+functional annotation. Graph/context residuals improve rank correlation and
+allelic direction across held-out donors and populations, and the combined
+model exceeds graph-only and context-only point estimates. However, absolute
+error and $R^2$ worsen, indicating that the residual magnitude is poorly
+calibrated. The next modeling step is validation-only residual shrinkage or a
+joint rank/Huber objective under the unchanged splits and gate, together with a
+longer-context sequence baseline and chromosome-level replication.
 
-Although additional public pangenome resources are becoming available, their
-graph representations differ in structure and path annotation. We therefore
-focus the current study on HPRC and HGSVC, which use more comparable graph
-construction workflows, and leave broader multi-resource harmonization,
-including 1000 Chinese Pangenome-style resources, for future work.
+The same path interface could later predict accessibility, histone or CTCF
+signal, expression, and 3D contacts from HPRC/HGSVC and 4D Nucleome
+resources.\cite{encode2012,moore2020encode,dekker2017fourdn} HGSVC3
+allele-specific expression remains an attractive orthogonal application because
+subset-matched RNA-seq, Iso-Seq, and Hi-C are available.\cite{logsdon2025hgsvc3}
+Nevertheless, the preregistered methylation gate failed its MAE and $R^2$
+conditions, so we do not acquire or claim those larger modalities here. This
+keeps the current positive statement narrow: graph-aware features contain
+held-out ranking information, while calibrated quantitative functional
+prediction remains open.
 
-Immediate next steps are: (i) align cCRE GAT and logistic evaluation by using
-the same labeled-node universe; (ii) build reduced-category cCRE tasks; (iii)
-obtain richer ENCODE/SCREEN metadata if signal or Z-score stratification is
-desired; (iv) add linear-reference and DeepGene-style comparisons; (v) promote
-the draft figures into final panels; and (vi) pilot the HGSVC graph
-imputation/enhancement application if time allows.
+\section{Limitations and ongoing work}
+\label{sec:limits}
+
+Several limitations remain. (i) The link-prediction objective uses synthetic
+negatives; distance- and degree-matched negatives are stronger controls than
+random sampling, but additional local hard-negative schemes would further test
+the objective. (ii) Query-edge masking has been added and used for inference
+audits, but the ablation, seed-variance, degree-matched, and non-overlap neural
+runs should be rerun end-to-end with query-edge masking. (iii) A first
+non-overlapping-window run was underpowered because too few held-out slices were
+accepted, so a denser tiled benchmark is still needed. (iv) HGSVC external
+transfer currently covers a limited target set and masked strict transfer is weak;
+broader external transfer requires both more targets and masked retraining. (v)
+The fair cCRE graph comparison is window-aligned; an all-node graph-native cCRE
+evaluation with confidence intervals remains future work. (vi) HGSVC imputation
+is candidate scoring rather than validated recovery until the ranked candidates
+are compared against a newer graph build. (vii) The current cCRE labels and
+model inputs lack nucleotide sequence tokens and quantitative assay signals, so
+confidence or signal stratification requires richer ENCODE/SCREEN metadata.
+(viii) The methylation pilot covers one chromosome, reconstructs bounded graph
+features from GBZ chunks, uses only 512 bp of sequence per 10-kb window, and
+shows rank improvement without MAE/$R^2$ improvement. (ix) To support
+reproducibility, we will release pinned software versions and training logs with
+the final version.
+
+Immediate next steps are to (a) rerun the main HPRC ablations, degree-matched
+checks, seed variance, and HGSVC transfer with query-edge masking during
+training and evaluation; (b) build an all-node graph-native cCRE benchmark and
+report per-chromosome AUROC, AUPRC, macro-F1, balanced accuracy, and bootstrap
+intervals; (c) obtain richer ENCODE/SCREEN metadata for confidence or signal
+stratification; (d) compare HGSVC imputation candidates against a newer build;
+(e) extend the tiled non-overlap benchmark to adequate held-out coverage; and
+(f) improve methylation residual calibration under the locked donor/population
+splits, add a longer-context sequence baseline, and repeat the unchanged gate
+before acquiring another functional modality.
 
 \section{Conclusion}
 
-GraphGenome-FM provides preliminary evidence that self-supervised graph-native
-pretraining can learn transferable representations of human pangenome graph
-structure. HPRC chromosome-held-out results and HGSVC external transfer form
-the strongest current story. The cCRE experiments identify a harder
-downstream challenge: converting graph pretraining into regulatory annotation
-gains under fair, biologically meaningful evaluation. The next paper revision
-will strengthen this downstream section with aligned evaluation, external
-comparative methods, cCRE category analysis, and application-oriented pilots.
+GraphGenome-FM provides evidence that self-supervised graph-native pretraining
+can learn human pangenome graph structure beyond coordinate distance. The most
+defensible current result is the leakage-audited HPRC evaluation: query-edge
+masking lowers the saturated diagnostic but leaves the learned model above
+topology-only heuristics, especially for one-hop graph context. HGSVC transfer is
+more limited: one-hop transfer remains promising, while strict transfer requires
+masked retraining and stronger validation. The same model yields a prioritized
+list of candidate missing HGSVC edges for graph enhancement, but not yet
+validated recovery. The cCRE experiments identify a harder downstream challenge:
+converting graph pretraining into regulatory-annotation gains under leakage-safe,
+biologically meaningful, same-universe evaluation, especially against strong
+serialized-window baselines. This is the right status for an early graph-native
+pangenome pretraining framework. The exact-path methylation cohort moves
+haplotype-specific annotation from a proposal to a direct held-out-donor test:
+graph/context features improve ranking and allelic direction, but not calibrated
+absolute prediction. The structural benchmark is therefore mature enough to
+support a cautious functional pilot, while the failed gate identifies the
+specific calibration problem that must be solved before broader modality
+claims.
+
+\fi
+
+\section{Discussion}
+
+The executed evidence supports a focused claim: a compact encoder trained on
+masked adjacency reconstruction learns recurring local pangenome topology that
+generalizes across held-out chromosomes and, more variably, across graph
+constructions. The full-cohort analysis changes the story in three important
+ways. First, chr8 and chr19 are not representative of every chromosome; chrY is
+a reproducible failure/stress chromosome. Second, strict and expanded contexts
+cannot be ordered causally because exposure matching fails completely. Third,
+very high within-graph ranking does not by itself demonstrate a reusable
+biological foundation model.
+
+The present scope is therefore a strong topology-pretraining conference paper,
+conditional on execution of the identical-fold neural ablations and simple
+baselines. A computational-genomics journal scope additionally requires the
+newly implemented cross-fitted cCRE probe, phased-SV evaluation, and
+donor-path-resolved graphs. The methylation data are scientifically useful as a
+negative result: sequence explains substantial signal, whereas the current
+topology embedding adds negligible graph-only predictive value. It should not
+anchor a separate companion paper yet.
+
+\section{Limitations and required validation}
+\label{sec:limits}
+
+The current input consists of graph topology, genomic offsets, node length,
+orientation, and derived structural features; nucleotide tokens are absent.
+The graphs pool donors and haplotypes before example construction, so rotating
+chromosome holdout does not imply donor or haplotype holdout. HPRC R2 and HGSVC3
+share four donors, and deleting those paths from a GBWT alone would not prove
+that their contributions had been removed from aggregate topology. Exact
+independent-donor transfer therefore requires rematerializing path-supported
+graphs or rebuilding graphs without the shared assemblies.
+
+The two context tasks differ in node and link exposure, with zero matched pairs
+at the planned caliper. They must remain separately named tasks until a
+target-and-exposure-matched benchmark is constructed. Probability calibration
+improves after validation-only temperature scaling but remains imperfect,
+especially for HPRC strict reconstruction. In the 50-kb evaluation benchmark,
+256 slices are excluded because fewer than 10 default training candidates
+remain (75 HPRC R2, 52 HGSVC3, 84 HPRC R1.1, and 45 integrated); complete
+5-Mb generator exclusion artifacts must also accompany submission. Finally,
+the full rotating-fold ablation/baseline matrix, cCRE probe, and phased-SV
+evaluation are implemented but not yet executed and cannot be described as
+results.
+
+\section{Conclusion}
+
+GraphGenome-FM currently demonstrates transferable pangenome-topology
+pretraining, not a general-purpose pangenome foundation model. Its strongest
+evidence is the 24-chromosome, five-fold, three-seed reconstruction analysis and
+the asymmetric cross-graph/release stress tests. The evidence-safe path forward
+is to complete identical-fold baselines, then require successful sequence-aware
+functional and phased-SV transfer before broadening the claim or venue.
 
 \section*{Acknowledgments}
 
-We thank [Prof/PI Name], members of the [Lab Name] group, and collaborators
-for discussion and feedback. This paper uses public resources from the Human
-Pangenome Reference Consortium, HGSVC, and ENCODE\@. Funding and computing
-acknowledgments, including any Pittsburgh cluster acknowledgment if used, will
-be finalized before submission.
+We thank [PI Name], members of the [Lab Name] group, and our collaborators for
+discussion and feedback. This work uses public resources from the Human Pangenome
+Reference Consortium, HGSVC, and ENCODE. Funding and computing acknowledgments
+will be finalized before submission.
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 
 \bibitem{liao2023hprc}
-W.-W. Liao et al., A draft human pangenome reference, {\it Nature}
-{\bf 617}, 312--324 (2023).
+W.-W. Liao \textit{et al.}, A draft human pangenome reference,
+\textit{Nature} \textbf{617}, 312--324 (2023).
 
 \bibitem{ebert2021hgsvc}
-P. Ebert et al., Haplotype-resolved diverse human genomes and integrated
-analysis of structural variation, {\it Science} {\bf 372}, eabf7117 (2021).
+P. Ebert \textit{et al.}, Haplotype-resolved diverse human genomes and
+integrated analysis of structural variation, \textit{Science} \textbf{372},
+eabf7117 (2021).
 
 \bibitem{garrison2018vg}
-E. Garrison et al., Variation graph toolkit improves read mapping by
-representing genetic variation in the reference, {\it Nature Biotechnology}
-{\bf 36}, 875--879 (2018).
+E. Garrison \textit{et al.}, Variation graph toolkit improves read mapping by
+representing genetic variation in the reference, \textit{Nature Biotechnology}
+\textbf{36}, 875--879 (2018).
+
+\bibitem{hallast2023ychrom}
+P. Hallast, P. Ebert, M. Loftus \textit{et al.}, Assembly of 43 human Y
+chromosomes reveals extensive complexity and variation, \textit{Nature}
+\textbf{621}, 355--364 (2023).
+
+\bibitem{li2020minigraph}
+H. Li, X. Feng and C. Chu, The design and construction of reference pangenome
+graphs with minigraph, \textit{Genome Biology} \textbf{21}, 265 (2020).
+
+\bibitem{hickey2024minigraphcactus}
+G. Hickey \textit{et al.}, Pangenome graph construction from genome alignments
+with Minigraph--Cactus, \textit{Nature Biotechnology} \textbf{42}, 663--673
+(2024).
 
 \bibitem{kipf2017gcn}
 T. N. Kipf and M. Welling, Semi-supervised classification with graph
-convolutional networks, in {\it International Conference on Learning
+convolutional networks, in \textit{International Conference on Learning
 Representations} (2017).
 
 \bibitem{velickovic2018gat}
-P. Velickovic et al., Graph attention networks, in {\it International
-Conference on Learning Representations} (2018).
+P. Veli\v{c}kovi\'c \textit{et al.}, Graph attention networks, in
+\textit{International Conference on Learning Representations} (2018).
 
 \bibitem{ji2021dnabert}
-Y. Ji, Z. Zhou, H. Liu and R. V. Davuluri, DNABERT: pre-trained
-Bidirectional Encoder Representations from Transformers model for DNA-language
-in genome, {\it Bioinformatics} {\bf 37}, 2112--2120 (2021).
+Y. Ji, Z. Zhou, H. Liu and R. V. Davuluri, DNABERT: pre-trained Bidirectional
+Encoder Representations from Transformers model for DNA-language in genome,
+\textit{Bioinformatics} \textbf{37}, 2112--2120 (2021).
+
+\bibitem{zhou2024dnabert2}
+Z. Zhou, Y. Ji, W. Li, P. Dutta, R. V. Davuluri and H. Liu, DNABERT-2:
+efficient foundation model and benchmark for multi-species genomes, in
+\textit{International Conference on Learning Representations} (2024).
+
+\bibitem{dallatorre2025nt}
+H. Dalla-Torre \textit{et al.}, Nucleotide Transformer: building and evaluating
+robust foundation models for human genomics, \textit{Nature Methods}
+\textbf{22}, 287--297 (2025).
+
+\bibitem{zhang2025deepgene}
+X. Zhang, M. Yang, X. Yin, Y. Qian and F. Sun, DeepGene: an efficient foundation
+model for genomics based on pan-genome graph transformer, \textit{IEEE
+Transactions on Computational Biology and Bioinformatics} \textbf{22},
+3143--3152 (2025).
+
+\bibitem{mowlaei2025stici}
+M. E. Mowlaei, C. Li, O. Jamialahmadi \textit{et al.}, STICI: Split-Transformer
+with integrated convolutions for genotype imputation, \textit{Nature
+Communications} \textbf{16}, 1218 (2025).
 
 \bibitem{encode2012}
-The ENCODE Project Consortium, An integrated encyclopedia of DNA elements in
-the human genome, {\it Nature} {\bf 489}, 57--74 (2012).
+The ENCODE Project Consortium, An integrated encyclopedia of DNA elements in the
+human genome, \textit{Nature} \textbf{489}, 57--74 (2012).
 
 \bibitem{moore2020encode}
-J. E. Moore et al., Expanded encyclopaedias of DNA elements in the human and
-mouse genomes, {\it Nature} {\bf 583}, 699--710 (2020).
+J. E. Moore \textit{et al.}, Expanded encyclopaedias of DNA elements in the human
+and mouse genomes, \textit{Nature} \textbf{583}, 699--710 (2020).
+
+\bibitem{logsdon2025hgsvc3}
+G. A. Logsdon \textit{et al.}, Complex genetic variation in nearly complete
+human genomes, \textit{Nature} \textbf{644}, 430--441 (2025).
+
+\bibitem{dekker2017fourdn}
+J. Dekker \textit{et al.}, The 4D nucleome project, \textit{Nature}
+\textbf{549}, 219--226 (2017).
 
 \end{thebibliography}
 

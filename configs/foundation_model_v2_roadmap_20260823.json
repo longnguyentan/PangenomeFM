@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "run_name": "foundation_model_v2_roadmap_20260823",
+  "scientific_goal": "joint sequence-topology-path pretraining with unseen-donor transfer and reusable biological representations",
+  "tasks": [
+    {
+      "id": "focused_tests",
+      "stage": "00_preflight",
+      "description": "Run correctness tests for canonical candidates, masking, splits, paths, comparative adapters, and multimodal v2.",
+      "resource": "cpu",
+      "cost": "small",
+      "depends_on": [],
+      "requires_env": [],
+      "requires_paths": [],
+      "command": ["python", "-m", "pytest", "-q", "tests/test_canonicalize_graph.py", "tests/test_canonical_negative_sampling.py", "tests/test_path_resolved_donor_splits.py", "tests/test_path_branch_choice_examples.py", "tests/test_comparative_benchmark.py", "tests/test_paired_embedding_baseline.py", "tests/test_multimodal_pangenome.py"]
+    },
+    {
+      "id": "v2_synthetic_smoke",
+      "stage": "00_preflight",
+      "description": "Exercise every multimodal objective end to end on deterministic synthetic data.",
+      "resource": "cpu",
+      "cost": "small",
+      "depends_on": ["focused_tests"],
+      "requires_env": [],
+      "requires_paths": [],
+      "command": ["python", "-m", "training.multimodal_pretrain", "--synthetic-smoke", "--out-dir", "${ROADMAP_RESULT_ROOT}/v2_synthetic_smoke", "--epochs", "8", "--patience", "4", "--hidden-dim", "32", "--sequence-layers", "1", "--path-layers", "1"]
+    },
+    {
+      "id": "v1_canonical_full_rerun",
+      "stage": "10_freeze_v1",
+      "description": "Rerun the canonical v1 all-chromosome/fold/transfer matrix with deterministic seeds and corrected candidate identity.",
+      "resource": "gpu",
+      "cost": "expensive",
+      "depends_on": ["focused_tests"],
+      "requires_env": ["PANGENOMEFM_DATA_ROOT", "PANGENOMEFM_RESULTS_ROOT"],
+      "requires_paths": ["${PANGENOMEFM_DATA_ROOT}"],
+      "command": ["bash", "scripts/server/run_full_server_pipeline.sh"]
+    },
+    {
+      "id": "same_example_manifest",
+      "stage": "20_benchmark",
+      "description": "Build and audit a canonical same-example edge benchmark for exact and adapted methods.",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": ["focused_tests"],
+      "requires_env": ["PFM_BENCHMARK_MANIFEST", "PFM_FULL_SEGMENTS"],
+      "requires_paths": ["${PFM_BENCHMARK_MANIFEST}", "${PFM_FULL_SEGMENTS}"],
+      "command": ["python", "scripts/build_comparative_benchmark_pilot.py", "--manifest", "${PFM_BENCHMARK_MANIFEST}", "--full-segments", "${PFM_FULL_SEGMENTS}", "--out-dir", "${ROADMAP_RESULT_ROOT}/same_example_benchmark", "--overwrite"]
+    },
+    {
+      "id": "deepgene_adapted_edge",
+      "stage": "20_benchmark",
+      "description": "Train the frozen DeepGene endpoint-pair adapter on the exact canonical examples; this is not the published DeepGene task.",
+      "resource": "cpu",
+      "cost": "medium",
+      "external": true,
+      "depends_on": ["same_example_manifest"],
+      "requires_env": ["DEEPGENE_ENDPOINT_EMBEDDINGS"],
+      "requires_paths": ["${ROADMAP_RESULT_ROOT}/same_example_benchmark/benchmark_manifest.csv", "${DEEPGENE_ENDPOINT_EMBEDDINGS}"],
+      "command": ["python", "-m", "evaluation.paired_embedding_baseline", "--manifest", "${ROADMAP_RESULT_ROOT}/same_example_benchmark/benchmark_manifest.csv", "--embeddings", "${DEEPGENE_ENDPOINT_EMBEDDINGS}", "--method-name", "DeepGene-adapted", "--out-dir", "${ROADMAP_RESULT_ROOT}/deepgene_adapted_edge"]
+    },
+    {
+      "id": "pangenomex_cnv_benchmark",
+      "stage": "20_benchmark",
+      "description": "Run official PangenomeX and test PangenomeFM locus embeddings as an additive CNV feature on the same shallow-WGS samples.",
+      "resource": "gpu",
+      "cost": "expensive",
+      "external": true,
+      "depends_on": ["focused_tests"],
+      "requires_env": ["PANGENOMEX_REPOSITORY", "PANGENOMEX_CNV_COHORT"],
+      "requires_paths": [],
+      "command": null,
+      "blocker": "Requires a licensed same-sample shallow-WGS BAM/CNV-truth cohort and a task-faithful official PangenomeX installation; endpoint-edge rows are not valid PangenomeX inputs."
+    },
+    {
+      "id": "donor_path_splits",
+      "stage": "30_haplotype_data",
+      "description": "Create deterministic donor-disjoint train/validation/test manifests from GBZ path metadata.",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": ["focused_tests"],
+      "requires_env": ["PFM_PATH_METADATA"],
+      "requires_paths": ["${PFM_PATH_METADATA}"],
+      "command": ["python", "scripts/server/build_path_resolved_donor_splits.py", "--path-metadata", "${PFM_PATH_METADATA}", "--dataset", "hprc_r2", "--out-dir", "${ROADMAP_RESULT_ROOT}/donor_path_splits"]
+    },
+    {
+      "id": "path_resolved_examples",
+      "stage": "30_haplotype_data",
+      "description": "Materialize focal path branch-choice examples whose negatives are alternatives for one observed transition, not global absences.",
+      "resource": "cpu",
+      "cost": "expensive",
+      "depends_on": ["donor_path_splits"],
+      "requires_env": ["PFM_PATH_EDGE_TABLE", "PFM_PATH_GFA", "PFM_PATH_GRAPH_AUDIT"],
+      "requires_paths": ["${PFM_PATH_EDGE_TABLE}", "${PFM_PATH_GFA}", "${PFM_PATH_GRAPH_AUDIT}"],
+      "command": ["python", "scripts/server/build_path_branch_choice_examples.py", "--positive-edges", "${PFM_PATH_EDGE_TABLE}", "--gfa", "${PFM_PATH_GFA}", "--graph-audit", "${PFM_PATH_GRAPH_AUDIT}", "--out-dir", "${ROADMAP_RESULT_ROOT}/path_branch_choices"]
+    },
+    {
+      "id": "v2_real_pilot",
+      "stage": "40_multimodal_v2",
+      "description": "Train joint sequence/topology/path objectives on a chromosome-scale NPZ pilot with frozen splits.",
+      "resource": "gpu",
+      "cost": "medium",
+      "depends_on": ["v2_synthetic_smoke"],
+      "requires_env": ["PFM_V2_PILOT_NPZ"],
+      "requires_paths": ["${PFM_V2_PILOT_NPZ}"],
+      "command": ["python", "-m", "training.multimodal_pretrain", "--input-npz", "${PFM_V2_PILOT_NPZ}", "--out-dir", "${ROADMAP_RESULT_ROOT}/v2_real_pilot", "--device", "cuda", "--epochs", "100", "--patience", "20"]
+    },
+    {
+      "id": "unseen_donor_pretraining",
+      "stage": "50_unseen_donor",
+      "description": "Pretrain without test-donor topology and evaluate chromosome, donor, population, and graph holdouts.",
+      "resource": "gpu",
+      "cost": "expensive",
+      "depends_on": ["v2_real_pilot"],
+      "requires_env": ["PFM_DONOR_EXCLUDED_GRAPH_ROOT"],
+      "requires_paths": [],
+      "command": null,
+      "blocker": "Requires path-bearing donor-excluded graph builds. The currently released HPRC SV-scale GFA cannot remove donor-contributed topology faithfully."
+    },
+    {
+      "id": "methylation_recalibration",
+      "stage": "60_biological_transfer",
+      "description": "Repeat the locked donor-held-out methylation gate after shrinkage/rank-aware calibration and a long-context sequence baseline.",
+      "resource": "gpu",
+      "cost": "expensive",
+      "depends_on": ["v2_real_pilot"],
+      "requires_env": ["PFM_METHYLATION_COHORT_ROOT"],
+      "requires_paths": ["${PFM_METHYLATION_COHORT_ROOT}"],
+      "command": null,
+      "blocker": "The current methylation runner exists, but the next locked rerun requires a versioned long-context sequence cache and additional chromosome/donor labels."
+    },
+    {
+      "id": "ase_heldout_donor",
+      "stage": "60_biological_transfer",
+      "description": "Evaluate antisymmetric H1/H2 path embeddings on allele-specific expression with complete donors held out.",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": ["v2_real_pilot"],
+      "requires_env": ["PFM_ASE_PAIRS", "PFM_ASE_PATH_EMBEDDINGS"],
+      "requires_paths": ["${PFM_ASE_PAIRS}", "${PFM_ASE_PATH_EMBEDDINGS}"],
+      "command": ["python", "-m", "tasks.haplotype.ase", "--pairs", "${PFM_ASE_PAIRS}", "--embeddings", "${PFM_ASE_PATH_EMBEDDINGS}", "--out-dir", "${ROADMAP_RESULT_ROOT}/ase_heldout_donor"]
+    },
+    {
+      "id": "extended_functional_panel",
+      "stage": "70_extensions",
+      "description": "Extend a passing shared representation to accessibility, histone/CTCF, 3D contact, molecular-QTL, variant-effect and phenotype tasks under common partitions.",
+      "resource": "gpu",
+      "cost": "expensive",
+      "external": true,
+      "depends_on": ["methylation_recalibration", "ase_heldout_donor"],
+      "requires_env": [],
+      "requires_paths": [],
+      "command": null,
+      "blocker": "Conditional on a passing methylation/ASE gate and matched donor-level assays; these labels are not present in the repository."
+    },
+    {
+      "id": "population_expansion",
+      "stage": "70_extensions",
+      "description": "Evaluate additional ancestrally diverse pangenomes, rare paths, and cross-population transfer, including a future 1000 Chinese Pangenome track.",
+      "resource": "gpu",
+      "cost": "expensive",
+      "external": true,
+      "depends_on": ["unseen_donor_pretraining"],
+      "requires_env": [],
+      "requires_paths": [],
+      "command": null,
+      "blocker": "Requires new graph resources, harmonized path metadata, consent/data-use review, and population-held-out manifests."
+    }
+  ]
+}

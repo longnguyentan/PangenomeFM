@@ -1,2 +1,1 @@
-"""Training entry points for GraphGenome-FM."""
-
+"""Training entry points for PangenomeFM."""
