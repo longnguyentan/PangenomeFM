@@ -56,8 +56,8 @@
       "external": true,
       "depends_on": ["same_example_manifest"],
       "requires_env": ["DEEPGENE_ENDPOINT_EMBEDDINGS"],
-      "requires_paths": ["${ROADMAP_RESULT_ROOT}/same_example_benchmark/benchmark_manifest.csv", "${DEEPGENE_ENDPOINT_EMBEDDINGS}"],
-      "command": ["python", "-m", "evaluation.paired_embedding_baseline", "--manifest", "${ROADMAP_RESULT_ROOT}/same_example_benchmark/benchmark_manifest.csv", "--embeddings", "${DEEPGENE_ENDPOINT_EMBEDDINGS}", "--method-name", "DeepGene-adapted", "--out-dir", "${ROADMAP_RESULT_ROOT}/deepgene_adapted_edge"]
+      "requires_paths": ["${ROADMAP_RESULT_ROOT}/same_example_benchmark/benchmark_manifest.parquet", "${DEEPGENE_ENDPOINT_EMBEDDINGS}"],
+      "command": ["python", "-m", "evaluation.paired_embedding_baseline", "--manifest", "${ROADMAP_RESULT_ROOT}/same_example_benchmark/benchmark_manifest.parquet", "--embeddings", "${DEEPGENE_ENDPOINT_EMBEDDINGS}", "--method-name", "DeepGene-adapted", "--out-dir", "${ROADMAP_RESULT_ROOT}/deepgene_adapted_edge"]
     },
     {
       "id": "pangenomex_cnv_benchmark",
