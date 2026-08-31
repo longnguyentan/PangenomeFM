@@ -345,6 +345,8 @@ def evaluate(
         "sequence_feature_definition": "endpoint mono/di-nucleotide composition, GC, entropy, and length interactions; no topology",
         "coordinate_feature_definition": "endpoint positions, distance, chromosome equality, and orientation; no topology or sequence",
         "topology_query_masking": "positive direct query edge removed independently before each score",
+        "topology_adjacency_source": "closure-specific links_path from each manifest row",
+        "topology_degree_definition": "endpoint degree recomputed on the strict or one-hop graph visible to the corresponding baseline before independent positive query-edge masking",
         "baselines": BASELINE_NAMES,
         "status": "complete",
     }

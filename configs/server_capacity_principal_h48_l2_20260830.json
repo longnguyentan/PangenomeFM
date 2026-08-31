@@ -1,0 +1,28 @@
+{
+  "extends": "server_full_multicohort_20260806.json",
+  "analysis_id": "server_capacity_principal_h48_l2_20260830",
+  "training": {
+    "contexts": ["strict"]
+  },
+  "experiment_matrix": {
+    "fold_regimes": [
+      {
+        "name": "hprc_r2_capacity_principal_h48_l2",
+        "primary": "hprc_r2",
+        "extras": [],
+        "training_variant": {
+          "hidden_dim": 48,
+          "heads": 4,
+          "layers": 2,
+          "candidate_mask_batch_size": 512
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "root": "${PANGENOMEFM_RESULTS_ROOT}/capacity_principal_h48_l2_20260830",
+    "logs": "${PANGENOMEFM_RESULTS_ROOT}/capacity_principal_h48_l2_20260830/logs",
+    "validation": "${PANGENOMEFM_RESULTS_ROOT}/capacity_principal_h48_l2_20260830/validation",
+    "state": "${PANGENOMEFM_RESULTS_ROOT}/capacity_principal_h48_l2_20260830/execution_state.json"
+  }
+}
