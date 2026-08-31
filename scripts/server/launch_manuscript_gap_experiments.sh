@@ -14,7 +14,7 @@ fi
 
 mkdir -p "$(dirname "$CONSOLE_LOG")"
 tmux new-session -d -s "$SESSION" \
-  "bash -lc 'cd \"$REPO_ROOT\" && bash scripts/server/run_manuscript_gap_experiments.sh 2>&1 | tee \"$CONSOLE_LOG\"; exec bash'"
+  "bash -lc 'cd \"$REPO_ROOT\" && set -o pipefail; bash scripts/server/run_manuscript_gap_experiments.sh 2>&1 | tee \"$CONSOLE_LOG\"; rc=\${PIPESTATUS[0]}; echo MANUSCRIPT_GAP_WORKFLOW_EXIT_CODE=\$rc; exec bash'"
 
 echo "Started: $SESSION"
 echo "Console log: $CONSOLE_LOG"
