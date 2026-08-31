@@ -11,6 +11,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from scripts.server.capacity_evidence import capacity_summary_rows
+
 
 def latex_escape(value: object) -> str:
     text = str(value)
@@ -73,34 +75,21 @@ def split_summary(path: Path, task: str) -> dict[str, object]:
 
 def capacity_table(old_path: Path, principal_path: Path | None) -> pd.DataFrame:
     old = pd.read_csv(old_path)
-    old = old.loc[(old["metric_scope"] == "split") & (old["split"] == "heldout_chr_test")]
-    definitions = [
-        ("Diagnostic small", "hprc_r2_capacity_tiny_h24_l1", 24, 1),
-        ("Principal", "hprc_r2_capacity_principal_h48_l2", 48, 2),
-        ("Diagnostic medium", "hprc_r2_capacity_medium_h96_l4", 96, 4),
-        ("Diagnostic large", "hprc_r2_capacity_large_h192_l6", 192, 6),
-    ]
-    principal = pd.read_csv(principal_path) if principal_path and principal_path.is_file() else pd.DataFrame()
-    rows = []
-    for name, regime, hidden, layers in definitions:
-        source = principal if regime.endswith("principal_h48_l2") else old
-        values = source.loc[
-            source.get("regime", pd.Series(dtype=str)).eq(regime)
-            & source.get("metric_scope", pd.Series(dtype=str)).eq("split")
-            & source.get("split", pd.Series(dtype=str)).eq("heldout_chr_test"),
-            "auprc",
-        ].dropna().to_numpy(float) if not source.empty else np.array([])
-        rows.append(
-            {
-                "Configuration": name,
-                "Hidden units": hidden,
-                "Graph layers": layers,
-                "Runs": int(len(values)),
-                "Mean AUPRC": f"{values.mean():.4f}" if len(values) else "pending",
-                "SD": f"{values.std(ddof=1):.4f}" if len(values) > 1 else ("0.0000" if len(values) else "pending"),
-            }
-        )
-    return pd.DataFrame(rows)
+    if principal_path is None or not principal_path.is_file():
+        raise ValueError("principal capacity metrics are required")
+    principal = pd.read_csv(principal_path)
+    rows, _ = capacity_summary_rows(old, principal)
+    table = pd.DataFrame(rows).sort_values("hidden")
+    return pd.DataFrame(
+        {
+            "Configuration": table["name"],
+            "Hidden units": table["hidden"],
+            "Graph layers": table["layers"],
+            "Runs": table["runs"],
+            "Mean AUPRC": table["mean"].map(lambda value: f"{value:.4f}"),
+            "SD": table["sd"].map(lambda value: f"{value:.4f}"),
+        }
+    )
 
 
 def ccre_table(path: Path | None) -> pd.DataFrame:
@@ -332,7 +321,7 @@ def main() -> int:
             {"Manuscript gap": "cCRE subtype / complexity", "Resolution": "server-stratified paired analysis", "Status": "complete" if args.ccre_strata and args.ccre_strata.is_file() else "pending server run"},
             {"Manuscript gap": "Chance AUPRC", "Resolution": "exact candidate prevalence", "Status": "complete"},
             {"Manuscript gap": "One-hop degree definition", "Resolution": "archived-score replay on closure-specific graphs", "Status": graph_status},
-            {"Manuscript gap": "Principal 48/2 capacity point", "Resolution": "exact diagnostic sweep protocol", "Status": "complete" if args.principal_capacity_metrics and args.principal_capacity_metrics.is_file() else "pending server run"},
+            {"Manuscript gap": "Principal 48/2 capacity point", "Resolution": "reused matched HPRC R2 main-matrix fold/seed cells", "Status": "complete" if args.principal_capacity_metrics and args.principal_capacity_metrics.is_file() else "missing"},
             {"Manuscript gap": "Complexity cutoffs / counts", "Resolution": "frozen native-graph tertiles", "Status": "complete"},
             {"Manuscript gap": "Classifier / split ambiguity", "Resolution": "code-derived specification and separate counts", "Status": "complete"},
         ]

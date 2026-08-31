@@ -27,7 +27,6 @@ CCRE_RESULTS="$RESULTS_ROOT/ccre_sequence_fm_factorial_20260815"
 SV_RESULTS="$RESULTS_ROOT/hgsvc3_sv_sequence_fm_factorial_20260815"
 BASELINE_RESULTS="$RESULTS_ROOT/rotating_link_baselines_20260809"
 COMPLEXITY_RESULTS="$RESULTS_ROOT/complexity_context_v2_20260815/native_complexity_v2"
-CAPACITY_RESULTS="$RESULTS_ROOT/capacity_principal_h48_l2_20260830"
 
 CCRE_LABELS=server_workspace/data/downstream/ccre/hprc_r2_screen_v4/node_labels.csv.gz
 MANIFEST=server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv
@@ -124,84 +123,15 @@ run_step link_prevalence \
     --experiment-seed-metrics "$EXPERIMENT_METRICS" \
     --out-dir "$GAP_ROOT/link_prevalence"
 
-CCRE_DONE="$STATE_ROOT/ccre_stratification.done"
-CCRE_PID=""
-if [[ -s "$CCRE_DONE" ]]; then
-  echo "[$(timestamp)] SKIP complete step: ccre_stratification"
-else
-  echo "[$(timestamp)] START background: ccre_stratification"
-  (
-    if /usr/bin/time -v python scripts/server/analyze_ccre_subtype_complexity.py \
-      --probe-root "$CCRE_RESULTS" \
-      --node-labels "$CCRE_LABELS" \
-      --complexity-features "$COMPLEXITY_RESULTS/complexity_features.tsv" \
-      --out-dir "$GAP_ROOT/ccre_stratification" \
-      --n-bootstrap 10000 \
-      --seed 20260830 \
-      --expected-files 30 \
-      >"$LOG_ROOT/ccre_stratification.log" 2>&1
-    then
-      printf '%s\n' "$(timestamp)" >"$CCRE_DONE"
-    else
-      exit 1
-    fi
-  ) &
-  CCRE_PID=$!
-fi
-
-CAPACITY_STATUS=0
-run_step principal_capacity_gpu \
-  python scripts/server/run_gpu_matrix.py \
-    --phase folds \
-    --config configs/server_capacity_principal_h48_l2_20260830.json \
-    --gpus 0,1,2,3 \
-    --execute \
-  || CAPACITY_STATUS=$?
-
-CCRE_STATUS=0
-if [[ -n "$CCRE_PID" ]]; then
-  echo "[$(timestamp)] WAIT: ccre_stratification pid=$CCRE_PID"
-  if ! wait "$CCRE_PID"; then
-    echo "cCRE stratification failed; inspect $LOG_ROOT/ccre_stratification.log" >&2
-    tail -n 100 "$LOG_ROOT/ccre_stratification.log" >&2 || true
-    CCRE_STATUS=1
-  fi
-  if [[ "$CCRE_STATUS" -eq 0 && ! -s "$CCRE_DONE" ]]; then
-    echo "cCRE stratification ended without completion sentinel" >&2
-    tail -n 100 "$LOG_ROOT/ccre_stratification.log" >&2 || true
-    CCRE_STATUS=1
-  fi
-  if [[ "$CCRE_STATUS" -eq 0 ]]; then
-    echo "[$(timestamp)] COMPLETE: ccre_stratification"
-  fi
-fi
-
-if [[ "$CAPACITY_STATUS" -ne 0 || "$CCRE_STATUS" -ne 0 ]]; then
-  echo "Gap-fill parallel stage failed: capacity=$CAPACITY_STATUS ccre=$CCRE_STATUS" >&2
-  exit 1
-fi
-
-python - <<'PY'
-import json
-import os
-from pathlib import Path
-
-root = Path(os.environ["PANGENOMEFM_RESULTS_ROOT"])
-summary = json.loads(
-    (root / "capacity_principal_h48_l2_20260830/gpu_queue_folds_summary.json").read_text()
-)
-assert summary["jobs_requested"] == 15, summary
-assert summary["jobs_recorded"] == 15, summary
-assert summary["failures"] == 0, summary
-print("PRINCIPAL_CAPACITY_GPU_COMPLETE")
-PY
-
-run_step principal_capacity_aggregate \
-  python scripts/server/aggregate_server_results.py \
-    --results-root "$CAPACITY_RESULTS" \
-    --out-dir "$CAPACITY_RESULTS/paper_source_data" \
-    --n-boot 10000 \
-    --seed 20260830
+run_step ccre_stratification \
+  python scripts/server/analyze_ccre_subtype_complexity.py \
+    --probe-root "$CCRE_RESULTS" \
+    --node-labels "$CCRE_LABELS" \
+    --complexity-features "$COMPLEXITY_RESULTS/complexity_features.tsv" \
+    --out-dir "$GAP_ROOT/ccre_stratification" \
+    --n-bootstrap 10000 \
+    --seed 20260830 \
+    --expected-files 30
 
 run_step visible_graph_baseline_audit \
   python scripts/server/audit_visible_graph_baselines.py \
@@ -216,7 +146,7 @@ run_step figures \
     --source-dir "$SOURCE_DIR" \
     --ccre-strata "$GAP_ROOT/ccre_stratification/ccre_stratum_topology_gains.csv" \
     --prevalence-summary "$GAP_ROOT/link_prevalence/link_prediction_prevalence_summary.csv" \
-    --principal-capacity-metrics "$CAPACITY_RESULTS/paper_source_data/experiment_seed_metrics.csv" \
+    --principal-capacity-metrics "$EXPERIMENT_METRICS" \
     --output-dir "$FIGURE_ROOT" \
     --require-ccre-strata
 
@@ -229,7 +159,7 @@ run_step tables \
     --ccre-fold-metrics "$CCRE_FOLD_METRICS" \
     --sv-fold-metrics "$SV_FOLD_METRICS" \
     --old-capacity-runs "$SOURCE_DIR/figure4_capacity_runs.csv" \
-    --principal-capacity-metrics "$CAPACITY_RESULTS/paper_source_data/experiment_seed_metrics.csv" \
+    --principal-capacity-metrics "$EXPERIMENT_METRICS" \
     --visible-graph-audit "$GAP_ROOT/visible_graph_baseline_audit/audit.json" \
     --out-dir "$TABLE_ROOT"
 
@@ -261,6 +191,12 @@ for stem in [
     for suffix in ["pdf", "png"]:
         path = root / "figures" / f"{stem}.{suffix}"
         assert path.stat().st_size > 10_000, path
+capacity = root / "tables/table_capacity_principal_comparison.csv"
+rows = __import__("csv").DictReader(capacity.open())
+principal = [row for row in rows if row["Configuration"] == "Principal"]
+assert len(principal) == 1, principal
+assert principal[0]["Runs"] == "15", principal
+assert principal[0]["Mean AUPRC"] != "pending", principal
 print("MANUSCRIPT_GAP_OUTPUTS_VERIFIED")
 PY
 
@@ -268,7 +204,7 @@ git rev-parse HEAD >"$PROVENANCE_ROOT/git_commit.txt"
 git status --short >"$PROVENANCE_ROOT/git_status.txt"
 conda list --explicit >"$PROVENANCE_ROOT/conda_explicit.txt"
 python -m pip freeze | sort >"$PROVENANCE_ROOT/python_packages.txt"
-cp configs/server_capacity_principal_h48_l2_20260830.json "$PROVENANCE_ROOT/"
+cp configs/server_full_multicohort_20260806.json "$PROVENANCE_ROOT/"
 
 find "$PROVENANCE_ROOT" -maxdepth 1 -type f ! -name SHA256SUMS -print0 \
   | sort -z \
@@ -281,10 +217,13 @@ MANIFEST_FILE="$RESULTS_ROOT/manuscript_gap_fill_${TAG}.included.txt"
 find "$GAP_ROOT" -type f ! -path '*/.matplotlib/*' -print \
   | sort \
   >"$MANIFEST_FILE"
-find "$CAPACITY_RESULTS/paper_source_data" -maxdepth 1 -type f -print \
+find "$SOURCE_DIR" -maxdepth 1 -type f -print \
   | sort \
   >>"$MANIFEST_FILE"
-printf '%s\n' configs/server_capacity_principal_h48_l2_20260830.json >>"$MANIFEST_FILE"
+printf '%s\n' \
+  "$EXPERIMENT_METRICS" \
+  configs/server_full_multicohort_20260806.json \
+  >>"$MANIFEST_FILE"
 sort -u "$MANIFEST_FILE" -o "$MANIFEST_FILE"
 
 tar --use-compress-program='zstd -T0 -10' -cf "$PACKAGE" -T "$MANIFEST_FILE"
@@ -301,7 +240,7 @@ cat >"$GAP_ROOT/final_status.json" <<EOF
   "status": "complete",
   "git_commit": "$(git rev-parse HEAD)",
   "output_root": "$GAP_ROOT",
-  "capacity_root": "$CAPACITY_RESULTS",
+  "principal_capacity_metrics": "$EXPERIMENT_METRICS",
   "package": "$PACKAGE",
   "package_sha256": "$(sha256sum "$PACKAGE" | awk '{print $1}')"
 }

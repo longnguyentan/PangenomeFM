@@ -20,6 +20,8 @@ import pandas as pd
 from matplotlib.lines import Line2D
 from matplotlib.patches import Circle, FancyArrowPatch, FancyBboxPatch
 
+from scripts.server.capacity_evidence import capacity_summary_rows
+
 
 STRICT = "#28679D"
 ONE_HOP = "#E96B4A"
@@ -439,25 +441,9 @@ def build_generalization(reconstruction: pd.DataFrame, transfer: pd.DataFrame, p
 
 
 def capacity_points(old_runs: pd.DataFrame, principal_metrics: pd.DataFrame | None) -> pd.DataFrame:
-    selected = old_runs.loc[(old_runs["metric_scope"] == "split") & (old_runs["split"] == "heldout_chr_test")].copy()
-    mapping = {
-        "hprc_r2_capacity_tiny_h24_l1": (24, 1, "24 / 1"),
-        "hprc_r2_capacity_medium_h96_l4": (96, 4, "96 / 4"),
-        "hprc_r2_capacity_large_h192_l6": (192, 6, "192 / 6"),
-    }
-    rows = []
-    for regime, (hidden, layers, label) in mapping.items():
-        values = selected.loc[selected["regime"].eq(regime), "auprc"].dropna().to_numpy(float)
-        rows.append({"hidden": hidden, "layers": layers, "label": label, "mean": values.mean(), "sd": values.std(ddof=1), "principal": False})
-    if principal_metrics is not None and not principal_metrics.empty:
-        values = principal_metrics.loc[
-            principal_metrics["regime"].eq("hprc_r2_capacity_principal_h48_l2")
-            & principal_metrics["metric_scope"].eq("split")
-            & principal_metrics["split"].eq("heldout_chr_test"),
-            "auprc",
-        ].dropna().to_numpy(float)
-        if len(values):
-            rows.append({"hidden": 48, "layers": 2, "label": "48 / 2\n(principal)", "mean": values.mean(), "sd": values.std(ddof=1), "principal": True})
+    if principal_metrics is None or principal_metrics.empty:
+        raise ValueError("principal capacity metrics are required")
+    rows, _ = capacity_summary_rows(old_runs, principal_metrics)
     return pd.DataFrame(rows).sort_values("hidden")
 
 
@@ -573,6 +559,10 @@ def main() -> int:
     ccre_gains = pd.read_csv(args.ccre_strata) if args.ccre_strata and args.ccre_strata.is_file() else None
     prevalence = pd.read_csv(args.prevalence_summary) if args.prevalence_summary and args.prevalence_summary.is_file() else None
     principal = pd.read_csv(args.principal_capacity_metrics) if args.principal_capacity_metrics and args.principal_capacity_metrics.is_file() else None
+    capacity_source = pd.read_csv(args.source_dir / "figure4_capacity_runs.csv")
+    if principal is None:
+        parser.error("--principal-capacity-metrics is required")
+    _, capacity_audit = capacity_summary_rows(capacity_source, principal)
 
     outputs = {
         "figure3_ccre": build_ccre(absolute, contributions, ccre_gains, args.output_dir),
@@ -588,6 +578,7 @@ def main() -> int:
         "ccre_strata": str(args.ccre_strata.resolve()) if args.ccre_strata else None,
         "prevalence_summary": str(args.prevalence_summary.resolve()) if args.prevalence_summary else None,
         "principal_capacity_metrics": str(args.principal_capacity_metrics.resolve()) if args.principal_capacity_metrics else None,
+        "capacity_evidence_audit": capacity_audit,
         "context_terms": {"strict": "Strict context", "1hop": "One-hop context"},
         "outputs": outputs,
     }

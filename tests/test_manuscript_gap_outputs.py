@@ -89,16 +89,24 @@ def test_prevalence_summary_uses_exact_evaluation_rows() -> None:
 
 
 def test_capacity_points_inserts_principal_configuration() -> None:
+    cells = [("fold_a", 42, 10), ("fold_b", 42, 12)]
     old = pd.DataFrame(
         [
-            {"metric_scope": "split", "split": "heldout_chr_test", "regime": regime, "auprc": value}
+            {
+                "metric_scope": "split",
+                "split": "heldout_chr_test",
+                "closure": "strict",
+                "fold": fold,
+                "seed": seed,
+                "n_targets": targets,
+                "regime": regime,
+                "auprc": value,
+            }
+            for fold, seed, targets in cells
             for regime, value in [
                 ("hprc_r2_capacity_tiny_h24_l1", 0.92),
-                ("hprc_r2_capacity_tiny_h24_l1", 0.93),
                 ("hprc_r2_capacity_medium_h96_l4", 0.98),
-                ("hprc_r2_capacity_medium_h96_l4", 0.99),
                 ("hprc_r2_capacity_large_h192_l6", 0.97),
-                ("hprc_r2_capacity_large_h192_l6", 0.98),
             ]
         ]
     )
@@ -107,12 +115,17 @@ def test_capacity_points_inserts_principal_configuration() -> None:
             {
                 "metric_scope": "split",
                 "split": "heldout_chr_test",
-                "regime": "hprc_r2_capacity_principal_h48_l2",
+                "closure": "strict",
+                "fold": fold,
+                "seed": seed,
+                "n_targets": targets,
+                "regime": "hprc_r2",
                 "auprc": value,
             }
-            for value in [0.95, 0.96]
+            for (fold, seed, targets), value in zip(cells, [0.95, 0.96])
         ]
     )
     result = capacity_points(old, principal)
     assert result["hidden"].tolist() == [24, 48, 96, 192]
     assert result.loc[result["principal"], "mean"].iloc[0] == 0.955
+    assert result.loc[result["principal"], "runs"].iloc[0] == 2
