@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "description": "Recorded source files used to prepare Figures 3--5; no plotted values were transcribed from reference images.",
+  "sources": [
+    {
+      "name": "reconstruction",
+      "path": "analysis/full_multicohort_20260809/primary_cross_chromosome_summary.csv",
+      "sha256": "7c6d1effd27c9aa7222c502795c8d7aac05358c657535360fcf7897da4252576"
+    },
+    {
+      "name": "transfer",
+      "path": "analysis/full_multicohort_20260809/transfer_summary.csv",
+      "sha256": "892374361e55392b71110ad0a46075936555f9ae0b7a3af5777848d2a02a1db3"
+    },
+    {
+      "name": "complexity",
+      "path": "server_imports/complexity_context_v2_20260815/exact_analysis/complexity_stratum_summary.csv",
+      "sha256": "69145fb4a983bd4b0f5f65bfb8ff7756e061a48a225bdea0e22011ebecd6c330"
+    },
+    {
+      "name": "ablation",
+      "path": "server_imports/submission_followups_20260815_v3/rotating_ablation_hprc_20260809/paper_source_data/experiment_seed_metrics.csv",
+      "sha256": "e0dbaffa7d2c2ebd2eb12fd9a03df10a3e6f701d646eb31f6249ade19093bf13"
+    },
+    {
+      "name": "capacity",
+      "path": "server_imports/submission_followups_20260815_v3/capacity_scaling_hprc_20260809/paper_source_data/experiment_seed_metrics.csv",
+      "sha256": "4b906691248868c00ff31219f955e7a6631c7aa3dae6af5f99daba2dfec062d6"
+    },
+    {
+      "name": "baseline",
+      "path": "docs/group_discussion_20260815/tables/baseline_auprc.csv",
+      "sha256": "d67629a2a271da812a131d5450c0e3d0af27606295120f7c3f827b7436f96146"
+    },
+    {
+      "name": "ccre_summary",
+      "path": "server_imports/sequence_fm_v2_20260817/extracted/ccre_sequence_fm_factorial_20260815/paper_source_data_v2_20260817/ccre_summary.csv",
+      "sha256": "c075be47ed8eea709a8b8d168306095fa63413a064b520fd347399ebf20d7d90"
+    },
+    {
+      "name": "ccre_contributions",
+      "path": "server_imports/sequence_fm_v2_20260817/extracted/ccre_sequence_fm_factorial_20260815/paper_source_data_v2_20260817/ccre_modality_contributions.csv",
+      "sha256": "e7a8a9b01a06ef027c38678810270f4642c8d87c222ea43c170260224db39614"
+    },
+    {
+      "name": "sv_summary",
+      "path": "server_imports/sequence_fm_v2_20260817/extracted/hgsvc3_sv_sequence_fm_factorial_20260815/paper_source_data_v2_20260817/sv_summary.csv",
+      "sha256": "f72e914e29ad5ebb236e15c16fc94793c2e9dec9a60797a65daf34a8528013d4"
+    },
+    {
+      "name": "sv_contributions",
+      "path": "server_imports/sequence_fm_v2_20260817/extracted/hgsvc3_sv_sequence_fm_factorial_20260815/paper_source_data_v2_20260817/sv_modality_contributions.csv",
+      "sha256": "f2e57ceec8f44931c791b4fdd52e8d6bf26f00b779caca178a58c041882c1697"
+    },
+    {
+      "name": "sv_stratified",
+      "path": "server_imports/sequence_fm_v2_20260817/extracted/hgsvc3_sv_sequence_fm_factorial_20260815/paper_source_data_v2_20260817/sv_primary_stratified_contributions.csv",
+      "sha256": "7455a13dc2777f6b6999840bf609065ee08b51a8469ae03dfc6f5a2dd6459e31"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "figure3_reconstruction.csv",
+      "sha256": "1922d062d04b5a505a24489a86deebfc50eaacb760da42a69b50f82fecdd4be5"
+    },
+    {
+      "path": "figure3_transfer.csv",
+      "sha256": "76f8ccb2e8936d648cfef9810cf074eb6c1902ac4fce84b07dc96866cd761958"
+    },
+    {
+      "path": "figure4_ablation_runs.csv",
+      "sha256": "5ddfb456271896e6875cc4aeb083ce1c8b8ad4c0ecab66d65b251307d7fa6381"
+    },
+    {
+      "path": "figure4_baselines.csv",
+      "sha256": "d67629a2a271da812a131d5450c0e3d0af27606295120f7c3f827b7436f96146"
+    },
+    {
+      "path": "figure4_capacity_runs.csv",
+      "sha256": "758c3ea9846e40dcc78284608a6e1c3b22547018cc5d6564e2a69e9b7c899057"
+    },
+    {
+      "path": "figure4_complexity.csv",
+      "sha256": "67016825e578eb0c3533e27f92170158a6dec36d5f58d338e5b1065014818d5c"
+    },
+    {
+      "path": "figure5_absolute.csv",
+      "sha256": "4d870febb67cee93e4ce357e04ea76e00f6cf6663837cd5724d14fbaaf346582"
+    },
+    {
+      "path": "figure5_contributions.csv",
+      "sha256": "f92fc2fb4878a8d226417eff7abbb308cb79afd923d5306c26b7c4539113874e"
+    },
+    {
+      "path": "figure5_sv_strata.csv",
+      "sha256": "46142b6fe0c2f560555ee1a757df2d552f8d4571b9547dac20040417eaae6f15"
+    }
+  ]
+}

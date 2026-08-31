@@ -20,7 +20,7 @@ STATE_ROOT="$GAP_ROOT/state"
 FIGURE_ROOT="$GAP_ROOT/figures"
 TABLE_ROOT="$GAP_ROOT/tables"
 PROVENANCE_ROOT="$GAP_ROOT/provenance"
-SOURCE_DIR=output/pdf/PangenomeFM_Overleaf_20260827/source_data
+SOURCE_DIR=${PANGENOMEFM_MANUSCRIPT_SOURCE_DIR:-data/manuscript_gap_sources_20260830}
 
 MAIN_RESULTS="$RESULTS_ROOT/full_multicohort_server_20260806"
 CCRE_RESULTS="$RESULTS_ROOT/ccre_sequence_fm_factorial_20260815"
@@ -76,6 +76,7 @@ echo "[$(timestamp)] === manuscript gap-fill workflow ==="
 echo "REPO_ROOT=$REPO_ROOT"
 echo "RESULTS_ROOT=$RESULTS_ROOT"
 echo "GAP_ROOT=$GAP_ROOT"
+echo "SOURCE_DIR=$SOURCE_DIR"
 echo "GIT_COMMIT=$(git rev-parse HEAD)"
 
 for path in \
@@ -88,15 +89,24 @@ for path in \
   "$COMPLEXITY_RESULTS/complexity_features.tsv" \
   "$COMPLEXITY_RESULTS/complexity_thresholds.json" \
   "$BASELINE_RESULTS/paper_source_data/baseline_summary.csv" \
+  "$SOURCE_DIR/SHA256SUMS" \
   "$SOURCE_DIR/figure3_reconstruction.csv" \
   "$SOURCE_DIR/figure3_transfer.csv" \
+  "$SOURCE_DIR/figure4_ablation_runs.csv" \
+  "$SOURCE_DIR/figure4_baselines.csv" \
   "$SOURCE_DIR/figure4_capacity_runs.csv" \
+  "$SOURCE_DIR/figure4_complexity.csv" \
   "$SOURCE_DIR/figure5_absolute.csv" \
   "$SOURCE_DIR/figure5_contributions.csv" \
   "$SOURCE_DIR/figure5_sv_strata.csv"
 do
   require_file "$path"
 done
+
+(
+  cd "$SOURCE_DIR"
+  sha256sum -c SHA256SUMS
+)
 
 if [[ $(find "$CCRE_RESULTS" -path '*/test_predictions.csv.gz' -type f | wc -l) -ne 30 ]]; then
   echo "Expected exactly 30 cCRE sequence-FM prediction files below $CCRE_RESULTS" >&2

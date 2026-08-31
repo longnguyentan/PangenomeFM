@@ -1,9 +1,42 @@
 from __future__ import annotations
 
+import hashlib
+from pathlib import Path
+
 import pandas as pd
 
 from scripts.server.build_manuscript_gap_figures import capacity_points
 from scripts.server.summarize_link_prediction_prevalence import select_primary_rows, summarize
+
+
+SOURCE_DIR = Path("data/manuscript_gap_sources_20260830")
+
+
+def test_tracked_manuscript_source_bundle_is_complete() -> None:
+    required = {
+        "figure3_reconstruction.csv",
+        "figure3_transfer.csv",
+        "figure4_ablation_runs.csv",
+        "figure4_baselines.csv",
+        "figure4_capacity_runs.csv",
+        "figure4_complexity.csv",
+        "figure5_absolute.csv",
+        "figure5_contributions.csv",
+        "figure5_sv_strata.csv",
+        "source_manifest.json",
+        "SHA256SUMS",
+    }
+    assert SOURCE_DIR.is_dir()
+    assert required <= {path.name for path in SOURCE_DIR.iterdir() if path.is_file()}
+
+    transfer = pd.read_csv(SOURCE_DIR / "figure3_transfer.csv")
+    assert not transfer.empty
+    assert {"transfer_pair", "closure", "auprc_mean"} <= set(transfer.columns)
+
+    for line in (SOURCE_DIR / "SHA256SUMS").read_text().splitlines():
+        expected, filename = line.split(maxsplit=1)
+        payload = (SOURCE_DIR / filename).read_bytes()
+        assert hashlib.sha256(payload).hexdigest() == expected
 
 
 def test_prevalence_summary_uses_exact_evaluation_rows() -> None:

@@ -1,0 +1,9 @@
+task,closure,feature_set,metric,mean,std_across_runs,ci95_low,ci95_high,n_runs,n_folds,n_seeds,resampling_unit
+cCRE,1hop,coordinate_plus_frozen_sequence_fm,auprc,0.9184581214013242,0.0048536734351701,0.9144584417324644,0.9224887301441568,15,5,3,chromosome_fold_then_seed
+cCRE,1hop,coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm,auprc,0.9218645331515578,0.0035140258729572,0.918673312464475,0.9245938379559036,15,5,3,chromosome_fold_then_seed
+cCRE,strict,coordinate_plus_frozen_sequence_fm,auprc,0.918458053763796,0.0048518184870942,0.914458862281464,0.9224902741447591,15,5,3,chromosome_fold_then_seed
+cCRE,strict,coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm,auprc,0.922465726112068,0.0042704382987905,0.9187706206105288,0.9258610249810652,15,5,3,chromosome_fold_then_seed
+SV,1hop,coordinate_plus_frozen_sequence_fm_pair,auprc,0.8720841197112346,0.0105827929235756,0.8633480194481374,0.8807372246554285,15,5,3,chromosome_fold_then_seed
+SV,1hop,coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm_pair,auprc,0.9121741467349916,0.0081182417644,0.9055189256380656,0.9184898402964666,15,5,3,chromosome_fold_then_seed
+SV,strict,coordinate_plus_frozen_sequence_fm_pair,auprc,0.8720841197112346,0.0105827929235756,0.8633480194481375,0.8807372246554285,15,5,3,chromosome_fold_then_seed
+SV,strict,coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm_pair,auprc,0.906329985212957,0.0085786310501656,0.8992638725407968,0.9132362455076112,15,5,3,chromosome_fold_then_seed
