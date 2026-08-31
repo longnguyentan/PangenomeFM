@@ -206,6 +206,14 @@ def main() -> int:
     temporary.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     temporary.replace(summary_path)
     print(f"GPU queue summary: {summary_path}")
+    if failures:
+        print("GPU queue failures:", file=sys.stderr)
+        for record in sorted(failures, key=lambda row: str(row["name"])):
+            print(
+                f"  {record['name']}: gpu={record['gpu_id']} "
+                f"exit={record['returncode']} log={record['log']}",
+                file=sys.stderr,
+            )
     return 1 if failures else 0
 
 

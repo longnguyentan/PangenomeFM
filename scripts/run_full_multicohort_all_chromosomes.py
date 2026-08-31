@@ -224,6 +224,17 @@ class Runner:
             record.status = "failed"
             record.message = f"exit_code={process.returncode}"
             self.save_state()
+            # This runner is frequently nested below ``run_gpu_matrix.py``.
+            # Surface the actual training traceback in the parent log so a
+            # failed matrix does not report only this wrapper exception.
+            try:
+                tail = log_path.read_text(encoding="utf-8", errors="replace").splitlines()[
+                    -80:
+                ]
+            except OSError as error:
+                tail = [f"Unable to read failed-step log: {error}"]
+            print(f"[failed-step-log] {log_path}", file=sys.stderr)
+            print("\n".join(tail), file=sys.stderr)
             raise RuntimeError(f"Step failed: {name}; inspect {log_path}")
         self.save_state()
 

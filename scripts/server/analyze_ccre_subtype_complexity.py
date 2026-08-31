@@ -64,7 +64,17 @@ def prepare_labels(node_labels: Path, complexity_features: Path) -> tuple[pd.Dat
     labels["segid"] = labels["segid"].astype(np.int64)
     labels["chromosome"] = labels["chrom"].map(normalize_chromosome)
     labels["SO"] = pd.to_numeric(labels["SO"], errors="coerce")
-    labels["ccre_label"] = labels["ccre_label"].astype(np.int8)
+    # ``ccre_label`` is the canonical nine-class integer label written by
+    # ``tasks.ccre.label_nodes``.  The frozen-probe factorial uses the binary
+    # task (any cCRE class versus background), so retain the canonical index
+    # and derive the binary target explicitly instead of treating every
+    # non-zero class index as though it were already the value 1.
+    labels["ccre_label_index"] = pd.to_numeric(
+        labels["ccre_label"], errors="raise"
+    ).astype(np.int16)
+    labels["ccre_binary_label"] = labels["ccre_class"].ne("background").astype(
+        np.int8
+    )
 
     complexity = pd.read_csv(complexity_features, sep="\t")
     required = {
@@ -116,8 +126,14 @@ def prepare_labels(node_labels: Path, complexity_features: Path) -> tuple[pd.Dat
         "node_labels": str(node_labels.resolve()),
         "node_labels_sha256": sha256(node_labels),
         "node_label_rows": int(len(labels)),
-        "binary_positive_labels": int(labels["ccre_label"].sum()),
-        "binary_background_labels": int((labels["ccre_label"] == 0).sum()),
+        "canonical_label_values": sorted(
+            int(value) for value in labels["ccre_label_index"].unique()
+        ),
+        "binary_target_definition": "ccre_class != background",
+        "binary_positive_labels": int(labels["ccre_binary_label"].sum()),
+        "binary_background_labels": int(
+            (labels["ccre_binary_label"] == 0).sum()
+        ),
         "complexity_features": str(complexity_features.resolve()),
         "complexity_features_sha256": sha256(complexity_features),
         "complexity_window_bp": window_bp,
@@ -177,7 +193,8 @@ def run_metrics(predictions: pd.DataFrame, labels: pd.DataFrame, source_file: Pa
             [
                 "segid",
                 "ccre_class",
-                "ccre_label",
+                "ccre_label_index",
+                "ccre_binary_label",
                 "complexity_category",
                 "complexity_score",
             ]
@@ -186,12 +203,12 @@ def run_metrics(predictions: pd.DataFrame, labels: pd.DataFrame, source_file: Pa
         how="left",
         validate="many_to_one",
     )
-    if merged["ccre_label"].isna().any():
-        missing = int(merged["ccre_label"].isna().sum())
+    if merged["ccre_binary_label"].isna().any():
+        missing = int(merged["ccre_binary_label"].isna().sum())
         raise ValueError(f"{missing} prediction rows lack cCRE labels in {source_file}")
     if not np.array_equal(
         merged["y_true"].to_numpy(np.int8),
-        merged["ccre_label"].to_numpy(np.int8),
+        merged["ccre_binary_label"].to_numpy(np.int8),
     ):
         raise ValueError(f"binary labels disagree with prediction y_true in {source_file}")
     metadata = {
@@ -205,7 +222,7 @@ def run_metrics(predictions: pd.DataFrame, labels: pd.DataFrame, source_file: Pa
         for display_name, source_label in SUBTYPE_MAP.items():
             selected = feature_frame.loc[
                 feature_frame["ccre_class"].eq(source_label)
-                | feature_frame["ccre_label"].eq(0)
+                | feature_frame["ccre_binary_label"].eq(0)
             ].copy()
             y = selected["ccre_class"].eq(source_label).to_numpy(np.int8)
             rows.append(
@@ -227,7 +244,7 @@ def run_metrics(predictions: pd.DataFrame, labels: pd.DataFrame, source_file: Pa
         assigned = feature_frame.loc[feature_frame["complexity_category"].notna()]
         for category in VALID_COMPLEXITY:
             selected = assigned.loc[assigned["complexity_category"].eq(category)]
-            y = selected["ccre_label"].to_numpy(np.int8)
+            y = selected["ccre_binary_label"].to_numpy(np.int8)
             rows.append(
                 {
                     **metadata,

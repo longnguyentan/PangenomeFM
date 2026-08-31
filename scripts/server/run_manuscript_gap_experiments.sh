@@ -149,26 +149,36 @@ else
   CCRE_PID=$!
 fi
 
+CAPACITY_STATUS=0
 run_step principal_capacity_gpu \
   python scripts/server/run_gpu_matrix.py \
     --phase folds \
     --config configs/server_capacity_principal_h48_l2_20260830.json \
     --gpus 0,1,2,3 \
-    --execute
+    --execute \
+  || CAPACITY_STATUS=$?
 
+CCRE_STATUS=0
 if [[ -n "$CCRE_PID" ]]; then
   echo "[$(timestamp)] WAIT: ccre_stratification pid=$CCRE_PID"
   if ! wait "$CCRE_PID"; then
     echo "cCRE stratification failed; inspect $LOG_ROOT/ccre_stratification.log" >&2
     tail -n 100 "$LOG_ROOT/ccre_stratification.log" >&2 || true
-    exit 1
+    CCRE_STATUS=1
   fi
-  if [[ ! -s "$CCRE_DONE" ]]; then
+  if [[ "$CCRE_STATUS" -eq 0 && ! -s "$CCRE_DONE" ]]; then
     echo "cCRE stratification ended without completion sentinel" >&2
     tail -n 100 "$LOG_ROOT/ccre_stratification.log" >&2 || true
-    exit 1
+    CCRE_STATUS=1
   fi
-  echo "[$(timestamp)] COMPLETE: ccre_stratification"
+  if [[ "$CCRE_STATUS" -eq 0 ]]; then
+    echo "[$(timestamp)] COMPLETE: ccre_stratification"
+  fi
+fi
+
+if [[ "$CAPACITY_STATUS" -ne 0 || "$CCRE_STATUS" -ne 0 ]]; then
+  echo "Gap-fill parallel stage failed: capacity=$CAPACITY_STATUS ccre=$CCRE_STATUS" >&2
+  exit 1
 fi
 
 python - <<'PY'

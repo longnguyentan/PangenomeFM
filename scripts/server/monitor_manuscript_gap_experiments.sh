@@ -29,6 +29,15 @@ if not path.is_file():
 else:
     data = json.loads(path.read_text())
     print({key: data.get(key) for key in ["jobs_requested", "jobs_recorded", "failures"]})
+    for record in data.get("records", []):
+        if record.get("returncode") not in (None, 0):
+            print(
+                "FAILED:",
+                record.get("name"),
+                f"gpu={record.get('gpu_id')}",
+                f"exit={record.get('returncode')}",
+                f"log={record.get('log')}",
+            )
 PY
 
 echo

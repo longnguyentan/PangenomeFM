@@ -29,7 +29,8 @@ def synthetic_labels(tmp_path: Path) -> tuple[Path, Path]:
                 "background",
             ]
             * 3,
-            "ccre_label": [1, 1, 1, 1, 0, 0] * 3,
+            # Canonical nine-class indices, not the binary probe target.
+            "ccre_label": [1, 2, 3, 6, 0, 0] * 3,
         }
     )
     labels_path = tmp_path / "labels.csv.gz"
@@ -75,6 +76,9 @@ def test_ccre_subtype_and_complexity_are_independently_defined(tmp_path: Path) -
     labels_path, complexity_path = synthetic_labels(tmp_path)
     labels, audit = prepare_labels(labels_path, complexity_path)
     assert audit["strict_complexity_window_counts"] == {"low": 1, "medium": 1, "high": 1}
+    assert audit["binary_target_definition"] == "ccre_class != background"
+    assert audit["canonical_label_values"] == [0, 1, 2, 3, 6]
+    assert labels["ccre_binary_label"].tolist() == [1, 1, 1, 1, 0, 0] * 3
     assert labels["complexity_category"].notna().all()
 
     rows = []
