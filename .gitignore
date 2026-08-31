@@ -296,6 +296,8 @@ docs/PSB_EXPERIMENT_PLAN.md
 !/data/annotations/
 /data/annotations/*
 !/data/annotations/complex_regions_v1.tsv
+!/data/manuscript_gap_sources_20260830/
+!/data/manuscript_gap_sources_20260830/**
 /results/comparative_benchmark/pilot/pangenomefm_smoke/
 /paper
 /server_downloads
