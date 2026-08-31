@@ -49,13 +49,8 @@ echo
 echo "=== latest logs ==="
 for path in \
   "$GAP_ROOT/logs/ccre_stratification.log" \
-  "$GAP_ROOT/logs/principal_capacity_gpu.log" \
   "$GAP_ROOT/logs/visible_graph_baseline_audit.log"
 do
   echo "--- $path"
   tail -n 3 "$path" 2>/dev/null || echo "not started"
 done
-
-echo
-echo "=== GPU processes ==="
-nvidia-smi --query-compute-apps=gpu_uuid,pid,used_memory --format=csv,noheader 2>/dev/null || true
