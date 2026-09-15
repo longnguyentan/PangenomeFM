@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "defined_before_biological_fitting": true,
+  "assays": {
+    "h3k27ac": "HM-ChIP-seq_H3K27ac",
+    "ctcf": "TF-ChIP-seq_CTCF"
+  },
+  "matching_keys": [
+    "chrom",
+    "n_informative_experiments"
+  ],
+  "matching_ratio": "1:1 without replacement; min class count in each exact stratum",
+  "matching_seed": 20260806,
+  "matching_stage": "after joint C/K/S/T feature coverage; identical selected loci for all features in a run",
+  "normalized_ap": "(AUPRC - positive_prevalence) / (1 - positive_prevalence)",
+  "complexity_metrics": [
+    "auprc",
+    "auroc",
+    "normalized_ap"
+  ]
+}

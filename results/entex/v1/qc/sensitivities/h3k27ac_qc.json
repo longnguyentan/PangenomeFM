@@ -1,0 +1,43 @@
+{
+  "sensitivity": "h3k27ac",
+  "assay": "HM-ChIP-seq_H3K27ac",
+  "source": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/entex/v1/cCREs_default_AS.tsv.parquet",
+    "bytes": 81452682,
+    "mtime_ns": 1789495228702172270,
+    "sha256": "c307dcea5a0ca94932b00de9bdd09e8030b01503dc1d407531a62feab1a7afe3"
+  },
+  "raw_rows": 1181650,
+  "n_loci": 146914,
+  "positive_count": 6801,
+  "negative_count": 140113,
+  "prevalence": 0.04629238874443552,
+  "definition": "Union supplied AS calls after filtering exact assay; negatives measured in that assay",
+  "chromosome_counts": {
+    "chr1": 13702,
+    "chr2": 12032,
+    "chr3": 9449,
+    "chr6": 9386,
+    "chr10": 7933,
+    "chr11": 7617,
+    "chr5": 7611,
+    "chr7": 7441,
+    "chr12": 7207,
+    "chr17": 6936,
+    "chr8": 6689,
+    "chr9": 6616,
+    "chr4": 6429,
+    "chr19": 5726,
+    "chr16": 5413,
+    "chr15": 5096,
+    "chr14": 5037,
+    "chr20": 4061,
+    "chr13": 3616,
+    "chr22": 3528,
+    "chr18": 3214,
+    "chr21": 2175
+  },
+  "mapping_status": "not_run",
+  "feature_coverage": null,
+  "biological_fitting": "not_run"
+}

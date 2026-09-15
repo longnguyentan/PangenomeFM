@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "manuscript_config": "configs/server_full_multicohort_20260806.json",
+  "graph_release": "HPRC R2 GRCh38 SV graph, existing manuscript resource",
+  "full_segments_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+  "nt_model": "InstaDeepAI/nucleotide-transformer-v2-50m-multi-species",
+  "nt_revision": "81b29e5786726d891dbf929404ef20adca5b36f1",
+  "nt_max_length": 1000,
+  "nt_max_bases": 6000,
+  "aggregation": "mean",
+  "minimum_mapping": 0.95,
+  "minimum_feature_coverage": 0.95,
+  "n_bootstrap": 10000,
+  "bootstrap_seed": 20260806,
+  "complexity": "server_imports/complexity_context_v2_20260815/native_complexity_v2/complexity_features.tsv",
+  "sensitivities": {
+    "version": 1,
+    "defined_before_biological_fitting": true,
+    "assays": {
+      "h3k27ac": "HM-ChIP-seq_H3K27ac",
+      "ctcf": "TF-ChIP-seq_CTCF"
+    },
+    "matching_keys": [
+      "chrom",
+      "n_informative_experiments"
+    ],
+    "matching_ratio": "1:1 without replacement; min class count in each exact stratum",
+    "matching_seed": 20260806,
+    "matching_stage": "after joint C/K/S/T feature coverage; identical selected loci for all features in a run",
+    "normalized_ap": "(AUPRC - positive_prevalence) / (1 - positive_prevalence)",
+    "complexity_metrics": [
+      "auprc",
+      "auroc",
+      "normalized_ap"
+    ]
+  }
+}

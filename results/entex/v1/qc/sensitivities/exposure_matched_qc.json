@@ -1,0 +1,21 @@
+{
+  "sensitivity": "exposure_matched",
+  "source": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/entex/v1/p0_loci.parquet",
+    "bytes": 10545187,
+    "mtime_ns": 1789495264323486140,
+    "sha256": "2e184a39ef68d160825a982f01174e5790b799f5e4e35dc943b687cac183a30b"
+  },
+  "n_loci": 50654,
+  "positive_count": 25327,
+  "negative_count": 25327,
+  "prevalence": 0.5,
+  "n_excluded": 200068,
+  "matching_seed": 20260806,
+  "keys": [
+    "chrom",
+    "n_informative_experiments"
+  ],
+  "status": "pre-feature QC preview; rematch joint feature universe separately for each run",
+  "biological_fitting": "not_run"
+}

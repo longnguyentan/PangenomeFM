@@ -1,0 +1,43 @@
+{
+  "sensitivity": "ctcf",
+  "assay": "TF-ChIP-seq_CTCF",
+  "source": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/entex/v1/cCREs_default_AS.tsv.parquet",
+    "bytes": 81452682,
+    "mtime_ns": 1789495228702172270,
+    "sha256": "c307dcea5a0ca94932b00de9bdd09e8030b01503dc1d407531a62feab1a7afe3"
+  },
+  "raw_rows": 1075083,
+  "n_loci": 119426,
+  "positive_count": 7756,
+  "negative_count": 111670,
+  "prevalence": 0.06494398204746035,
+  "definition": "Union supplied AS calls after filtering exact assay; negatives measured in that assay",
+  "chromosome_counts": {
+    "chr1": 11088,
+    "chr2": 9619,
+    "chr6": 7600,
+    "chr3": 7572,
+    "chr10": 6358,
+    "chr7": 6312,
+    "chr5": 6264,
+    "chr11": 6261,
+    "chr12": 5875,
+    "chr17": 5584,
+    "chr8": 5532,
+    "chr4": 5383,
+    "chr9": 5357,
+    "chr19": 4891,
+    "chr16": 4473,
+    "chr14": 3957,
+    "chr15": 3926,
+    "chr20": 3442,
+    "chr13": 2896,
+    "chr22": 2786,
+    "chr18": 2575,
+    "chr21": 1675
+  },
+  "mapping_status": "not_run",
+  "feature_coverage": null,
+  "biological_fitting": "not_run"
+}

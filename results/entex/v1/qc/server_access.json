@@ -1,0 +1,10 @@
+{
+  "jump_host": "cis-linux2.temple.edu",
+  "host": "cis-chen",
+  "user": "tuv43532",
+  "project": "/home/tuv43532/PangenomeFM",
+  "source": "docs/RUN_SEQUENCE_FM_MANUSCRIPT_FINALIZE_20260817.md:161",
+  "check": "read-only noninteractive SSH",
+  "result": "Permission denied (publickey,password)",
+  "resources_transferred": false
+}

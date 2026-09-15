@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "source": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/active.combined_set.txt.zip",
+    "bytes": 17660571,
+    "mtime_ns": 1789494672523311231,
+    "sha256": "676e62e3e2fbeae71d1ff39d09121a5b574ccd4079b9609c27d1dcc8afde9637"
+  },
+  "raw_row_count": 5646598,
+  "missing_values": {
+    "ccre_id": 0,
+    "state": 0,
+    "tissue": 0
+  },
+  "value_counts": {
+    "tissue": {
+      "adrenal_gland": 288587,
+      "ascending_aorta": 183606,
+      "body_of_pancreas": 237173,
+      "breast_epithelium": 208763,
+      "coronary_artery": 180419,
+      "esophagus_muscularis_mucosa": 187153,
+      "esophagus_squamous_epithelium": 202064,
+      "gastrocnemius_medialis": 196203,
+      "gastroesophageal_sphincter": 211834,
+      "heart_left_ventricle": 185812,
+      "ovary": 199341,
+      "Peyers_patch": 231808,
+      "prostate_gland": 179716,
+      "right_atrium_auricular_region": 191017,
+      "right_lobe_of_liver": 164124,
+      "sigmoid_colon": 206275,
+      "spleen": 191232,
+      "stomach": 201958,
+      "suprapubic_skin": 156253,
+      "testis": 190387,
+      "thoracic_aorta": 185983,
+      "thyroid_gland": 261440,
+      "tibial_artery": 195708,
+      "tibial_nerve": 229063,
+      "transverse_colon": 198417,
+      "upper_lobe_of_left_lung": 212570,
+      "uterus": 190192,
+      "vagina": 179500
+    },
+    "state": {
+      "active.distal.CTCF": 274298,
+      "active.distal.nonCTCF": 3419026,
+      "active.proximal.CTCF": 312635,
+      "active.proximal.nonCTCF": 1640639
+    }
+  },
+  "examples": [
+    {
+      "ccre_id": "EH38E0273803",
+      "state": "active.distal.CTCF",
+      "tissue": "adrenal_gland"
+    },
+    {
+      "ccre_id": "EH38E0872265",
+      "state": "active.distal.CTCF",
+      "tissue": "adrenal_gland"
+    },
+    {
+      "ccre_id": "EH38E1310166",
+      "state": "active.distal.CTCF",
+      "tissue": "adrenal_gland"
+    }
+  ],
+  "delimiter": "tab",
+  "compression": "zip",
+  "archive_members": [
+    {
+      "name": "active.combined_set.txt",
+      "bytes": 291690839,
+      "compressed_bytes": 17659908
+    },
+    {
+      "name": "__MACOSX/._active.combined_set.txt",
+      "bytes": 368,
+      "compressed_bytes": 215
+    }
+  ],
+  "columns": [
+    "ccre_id",
+    "state",
+    "tissue"
+  ],
+  "unique_ccre_ids": 635906,
+  "coordinate_convention": "no coordinates; registry accession join required"
+}

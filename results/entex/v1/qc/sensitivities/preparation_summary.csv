@@ -1,0 +1,4 @@
+sensitivity,assay,raw_rows,n_loci,positive_count,negative_count,prevalence,definition,mapping_status,feature_coverage,biological_fitting,n_excluded,matching_seed,status
+h3k27ac,HM-ChIP-seq_H3K27ac,1181650.0,146914,6801,140113,0.04629238874443552,Union supplied AS calls after filtering exact assay; negatives measured in that assay,not_run,,not_run,,,
+ctcf,TF-ChIP-seq_CTCF,1075083.0,119426,7756,111670,0.06494398204746035,Union supplied AS calls after filtering exact assay; negatives measured in that assay,not_run,,not_run,,,
+exposure_matched,,,50654,25327,25327,0.5,,,,not_run,200068.0,20260806.0,pre-feature QC preview; rematch joint feature universe separately for each run

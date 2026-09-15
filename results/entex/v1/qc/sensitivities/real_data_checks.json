@@ -1,0 +1,18 @@
+{
+  "exposure_strata_checked": 3739,
+  "exact_class_balance_every_stratum": true,
+  "assays": {
+    "h3k27ac": {
+      "n_loci": 146914,
+      "all_loci_measured_in_primary": true,
+      "assay_positive_implies_primary_positive": true,
+      "primary_positive_now_assay_negative": 15983
+    },
+    "ctcf": {
+      "n_loci": 119426,
+      "all_loci_measured_in_primary": true,
+      "assay_positive_implies_primary_positive": true,
+      "primary_positive_now_assay_negative": 14808
+    }
+  }
+}

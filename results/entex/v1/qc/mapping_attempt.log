@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/src/tasks/entex/mapping.py", line 110, in <module>
+    main()
+    ~~~~^^
+  File "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/src/tasks/entex/mapping.py", line 76, in main
+    if fingerprint(args.full_segments)["sha256"] != config["full_segments_sha256"]:
+       ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/src/tasks/entex/prepare.py", line 22, in fingerprint
+    with path.open("rb") as handle:
+         ~~~~~~~~~^^^^^^
+  File "/opt/anaconda3/lib/python3.13/pathlib/_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz'

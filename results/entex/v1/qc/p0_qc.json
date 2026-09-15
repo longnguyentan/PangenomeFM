@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "source_cache": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/entex/v1/cCREs_default_AS.tsv.parquet",
+    "bytes": 81452682,
+    "mtime_ns": 1789495228702172270,
+    "sha256": "c307dcea5a0ca94932b00de9bdd09e8030b01503dc1d407531a62feab1a7afe3"
+  },
+  "raw_row_count": 5330335,
+  "unique_genomic_loci": 250722,
+  "positive_count": 28092,
+  "negative_count": 222630,
+  "positive_prevalence": 0.11204441572737933,
+  "chromosome_distribution": {
+    "chr1": 22484,
+    "chr2": 20762,
+    "chr3": 16492,
+    "chr6": 15870,
+    "chr5": 13894,
+    "chr7": 13572,
+    "chr10": 13366,
+    "chr11": 12774,
+    "chr4": 12556,
+    "chr12": 12336,
+    "chr8": 12228,
+    "chr9": 11110,
+    "chr17": 10492,
+    "chr16": 8804,
+    "chr19": 8610,
+    "chr14": 8342,
+    "chr15": 8225,
+    "chr20": 7007,
+    "chr13": 6941,
+    "chr18": 5944,
+    "chr22": 5404,
+    "chr21": 3509
+  },
+  "excluded_count": 0,
+  "definition": "Any supplied significant call among accessible experiments",
+  "mapping_status": "pending exact manuscript HPRC R2 segment resource",
+  "feature_coverage": {
+    "C": null,
+    "S": null,
+    "T": null
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "source": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/repressed.combined_set.txt.zip",
+    "bytes": 14834438,
+    "mtime_ns": 1789494672072645797,
+    "sha256": "0096f4c5d0fce555bf67d3e8dddf52413e471be4a38ab86c8ede937dbdcc3770"
+  },
+  "raw_row_count": 4620982,
+  "missing_values": {
+    "ccre_id": 0,
+    "state": 0,
+    "tissue": 0
+  },
+  "value_counts": {
+    "tissue": {
+      "adrenal_gland": 156348,
+      "ascending_aorta": 156574,
+      "body_of_pancreas": 220484,
+      "breast_epithelium": 163911,
+      "coronary_artery": 56788,
+      "esophagus_muscularis_mucosa": 221989,
+      "esophagus_squamous_epithelium": 181841,
+      "gastrocnemius_medialis": 215358,
+      "gastroesophageal_sphincter": 184935,
+      "heart_left_ventricle": 152576,
+      "ovary": 98107,
+      "Peyers_patch": 251668,
+      "prostate_gland": 117491,
+      "right_atrium_auricular_region": 150042,
+      "right_lobe_of_liver": 86640,
+      "sigmoid_colon": 192491,
+      "spleen": 176766,
+      "stomach": 177428,
+      "suprapubic_skin": 112564,
+      "testis": 134229,
+      "thoracic_aorta": 98580,
+      "thyroid_gland": 252058,
+      "tibial_artery": 196188,
+      "tibial_nerve": 221297,
+      "transverse_colon": 149756,
+      "upper_lobe_of_left_lung": 212200,
+      "uterus": 167081,
+      "vagina": 115592
+    },
+    "state": {
+      "repressed.distal.CTCF": 58139,
+      "repressed.distal.nonCTCF": 4050837,
+      "repressed.proximal.CTCF": 22066,
+      "repressed.proximal.nonCTCF": 489940
+    }
+  },
+  "examples": [
+    {
+      "ccre_id": "EH38E0273803",
+      "state": "repressed.distal.CTCF",
+      "tissue": "adrenal_gland"
+    },
+    {
+      "ccre_id": "EH38E0385928",
+      "state": "repressed.distal.CTCF",
+      "tissue": "adrenal_gland"
+    },
+    {
+      "ccre_id": "EH38E0474514",
+      "state": "repressed.distal.CTCF",
+      "tissue": "adrenal_gland"
+    }
+  ],
+  "delimiter": "tab",
+  "compression": "zip",
+  "archive_members": [
+    {
+      "name": "repressed.combined_set.txt",
+      "bytes": 253700906,
+      "compressed_bytes": 14833802
+    },
+    {
+      "name": "__MACOSX/._repressed.combined_set.txt",
+      "bytes": 312,
+      "compressed_bytes": 176
+    }
+  ],
+  "columns": [
+    "ccre_id",
+    "state",
+    "tissue"
+  ],
+  "unique_ccre_ids": 778533,
+  "coordinate_convention": "no coordinates; registry accession join required"
+}

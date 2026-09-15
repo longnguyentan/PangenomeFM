@@ -303,3 +303,16 @@ docs/PSB_EXPERIMENT_PLAN.md
 /server_downloads
 /server_imports
 /results
+
+# EN-TEx implementation handoff and compact reproducibility evidence.
+!/results/
+/results/*
+!/docs/ENTEX_EXPERIMENTS.md
+!/results/entex/
+/results/entex/*
+!/results/entex/v1/
+/results/entex/v1/*
+!/results/entex/v1/qc/
+!/results/entex/v1/qc/**
+!/results/entex/v1/regression/
+!/results/entex/v1/regression/**

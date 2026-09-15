@@ -1,0 +1,11 @@
+{
+  "p0_preparation": "complete",
+  "p0_mapping": "blocked_missing_exact_graph",
+  "p0_full_experiment": "not_run",
+  "p0b_gain": "not_run",
+  "p1": "not_started_pending_P0",
+  "p2": "not_started_pending_P0",
+  "p3": "not_started",
+  "p4": "not_started",
+  "enhancer_warning": "Local SCREEN v4 ID coverage is incomplete; do not silently drop unmatched IDs or equate distal with dELS"
+}
