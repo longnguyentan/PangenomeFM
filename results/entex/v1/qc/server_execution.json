@@ -1,0 +1,18 @@
+{
+  "server": "cis-chen",
+  "project": "/home/tuv43532/PangenomeFM",
+  "repository_base_commit": "965f5c85bb852322bc4d3e6698b090df37ee93b4",
+  "mapping": {
+    "total_loci": 250722,
+    "mapped_loci": 250722,
+    "unmapped_loci": 0,
+    "one_segment": 247382,
+    "multi_segment": 3340,
+    "fraction_mapped": 1.0,
+    "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347"
+  },
+  "server_tests_passed": 26,
+  "smoke_status": "launched; result retrieval pending renewed SSH authentication",
+  "full_p0_status": "not_started",
+  "credentials_included": false
+}

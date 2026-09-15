@@ -2,9 +2,14 @@
 
 ## Status (2026-09-15)
 
-**P0 preparation completed on all real data. P0 mapping/full fitting and biological
-P0b gain estimates have not run. P1 and P2 experiment implementations are deferred
-at the P0 resource gate.** No EN-TEx performance result is claimed.
+**P0 preparation and exact-resource server mapping are complete.** On the original
+Temple server, all 250,722 loci mapped (247,382 single-segment; 3,340 multi-segment;
+zero unmapped), and all 26 server tests passed. A strict fold-a/seed-42 smoke probe
+was launched in an isolated tmux session; its result has not yet been retrieved.
+The authenticated SSH connection subsequently expired and renewed authentication
+is pending. Full P0, sensitivity fitting and biological P0b gain estimates are not
+claimed complete. Historical local-only blockers below are retained as provenance.
+P1/P2 remain deferred at the P0 result gate.
 
 Implemented: streaming source validation/Parquet caching; locus-level P0 union
 labels; locus-preserving mapping adapter; mean and overlap-length-weighted feature
@@ -399,3 +404,28 @@ positive, and assay exposure never exceeds primary exposure. Complete compact QC
 fixed definitions, balance counts and test logs are in
 `results/entex/v1/qc/sensitivities/`; processed sensitivity Parquets are in
 `data/entex/v1/sensitivities/`.
+
+
+## Frozen topology cache and server execution
+
+Pass `--topology-cache-root results/entex/v1/topology_cache` to primary P0 and all
+three sensitivities. Run primary P0 first for each fold/seed/context so its requested
+segment superset is cached. This wrapper calls the unchanged manuscript extractor;
+it never reads biological labels. Checkpoint, graph and manifest hashes, seed,
+context, and canonical-conflict policy must match on reuse. Missing extracted nodes
+remain missing for coverage accounting. A mismatched cache or a request beyond its
+target universe fails. Cache writes are locked and array/sidecar files are replaced
+atomically; a partially written cache fails rather than being silently reused.
+The optional cache has synthetic tests for exact numerical reuse, subset coverage,
+missing nodes and provenance mismatch. Large NPZ caches are not committed.
+
+Verified server environment: Python 3.11.16, torch 2.6.0+cu124, pandas 3.0.5,
+pyarrow 25.0.1, scikit-learn 1.9.0; four idle NVIDIA RTX A5000 GPUs at inspection.
+The package versions describe the actual new run and are not asserted to equal the
+August manuscript environment. Existing probe types/settings are unchanged.
+
+The default tmux socket failed before executing any work. A separate socket
+`tmux -L entex-20260915` successfully ran mapping and launched the smoke probe.
+Server logs and exit files live under `results/entex/v1/server/` and the smoke
+output root is `results/entex/v1/p0_smoke`. Inspect `smoke.exit`, `smoke.log` and the
+per-run audit before launching full fitting. Never infer success from dispatch.

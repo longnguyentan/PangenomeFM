@@ -20,6 +20,7 @@ from scripts.server.run_ccre_frozen_probe_matrix import build_jobs, checkpoint_f
 from tasks.ccre.embedding_baseline import _extract_embeddings
 from tasks.entex.mapping import aggregate_features
 from tasks.entex.prepare import fingerprint
+from tasks.entex.cache import cached_topology
 from tasks.entex.sensitivity import match_exposure
 
 FEATURES = [
@@ -76,6 +77,7 @@ def main() -> None:
         choices=["primary", "exposure_matched", "h3k27ac", "ctcf"],
         default="primary",
     )
+    ap.add_argument("--topology-cache-root", type=Path)
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--folds", nargs="+")
     ap.add_argument("--seeds", nargs="+", type=int)
@@ -170,18 +172,41 @@ def main() -> None:
         holdout = validate_checkpoint_holdout(
             checkpoint, test_chrs=set(job.test), closure=job.closure, seed=job.seed
         )
-        frozen, _, extraction = _extract_embeddings(
-            checkpoint=checkpoint,
-            manifest=args.manifest,
-            full_segments=args.full_segments,
-            labeled_segids=set(overlaps.segid.astype(int)),
-            closure=job.closure,
-            device_name=args.device,
-            seed=job.seed,
-            max_slices=None,
-            canonical_conflict_policy="exclude",
-            return_canonical_audit=True,
-        )
+
+        def extract():
+            return _extract_embeddings(
+                checkpoint=checkpoint,
+                manifest=args.manifest,
+                full_segments=args.full_segments,
+                labeled_segids=set(overlaps.segid.astype(int)),
+                closure=job.closure,
+                device_name=args.device,
+                seed=job.seed,
+                max_slices=None,
+                canonical_conflict_policy="exclude",
+                return_canonical_audit=True,
+            )
+
+        if args.topology_cache_root is None:
+            frozen, _, extraction = extract()
+        else:
+            identity = dict(
+                checkpoint_sha256=fingerprint(checkpoint)["sha256"],
+                graph_sha256=inputs["full_segments"]["sha256"],
+                manifest_sha256=inputs["manifest"]["sha256"],
+                seed=job.seed,
+                closure=job.closure,
+                canonical_conflict_policy="exclude",
+            )
+            frozen, extraction = cached_topology(
+                args.topology_cache_root
+                / job.fold
+                / f"seed_{job.seed}"
+                / f"{job.closure}.npz",
+                set(overlaps.segid.astype(int)),
+                identity,
+                extract,
+            )
         coverage = {}
         for name, ids in [("C", c_ids), ("K", c_ids), ("S", s_ids), ("T", frozen)]:
             coverage[name] = len(complete_loci(loci, overlaps, set(ids))) / len(loci)

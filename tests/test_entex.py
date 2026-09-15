@@ -357,3 +357,29 @@ def test_normalized_ap_and_matched_comparators():
         )
     )
     assert paired(scores, BASE, 100, 42, metric="auroc")["mean"] == pytest.approx(0.1)
+
+
+def test_topology_cache_identity_and_subset_reuse(tmp_path):
+    from tasks.entex.cache import cached_topology
+
+    calls = []
+
+    def extract():
+        calls.append(True)
+        return (
+            {1: np.array([1.0, 2.0], dtype=np.float32)},
+            {1: 1},
+            {"canonical_conflict_policy": "exclude"},
+        )
+
+    path = tmp_path / "topology.npz"
+    identity = {"checkpoint_sha256": "a", "graph_sha256": "b", "manifest_sha256": "c"}
+    fresh, _ = cached_topology(path, {1, 2}, identity, extract)
+    reused, audit = cached_topology(path, {1}, identity, extract)
+    np.testing.assert_array_equal(fresh[1], reused[1])
+    missing, _ = cached_topology(path, {2}, identity, extract)
+    assert missing == {} and len(calls) == 1 and audit["cache_status"] == "reused"
+    with pytest.raises(ValueError, match="identity mismatch"):
+        cached_topology(path, {1}, {**identity, "checkpoint_sha256": "other"}, extract)
+    with pytest.raises(ValueError, match="all required targets"):
+        cached_topology(path, {3}, identity, extract)
