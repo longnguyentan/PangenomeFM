@@ -463,3 +463,35 @@ def test_tissue_macro_is_paired_before_bootstrap():
     np.testing.assert_allclose(macro.auprc, [0.5, 0.6])
     with pytest.raises(ValueError, match="coverage"):
         macro_runs(frame.iloc[:3], ["x", "y"])
+
+
+def test_snv_measurements_keep_donor_tissue_occurrences():
+    from tasks.entex.snv import clean_measurements
+
+    frame = pd.DataFrame(
+        dict(
+            chr=["chr1"] * 3,
+            ref_start=[9, 9, 9],
+            ref_end=[10, 10, 10],
+            experiment_accession=["e1", "e2", "e1"],
+            donor=["d1", "d2", "d1"],
+            tissue=["a", "b", "a"],
+            assay=["TF-ChIP-seq_CTCF"] * 3,
+            p_betabinom=[0.001, 0.9, 0.001],
+            imbalance_significance=[1, 0, 1],
+            cA=[10] * 3,
+            cC=[0] * 3,
+            cG=[3] * 3,
+            cT=[0] * 3,
+            ref_allele=["A"] * 3,
+            hap1_allele=["A"] * 3,
+            hap2_allele=["G"] * 3,
+        )
+    )
+    out, removed = clean_measurements(frame, "ctcf")
+    assert removed == 1 and len(out) == 2
+    assert out.locus_id.nunique() == 1 and out.measurement_id.nunique() == 2
+    bad = frame.copy()
+    bad.loc[2, "imbalance_significance"] = 0
+    with pytest.raises(ValueError, match="Conflicting"):
+        clean_measurements(bad, "ctcf")
