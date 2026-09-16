@@ -11,7 +11,8 @@
 - P1 V2 registry coverage is 100%; five tissues selected before fitting, all map
   completely. Thyroid smoke passed; full five-tissue matrices are running.
 - P2 full-accessible CTCF/H3K27ac preparation and mapping completed; both map
-  completely with a single containing segment. Real smoke fits are running.
+  completely with a single containing segment. CTCF smoke passed with 100% coverage; H3K27ac smoke is running. Full P2
+  matrices are queued behind successful smoke and P0 sensitivity gates.
 - 34 relevant tests passed locally. P3/P4 have not started.
 
 The sections below include historical local-only blockers as provenance; the
@@ -547,3 +548,24 @@ Exact password-free shell commands used on the original server are archived unde
 reuse; choose new output roots for reruns. The pinned P2 worktree can be recreated
 from its recorded commit. Do not interpret partial run coverage snapshots as complete
 matrices; completion requires 30 successful jobs and complete paired fold/seed keys.
+
+
+Matched-population interpretation: C alone averages 0.537015 AP, above C+S+T
+(0.535099 strict; 0.535618 one-hop). The positive paired gain relative to C+S
+(0.533617) therefore does not establish that the full representation is best on this
+subset. Report C/K/S/T and all combinations, not only the positive delta.
+After all predefined P0 cases complete, run `python -m tasks.entex.sensitivity_report`
+for a combined comparison table/figure. It refuses missing cases or different
+fold/seed/feature matrices. Primary and matched cases target different populations.
+
+
+CTCF P2 smoke (fold_a/42/strict): 1,140,605 training / 606,910 validation /
+643,500 test measurements; 3.4098% test positives; complete C/K/S/T and row coverage.
+C+S AP 0.061964 versus C+S+T 0.071430; AUROC 0.559726 versus 0.561072.
+These single-fold figures are smoke checks, not cross-fold biological estimates.
+`qc/p2_ctcf_smoke/` contains the exact values and input/checkpoint hashes.
+
+P1 smoke excluded two chrY loci solely for missing topology embeddings under the
+existing extraction rules. C/K/S coverage was 100%; T coverage 99.9992334%.
+The exclusions remain explicit in server `excluded_loci.parquet`; no substitute
+embedding or alternate graph was used.

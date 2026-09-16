@@ -1,0 +1,114 @@
+{
+  "task": "p2",
+  "subtask": "ctcf",
+  "sensitivity": "primary",
+  "sensitivity_definitions": {
+    "version": 1,
+    "defined_before_biological_fitting": true,
+    "assays": {
+      "h3k27ac": "HM-ChIP-seq_H3K27ac",
+      "ctcf": "TF-ChIP-seq_CTCF"
+    },
+    "matching_keys": [
+      "chrom",
+      "n_informative_experiments"
+    ],
+    "matching_ratio": "1:1 without replacement; min class count in each exact stratum",
+    "matching_seed": 20260806,
+    "matching_stage": "after joint C/K/S/T feature coverage; identical selected loci for all features in a run",
+    "normalized_ap": "(AUPRC - positive_prevalence) / (1 - positive_prevalence)",
+    "complexity_metrics": [
+      "auprc",
+      "auroc",
+      "normalized_ap"
+    ]
+  },
+  "fold": "fold_a",
+  "seed": 42,
+  "closure": "strict",
+  "inputs": {
+    "loci": {
+      "path": "/home/tuv43532/PangenomeFM/data/entex/v1/p2/ctcf_loci.parquet",
+      "bytes": 10617186,
+      "mtime_ns": 1789518152305727122,
+      "sha256": "baf3cc2ba803eec217df03b35ceeacbaa59078c15d73f84cedcda7538e0600ab"
+    },
+    "full_segments": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+      "bytes": 870096546,
+      "mtime_ns": 1786041795869081191,
+      "sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347"
+    },
+    "manifest": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+      "bytes": 1044864,
+      "mtime_ns": 1786109265393977620,
+      "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+    },
+    "feature_cache": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+      "bytes": 37629106,
+      "mtime_ns": 1786349512365280119,
+      "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68"
+    },
+    "sequence_cache": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+      "bytes": 573489289,
+      "mtime_ns": 1786930030728110426,
+      "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de"
+    },
+    "measurements": {
+      "path": "/home/tuv43532/PangenomeFM/data/entex/v1/p2/ctcf_measurements.parquet",
+      "bytes": 33627495,
+      "mtime_ns": 1789518151625734281,
+      "sha256": "ebfe388c8be157ecde95d4bf5b5e891402e58c57fb0f417f073ed590c2e76f8b"
+    }
+  },
+  "checkpoint": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_a/seed_42/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep100_pat20.pt",
+    "bytes": 238118,
+    "mtime_ns": 1786156825259247368,
+    "sha256": "3216e2eb4fa22557c74cef4a0f60153a6e5da4f0a6193af9bacf99cb163ea610"
+  },
+  "holdout": {
+    "checkpoint_test_chromosomes": [
+      "chr1",
+      "chr11",
+      "chr16",
+      "chr21",
+      "chr6"
+    ],
+    "checkpoint_validation_chromosomes": [
+      "chr12",
+      "chr17",
+      "chr2",
+      "chr22",
+      "chr7"
+    ],
+    "checkpoint_closure": "strict",
+    "checkpoint_seed": 42
+  },
+  "extraction": {
+    "canonical_conflict_policy": "exclude",
+    "slices_with_conflicting_pairs": 8,
+    "orientation_equivalent_conflicting_pairs": 9,
+    "conflicting_candidate_rows_excluded": 18,
+    "same_label_equivalent_rows_collapsed": 3,
+    "cache_status": "reused",
+    "cache_path": "results/entex/v1/topology_cache_all_reference/fold_a/seed_42/strict.npz"
+  },
+  "feature_coverage": {
+    "C": 1.0,
+    "K": 1.0,
+    "S": 1.0,
+    "T": 1.0
+  },
+  "joint_feature_coverage": 1.0,
+  "n_excluded": 0,
+  "aggregation": "mean",
+  "encoder_training": false,
+  "status": "complete",
+  "measurement_coverage": 1.0,
+  "measurement_exclusions": 0,
+  "probe_optimization": "count-equivalent locus/label fitting; scaler occurrence weights; explicit original-row class weights"
+}
