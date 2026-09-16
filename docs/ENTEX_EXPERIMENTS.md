@@ -12,7 +12,7 @@
 - P1 V2 registry coverage is 100%; five tissues selected before fitting, all map
   completely. Thyroid smoke passed; full five-tissue matrices are running/queued.
 - P2 full-accessible CTCF/H3K27ac preparation and mapping completed; both map
-  completely with a single containing segment. CTCF smoke passed with 100% coverage; H3K27ac smoke is running. Full P2
+  completely with a single containing segment. Both assay smoke tests passed with 100% coverage. Full P2
   matrices are queued behind successful smoke and P0 sensitivity gates.
 - 34 relevant tests passed locally. P3/P4 have not started.
 
@@ -579,3 +579,19 @@ Keep that negative sequence increment beside the requested topology comparison.
 All result/complexity tables and figures are in `p0_h3k27ac_analysis/`.
 The new 25-test EN-TEx suite also passes on the server's sklearn 1.9 environment;
 11 warnings are the inherited obsolete `n_jobs` argument, not fit failures.
+
+
+H3K27ac P2 smoke also completed: 1,512,340 training / 802,822 validation /
+853,363 test measurements, test prevalence 2.4003%, complete feature/row coverage.
+C+S AP 0.032986 versus C+S+T 0.032254 (single-fold delta -0.000732); AUROC
+0.530497 versus 0.535521. Both assays proceed to full matrices independent of sign.
+Their script waits for successful smoke and sensitivity exit files before starting,
+then runs both 30-job matrices and per-assay analysis. This is queued execution,
+not a claim that the full SNV experiment has completed.
+
+Manuscript placement at this checkpoint: primary P0's inconclusive global gain
+belongs in the main transfer summary if EN-TEx is discussed, with all prespecified
+sensitivities and complexity comparisons in the supplement. Do not elevate the
+matched-only positive delta while omitting stronger C/C+T comparators. No P1/P2
+smoke score belongs in a manuscript results table. Revisit their placement only
+after complete paired chromosome-held-out analyses.
