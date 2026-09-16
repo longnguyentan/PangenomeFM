@@ -1,0 +1,24 @@
+{
+  "registry": "data/encode/legacy_v3/GRCh38-cCREs.bed",
+  "source_url": "https://downloads.wenglab.org/V3/GRCh38-cCREs.bed",
+  "registry_sha256": "d53dd192912eee5ac8f37ab39daf0dde3e81d8b95d2d9b4d54edceb971872ebc",
+  "registry_rows": 1063878,
+  "coverage": [
+    {
+      "state": "active",
+      "rows": 5646598,
+      "matched_rows": 1754263,
+      "row_coverage": 0.3106760920469281,
+      "unique_ids": 635906,
+      "matched_unique_ids": 222820
+    },
+    {
+      "state": "repressed",
+      "rows": 4620982,
+      "matched_rows": 1617955,
+      "row_coverage": 0.35013228789897904,
+      "unique_ids": 778533,
+      "matched_unique_ids": 283698
+    }
+  ]
+}

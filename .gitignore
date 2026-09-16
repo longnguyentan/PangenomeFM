@@ -316,3 +316,6 @@ docs/PSB_EXPERIMENT_PLAN.md
 !/results/entex/v1/qc/**
 !/results/entex/v1/regression/
 !/results/entex/v1/regression/**
+
+!/results/entex/v1/p0_analysis/
+!/results/entex/v1/p0_analysis/**

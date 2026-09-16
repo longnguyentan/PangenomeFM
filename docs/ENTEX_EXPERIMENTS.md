@@ -429,3 +429,60 @@ The default tmux socket failed before executing any work. A separate socket
 Server logs and exit files live under `results/entex/v1/server/` and the smoke
 output root is `results/entex/v1/p0_smoke`. Inspect `smoke.exit`, `smoke.log` and the
 per-run audit before launching full fitting. Never infer success from dispatch.
+
+
+## Completed full primary P0 (15 September 2026)
+
+All 30 fold/seed/context jobs completed successfully on the original server.
+P0/P0b summaries and PNG/SVG figures are in `results/entex/v1/p0_analysis/`.
+Strict paired topology gain: +0.000208, 95% CI [-0.000317, +0.000746].
+One-hop: -0.000654, 95% CI [-0.002092, +0.000466]. Neither supports a
+clear global improvement. Strict complexity-stratum intervals all include zero;
+one-hop low/medium strata have negative intervals. These are descriptive subgroup
+results, not multiplicity-adjusted discoveries. Sequence provides a positive gain
+over C+T in both contexts. Preserve all predefined sensitivities regardless of sign.
+
+## P1 registry resolution and prepared tissues
+
+V3 failed ID coverage. ENCODE V2 file ENCFF924IMH matches 100% of both source
+archives (5,646,598 active and 4,620,982 repressed rows). Its official metadata is
+https://www.encodeproject.org/files/ENCFF924IMH/ and the pinned SHA256 is in config.
+`tasks.entex.registry` handles V2 BED11 and V3 BED6 accession/class columns
+explicitly. Compact coverage evidence is in `results/entex/v1/qc/registry_v2/`.
+
+P1 requires registry dELS AND supplied distal state. Only explicitly active/repressed
+rows are labeled. Conflicting states within locus/tissue are excluded and counted;
+these exclusions do not imply an inferred biological state. Select five tissues by
+largest smaller-class count (minimum 1,000/class), then total count and name, before
+fitting. Separate tissue classifiers use the same chromosome folds and frozen probe.
+
+| Tissue | Loci | Active | Repressed | Conflicting loci excluded |
+|---|---:|---:|---:|---:|
+| thyroid_gland | 260898 | 115611 | 145287 | 32569 |
+| tibial_nerve | 233508 | 101438 | 132070 | 17605 |
+| body_of_pancreas | 227552 | 100064 | 127488 | 25486 |
+| gastroesophageal_sphincter | 205788 | 94745 | 111043 | 14565 |
+| Peyers_patch | 234737 | 93921 | 140816 | 26773 |
+
+Preparation completed; P1 fitting has not yet run. All 28 tissue counts and source
+hashes are in `results/entex/v1/qc/p1/`. Reproduce preparation with:
+
+```bash
+PYTHONPATH=.:src python -m tasks.entex.registry --registry data/encode/legacy_v2/ENCFF924IMH.bed.gz --out-dir results/entex/v1/qc/registry_v2 --source-url https://www.encodeproject.org/files/ENCFF924IMH/
+PYTHONPATH=.:src python -m tasks.entex.enhancer
+```
+
+For each selected tissue, map `data/entex/v1/p1/<tissue>_loci.parquet` using the
+existing EN-TEx mapper. Use `run_entex_probe_matrix.py --task p1 --subtask <tissue>`
+with its loci/mapping and the same manuscript resources. Set
+`--cache-all-reference-targets --topology-cache-root results/entex/v1/topology_cache_all_reference`
+to reuse frozen embeddings across tissues. Keep primary P0's existing cache intact.
+After all selected tissues finish, `python -m tasks.entex.tissues --probe-root
+results/entex/v1/p1 --preparation-audit data/entex/v1/p1/audit.json --complexity
+<existing native v2 table> --out-dir results/entex/v1/p1_analysis` produces per-tissue
+results and equally weighted tissue means within fold/seed, followed by the existing
+hierarchical bootstrap. Missing tissue pairs fail validation.
+
+Validation: 30 tests passed across EN-TEx and existing cCRE/SV probe/cache/aggregation
+suites. P1 tests cover BED column differences, conflicting labels, sample-count
+selection, and complete paired tissue coverage. Large data and caches stay out of Git.

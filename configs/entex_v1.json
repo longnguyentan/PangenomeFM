@@ -33,5 +33,14 @@
       "auroc",
       "normalized_ap"
     ]
+  },
+  "p1": {
+    "registry_accession": "ENCFF924IMH",
+    "registry_sha256": "16fe76cbbc1f24e38a5476ce44fa4b81a9612f61a23517860d6e61f5619615ec",
+    "definition": "V2 dELS AND EN-TEx distal; supplied active=1, repressed=0; conflicting locus/tissue states excluded",
+    "n_tissues": 5,
+    "minimum_per_class": 1000,
+    "selection": "largest smaller-class count, then total loci, then tissue name; no model scores",
+    "classifier": "separate per tissue, identical frozen probe"
   }
 }

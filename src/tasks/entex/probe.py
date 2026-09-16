@@ -77,6 +77,9 @@ def main() -> None:
         choices=["primary", "exposure_matched", "h3k27ac", "ctcf"],
         default="primary",
     )
+    ap.add_argument("--task", choices=["p0", "p1"], default="p0")
+    ap.add_argument("--subtask")
+    ap.add_argument("--cache-all-reference-targets", action="store_true")
     ap.add_argument("--topology-cache-root", type=Path)
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--folds", nargs="+")
@@ -107,6 +110,18 @@ def main() -> None:
     if mapping_audit["fraction_mapped"] < config["minimum_mapping"]:
         raise ValueError("Mapping below prespecified gate")
     loci = pd.read_parquet(args.loci)
+    if args.task == "p1":
+        if args.sensitivity != "primary" or not args.subtask:
+            raise ValueError("P1 requires --subtask tissue and primary sensitivity")
+        if (
+            "task" not in loci
+            or "subtask" not in loci
+            or not loci.task.eq("p1").all()
+            or not loci.subtask.eq(args.subtask).all()
+        ):
+            raise ValueError("P1 tissue metadata mismatch")
+    elif "task" in loci:
+        raise ValueError("P0 cannot consume a different task dataset")
     if args.sensitivity in {"h3k27ac", "ctcf"}:
         if "sensitivity" not in loci or not loci.sensitivity.eq(args.sensitivity).all():
             raise ValueError(
@@ -173,12 +188,16 @@ def main() -> None:
             checkpoint, test_chrs=set(job.test), closure=job.closure, seed=job.seed
         )
 
+        requested_targets = set(overlaps.segid.astype(int))
+        if args.cache_all_reference_targets:
+            requested_targets.update(c_ids.astype(int))
+
         def extract():
             return _extract_embeddings(
                 checkpoint=checkpoint,
                 manifest=args.manifest,
                 full_segments=args.full_segments,
-                labeled_segids=set(overlaps.segid.astype(int)),
+                labeled_segids=requested_targets,
                 closure=job.closure,
                 device_name=args.device,
                 seed=job.seed,
@@ -203,7 +222,7 @@ def main() -> None:
                 / job.fold
                 / f"seed_{job.seed}"
                 / f"{job.closure}.npz",
-                set(overlaps.segid.astype(int)),
+                requested_targets,
                 identity,
                 extract,
             )
@@ -213,7 +232,8 @@ def main() -> None:
         selected = complete_loci(loci, overlaps, set(c_ids) & set(s_ids) & set(frozen))
         out.mkdir(parents=True)
         audit = dict(
-            task="p0",
+            task=args.task,
+            subtask=args.subtask or args.sensitivity,
             sensitivity=args.sensitivity,
             sensitivity_definitions=config["sensitivities"],
             fold=job.fold,
@@ -272,8 +292,8 @@ def main() -> None:
         )
         for frame in [metrics, predictions]:
             for key, value in [
-                ("task", "p0"),
-                ("subtask", args.sensitivity),
+                ("task", args.task),
+                ("subtask", args.subtask or args.sensitivity),
                 ("fold", job.fold),
                 ("seed", job.seed),
                 ("closure", job.closure),

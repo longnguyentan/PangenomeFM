@@ -383,3 +383,83 @@ def test_topology_cache_identity_and_subset_reuse(tmp_path):
         cached_topology(path, {1}, {**identity, "checkpoint_sha256": "other"}, extract)
     with pytest.raises(ValueError, match="all required targets"):
         cached_topology(path, {3}, identity, extract)
+
+
+def test_enhancer_exact_registry_and_conflicts():
+    from tasks.entex.enhancer import prepare_tissue, select_tissues
+
+    registry = pd.DataFrame(
+        dict(
+            ccre_id=list("abcd"),
+            chrom=["chr1"] * 4,
+            start=[0, 10, 20, 30],
+            end=[5, 15, 25, 35],
+            ccre_class=["dELS", "dELS,CTCF-bound", "PLS", "dELS"],
+        )
+    )
+    active = pd.DataFrame(
+        dict(
+            ccre_id=["a", "b", "c", "d"],
+            state=["active.distal.nonCTCF"] * 3 + ["active.proximal.nonCTCF"],
+            tissue=["t"] * 4,
+        )
+    )
+    repressed = pd.DataFrame(
+        dict(ccre_id=["b", "d"], state=["repressed.distal.CTCF"] * 2, tissue=["t"] * 2)
+    )
+    loci, qc = prepare_tissue(active, repressed, registry)
+    assert dict(zip(loci.ccre_id, loci.label)) == {"a": 1, "d": 0}
+    assert qc["conflicting_loci_excluded"] == 1 and qc["active_excluded_non_dels"] == 1
+    with pytest.raises(ValueError, match="coverage"):
+        prepare_tissue(
+            active.assign(ccre_id=["unknown", "b", "c", "d"]), repressed, registry
+        )
+    counts = pd.DataFrame(
+        dict(
+            tissue=["a", "b", "c"],
+            positive_count=[5, 8, 9],
+            negative_count=[6, 7, 1],
+            n_loci=[11, 15, 10],
+        )
+    )
+    assert select_tissues(counts, 2, 2) == ["b", "a"]
+
+
+def test_registry_schema_accession_column(tmp_path):
+    from tasks.entex.registry import read_registry
+
+    six = tmp_path / "v3.bed"
+    six.write_text("chr1\t0\t5\tEH38D1\tEH38E1\tdELS\n")
+    eleven = tmp_path / "v2.bed"
+    eleven.write_text(
+        "chr1\t0\t5\tEH38E1\t0\t.\t0\t5\t0,0,0\tdELS\tCell-type-agnostic\n"
+    )
+    pd.testing.assert_frame_equal(read_registry(six), read_registry(eleven))
+
+
+def test_tissue_macro_is_paired_before_bootstrap():
+    from tasks.entex.tissues import macro_runs
+
+    frame = pd.DataFrame(
+        dict(
+            fold=["a"] * 4,
+            seed=[42] * 4,
+            closure=["strict"] * 4,
+            feature_set=["C", "C", "T", "T"],
+            subtask=["x", "y", "x", "y"],
+        )
+    )
+    for metric in [
+        "auprc",
+        "auroc",
+        "normalized_ap",
+        "balanced_accuracy",
+        "f1",
+        "precision",
+        "recall",
+    ]:
+        frame[metric] = [0.2, 0.8, 0.3, 0.9]
+    macro = macro_runs(frame, ["x", "y"])
+    np.testing.assert_allclose(macro.auprc, [0.5, 0.6])
+    with pytest.raises(ValueError, match="coverage"):
+        macro_runs(frame.iloc[:3], ["x", "y"])

@@ -1,0 +1,40 @@
+{
+  "task": "p1",
+  "registry": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/encode/legacy_v2/ENCFF924IMH.bed.gz",
+    "bytes": 13611274,
+    "mtime_ns": 1789499035917023436,
+    "sha256": "16fe76cbbc1f24e38a5476ce44fa4b81a9612f61a23517860d6e61f5619615ec"
+  },
+  "sources": {
+    "active": {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/entex/v1/active.combined_set.txt.zip.parquet",
+      "bytes": 21586585,
+      "mtime_ns": 1789495243297602752,
+      "sha256": "b3b49a86da9450fd5a6bfe9f399d913da39885e33991af9d623c35a89bfa0b4c"
+    },
+    "repressed": {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/entex/v1/repressed.combined_set.txt.zip.parquet",
+      "bytes": 19772080,
+      "mtime_ns": 1789495250734517171,
+      "sha256": "0fa33f3f5401a431db1e68483654a28054d4f190c1740d122690b2ea43b121b6"
+    }
+  },
+  "definitions": {
+    "registry_accession": "ENCFF924IMH",
+    "registry_sha256": "16fe76cbbc1f24e38a5476ce44fa4b81a9612f61a23517860d6e61f5619615ec",
+    "definition": "V2 dELS AND EN-TEx distal; supplied active=1, repressed=0; conflicting locus/tissue states excluded",
+    "n_tissues": 5,
+    "minimum_per_class": 1000,
+    "selection": "largest smaller-class count, then total loci, then tissue name; no model scores",
+    "classifier": "separate per tissue, identical frozen probe"
+  },
+  "selected_tissues": [
+    "thyroid_gland",
+    "tibial_nerve",
+    "body_of_pancreas",
+    "gastroesophageal_sphincter",
+    "Peyers_patch"
+  ],
+  "biological_fitting": "not_run"
+}

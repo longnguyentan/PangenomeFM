@@ -1,0 +1,28 @@
+{
+  "registry": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/encode/legacy_v2/ENCFF924IMH.bed.gz",
+    "bytes": 13611274,
+    "mtime_ns": 1789499035917023436,
+    "sha256": "16fe76cbbc1f24e38a5476ce44fa4b81a9612f61a23517860d6e61f5619615ec"
+  },
+  "source_url": "https://www.encodeproject.org/files/ENCFF924IMH/",
+  "registry_rows": 926535,
+  "coverage": [
+    {
+      "state": "active",
+      "rows": 5646598,
+      "matched_rows": 5646598,
+      "row_coverage": 1.0,
+      "unique_ids": 635906,
+      "matched_unique_ids": 635906
+    },
+    {
+      "state": "repressed",
+      "rows": 4620982,
+      "matched_rows": 4620982,
+      "row_coverage": 1.0,
+      "unique_ids": 778533,
+      "matched_unique_ids": 778533
+    }
+  ]
+}

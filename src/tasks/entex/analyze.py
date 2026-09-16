@@ -141,6 +141,9 @@ def main() -> None:
         raise ValueError("Duplicate runs")
     if "subtask" in metrics and metrics.subtask.nunique() != 1:
         raise ValueError("Analyze each prespecified sensitivity in a separate root")
+    task = str(metrics.task.iloc[0]) if "task" in metrics else "p0"
+    if "task" in metrics and metrics.task.nunique() != 1:
+        raise ValueError("Mixed biological tasks in analysis root")
     rows = []
     gains = []
     strata = []
@@ -272,7 +275,9 @@ def main() -> None:
                 "auprc",
                 summary.loc[summary.context.eq(context) & summary.metric.eq("auprc")],
                 "feature_set",
-                "AS-prone cCRE AUPRC",
+                "Active/repressed dELS AUPRC"
+                if task == "p1"
+                else "AS-prone cCRE AUPRC",
                 True,
             ),
             (
@@ -312,6 +317,7 @@ def main() -> None:
     (args.out_dir / "audit.json").write_text(
         json.dumps(
             dict(
+                task=task,
                 runs=len(paths),
                 resampling="chromosome fold then seed; paired differences before bootstrap",
                 single_fold_ci="undefined",
