@@ -1,22 +1,24 @@
 # EN-TEx frozen biological transfer
 
-## Status (2026-09-15)
+## Status (updated 15 September 2026, server UTC 16 September)
 
-**P0 preparation and exact-resource server mapping are complete.** On the original
-Temple server, all 250,722 loci mapped (247,382 single-segment; 3,340 multi-segment;
-zero unmapped), and all 26 server tests passed. A strict fold-a/seed-42 smoke probe
-was launched in an isolated tmux session; its result has not yet been retrieved.
-The authenticated SSH connection subsequently expired and renewed authentication
-is pending. Full P0, sensitivity fitting and biological P0b gain estimates are not
-claimed complete. Historical local-only blockers below are retained as provenance.
-P1/P2 remain deferred at the P0 result gate.
+- **Primary P0/P0b completed:** all 30 jobs, 100% mapping and joint C/K/S/T
+  coverage. Global strict and one-hop topology-gain intervals include zero.
+- **Exposure-matched sensitivity completed:** all 30 jobs; strict gain +0.001482
+  [0.000098, 0.002925], one-hop +0.002002 [0.000844, 0.003278]. This balanced,
+  selected population differs from primary P0 and does not replace its result.
+- H3K27ac-only/CTCF-only P0 matrices are running sequentially.
+- P1 V2 registry coverage is 100%; five tissues selected before fitting, all map
+  completely. Thyroid smoke passed; full five-tissue matrices are running.
+- P2 full-accessible CTCF/H3K27ac preparation and mapping completed; both map
+  completely with a single containing segment. Real smoke fits are running.
+- 34 relevant tests passed locally. P3/P4 have not started.
 
-Implemented: streaming source validation/Parquet caching; locus-level P0 union
-labels; locus-preserving mapping adapter; mean and overlap-length-weighted feature
-pooling; exact-resource and checkpoint checks; seven-feature frozen logistic probe;
-paired hierarchical bootstrap summaries; native-complexity stratification and
-PNG/SVG figure generation. The latter stages have synthetic tests, not a completed
-biological run. P3/P4 have not started.
+The sections below include historical local-only blockers as provenance; the
+current state is the list above. Encoders remain frozen for every biological task.
+New code/results are committed to the existing `codex/` branch. Long jobs run in
+server tmux sessions and survive an SSH disconnect. P2 uses pinned code commit
+89f34a9 in a separate worktree while already-running P0/P1 jobs retain their code.
 
 ## Existing infrastructure reused
 
@@ -532,3 +534,16 @@ provenance and are never classifier inputs.
 `results/entex/v1/qc/p2/preparation.json`; P2 fitting has not yet completed. The P1
 single-fold thyroid smoke completed with 99.9992% joint feature coverage (2 loci
 excluded); it is not a full tissue result. See `qc/p1_server_smoke/`.
+
+
+P2 representation limitation: measurements at the same locus receive the same
+C/S/T score, irrespective of donor or tissue. This tests transferable locus
+representation against assay-specific measurement labels; it does not model
+sample-specific allelic direction, donor genotype effects, or expression magnitude.
+Read depth and AS-test p-values are not input features.
+
+Exact password-free shell commands used on the original server are archived under
+`results/entex/v1/qc/server_commands/`. Output directories are protected against
+reuse; choose new output roots for reruns. The pinned P2 worktree can be recreated
+from its recorded commit. Do not interpret partial run coverage snapshots as complete
+matrices; completion requires 30 successful jobs and complete paired fold/seed keys.
