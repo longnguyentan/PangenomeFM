@@ -91,11 +91,12 @@ def ranking_metrics(labels: pd.Series, scores: pd.Series) -> dict:
 
 def validate_comparator_loci(predictions: pd.DataFrame) -> None:
     selected = predictions.loc[predictions.feature_set.isin([BASE, FULL])]
-    if selected.duplicated(["locus_id", "feature_set"]).any():
+    identity = "measurement_id" if "measurement_id" in selected else "locus_id"
+    if selected.duplicated([identity, "feature_set"]).any():
         raise ValueError("Duplicate locus predictions within comparator")
-    if not selected.groupby("locus_id").feature_set.nunique().eq(2).all():
+    if not selected.groupby(identity).feature_set.nunique().eq(2).all():
         raise ValueError("Comparators do not share exactly the same loci")
-    if not selected.groupby("locus_id").y_true.nunique().eq(1).all():
+    if not selected.groupby(identity).y_true.nunique().eq(1).all():
         raise ValueError("Comparator labels differ")
 
 
@@ -277,7 +278,11 @@ def main() -> None:
                 "feature_set",
                 "Active/repressed dELS AUPRC"
                 if task == "p1"
-                else "AS-prone cCRE AUPRC",
+                else (
+                    "Allele-specific SNV AUPRC"
+                    if task == "p2"
+                    else "AS-prone cCRE AUPRC"
+                ),
                 True,
             ),
             (

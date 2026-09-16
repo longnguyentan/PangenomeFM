@@ -486,3 +486,49 @@ hierarchical bootstrap. Missing tissue pairs fail validation.
 Validation: 30 tests passed across EN-TEx and existing cCRE/SV probe/cache/aggregation
 suites. P1 tests cover BED column differences, conflicting labels, sample-count
 selection, and complete paired tissue coverage. Large data and caches stay out of Git.
+
+
+## P2 accessible SNV assay preparation and probe adapter
+
+The original high-confidence file remains RNA-only. The official full accessible
+call set was downloaded to the server after checking storage (688 GB free), response
+length and file presence. The HTTPS endpoint had a certificate error; the public
+HTTP endpoint served the source. SHA256:
+`e59a83a1595cbe12ba56714af79c297ac9f31b593e13ee44966c732d30d4daa8`.
+Downloaded bytes: 2,675,757,003. This benchmark is explicitly the **default accessible
+call set**, not the high-confidence subset. No optional whole-dataset modeling is
+performed: parsing validates all rows but retains only the two requested assays.
+
+Preparation scanned 22,310,439 measurements across 12 assays in 200,000-row chunks.
+CTCF: 2,391,015 measurements / 596,650 loci, 83,911 positives (3.5094%).
+H3K27ac: 3,168,525 / 713,418 loci, 74,833 positives (2.3618%). No duplicate
+SNV/experiment rows were removed; conflicting records would fail. Supplied calls
+provide labels; accessible nonsignificant observations are the negatives.
+
+```bash
+PYTHONPATH=.:src python -m tasks.entex.snv --source data/entex/sources/hetSNVs_default_AS.tsv
+```
+
+Map each `<assay>_loci.parquet` with the existing mapper. The probe requires one
+containing segment and rejects ambiguous multi-segment SNVs. Run with `--task p2
+--subtask <assay> --measurements data/entex/v1/p2/<assay>_measurements.parquet`, the
+matching unique locus/mapping files, and the exact same graph/checkpoint/NT caches.
+Use the all-reference topology cache from P1. Measurement occurrences remain
+separate labels; every occurrence of a coordinate inherits its chromosome partition.
+
+To avoid allocating repeated multi-GB feature matrices, `measurement_probe.py`
+collapses identical training locus/label copies with occurrence weights. The scaler
+uses original occurrence weights and logistic class weights use original row class
+totals. Model type, C, solver, stopping settings, calibration and validation threshold
+selection are reused unchanged. Validation/test metrics are over individual original
+measurements; they are not a locus-level union-label task. Paired bootstrap remains
+fold then seed, not an independent-row bootstrap. A numerical test compares raw
+probabilities and scaler moments to the expanded original pipeline (absolute
+probability tolerance 2e-5). Comparator checks use unique measurement IDs and accept
+repeated loci. Source read counts, significance and assay metadata are retained as
+provenance and are never classifier inputs.
+
+34 tests pass across the EN-TEx/existing-probe suite. Actual P2 preparation QC is in
+`results/entex/v1/qc/p2/preparation.json`; P2 fitting has not yet completed. The P1
+single-fold thyroid smoke completed with 99.9992% joint feature coverage (2 loci
+excluded); it is not a full tissue result. See `qc/p1_server_smoke/`.

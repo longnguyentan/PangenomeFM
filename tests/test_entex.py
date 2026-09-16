@@ -495,3 +495,79 @@ def test_snv_measurements_keep_donor_tissue_occurrences():
     bad.loc[2, "imbalance_significance"] = 0
     with pytest.raises(ValueError, match="Conflicting"):
         clean_measurements(bad, "ctcf")
+
+
+def test_count_equivalent_logistic_matches_expanded_rows():
+    from tasks.entex.measurement_probe import fit_count_equivalent
+    from tasks.ccre.aligned_baselines import _fit_model
+
+    rng = np.random.default_rng(23)
+    matrix = rng.normal(size=(60, 4)).astype(np.float32)
+    positions = rng.choice(60, size=900, replace=True)
+    labels = (rng.random(900) < 0.15 + 0.6 * (matrix[positions, 0] > 0)).astype(int)
+    compact = fit_count_equivalent(matrix, positions, labels, 42)
+    expanded = _fit_model("logistic", 42).fit(matrix[positions], labels)
+    np.testing.assert_allclose(
+        compact.predict_proba(matrix), expanded.predict_proba(matrix), atol=2e-5
+    )
+    np.testing.assert_allclose(
+        compact.named_steps["standardscaler"].mean_,
+        expanded.named_steps["standardscaler"].mean_,
+        atol=1e-7,
+    )
+
+
+def test_measurement_comparators_accept_repeated_loci_but_not_duplicate_records():
+    from tasks.entex.analyze import validate_comparator_loci, BASE, FULL
+
+    frame = pd.DataFrame(
+        dict(
+            locus_id=["chr1:9"] * 4,
+            measurement_id=["a", "b", "a", "b"],
+            feature_set=[BASE, BASE, FULL, FULL],
+            y_true=[0, 1, 0, 1],
+        )
+    )
+    validate_comparator_loci(frame)
+    with pytest.raises(ValueError, match="Duplicate"):
+        validate_comparator_loci(pd.concat([frame, frame.iloc[:1]]))
+
+
+def test_measurement_probe_matches_manuscript_expansion():
+    from tasks.entex.measurement_probe import evaluate_measurements
+    from scripts.server.run_ccre_frozen_probe_fold import evaluate_feature_sets
+
+    rng = np.random.default_rng(11)
+    loci = pd.DataFrame(
+        dict(
+            locus_id=[f"l{i}" for i in range(30)],
+            chrom=np.repeat(["chr1", "chr2", "chr3"], 10),
+            example_id=np.arange(30),
+        )
+    )
+    measurements = loci.loc[loci.index.repeat(4)].reset_index(drop=True)
+    measurements["label"] = np.tile([0, 0, 0, 1], 30)
+    measurements["measurement_id"] = [f"m{i}" for i in range(120)]
+    for col in ["experiment_accession", "donor", "tissue", "assay"]:
+        measurements[col] = "fixture"
+    x = rng.normal(size=(30, 4)).astype(np.float32)
+    m, _, p = evaluate_measurements(
+        loci=loci,
+        measurements=measurements,
+        features={"coordinate": x},
+        test_chrs={"chr3"},
+        val_chrs={"chr2"},
+        seed=42,
+    )
+    _, _, expected = evaluate_feature_sets(
+        segids=measurements.example_id.to_numpy(),
+        chromosomes=measurements.chrom.to_numpy(),
+        labels=measurements.label.to_numpy(),
+        features={"coordinate": np.repeat(x, 4, axis=0)},
+        test_chrs={"chr3"},
+        val_chrs={"chr2"},
+        seed=42,
+    )
+    np.testing.assert_allclose(p.p_raw, expected.p_raw, atol=2e-5)
+    assert m.n_test.iloc[0] == 40
+    assert p.measurement_id.nunique() == 40

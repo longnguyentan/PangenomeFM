@@ -37,8 +37,9 @@ def main() -> None:
         choices=["primary", "exposure_matched", "h3k27ac", "ctcf"],
         default="primary",
     )
-    ap.add_argument("--task", choices=["p0", "p1"], default="p0")
+    ap.add_argument("--task", choices=["p0", "p1", "p2"], default="p0")
     ap.add_argument("--subtask")
+    ap.add_argument("--measurements", type=Path)
     ap.add_argument("--cache-all-reference-targets", action="store_true")
     ap.add_argument("--gpus", default="0,1,2,3")
     args = ap.parse_args()
@@ -73,6 +74,8 @@ def main() -> None:
             job.closure,
         ]
         command.extend(["--task", args.task])
+        if args.measurements:
+            command.extend(["--measurements", str(args.measurements)])
         if args.subtask:
             command.extend(["--subtask", args.subtask])
         if args.cache_all_reference_targets:

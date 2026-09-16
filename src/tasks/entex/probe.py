@@ -77,8 +77,9 @@ def main() -> None:
         choices=["primary", "exposure_matched", "h3k27ac", "ctcf"],
         default="primary",
     )
-    ap.add_argument("--task", choices=["p0", "p1"], default="p0")
+    ap.add_argument("--task", choices=["p0", "p1", "p2"], default="p0")
     ap.add_argument("--subtask")
+    ap.add_argument("--measurements", type=Path)
     ap.add_argument("--cache-all-reference-targets", action="store_true")
     ap.add_argument("--topology-cache-root", type=Path)
     ap.add_argument("--device", default="cpu")
@@ -120,6 +121,27 @@ def main() -> None:
             or not loci.subtask.eq(args.subtask).all()
         ):
             raise ValueError("P1 tissue metadata mismatch")
+    elif args.task == "p2":
+        if (
+            args.sensitivity != "primary"
+            or args.subtask not in {"ctcf", "h3k27ac"}
+            or args.measurements is None
+        ):
+            raise ValueError("P2 requires assay subtask and measurement cache")
+        inputs["measurements"] = fingerprint(args.measurements)
+        measurements = pd.read_parquet(args.measurements)
+        if (
+            not measurements.task.eq("p2").all()
+            or not measurements.subtask.eq(args.subtask).all()
+        ):
+            raise ValueError("P2 assay metadata mismatch")
+        if set(measurements.locus_id) != set(loci.locus_id):
+            raise ValueError("Measurement/locus universe mismatch")
+        coords = measurements[["locus_id", "chrom", "start", "end"]].drop_duplicates()
+        if len(coords) != len(loci) or not coords.merge(
+            loci, on=["locus_id", "chrom", "start", "end"]
+        ).shape[0] == len(loci):
+            raise ValueError("Measurement/locus coordinates mismatch")
     elif "task" in loci:
         raise ValueError("P0 cannot consume a different task dataset")
     if args.sensitivity in {"h3k27ac", "ctcf"}:
@@ -132,6 +154,10 @@ def main() -> None:
     check_splits(loci, manuscript["rotating_chromosome_folds"])
     loci["example_id"] = np.arange(len(loci))
     overlaps = pd.read_parquet(args.mapping_dir / "overlaps.parquet")
+    if args.task == "p2" and (
+        overlaps.locus_id.duplicated().any() or not overlaps.overlap_bp.eq(1).all()
+    ):
+        raise ValueError("P2 requires exactly one containing segment per mapped SNV")
     s_ids, s_values, s_audit = load_frozen_node_embedding_cache(args.sequence_cache)
     # Merged caches contain shard provenance; validate each original shard audit.
     expected_audit = Path(str(args.sequence_cache) + ".audit.json")
@@ -281,15 +307,35 @@ def main() -> None:
             selected, overlaps, t_ids, np.stack([frozen[i] for i in t_ids]), method
         )
         factorial = build_modality_factorial(components, include_external_sequence=True)
-        metrics, _, predictions = evaluate_feature_sets(
-            segids=selected.example_id.to_numpy(),
-            chromosomes=selected.chrom.to_numpy(),
-            labels=selected.label.to_numpy(),
-            features={k: factorial[k] for k in FEATURES},
-            test_chrs=set(job.test),
-            val_chrs=set(job.validation),
-            seed=job.seed,
-        )
+        if args.task == "p2":
+            from tasks.entex.measurement_probe import evaluate_measurements
+
+            retained = measurements.locus_id.isin(selected.locus_id)
+            audit["measurement_coverage"] = float(retained.mean())
+            audit["measurement_exclusions"] = int((~retained).sum())
+            audit["probe_optimization"] = (
+                "count-equivalent locus/label fitting; scaler occurrence weights; explicit original-row class weights"
+            )
+            if retained.mean() < config["minimum_feature_coverage"]:
+                raise ValueError("P2 measurement coverage below gate")
+            metrics, _, predictions = evaluate_measurements(
+                loci=selected,
+                measurements=measurements,
+                features={k: factorial[k] for k in FEATURES},
+                test_chrs=set(job.test),
+                val_chrs=set(job.validation),
+                seed=job.seed,
+            )
+        else:
+            metrics, _, predictions = evaluate_feature_sets(
+                segids=selected.example_id.to_numpy(),
+                chromosomes=selected.chrom.to_numpy(),
+                labels=selected.label.to_numpy(),
+                features={k: factorial[k] for k in FEATURES},
+                test_chrs=set(job.test),
+                val_chrs=set(job.validation),
+                seed=job.seed,
+            )
         for frame in [metrics, predictions]:
             for key, value in [
                 ("task", args.task),
