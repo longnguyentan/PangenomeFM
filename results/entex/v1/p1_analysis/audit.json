@@ -1,0 +1,10 @@
+{
+  "tissues": [
+    "thyroid_gland",
+    "tibial_nerve",
+    "body_of_pancreas",
+    "gastroesophageal_sphincter",
+    "Peyers_patch"
+  ],
+  "macro_definition": "equal-weight mean over the fixed selected tissues within each fold/seed, then fold/seed bootstrap; no tissue resampling"
+}

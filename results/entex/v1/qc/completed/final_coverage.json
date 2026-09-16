@@ -1,0 +1,4622 @@
+[
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_a/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_a/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_a/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_a/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_a/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_a/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_d/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_d/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_d/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_d/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_d/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_d/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_e/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_e/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_e/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_e/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_e/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_e/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_c/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_c/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_c/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_c/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_c/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_c/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_b/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_b/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_b/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_b/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_b/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0",
+    "path": "results/entex/v1/p0/fold_b/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_a/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_a/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_a/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_a/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_a/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_a/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_d/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_d/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_d/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_d/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_d/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_d/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_e/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_e/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_e/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_e/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_e/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_e/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_c/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_c/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_c/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_c/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_c/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_c/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_b/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_b/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_b/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_b/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_b/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_exposure_matched",
+    "path": "results/entex/v1/p0_exposure_matched/fold_b/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_a/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_a/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_a/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_a/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_a/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_a/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_d/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_d/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_d/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_d/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_d/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_d/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_e/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_e/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_e/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_e/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_e/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_e/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_c/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_c/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_c/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_c/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_c/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_c/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_b/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_b/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_b/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_b/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_b/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_h3k27ac",
+    "path": "results/entex/v1/p0_h3k27ac/fold_b/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_a/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_a/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_a/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_a/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_a/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_a/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_d/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_d/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_d/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_d/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_d/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_d/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_e/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_e/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_e/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_e/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_e/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_e/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_c/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_c/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_c/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_c/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_c/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_c/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_b/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_b/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_b/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_b/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_b/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p0_ctcf",
+    "path": "results/entex/v1/p0_ctcf/fold_b/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_a/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_a/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_a/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_a/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_a/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_a/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_d/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_d/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_d/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_d/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_d/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_d/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_e/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_e/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_e/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_e/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_e/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_e/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_c/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_c/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_c/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_c/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_c/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_c/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_b/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_b/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_b/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_b/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_b/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/tibial_nerve/fold_b/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999828699659112,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999828699659112
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_a/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_a/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_a/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_a/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_a/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_a/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_d/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_d/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_d/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_d/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_d/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_d/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_e/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_e/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_e/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_e/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_e/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_e/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_c/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_c/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_c/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_c/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_c/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_c/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_b/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_b/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_b/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_b/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_b/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/thyroid_gland/fold_b/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999923341689089,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999923341689089
+    },
+    "n_excluded": 2,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_a/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_a/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_a/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_a/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_a/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_a/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_d/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_d/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_d/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_d/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_d/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_d/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_e/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_e/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_e/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_e/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_e/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_e/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_c/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_c/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_c/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_c/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_c/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_c/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_b/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_b/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_b/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_b/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_b/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/body_of_pancreas/fold_b/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999868162002531,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999868162002531
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_a/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_a/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_a/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_a/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_a/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_a/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_d/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_d/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_d/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_d/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_d/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_d/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_e/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_e/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_e/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_e/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_e/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_e/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_c/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_c/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_c/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_c/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_c/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_c/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_b/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_b/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_b/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_b/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_b/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/Peyers_patch/fold_b/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999829596527178,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999829596527178
+    },
+    "n_excluded": 4,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_a/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_a/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_a/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_a/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_a/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_a/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_d/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_d/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_d/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_d/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_d/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_d/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_e/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_e/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_e/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_e/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_e/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_e/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_c/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_c/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_c/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_c/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_c/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_c/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_b/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_b/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_b/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_b/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_b/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p1",
+    "path": "results/entex/v1/p1/gastroesophageal_sphincter/fold_b/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 0.9999854218904892,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 0.9999854218904892
+    },
+    "n_excluded": 3,
+    "measurement_coverage": null
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_a/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_a/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_a/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_a/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_a/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_a/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_d/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_d/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_d/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_d/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_d/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_d/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_e/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_e/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_e/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_e/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_e/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_e/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_c/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_c/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_c/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_c/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_c/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_c/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_b/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_b/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_b/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_b/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_b/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/h3k27ac/fold_b/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_a/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_a/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_a/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_a/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_a/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_a/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_d/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_d/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_d/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_d/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_d/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_d/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_e/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_e/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_e/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_e/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_e/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_e/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_c/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_c/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_c/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_c/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_c/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_c/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_b/seed_314159/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_b/seed_314159/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_b/seed_20260806/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_b/seed_20260806/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_b/seed_42/strict/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  },
+  {
+    "root": "p2",
+    "path": "results/entex/v1/p2/ctcf/fold_b/seed_42/1hop/audit.json",
+    "status": "complete",
+    "coverage": 1.0,
+    "feature_coverage": {
+      "C": 1.0,
+      "K": 1.0,
+      "S": 1.0,
+      "T": 1.0
+    },
+    "n_excluded": 0,
+    "measurement_coverage": 1.0
+  }
+]

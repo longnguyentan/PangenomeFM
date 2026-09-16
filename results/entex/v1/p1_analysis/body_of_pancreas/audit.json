@@ -1,0 +1,10 @@
+{
+  "task": "p1",
+  "runs": 30,
+  "resampling": "chromosome fold then seed; paired differences before bootstrap",
+  "single_fold_ci": "undefined",
+  "subtask": "body_of_pancreas",
+  "normalized_ap": "(AP - prevalence) / (1 - prevalence); undefined for single-class strata; not full prevalence invariance",
+  "complexity_assignment": "existing strict native v2 category at locus start",
+  "complexity_source": "/home/tuv43532/PangenomeFM/server_workspace/results/complexity_context_v2_20260815/native_complexity_v2/complexity_features.tsv"
+}

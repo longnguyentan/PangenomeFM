@@ -1,26 +1,21 @@
 # EN-TEx frozen biological transfer
 
-## Status (updated 15 September 2026, server UTC 16 September)
+## Status — completed 16 September 2026
 
-- **Primary P0/P0b completed:** all 30 jobs, 100% mapping and joint C/K/S/T
-  coverage. Global strict and one-hop topology-gain intervals include zero.
-- **Exposure-matched sensitivity completed:** all 30 jobs; strict gain +0.001482
-  [0.000098, 0.002925], one-hop +0.002002 [0.000844, 0.003278]. This balanced,
-  selected population differs from primary P0 and does not replace its result.
-- H3K27ac-only P0 completed: strict +0.000584 [0.000084, 0.001065];
-  one-hop +0.000612 [-0.000533, 0.001689]. CTCF-only P0 is running.
-- P1 V2 registry coverage is 100%; five tissues selected before fitting, all map
-  completely. Thyroid smoke passed; full five-tissue matrices are running/queued.
-- P2 full-accessible CTCF/H3K27ac preparation and mapping completed; both map
-  completely with a single containing segment. Both assay smoke tests passed with 100% coverage. Full P2
-  matrices are queued behind successful smoke and P0 sensitivity gates.
-- 34 relevant tests passed locally. P3/P4 have not started.
+**P0/P0b, all three predefined sensitivities, P1 and P2 are fully completed.**
+All 330 fold/seed/context jobs succeeded: P0 30, sensitivities 90, P1 150,
+P2 60. Every task uses five chromosome folds, three seeds and both contexts.
+All encoders stayed frozen; only the existing logistic downstream probe was fit.
+There were no convergence warnings in the full-run logs.
 
-The sections below include historical local-only blockers as provenance; the
-current state is the list above. Encoders remain frozen for every biological task.
-New code/results are committed to the existing `codex/` branch. Long jobs run in
-server tmux sessions and survive an SSH disconnect. P2 uses pinned code commit
-89f34a9 in a separate worktree while already-running P0/P1 jobs retain their code.
+Mapping is 100% for every prepared task. Joint C/K/S/T coverage is 100% in all
+P0/P2 runs and at least 99.9982869966% in P1; the few excluded loci lack topology
+embeddings under existing extraction rules. No graph/model substitutions were used.
+Final coverage and exit-status evidence is under `results/entex/v1/qc/completed/`.
+
+See **Final biological results** at the end for interpretation and artifact paths.
+Earlier execution notes below are a dated audit trail, not the current status.
+Optional all-assay SNV expansion and HG008 validation were not performed.
 
 ## Existing infrastructure reused
 
@@ -611,3 +606,85 @@ specifically concentrated in the high-complexity stratum. Strict high-complexity
 intervals include zero in primary, matched, and H3K27ac-only analyses. Keep all
 stratum results with AUROC/normalized AP in the supplement rather than selecting
 the largest subgroup estimate.
+
+
+## Final biological results — 16 September 2026
+
+All estimates below are paired AP(C+S+T) minus AP(C+S), mean [95% CI], using
+the manuscript's chromosome-fold-then-seed bootstrap. These are pointwise,
+unadjusted intervals across multiple tasks, contexts and subgroups, not a
+family-wise confirmatory claim.
+
+| Task | Strict | One-hop |
+|---|---|---|
+| Primary P0 | +0.000208 [-0.000317, +0.000746] | -0.000654 [-0.002092, +0.000466] |
+| Exposure-matched P0 | +0.001482 [+0.000098, +0.002925] | +0.002002 [+0.000844, +0.003278] |
+| H3K27ac-only P0 | +0.000584 [+0.000084, +0.001065] | +0.000612 [-0.000533, +0.001689] |
+| CTCF-only P0 | +0.000261 [-0.000370, +0.000952] | +0.000725 [+0.000217, +0.001301] |
+| P1 tissue macro | +0.000889 [-0.000389, +0.002326] | +0.000805 [-0.001531, +0.002467] |
+| P2 CTCF SNVs | +0.001473 [+0.000096, +0.003549] | +0.002245 [+0.000958, +0.003482] |
+| P2 H3K27ac SNVs | +0.000693 [-0.000567, +0.001920] | +0.003338 [+0.000120, +0.007962] |
+
+Primary P0 and the P1 macro comparison remain inconclusive. Sequence is strongly
+useful in P1 (about +0.117 AP over C+T), while incremental topology gains are much
+smaller. Tibial nerve strict has a positive individual-tissue interval; its one-hop
+interval crosses zero, and the macro result does not support a general enhancer gain.
+Do not select that tissue alone for a headline.
+
+CTCF SNV topology gains are small and positive in both contexts. Its mean AP goes
+from 0.061559 to 0.063033 strict / 0.063805 one-hop. H3K27ac SNVs go from 0.049680
+to 0.050373 / 0.053018; only one-hop has a positive pointwise interval, which is
+wide. These tasks use accessible default calls, not the RNA-only high-confidence
+file. They are not directly comparable to the original EN-TEx DNABERT AUROC values.
+
+The evidence supports **modest, task-dependent reuse of frozen topology**, especially
+for these SNV tasks, not broad improvement across regulatory tasks. It does not
+establish a high-complexity-specific benefit. Exposure-matched/H3K27ac cCRE gains
+must be shown with their stronger C or C+T comparators. No positive result was forced.
+
+### Artifacts and exact reproduction
+
+All paths below are relative to the repository (the same layout on the server):
+
+- `results/entex/v1/final_report/main_comparisons.csv` and
+  `main_topology_comparisons.png/.svg`: main task AP/AUROC comparisons and paired CIs.
+- `results/entex/v1/p0_analysis/`: primary seven-feature results, paired gains,
+  complexity raw AP/AUROC/normalized AP tables and PNG/SVG figures.
+- `results/entex/v1/p0_sensitivity_report/`: all predefined sensitivity comparisons;
+  full per-run details are in the three `p0_<sensitivity>_analysis/` directories.
+- `results/entex/v1/p1_analysis/`: per-tissue and macro tables, per-tissue complexity,
+  `tissue_topology_gain_strict.png/.svg` and its one-hop counterpart.
+- `results/entex/v1/p2_analysis/{ctcf,h3k27ac}/`: seven-feature summaries, paired
+  comparisons, complexity summaries and `auprc_*`, `gain_*` PNG/SVG figures.
+- `results/entex/v1/qc/server_commands/`: exact full P0, sensitivity, P1 and P2 shell
+  commands. They use original server resources and fresh output roots; change output
+  paths for reruns. The P2 pinned checkout can be recreated with
+  `git worktree add --detach /tmp/pangenomefm-entex-code-89f34a9 89f34a9`.
+- On the server, per-run predictions, feature universes, exclusions and complete
+  checkpoint/input hash audits remain under `results/entex/v1/{p0,p0_*,p1,p2}/`.
+  Large raw sources/caches/predictions stay outside Git.
+
+Rebuild combined reports from completed tables:
+
+```bash
+PYTHONPATH=.:src python -m tasks.entex.sensitivity_report
+PYTHONPATH=.:src python -m tasks.entex.report
+```
+
+Validation: 34 local EN-TEx/existing-probe tests; 25 EN-TEx tests on the actual server;
+Ruff, compile and whitespace checks; weighted-versus-expanded logistic equivalence;
+all 11 matrices checked for 30 complete paired runs and exact delta arithmetic;
+all 330 audits complete; no convergence warnings; representative final figures
+visually inspected. Manuscript cached-result checks still pass; no manuscript
+retraining is claimed.
+
+### Manuscript placement
+
+Main: show the complete primary transfer overview (P0, P1 macro, both P2 assays,
+both contexts), including inconclusive results. Present CTCF SNV gains as modest
+cross-context evidence, with the broader pattern remaining task-dependent.
+Supplement: all predefined sensitivities, all individual tissues and complexity
+strata, coverage/exclusions, assay/source definitions, full seven-feature tables,
+normalized AP/AUROC and training/validation/test counts. Do not elevate one favorable
+context/tissue or imply multiplicity-adjusted significance. Optional HG008 and
+all-assay SNV expansion are deferred; the requested core experiments are complete.

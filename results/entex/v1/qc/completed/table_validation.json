@@ -1,0 +1,61 @@
+{
+  "matrices": [
+    {
+      "source": "results/entex/v1/p0_analysis",
+      "runs": 30,
+      "paired_arithmetic": "pass"
+    },
+    {
+      "source": "results/entex/v1/p0_ctcf_analysis",
+      "runs": 30,
+      "paired_arithmetic": "pass"
+    },
+    {
+      "source": "results/entex/v1/p0_h3k27ac_analysis",
+      "runs": 30,
+      "paired_arithmetic": "pass"
+    },
+    {
+      "source": "results/entex/v1/p0_exposure_matched_analysis",
+      "runs": 30,
+      "paired_arithmetic": "pass"
+    },
+    {
+      "source": "results/entex/v1/p1_analysis/thyroid_gland",
+      "runs": 30,
+      "paired_arithmetic": "pass"
+    },
+    {
+      "source": "results/entex/v1/p1_analysis/Peyers_patch",
+      "runs": 30,
+      "paired_arithmetic": "pass"
+    },
+    {
+      "source": "results/entex/v1/p1_analysis/gastroesophageal_sphincter",
+      "runs": 30,
+      "paired_arithmetic": "pass"
+    },
+    {
+      "source": "results/entex/v1/p1_analysis/body_of_pancreas",
+      "runs": 30,
+      "paired_arithmetic": "pass"
+    },
+    {
+      "source": "results/entex/v1/p1_analysis/tibial_nerve",
+      "runs": 30,
+      "paired_arithmetic": "pass"
+    },
+    {
+      "source": "results/entex/v1/p2_analysis/h3k27ac",
+      "runs": 30,
+      "paired_arithmetic": "pass"
+    },
+    {
+      "source": "results/entex/v1/p2_analysis/ctcf",
+      "runs": 30,
+      "paired_arithmetic": "pass"
+    }
+  ],
+  "total_runs": 330,
+  "complete_audits": 330
+}

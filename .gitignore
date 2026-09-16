@@ -325,3 +325,18 @@ docs/PSB_EXPERIMENT_PLAN.md
 
 !/results/entex/v1/p0_h3k27ac_analysis/
 !/results/entex/v1/p0_h3k27ac_analysis/**
+
+!/results/entex/v1/p0_ctcf_analysis/
+!/results/entex/v1/p0_ctcf_analysis/**
+
+!/results/entex/v1/p0_sensitivity_report/
+!/results/entex/v1/p0_sensitivity_report/**
+
+!/results/entex/v1/p1_analysis/
+!/results/entex/v1/p1_analysis/**
+
+!/results/entex/v1/p2_analysis/
+!/results/entex/v1/p2_analysis/**
+
+!/results/entex/v1/final_report/
+!/results/entex/v1/final_report/**
