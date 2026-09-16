@@ -595,3 +595,19 @@ sensitivities and complexity comparisons in the supplement. Do not elevate the
 matched-only positive delta while omitting stronger C/C+T comparators. No P1/P2
 smoke score belongs in a manuscript results table. Revisit their placement only
 after complete paired chromosome-held-out analyses.
+
+
+Active-job code is intentionally pinned: P0 sensitivities/P1 began on d622ca9
+(compatible with their earlier 9119214 commands), P2 on 89f34a9. The queued
+`server_commands/finalize.sh` waits for all three run shells to exit, backs up
+completed sensitivity outputs, then fast-forward synchronizes the server checkout
+from GitHub and builds the complete P0 sensitivity comparison. It writes explicit
+exit statuses to `results/entex/v1/server/completion_status.json`. It does not
+commit unreviewed server output or conceal failed jobs. Local code/results commits
+are pushed as reviewed; no active computation needs an SSH connection to persist.
+
+Across completed P0/P0b cases, there is no convincing evidence that the benefit is
+specifically concentrated in the high-complexity stratum. Strict high-complexity
+intervals include zero in primary, matched, and H3K27ac-only analyses. Keep all
+stratum results with AUROC/normalized AP in the supplement rather than selecting
+the largest subgroup estimate.
