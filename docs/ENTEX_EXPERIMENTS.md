@@ -7,9 +7,10 @@
 - **Exposure-matched sensitivity completed:** all 30 jobs; strict gain +0.001482
   [0.000098, 0.002925], one-hop +0.002002 [0.000844, 0.003278]. This balanced,
   selected population differs from primary P0 and does not replace its result.
-- H3K27ac-only/CTCF-only P0 matrices are running sequentially.
+- H3K27ac-only P0 completed: strict +0.000584 [0.000084, 0.001065];
+  one-hop +0.000612 [-0.000533, 0.001689]. CTCF-only P0 is running.
 - P1 V2 registry coverage is 100%; five tissues selected before fitting, all map
-  completely. Thyroid smoke passed; full five-tissue matrices are running.
+  completely. Thyroid smoke passed; full five-tissue matrices are running/queued.
 - P2 full-accessible CTCF/H3K27ac preparation and mapping completed; both map
   completely with a single containing segment. CTCF smoke passed with 100% coverage; H3K27ac smoke is running. Full P2
   matrices are queued behind successful smoke and P0 sensitivity gates.
@@ -569,3 +570,12 @@ P1 smoke excluded two chrY loci solely for missing topology embeddings under the
 existing extraction rules. C/K/S coverage was 100%; T coverage 99.9992334%.
 The exclusions remain explicit in server `excluded_loci.parquet`; no substitute
 embedding or alternate graph was used.
+
+
+H3K27ac-only P0 completed all 30 jobs. Strict topology gain is small (+0.000584),
+while the one-hop interval includes zero. Strict C+S+T minus C+T is -0.004012
+[-0.007384, -0.000690], so the full representation is not the strongest comparator.
+Keep that negative sequence increment beside the requested topology comparison.
+All result/complexity tables and figures are in `p0_h3k27ac_analysis/`.
+The new 25-test EN-TEx suite also passes on the server's sklearn 1.9 environment;
+11 warnings are the inherited obsolete `n_jobs` argument, not fit failures.
