@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "defined_before_fitting": "2026-09-22",
+  "resource_config": "configs/entex_v1.json",
+  "primary_context": "strict",
+  "secondary_context": "1hop",
+  "primary_metric": "auprc",
+  "primary_comparison": "C+S+T minus C+S",
+  "seeds": [42, 314159, 20260806],
+  "eqtl": {
+    "release": "GTEx V10 SuSiE eQTL, GENCODE39 GRCh38",
+    "tissues": ["Whole_Blood", "Liver", "Brain_Cortex"],
+    "tissue_selection": "distinct blood, hepatic and neural compartments; selected before fitting",
+    "positive_min_pip": 0.9,
+    "negative_max_pip": 0.01,
+    "maf_bins": [0, 0.01, 0.05, 0.1, 0.2, 0.5],
+    "distance_bins_bp": [0, 10000, 50000, 100000, 250000, 500000, 1000001],
+    "matching_seed": 20260922,
+    "matching": "1:1 without replacement within gene, chromosome, MAF bin and absolute TSS-distance bin; SNVs only; unique genomic positions",
+    "label_scope": "exploratory high-versus-low posterior among released credible-set variants; low-PIP controls are not confirmed noncausal",
+    "ld_matching": "unavailable in compact release; do not claim matched LD",
+    "controls": ["T permuted within chromosome", "training labels permuted within chromosome"]
+  },
+  "hg008": {
+    "release": "V0.5-20260318",
+    "task": "external insertion versus deletion, INS=1; not breakpoint localization",
+    "minimum_length": 50,
+    "clonal_only": true,
+    "maximum_nearest_distance": 10000,
+    "mapping": "unchanged manuscript endpoint normalizer and mapper; report overlap-only sensitivity",
+    "primary_feature_sets": ["coordinate_plus_frozen_sequence_fm_pair", "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm_pair"],
+    "training_examples": "server_workspace/data/processed/hgsvc3_sv_breakpoint_examples_20260809/sv_breakpoint_examples.csv.gz",
+    "training_examples_sha256": "f36727704d4e4dbd0eb55e3550832d6d83e89c035c06b6829dc8a683aadf54b6",
+    "manuscript_result_root": "server_workspace/results/hgsvc3_sv_sequence_fm_factorial_20260815",
+    "regression_auprc_tolerance": 0.0001,
+    "uncertainty": "paired chromosome-fold then seed bootstrap; tiny single-genome sample, descriptive only"
+  }
+}

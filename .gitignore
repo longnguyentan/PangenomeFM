@@ -340,3 +340,14 @@ docs/PSB_EXPERIMENT_PLAN.md
 
 !/results/entex/v1/final_report/
 !/results/entex/v1/final_report/**
+
+# Compact external-transfer evidence; raw data and model predictions stay local.
+!/docs/DOWNSTREAM_TRANSFER_V1.md
+!/results/downstream_v2/
+/results/downstream_v2/*
+!/results/downstream_v2/v1/
+/results/downstream_v2/v1/*
+!/results/downstream_v2/v1/qc/
+!/results/downstream_v2/v1/qc/**
+!/results/downstream_v2/v1/analysis/
+!/results/downstream_v2/v1/analysis/**

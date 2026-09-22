@@ -1,0 +1,60 @@
+{
+  "raw_rows": 210,
+  "raw_svtypes": {
+    "BND": 74,
+    "DEL": 60,
+    "DUP": 54,
+    "INS": 22
+  },
+  "eligible_rows": 69,
+  "svtypes": {
+    "DEL": 48,
+    "INS": 21
+  },
+  "chromosomes": {
+    "chrX": 6,
+    "chr2": 6,
+    "chr10": 6,
+    "chr8": 5,
+    "chr13": 5,
+    "chr11": 5,
+    "chr4": 5,
+    "chr5": 4,
+    "chr12": 4,
+    "chr7": 3,
+    "chr6": 3,
+    "chr3": 3,
+    "chr20": 3,
+    "chr1": 3,
+    "chr14": 2,
+    "chr16": 2,
+    "chr9": 1,
+    "chr17": 1,
+    "chr18": 1,
+    "chr19": 1
+  },
+  "exclusion_counts": {
+    "not_INS_or_DEL": 128,
+    "subclonal_or_unspecified": 13
+  },
+  "positive_prevalence": 0.30434782608695654,
+  "unique_events": 68,
+  "inferred_end_rows": 6,
+  "endpoint_convention": "Original HGSVC normalizer: POS-1 and END-1, or POS+max(REF length, SVLEN)-2 when END absent",
+  "target": "INS=1 versus DEL=0, length>=50; no genome-background negatives",
+  "inputs": {
+    "GRCh38_HG008-T-V0.5_somatic-stvar_PASS.draftbenchmark.vcf.gz": {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/downstream_v2/sources/hg008_v05/GRCh38_HG008-T-V0.5_somatic-stvar_PASS.draftbenchmark.vcf.gz",
+      "bytes": 58191,
+      "mtime_ns": 1790088432030107879,
+      "sha256": "102ea23785be0b55f2143db3141f5bdc7aef28993b7c64103279b8cc0666e84b"
+    },
+    "GRCh38_HG008-T-V0.5_somatic-stvar-clonal.draftbenchmark.bed": {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/downstream_v2/sources/hg008_v05/GRCh38_HG008-T-V0.5_somatic-stvar-clonal.draftbenchmark.bed",
+      "bytes": 9330,
+      "mtime_ns": 1790088432141353024,
+      "sha256": "2bdd559900f9237e6aa28c366012e121cbf2bc573c447f811d7d9262bf924787"
+    }
+  },
+  "processing_version": 1
+}

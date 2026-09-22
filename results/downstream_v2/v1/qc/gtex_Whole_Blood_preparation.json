@@ -1,0 +1,95 @@
+{
+  "raw_rows": 249442,
+  "raw_unique_loci": 205429,
+  "tissue": "Whole_Blood",
+  "excluded_non_snv": 18932,
+  "excluded_conflicting_or_multiallelic_rows": 151,
+  "excluded_intermediate_pip_rows": 130227,
+  "excluded_outside_matching_bins": 0,
+  "eligible_positive_rows": 2806,
+  "eligible_negative_rows": 97326,
+  "selected_loci": 92,
+  "positive_count": 46,
+  "negative_count": 46,
+  "positive_prevalence": 0.5,
+  "genes": 45,
+  "chromosome_counts": {
+    "chr6": 14,
+    "chr2": 10,
+    "chr8": 10,
+    "chr19": 8,
+    "chr3": 6,
+    "chr1": 6,
+    "chr17": 4,
+    "chr20": 4,
+    "chr15": 4,
+    "chr4": 4,
+    "chr14": 4,
+    "chr7": 4,
+    "chr9": 4,
+    "chrX": 4,
+    "chr16": 2,
+    "chr11": 2,
+    "chr13": 2
+  },
+  "unmatched_eligible_rows": 100040,
+  "definition": {
+    "release": "GTEx V10 SuSiE eQTL, GENCODE39 GRCh38",
+    "tissues": [
+      "Whole_Blood",
+      "Liver",
+      "Brain_Cortex"
+    ],
+    "tissue_selection": "distinct blood, hepatic and neural compartments; selected before fitting",
+    "positive_min_pip": 0.9,
+    "negative_max_pip": 0.01,
+    "maf_bins": [
+      0,
+      0.01,
+      0.05,
+      0.1,
+      0.2,
+      0.5
+    ],
+    "distance_bins_bp": [
+      0,
+      10000,
+      50000,
+      100000,
+      250000,
+      500000,
+      1000001
+    ],
+    "matching_seed": 20260922,
+    "matching": "1:1 without replacement within gene, chromosome, MAF bin and absolute TSS-distance bin; SNVs only; unique genomic positions",
+    "label_scope": "exploratory high-versus-low posterior among released credible-set variants; low-PIP controls are not confirmed noncausal",
+    "ld_matching": "unavailable in compact release; do not claim matched LD",
+    "controls": [
+      "T permuted within chromosome",
+      "training labels permuted within chromosome"
+    ]
+  },
+  "label_warning": "Low-PIP released credible-set controls, not confirmed noncausal or all-tested negatives; LD unmatched",
+  "inputs": {
+    "GTEx_v10_SuSiE_eQTL.tar": {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/downstream_v2/sources/gtex_v10/GTEx_v10_SuSiE_eQTL.tar",
+      "bytes": 174469120,
+      "mtime_ns": 1790088576126017055,
+      "sha256": "294891d94fa04556963fb67434ca33bf5f92a236d4f05ea208c3d9b4b13f211f"
+    },
+    "gencode.v39.GRCh38.genes.gtf": {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/downstream_v2/sources/gtex_v10/gencode.v39.GRCh38.genes.gtf",
+      "bytes": 151189604,
+      "mtime_ns": 1790088982374491943,
+      "sha256": "332890ccc7016cc608dc140ca8652d90aeadfd8d007312c6ed1787584428fbb5"
+    },
+    "downstream_transfer_v1.json": {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/configs/downstream_transfer_v1.json",
+      "bytes": 2134,
+      "mtime_ns": 1790089054805504347,
+      "sha256": "30ff866f55f897b5a98e4eb16b0b982fa17e2da8d16839b68c57f0124939da96"
+    }
+  },
+  "processing_version": 1,
+  "archive_member": "Whole_Blood.v10.eQTLs.SuSiE_summary.parquet"
+}

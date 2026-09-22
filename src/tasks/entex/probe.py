@@ -77,7 +77,8 @@ def main() -> None:
         choices=["primary", "exposure_matched", "h3k27ac", "ctcf"],
         default="primary",
     )
-    ap.add_argument("--task", choices=["p0", "p1", "p2"], default="p0")
+    ap.add_argument("--task", choices=["p0", "p1", "p2", "eqtl"], default="p0")
+    ap.add_argument("--negative-controls", action="store_true")
     ap.add_argument("--subtask")
     ap.add_argument("--measurements", type=Path)
     ap.add_argument("--cache-all-reference-targets", action="store_true")
@@ -111,13 +112,13 @@ def main() -> None:
     if mapping_audit["fraction_mapped"] < config["minimum_mapping"]:
         raise ValueError("Mapping below prespecified gate")
     loci = pd.read_parquet(args.loci)
-    if args.task == "p1":
+    if args.task in {"p1", "eqtl"}:
         if args.sensitivity != "primary" or not args.subtask:
             raise ValueError("P1 requires --subtask tissue and primary sensitivity")
         if (
             "task" not in loci
             or "subtask" not in loci
-            or not loci.task.eq("p1").all()
+            or not loci.task.eq(args.task).all()
             or not loci.subtask.eq(args.subtask).all()
         ):
             raise ValueError("P1 tissue metadata mismatch")
@@ -336,6 +337,28 @@ def main() -> None:
                 val_chrs=set(job.validation),
                 seed=job.seed,
             )
+        if args.negative_controls:
+            if args.task != "eqtl":
+                raise ValueError(
+                    "New negative controls are scoped to the prespecified eQTL task"
+                )
+            from tasks.transfer.controls import evaluate_controls
+
+            control_metrics, control_predictions = evaluate_controls(
+                selected=selected,
+                components=components,
+                test_chrs=set(job.test),
+                val_chrs=set(job.validation),
+                seed=job.seed,
+            )
+            metrics = pd.concat([metrics, control_metrics], ignore_index=True)
+            predictions = pd.concat(
+                [predictions, control_predictions], ignore_index=True
+            )
+            audit["negative_controls"] = [
+                "T permuted within chromosome",
+                "training labels permuted within chromosome",
+            ]
         for frame in [metrics, predictions]:
             for key, value in [
                 ("task", args.task),
