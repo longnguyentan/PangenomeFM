@@ -185,6 +185,10 @@ def main() -> None:
     prior = pd.read_csv(original_dir / "test_predictions.csv.gz")
     result, predictions, regressions = [], [], []
     for index, name in enumerate(task["primary_feature_sets"]):
+        print(
+            f"Fitting original HGSVC: {job.fold} seed={job.seed} {job.closure} {name}",
+            flush=True,
+        )
         count = 2 if index == 0 else 3
         matrix = np.concatenate(old_pairs[:count], axis=1)
         model, temperature, threshold = fit_original(
@@ -228,6 +232,19 @@ def main() -> None:
             raise ValueError(
                 "Reconstructed original probe fails manuscript regression; external evaluation stopped"
             )
+        import joblib
+
+        joblib.dump(
+            dict(
+                model=model,
+                temperature=temperature,
+                threshold=threshold,
+                training_data_sha256=task["training_examples_sha256"],
+                checkpoint=identity,
+                hg008_label_access="none",
+            ),
+            out / f"{name}.joblib",
+        )
         raw = model.predict_proba(np.concatenate(new_pairs[:count], axis=1))[:, 1]
         scores = apply_temperature(raw, temperature)
         for scope, mask in [

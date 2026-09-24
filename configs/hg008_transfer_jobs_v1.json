@@ -1,0 +1,786 @@
+{
+  "schema_version": 1,
+  "run_name": "hg008_transfer_v1",
+  "tasks": [
+    {
+      "id": "hg008_fold_a_42_strict",
+      "stage": "batch_0",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "42",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_a_42_1hop",
+      "stage": "batch_1",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "42",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_a_314159_strict",
+      "stage": "batch_2",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "314159",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_a_314159_1hop",
+      "stage": "batch_3",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_a_20260806_strict",
+      "stage": "batch_0",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_a_20260806_1hop",
+      "stage": "batch_1",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_b_42_strict",
+      "stage": "batch_2",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "42",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_b_42_1hop",
+      "stage": "batch_3",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "42",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_b_314159_strict",
+      "stage": "batch_0",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "314159",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_b_314159_1hop",
+      "stage": "batch_1",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_b_20260806_strict",
+      "stage": "batch_2",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_b_20260806_1hop",
+      "stage": "batch_3",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_c_42_strict",
+      "stage": "batch_0",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "42",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_c_42_1hop",
+      "stage": "batch_1",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "42",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_c_314159_strict",
+      "stage": "batch_2",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "314159",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_c_314159_1hop",
+      "stage": "batch_3",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_c_20260806_strict",
+      "stage": "batch_0",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_c_20260806_1hop",
+      "stage": "batch_1",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_d_42_strict",
+      "stage": "batch_2",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "42",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_d_42_1hop",
+      "stage": "batch_3",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "42",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_d_314159_strict",
+      "stage": "batch_0",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "314159",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_d_314159_1hop",
+      "stage": "batch_1",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_d_20260806_strict",
+      "stage": "batch_2",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_d_20260806_1hop",
+      "stage": "batch_3",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_e_42_strict",
+      "stage": "batch_0",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "42",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_e_42_1hop",
+      "stage": "batch_1",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "42",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_e_314159_strict",
+      "stage": "batch_2",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "314159",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_e_314159_1hop",
+      "stage": "batch_3",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop"
+      ]
+    },
+    {
+      "id": "hg008_fold_e_20260806_strict",
+      "stage": "batch_0",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict"
+      ]
+    },
+    {
+      "id": "hg008_fold_e_20260806_1hop",
+      "stage": "batch_1",
+      "description": "Reconstruct original HGSVC probe, check regression, score excluded-chromosome HG008",
+      "resource": "cpu",
+      "cost": "medium",
+      "depends_on": [],
+      "requires_paths": [
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.external_sv",
+        "--external-examples",
+        "data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+        "--out-root",
+        "results/downstream_v2/v1/hg008_full",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop"
+      ]
+    }
+  ]
+}

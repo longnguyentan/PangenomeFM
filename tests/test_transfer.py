@@ -11,6 +11,7 @@ from tasks.transfer.controls import chromosome_permutation
 from tasks.transfer.eqtl import gene_tss, prepare_tissue
 from tasks.transfer.hg008 import in_regions, normalize, verify_md5
 from tasks.transfer.external_sv import fit_original, masks
+from tasks.transfer.summarize import validate_matrix
 
 
 def test_completed_entex_artifact_regression():
@@ -129,3 +130,29 @@ def test_external_fit_sees_only_original_train_validation():
         model.predict_proba(matrix), other.predict_proba(matrix)
     )
     assert temp == temp2 and threshold == threshold2
+
+
+def test_summary_rejects_missing_paired_runs():
+    from tasks.entex.analyze import BASE, FULL
+
+    rows = []
+    for fold in ["fold_a", "fold_b"]:
+        for feature in [BASE, FULL]:
+            rows.append(
+                dict(
+                    fold=fold,
+                    seed=42,
+                    context="strict",
+                    scope="all",
+                    feature_set=feature,
+                    n_test=10,
+                )
+            )
+    frame = pd.DataFrame(rows)
+    expected = {("fold_a", 42, "strict"), ("fold_b", 42, "strict")}
+    validate_matrix(frame, expected)
+    with pytest.raises(ValueError, match="Incomplete"):
+        validate_matrix(frame.iloc[:-1], expected)
+    frame.loc[0, "n_test"] = 9
+    with pytest.raises(ValueError, match="different test"):
+        validate_matrix(frame, expected)
