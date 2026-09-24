@@ -1,0 +1,16 @@
+{
+  "defined_before_new_stratum_scores": "2026-09-24",
+  "target": "INS versus DEL; within-type AP/AUROC are undefined",
+  "primary_interaction": "high minus low native graph complexity in strict context",
+  "endpoint_complexity": "maximum category at the two manuscript endpoint coordinates; start-only sensitivity",
+  "complexity_categories": ["low", "medium", "high"],
+  "minimum_per_class_per_run": 20,
+  "minimum_events_per_run": 100,
+  "size_bins": "retain existing HGSVC length_bin without outcome-dependent merging",
+  "frequency_bins": "retain existing HGSVC af_bin; separate AC=1 count stratum",
+  "pvalue": "exact two-sided sign flips of seed-averaged fold gains, descriptive under CV dependence",
+  "multiple_testing": "BH within each context and stratification family, all prespecified estimable strata retained",
+  "bootstrap": "existing paired 10000-draw chromosome-fold then seed method",
+  "n_bootstrap": 10000,
+  "seed": 20260924
+}

@@ -937,6 +937,10 @@ def main():
     ap.add_argument("--full_segments", required=True)
     ap.add_argument("--out_dir", required=True)
     ap.add_argument(
+        "--canonical_conflict_policy", choices=["error", "exclude"], default="error",
+        help="Handle conflicting orientation-equivalent candidates; default preserves fail-fast behavior.",
+    )
+    ap.add_argument(
         "--primary_dataset_name",
         default="primary",
         help="Stable dataset label stored in predictions for the primary manifest.",
