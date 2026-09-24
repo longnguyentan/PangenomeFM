@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "aliases": {"NA24385": "HG002"},
+  "evidence": {"NA24385": "https://www.ncbi.nlm.nih.gov/biosample/SAMN03283347/"},
+  "scope": "Verified alias relevant to the currently loaded HPRC/HGSVC sample lists; do not infer aliases by string similarity"
+}

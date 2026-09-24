@@ -8,6 +8,7 @@ import pytest
 from evaluation.paired_inference import bh_adjust, fold_sign_flip
 from tasks.transfer.scaling import nested_manifests
 from tasks.transfer.sv_strata import annotate, run_metrics
+from tasks.transfer.donors import overlap_table, parse_gt
 
 
 def test_nested_scaling_preserves_all_heldout_rows_and_context_pairs():
@@ -103,3 +104,24 @@ def test_sv_class_is_target_not_a_discrimination_stratum(tmp_path):
     assert by_type.auprc.isna().all() and by_type.auroc.isna().all()
     assert by_type.class_recall.eq(1).all()
     assert not by_type.sufficiently_powered.any()
+
+
+def test_donor_alias_prevents_false_external_claim():
+    membership = pd.DataFrame(
+        dict(sample=["HG002", "HG00733", "other"], hprc_r2=[True, True, False])
+    )
+    table = overlap_table(
+        ["NA24385", "HG00733", "other"], membership, {"NA24385": "HG002"}
+    )
+    assert table.in_hprc_pretraining_cohort.tolist() == [True, True, False]
+    with pytest.raises(ValueError, match="duplicate biological"):
+        overlap_table(["HG002", "NA24385"], membership, {"NA24385": "HG002"})
+
+
+def test_missing_and_unphased_genotypes_are_not_haplotype_reference_calls():
+    assert parse_gt("1|.") == (1, -1)
+    assert parse_gt(".|0") == (-1, 0)
+    assert parse_gt("1/0") == (-1, -1)
+    assert parse_gt("1") == (1, -1)
+    with pytest.raises(ValueError, match="biallelic"):
+        parse_gt("2|0")
