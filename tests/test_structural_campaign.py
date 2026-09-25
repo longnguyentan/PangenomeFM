@@ -10,6 +10,9 @@ from tasks.transfer.scaling import nested_manifests, pending_tasks
 from tasks.transfer.sv_strata import annotate, run_metrics
 from tasks.transfer.donors import overlap_table, parse_gt
 from tasks.transfer.report import paired_rows
+from tasks.transfer.scaling_evaluate import commands
+from scripts.server.run_ccre_frozen_probe_matrix import ProbeJob
+from argparse import Namespace
 from tasks.entex.analyze import BASE, FULL
 
 
@@ -179,3 +182,24 @@ def test_reuse_scaling_requires_identical_data_command_and_checkpoint(tmp_path):
     b.write_text("changed manifest")
     with pytest.raises(ValueError, match="manifest changed"):
         pending_tasks(tasks, tmp_path / "execution")
+
+
+def test_scaling_evaluation_reuses_full_graph_and_original_probe_interfaces():
+    args = Namespace(
+        resource_root=Path("resource"),
+        out_root=Path("new_results"),
+        entex_root=Path("entex"),
+        checkpoint_root=Path("scaled"),
+        device="cpu",
+    )
+    job = ProbeJob("fold_a", ("chr1",), ("chr2",), 42, "strict")
+    plan = commands(args, job, Path("scaled/checkpoint.pt"))
+    for command in plan.values():
+        assert (
+            command[command.index("--manifest") + 1]
+            == "resource/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv"
+        )
+        assert not any("smoke" in x for x in command)
+    assert plan["sv"][plan["sv"].index("--checkpoint") + 1] == "scaled/checkpoint.pt"
+    assert "--measurements" in plan["ctcf"] and "--tasks" not in plan["ctcf"]
+    assert plan["ctcf"][plan["ctcf"].index("--results-root") + 1] == "scaled"
