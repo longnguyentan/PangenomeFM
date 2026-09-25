@@ -19,6 +19,48 @@ from tasks.entex.prepare import fingerprint
 FRACTIONS = (0.125, 0.25, 0.5, 1.0)
 
 
+def pending_tasks(
+    tasks: list[dict], completed_root: Path
+) -> tuple[list[dict], list[dict]]:
+    """Reuse successful pilots only when commands and manifest contents agree."""
+    completed = {}
+    for path in completed_root.glob("**/task_status/*.json"):
+        status = json.loads(path.read_text())
+        if status.get("status") != "complete" or status.get("return_code") != 0:
+            continue
+        if status["task_id"] in completed:
+            raise ValueError("Duplicate completed scaling task")
+        completed[status["task_id"]] = (path, status)
+    pending, reused = [], []
+    for task in tasks:
+        if task["id"] not in completed:
+            pending.append(task)
+            continue
+        path, status = completed[task["id"]]
+        previous, current = list(status["command"]), list(task["command"])
+        i, j = previous.index("--manifest") + 1, current.index("--manifest") + 1
+        if (
+            fingerprint(Path(previous[i]))["sha256"]
+            != fingerprint(Path(current[j]))["sha256"]
+        ):
+            raise ValueError("Completed pilot training/heldout manifest changed")
+        previous[i] = current[j]
+        if previous != current:
+            raise ValueError("Completed pilot command differs from full campaign")
+        out = Path(current[current.index("--out_dir") + 1])
+        checkpoints = list(out.glob("run_*/ckpt_*.pt"))
+        if len(checkpoints) != 1:
+            raise ValueError("Completed pilot lacks a unique persisted checkpoint")
+        reused.append(
+            dict(
+                task_id=task["id"],
+                status=fingerprint(path),
+                checkpoint=fingerprint(checkpoints[0]),
+            )
+        )
+    return pending, reused
+
+
 def nested_manifests(
     manifest: pd.DataFrame, fold: dict, seed: int = 20260924
 ) -> dict[float, pd.DataFrame]:
@@ -88,6 +130,8 @@ def main() -> None:
     ap.add_argument("--seeds", nargs="+", type=int, default=[42])
     ap.add_argument("--contexts", nargs="+", default=["strict"])
     ap.add_argument("--smoke-epochs", type=int)
+    ap.add_argument("--completed-execution-root", type=Path)
+    ap.add_argument("--balanced-stages", action="store_true")
     args = ap.parse_args()
     config = load_config(args.config)
     base = json.loads(Path("configs/entex_v1.json").read_text())
@@ -167,6 +211,13 @@ def main() -> None:
                     )
     if not tasks:
         raise ValueError("No scaling jobs selected")
+    total = len(tasks)
+    reused = []
+    if args.completed_execution_root:
+        tasks, reused = pending_tasks(tasks, args.completed_execution_root)
+    if args.balanced_stages:
+        for index, task in enumerate(tasks):
+            task["stage"] = f"batch_{index % 4}"
     (args.out_dir / "roadmap.json").write_text(
         json.dumps(dict(run_name="pretraining_data_scaling_v1", tasks=tasks), indent=2)
         + "\n"
@@ -184,6 +235,9 @@ def main() -> None:
                 optimization_seeds=args.seeds,
                 canonical_conflict_policy="exclude consistently at every scale, including newly trained 100% control",
                 meaning="pretraining-window scaling, not population-diversity scaling or a scaling law",
+                total_tasks=total,
+                pending_tasks=len(tasks),
+                reused_completed_pilots=reused,
             ),
             indent=2,
         )

@@ -1,0 +1,40 @@
+{
+  "status": "complete",
+  "predictions_refitted": false,
+  "runs": 30,
+  "configuration": {
+    "defined_before_new_stratum_scores": "2026-09-24",
+    "target": "INS versus DEL; within-type AP/AUROC are undefined",
+    "primary_interaction": "high minus low native graph complexity in strict context",
+    "endpoint_complexity": "maximum category at the two manuscript endpoint coordinates; start-only sensitivity",
+    "complexity_categories": [
+      "low",
+      "medium",
+      "high"
+    ],
+    "minimum_per_class_per_run": 20,
+    "minimum_events_per_run": 100,
+    "size_bins": "retain existing HGSVC length_bin without outcome-dependent merging",
+    "frequency_bins": "retain existing HGSVC af_bin; separate AC=1 count stratum",
+    "pvalue": "exact two-sided sign flips of seed-averaged fold gains, descriptive under CV dependence",
+    "multiple_testing": "BH within each context and stratification family, all prespecified estimable strata retained",
+    "bootstrap": "existing paired 10000-draw chromosome-fold then seed method",
+    "n_bootstrap": 10000,
+    "seed": 20260924
+  },
+  "examples": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hgsvc3_sv_breakpoint_examples_20260809/sv_breakpoint_examples.csv.gz",
+    "bytes": 6009997,
+    "mtime_ns": 1786425872241159017,
+    "sha256": "f36727704d4e4dbd0eb55e3550832d6d83e89c035c06b6829dc8a683aadf54b6"
+  },
+  "complexity": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/results/complexity_context_v2_20260815/native_complexity_v2/complexity_features.tsv",
+    "bytes": 329100,
+    "mtime_ns": 1786814661426263525,
+    "sha256": "7485d2c4d1cb8a047969fa1f92de6cfea3945f0de9f229f41d2382081d516d24"
+  },
+  "complexity_assigned_fraction": 1.0,
+  "within_class_note": "SVTYPE is the target: AP/AUROC undefined; class_recall is sensitivity for INS and specificity for DEL",
+  "multiplicity_note": "BH over exact two-sided fold sign-flip p-values within context/family; exploratory, five-fold resolution and overlapping CV training limit inference"
+}

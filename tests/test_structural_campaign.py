@@ -6,9 +6,11 @@ import pandas as pd
 import pytest
 
 from evaluation.paired_inference import bh_adjust, fold_sign_flip
-from tasks.transfer.scaling import nested_manifests
+from tasks.transfer.scaling import nested_manifests, pending_tasks
 from tasks.transfer.sv_strata import annotate, run_metrics
 from tasks.transfer.donors import overlap_table, parse_gt
+from tasks.transfer.report import paired_rows
+from tasks.entex.analyze import BASE, FULL
 
 
 def test_nested_scaling_preserves_all_heldout_rows_and_context_pairs():
@@ -125,3 +127,55 @@ def test_missing_and_unphased_genotypes_are_not_haplotype_reference_calls():
     assert parse_gt("1") == (1, -1)
     with pytest.raises(ValueError, match="biallelic"):
         parse_gt("2|0")
+
+
+def test_report_pairs_counts_and_undefined_classes():
+    frame = pd.DataFrame(
+        dict(
+            fold=["a", "a", "b", "b"],
+            seed=[42] * 4,
+            feature_set=[BASE, FULL] * 2,
+            auprc=[0.5, 0.6, np.nan, np.nan],
+            n=[100] * 4,
+            positive_prevalence=[0.5, 0.5, 1, 1],
+        )
+    )
+    result = paired_rows(frame, "auprc")
+    assert result.gain.iloc[0] == pytest.approx(0.1)
+    assert np.isnan(result.gain.iloc[1])
+    with pytest.raises(ValueError, match="Missing paired"):
+        paired_rows(frame.iloc[:-1], "auprc")
+    frame.loc[0, "n"] = 99
+    with pytest.raises(ValueError, match="counts/prevalence"):
+        paired_rows(frame, "auprc")
+
+
+def test_reuse_scaling_requires_identical_data_command_and_checkpoint(tmp_path):
+    a, b = tmp_path / "a.csv", tmp_path / "b.csv"
+    a.write_text("same manifest")
+    b.write_text(a.read_text())
+    out = tmp_path / "checkpoint"
+    (out / "run_001").mkdir(parents=True)
+    (out / "run_001/ckpt_strict.pt").write_bytes(b"fixture")
+    status_dir = tmp_path / "execution/task_status"
+    status_dir.mkdir(parents=True)
+    cmd = [
+        "python",
+        "-m",
+        "training.pretrain",
+        "--manifest",
+        str(a),
+        "--out_dir",
+        str(out),
+    ]
+    (status_dir / "pilot.json").write_text(
+        json.dumps(dict(task_id="pilot", status="complete", return_code=0, command=cmd))
+    )
+    current = cmd.copy()
+    current[4] = str(b)
+    tasks = [dict(id="pilot", command=current)]
+    todo, done = pending_tasks(tasks, tmp_path / "execution")
+    assert not todo and len(done) == 1
+    b.write_text("changed manifest")
+    with pytest.raises(ValueError, match="manifest changed"):
+        pending_tasks(tasks, tmp_path / "execution")

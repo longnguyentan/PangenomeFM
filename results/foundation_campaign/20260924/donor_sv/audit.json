@@ -1,0 +1,43 @@
+{
+  "raw_rows": 176231,
+  "matched_variants": 173969,
+  "samples": 65,
+  "unphased_genotypes": 0,
+  "missing_haplotype_genotypes": 708393,
+  "positive_carrier_records": 1820574,
+  "missing_policy": "Unknown alleles never count as reference or alternate; unphased ALT carriers enter donor-only analysis",
+  "status": "complete",
+  "vcf": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/downstream/sv/hgsvc3/1.0/GRCh38/variants_GRCh38_sv_insdel_alt_HGSVC2024v1.0.vcf.gz",
+    "bytes": 53014672,
+    "mtime_ns": 1786350797970894692,
+    "sha256": "cbdf253d1796b5cbcbaf17db072ebaa64a44204a263389522d64bc36292faac2"
+  },
+  "examples": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hgsvc3_sv_breakpoint_examples_20260809/sv_breakpoint_examples.csv.gz",
+    "bytes": 6009997,
+    "mtime_ns": 1786425872241159017,
+    "sha256": "f36727704d4e4dbd0eb55e3550832d6d83e89c035c06b6829dc8a683aadf54b6"
+  },
+  "aliases": {
+    "schema_version": 1,
+    "aliases": {
+      "NA24385": "HG002"
+    },
+    "evidence": {
+      "NA24385": "https://www.ncbi.nlm.nih.gov/biosample/SAMN03283347/"
+    },
+    "scope": "Verified alias relevant to the currently loaded HPRC/HGSVC sample lists; do not infer aliases by string similarity"
+  },
+  "overlap_donors": [
+    "HG00733",
+    "HG02818",
+    "NA19036",
+    "NA19240",
+    "NA24385"
+  ],
+  "encoder_updated": false,
+  "probes_refitted": false,
+  "interpretation": "Donor/haplotype stratification of chromosome-held-out predictions; downstream HGSVC probe training included these donors on other chromosomes. NOT donor-held-out probe validation or personal embeddings.",
+  "shared_variants": "Donor outcomes are correlated through shared variants; macro uncertainty resamples chromosome folds and seeds, never treats donors as independent replicates"
+}

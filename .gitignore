@@ -351,3 +351,23 @@ docs/PSB_EXPERIMENT_PLAN.md
 !/results/downstream_v2/v1/qc/**
 !/results/downstream_v2/v1/analysis/
 !/results/downstream_v2/v1/analysis/**
+
+# Compact structural campaign evidence and the maintained progress checklist.
+!/docs/FOUNDATION_CAMPAIGN_CHECKLIST.md
+!/docs/FOUNDATION_CAMPAIGN_20260924.md
+!/results/foundation_campaign/
+/results/foundation_campaign/*
+!/results/foundation_campaign/20260924/
+/results/foundation_campaign/20260924/*
+!/results/foundation_campaign/20260924/sv_strata/
+!/results/foundation_campaign/20260924/donor_sv/
+!/results/foundation_campaign/20260924/structural_report/
+!/results/foundation_campaign/20260924/sv_strata/**
+!/results/foundation_campaign/20260924/donor_sv/**
+!/results/foundation_campaign/20260924/structural_report/**
+/manuscript/**/*.aux
+/manuscript/**/*.bbl
+/manuscript/**/*.blg
+/manuscript/**/*.out
+/manuscript/**/*.toc
+/manuscript/**/*.log
