@@ -465,8 +465,9 @@ def test_tissue_macro_is_paired_before_bootstrap():
         macro_runs(frame.iloc[:3], ["x", "y"])
 
 
-def test_snv_measurements_keep_donor_tissue_occurrences():
-    from tasks.entex.snv import clean_measurements
+@pytest.mark.parametrize("assay", ["ctcf", "rna"])
+def test_snv_measurements_keep_donor_tissue_occurrences(assay):
+    from tasks.entex.snv import ASSAYS, clean_measurements
 
     frame = pd.DataFrame(
         dict(
@@ -476,7 +477,7 @@ def test_snv_measurements_keep_donor_tissue_occurrences():
             experiment_accession=["e1", "e2", "e1"],
             donor=["d1", "d2", "d1"],
             tissue=["a", "b", "a"],
-            assay=["TF-ChIP-seq_CTCF"] * 3,
+            assay=[ASSAYS[assay]] * 3,
             p_betabinom=[0.001, 0.9, 0.001],
             imbalance_significance=[1, 0, 1],
             cA=[10] * 3,
@@ -488,13 +489,13 @@ def test_snv_measurements_keep_donor_tissue_occurrences():
             hap2_allele=["G"] * 3,
         )
     )
-    out, removed = clean_measurements(frame, "ctcf")
+    out, removed = clean_measurements(frame, assay)
     assert removed == 1 and len(out) == 2
     assert out.locus_id.nunique() == 1 and out.measurement_id.nunique() == 2
     bad = frame.copy()
     bad.loc[2, "imbalance_significance"] = 0
     with pytest.raises(ValueError, match="Conflicting"):
-        clean_measurements(bad, "ctcf")
+        clean_measurements(bad, assay)
 
 
 def test_count_equivalent_logistic_matches_expanded_rows():

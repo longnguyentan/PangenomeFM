@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "defined_on": "2026-09-26",
+  "status": "Exploratory follow-up defined after the primary EN-TEx results, before these follow-up scores",
+  "base_config": "configs/entex_v1.json",
+  "rna": {
+    "source": "data/hetSNVs_high-confidence_AS.tsv",
+    "assay": "RNA-seq",
+    "label": "Supplied imbalance_significance for each informative SNV/experiment",
+    "interpretation": "Locus representation predicting RNA allelic imbalance; not haplotype direction or donor-specific sequence prediction",
+    "folds_seeds_contexts": "Unchanged manuscript 5 folds x 3 seeds x strict/1hop",
+    "encoders": "Frozen canonical PangenomeFM and original NT cache; no biological fine-tuning"
+  },
+  "prediction_followups": {
+    "assays": ["ctcf", "h3k27ac"],
+    "feature_sets": ["C+S", "C+S+T"],
+    "equal_locus_weight": "Each test measurement has weight 1 / number of test measurements at its locus within the assay and run; labels remain per measurement",
+    "strata": ["donor", "tissue"],
+    "minimum_measurements_per_test_fold": 200,
+    "minimum_positive_per_test_fold": 10,
+    "minimum_negative_per_test_fold": 10,
+    "eligibility": "Every fold must meet count thresholds; eligibility based only on labels/counts, shared across seeds, contexts and feature sets",
+    "macro": "Equal weight over the same eligible tissues (or donors) within each fold/seed; then paired hierarchical fold/seed bootstrap",
+    "metrics": ["auprc", "auroc", "normalized_ap"],
+    "normalized_ap": "(AP - weighted positive prevalence) / (1 - weighted positive prevalence)",
+    "n_bootstrap": 10000,
+    "bootstrap_seed": 20260926,
+    "limitations": "Pointwise exploratory intervals; overlapping training folds and multiple analyses. Donor/tissue stratification is not donor/tissue-held-out fitting. Reweighting changes evaluation, not the original training objective."
+  }
+}

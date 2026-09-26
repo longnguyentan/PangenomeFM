@@ -125,7 +125,7 @@ def main() -> None:
     elif args.task == "p2":
         if (
             args.sensitivity != "primary"
-            or args.subtask not in {"ctcf", "h3k27ac"}
+            or args.subtask not in {"ctcf", "h3k27ac", "rna"}
             or args.measurements is None
         ):
             raise ValueError("P2 requires assay subtask and measurement cache")

@@ -8,6 +8,7 @@ from tasks.transfer.scaling_intrinsic import target_digest, validate_scales, sum
 from tasks.transfer.scaling_bio_summary import (
     FEATURE_ALIASES,
     canonical_feature,
+    balanced_accuracy,
     validate,
 )
 
@@ -104,6 +105,8 @@ def test_biological_scaling_summary_requires_all_paired_feature_sets():
                 context="strict",
                 feature_set=feature,
                 n_test=10,
+                n_train=30,
+                n_val=10,
                 positive_prevalence=0.5,
                 auprc=0.6,
                 auroc=0.7,
@@ -114,9 +117,40 @@ def test_biological_scaling_summary_requires_all_paired_feature_sets():
             )
         )
     frame = pd.DataFrame(rows)
-    validate(frame, expected_runs=1)
+    matrix = dict(
+        fractions=(0.125,),
+        tasks=("sv",),
+        folds=("fold_a",),
+        seeds=(42,),
+        contexts=("strict",),
+    )
+    validate(frame, **matrix)
     with pytest.raises(ValueError, match="Incomplete"):
-        validate(frame.iloc[:-1], expected_runs=1)
+        validate(frame.iloc[:-1], **matrix)
+    with pytest.raises(ValueError, match="Incomplete"):
+        validate(frame)  # Entire missing tasks, fractions and runs must fail too.
+    with pytest.raises(ValueError, match="unexpected"):
+        validate(frame.assign(fold="fold_z"), **matrix)
     frame.loc[0, "n_test"] = 9
     with pytest.raises(ValueError, match="universe"):
-        validate(frame, expected_runs=1)
+        validate(frame, **matrix)
+
+
+def test_balanced_accuracy_is_not_ordinary_accuracy():
+    assert balanced_accuracy(
+        dict(positive_fraction=0.1, recall=0, accuracy=0.9)
+    ) == pytest.approx(0.5)
+    with pytest.raises(ValueError, match="disagrees"):
+        balanced_accuracy(
+            dict(positive_fraction=0.1, recall=0, accuracy=0.9, balanced_accuracy=0.9)
+        )
+
+
+def test_prediction_digest_rejects_changed_labels_or_equal_size_changed_loci():
+    from tasks.transfer.scaling_prediction_audit import target_digest as digest
+
+    frame = pd.DataFrame(dict(id=[1, 2], chrom=["chr1", "chr1"], y_true=[0, 1]))
+    expected = digest(frame, "id", "chrom")
+    assert digest(frame.iloc[::-1], "id", "chrom") == expected
+    assert digest(frame.assign(id=[1, 3]), "id", "chrom") != expected
+    assert digest(frame.assign(y_true=[1, 0]), "id", "chrom") != expected

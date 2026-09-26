@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from itertools import product
 import json
 from pathlib import Path
 
@@ -25,6 +26,21 @@ FEATURE_ALIASES = {
 
 def canonical_feature(value: str) -> str:
     return FEATURE_ALIASES.get(value.removesuffix("_pair"), value)
+
+
+def balanced_accuracy(row: dict) -> float:
+    """Recover specificity from accuracy = prevalence*TPR + (1-prevalence)*TNR."""
+    prevalence = float(row["positive_fraction"])
+    if not 0 < prevalence < 1:
+        raise ValueError("Balanced accuracy requires both classes")
+    recall = float(row["recall"])
+    specificity = (float(row["accuracy"]) - prevalence * recall) / (1 - prevalence)
+    if not -1e-9 <= specificity <= 1 + 1e-9:
+        raise ValueError("Inconsistent accuracy/prevalence/recall")
+    value = (recall + specificity) / 2
+    if "balanced_accuracy" in row and not np.isclose(row["balanced_accuracy"], value):
+        raise ValueError("Stored balanced accuracy disagrees with confusion rates")
+    return value
 
 
 def collect(
@@ -61,6 +77,8 @@ def collect(
                             seed=int(row["seed"]),
                             context=row["closure"],
                             feature_set=canonical_feature(str(row["feature_set"])),
+                            n_train=int(row["n_train"]),
+                            n_val=int(row["n_validation"]),
                             n_test=int(row["n"]),
                             positive_prevalence=float(row["positive_fraction"]),
                             auprc=float(row["auprc"])
@@ -69,7 +87,7 @@ def collect(
                             auroc=float(row["auroc"])
                             if pd.notna(row["auroc"])
                             else np.nan,
-                            balanced_accuracy=float(row["accuracy"]),
+                            balanced_accuracy=balanced_accuracy(row),
                             f1=float(row["f1"]),
                             precision=float(row["precision"]),
                             recall=float(row["recall"]),
@@ -82,18 +100,36 @@ def collect(
     return result
 
 
-def validate(frame: pd.DataFrame, expected_runs: int = 30) -> None:
+def validate(
+    frame: pd.DataFrame,
+    *,
+    fractions=(0.125, 0.25, 0.5, 1.0),
+    tasks=("sv", "ccre", "ctcf"),
+    folds=("fold_a", "fold_b", "fold_c", "fold_d", "fold_e"),
+    seeds=(42, 314159, 20260806),
+    contexts=("strict", "1hop"),
+) -> None:
     keys = ["fraction", "task", "fold", "seed", "context"]
     if frame.duplicated(keys + ["feature_set"]).any():
         raise ValueError("Duplicate biological scaling result")
-    counts = frame.groupby(["fraction", "task"]).size().div(7)
-    if not counts.eq(expected_runs).all():
-        raise ValueError(f"Incomplete biological scaling matrix: {counts.to_dict()}")
+    expected = set(
+        product(fractions, tasks, folds, seeds, contexts, FEATURE_ALIASES.values())
+    )
+    observed = set(frame[keys + ["feature_set"]].itertuples(index=False, name=None))
+    if observed != expected:
+        raise ValueError(
+            f"Incomplete or unexpected biological scaling matrix: "
+            f"{len(expected - observed)} missing, {len(observed - expected)} unexpected"
+        )
     for key, group in frame.groupby(keys):
         if group.n_test.nunique() != 1 or group.positive_prevalence.nunique() != 1:
             raise ValueError(f"Paired task universe changed in {key}")
         if set(group.feature_set) != set(FEATURE_ALIASES.values()):
             raise ValueError(f"Missing feature set in {key}")
+    for key, group in frame.groupby(["task", "fold", "seed", "context", "feature_set"]):
+        for column in ["n_test", "positive_prevalence", "n_train", "n_val"]:
+            if group[column].nunique() != 1:
+                raise ValueError(f"Cross-fraction universe changed: {key}, {column}")
 
 
 def summarize(
@@ -111,6 +147,10 @@ def summarize(
                 "f1",
                 "precision",
                 "recall",
+                "positive_prevalence",
+                "n_train",
+                "n_val",
+                "n_test",
             ]:
                 absolute.append(
                     dict(
@@ -147,14 +187,30 @@ def main() -> None:
     ap.add_argument("--probe-root", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, required=True)
     ap.add_argument("--n-bootstrap", type=int, default=10000)
+    ap.add_argument(
+        "--manuscript-config",
+        type=Path,
+        default=Path("configs/server_full_multicohort_20260806.json"),
+    )
     args = ap.parse_args()
     frame = collect(args.probe_root)
-    validate(frame)
+    config = json.loads(args.manuscript_config.read_text())
+    validate(
+        frame,
+        folds=tuple(f["name"] for f in config["rotating_chromosome_folds"]),
+        seeds=tuple(config["training"]["seeds"]),
+        contexts=tuple(config["training"]["contexts"]),
+    )
+    from tasks.transfer.scaling_prediction_audit import audit_predictions
+
+    prediction_audit, baseline_audit = audit_predictions(frame)
     absolute, paired = summarize(frame, args.n_bootstrap, 20260924)
     args.out_dir.mkdir(parents=True, exist_ok=False)
     frame.to_csv(args.out_dir / "per_run.csv", index=False)
     absolute.to_csv(args.out_dir / "summary.csv", index=False)
     paired.to_csv(args.out_dir / "paired_gains.csv", index=False)
+    prediction_audit.to_csv(args.out_dir / "prediction_audit.csv", index=False)
+    baseline_audit.to_csv(args.out_dir / "baseline_invariance.csv", index=False)
     (args.out_dir / "audit.json").write_text(
         json.dumps(
             dict(

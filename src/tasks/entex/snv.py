@@ -13,7 +13,11 @@ import pyarrow.parquet as pq
 
 from tasks.entex.prepare import fingerprint, validate_as
 
-ASSAYS = {"ctcf": "TF-ChIP-seq_CTCF", "h3k27ac": "HM-ChIP-seq_H3K27ac"}
+ASSAYS = {
+    "ctcf": "TF-ChIP-seq_CTCF",
+    "h3k27ac": "HM-ChIP-seq_H3K27ac",
+    "rna": "RNA-seq",
+}
 
 
 def clean_measurements(frame: pd.DataFrame, assay: str) -> tuple[pd.DataFrame, int]:
@@ -49,17 +53,20 @@ def main() -> None:
     ap.add_argument("--source", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, default=Path("data/entex/v1/p2"))
     ap.add_argument("--chunksize", type=int, default=200000)
+    ap.add_argument(
+        "--assays", nargs="+", choices=list(ASSAYS), default=["ctcf", "h3k27ac"]
+    )
     args = ap.parse_args()
     if args.out_dir.exists() and any(args.out_dir.iterdir()):
         raise FileExistsError(args.out_dir)
     args.out_dir.mkdir(parents=True, exist_ok=True)
     audit = dict(
-        version=1,
+        version=2,
         source=fingerprint(args.source),
         raw_rows=0,
         definition="Per accessible SNV/experiment supplied imbalance_significance; no absence-derived negatives",
         coordinates="GRCh38 zero-based half-open",
-        requested_assays=ASSAYS,
+        requested_assays={key: ASSAYS[key] for key in args.assays},
     )
     counts = Counter()
     writers = {}
@@ -68,7 +75,8 @@ def main() -> None:
             validate_as(frame, snv=True)
             audit["raw_rows"] += len(frame)
             counts.update(frame.assay)
-            for key, assay in ASSAYS.items():
+            for key in args.assays:
+                assay = ASSAYS[key]
                 selected = frame.loc[frame.assay.eq(assay)]
                 if selected.empty:
                     continue
@@ -85,7 +93,7 @@ def main() -> None:
             writer.close()
     audit["assay_counts"] = dict(counts)
     audit["tasks"] = {}
-    for key in ASSAYS:
+    for key in args.assays:
         if key not in writers:
             raise ValueError(f"Requested assay missing: {key}")
         # Only the selected assay's compact cache is loaded, never the full TSV.
