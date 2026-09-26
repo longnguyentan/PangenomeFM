@@ -1,0 +1,53 @@
+{
+  "status": "complete",
+  "fold": "fold_d",
+  "seed": 42,
+  "context": "strict",
+  "max_slices": 20,
+  "checkpoint": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_d/seed_42/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr4_chr9_chr14_chr19_chrY_val_chr5_chr10_chr15_chr20_ep100_pat20.pt",
+    "bytes": 237790,
+    "mtime_ns": 1786163406104243708,
+    "sha256": "b467818963f3a868c525d5271a5b21d49a64f67af892446890eea8a1af44e986"
+  },
+  "graph": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+    "bytes": 870096546,
+    "mtime_ns": 1786041795869081191,
+    "sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347"
+  },
+  "manifest": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+    "bytes": 1044864,
+    "mtime_ns": 1786109265393977620,
+    "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+  },
+  "torch_version": "2.6.0+cu124",
+  "cuda": "12.4",
+  "gpu": "NVIDIA RTX A5000",
+  "extraction_audits": {
+    "gpu_first": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 0,
+      "orientation_equivalent_conflicting_pairs": 0,
+      "conflicting_candidate_rows_excluded": 0,
+      "same_label_equivalent_rows_collapsed": 0
+    },
+    "gpu_repeat": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 0,
+      "orientation_equivalent_conflicting_pairs": 0,
+      "conflicting_candidate_rows_excluded": 0,
+      "same_label_equivalent_rows_collapsed": 0
+    },
+    "cpu": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 0,
+      "orientation_equivalent_conflicting_pairs": 0,
+      "conflicting_candidate_rows_excluded": 0,
+      "same_label_equivalent_rows_collapsed": 0
+    }
+  },
+  "scope": "First fixed manifest windows, GPU repeated twice and CPU once; no biological labels fitted or external scores inspected",
+  "limitation": "Numerical differences alone do not establish the cause of archived probe AP disagreement. Original fitted probes/embeddings were not retained."
+}

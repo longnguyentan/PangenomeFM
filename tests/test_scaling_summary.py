@@ -154,3 +154,30 @@ def test_prediction_digest_rejects_changed_labels_or_equal_size_changed_loci():
     assert digest(frame.iloc[::-1], "id", "chrom") == expected
     assert digest(frame.assign(id=[1, 3]), "id", "chrom") != expected
     assert digest(frame.assign(y_true=[1, 0]), "id", "chrom") != expected
+
+
+def test_biological_scaling_contrasts_pair_the_same_fold_and_seed():
+    from tasks.transfer.scaling_bio_report import contrasts
+
+    rows = []
+    for fold, baseline in [("fold_a", 0.5), ("fold_b", 0.8)]:
+        for fraction in [0.125, 0.25, 0.5, 1.0]:
+            rows.append(
+                dict(
+                    task="sv",
+                    context="strict",
+                    fold=fold,
+                    seed=42,
+                    feature_set="C+S+T",
+                    fraction=fraction,
+                    auprc=baseline + fraction / 10,
+                    auroc=baseline + fraction / 10,
+                )
+            )
+    frame = pd.DataFrame(rows)
+    result = contrasts(frame, 20, 42)
+    assert result.loc[result.fraction.eq(0.125), "mean"].tolist() == pytest.approx(
+        [0.0875, 0.0875]
+    )
+    with pytest.raises(ValueError, match="Unpaired"):
+        contrasts(frame.iloc[:-1], 20, 42)

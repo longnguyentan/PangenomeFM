@@ -188,6 +188,20 @@ def main() -> None:
     ap.add_argument("--out-dir", type=Path, required=True)
     ap.add_argument("--n-bootstrap", type=int, default=10000)
     ap.add_argument(
+        "--sv-examples",
+        type=Path,
+        default=Path(
+            "server_workspace/data/processed/hgsvc3_sv_breakpoint_examples_20260809/sv_breakpoint_examples.csv.gz"
+        ),
+    )
+    ap.add_argument(
+        "--complexity",
+        type=Path,
+        default=Path(
+            "server_workspace/results/complexity_context_v2_20260815/native_complexity_v2/complexity_features.tsv"
+        ),
+    )
+    ap.add_argument(
         "--manuscript-config",
         type=Path,
         default=Path("configs/server_full_multicohort_20260806.json"),
@@ -211,6 +225,16 @@ def main() -> None:
     paired.to_csv(args.out_dir / "paired_gains.csv", index=False)
     prediction_audit.to_csv(args.out_dir / "prediction_audit.csv", index=False)
     baseline_audit.to_csv(args.out_dir / "baseline_invariance.csv", index=False)
+    from tasks.transfer.scaling_bio_report import write_report
+
+    write_report(
+        frame,
+        args.out_dir,
+        args.sv_examples,
+        args.complexity,
+        args.n_bootstrap,
+        20260924,
+    )
     (args.out_dir / "audit.json").write_text(
         json.dumps(
             dict(

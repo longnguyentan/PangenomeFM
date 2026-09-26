@@ -375,3 +375,16 @@ docs/PSB_EXPERIMENT_PLAN.md
 !/results/foundation_campaign/20260924/scaling_intrinsic/
 !/results/foundation_campaign/20260924/scaling_intrinsic/**
 /manuscript/**/main.pdf
+
+# Compact lab-meeting follow-ups, never raw measurements or prediction matrices.
+!/docs/ENTEX_LAB_MEETING_20260929.md
+!/results/entex/meeting_20260929/
+/results/entex/meeting_20260929/*
+!/results/entex/meeting_20260929/followups/
+!/results/entex/meeting_20260929/followups/**
+!/results/entex/meeting_20260929/report/
+!/results/entex/meeting_20260929/report/**
+!/results/entex/meeting_20260929/qc/
+!/results/entex/meeting_20260929/qc/**
+!/results/entex/meeting_20260929/rna_analysis/
+!/results/entex/meeting_20260929/rna_analysis/**

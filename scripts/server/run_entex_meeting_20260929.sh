@@ -34,12 +34,17 @@ case "${1:-}" in
     python -c 'import json; from pathlib import Path; a=json.loads(Path("results/entex/meeting_20260929/rna_smoke/fold_a/seed_42/strict/audit.json").read_text()); assert a["status"] == "complete"'
     python scripts/server/run_entex_probe_matrix.py "${common[@]}" \
       --out-root "$entex_out/rna" --gpus 0
+    python -m tasks.entex.analyze --probe-root "$entex_out/rna" \
+      --complexity server_workspace/results/complexity_context_v2_20260815/native_complexity_v2/complexity_features.tsv \
+      --out-dir "$entex_out/rna_analysis"
     ;;
   followups)
     for assay in ctcf h3k27ac; do
       python -m tasks.entex.measurement_followups --assay "$assay" \
         --probe-root "results/entex/v1/p2/$assay" --out-dir "$entex_out/followups/$assay"
     done
+    python -m tasks.entex.followup_report --root "$entex_out/followups" \
+      --out-dir "$entex_out/report"
     ;;
   *) printf '%s\n' 'Usage: bash scripts/server/run_entex_meeting_20260929.sh {rna-smoke|rna-matrix|followups}' >&2; exit 2 ;;
 esac
