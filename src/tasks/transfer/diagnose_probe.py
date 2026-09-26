@@ -125,6 +125,7 @@ def main() -> None:
                 )
             if first_scores is None:
                 first_scores = scores.copy()
+            metrics = binary_metrics(labels[test], scores, threshold)
             row = dict(
                 feature_set=feature,
                 setting=name,
@@ -136,13 +137,12 @@ def main() -> None:
                 n_test=int(test.sum()),
                 iterations=int(model[-1].n_iter_.max()),
                 temperature=temperature,
-                threshold=threshold,
                 archived_auprc=prior_ap,
                 max_error_vs_archive=float(
                     np.abs(scores - prior.p_calibrated.to_numpy()).max()
                 ),
                 max_error_vs_first_fit=float(np.abs(scores - first_scores).max()),
-                **binary_metrics(labels[test], scores, threshold),
+                **metrics,
             )
             row["auprc_difference_from_archive"] = row["auprc"] - prior_ap
             rows.append(row)
