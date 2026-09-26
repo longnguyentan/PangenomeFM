@@ -56,7 +56,7 @@ groups but smaller in high than low complexity. Retain this result.
 - [x] Complete all 120 full-duration pretraining runs (4 fractions × 5 folds ×
   3 seeds × 2 contexts).
 - [ ] Complete frozen biological scaling evaluation: 360 task evaluations.
-  Last successful server snapshot: 37 complete, 8 planned, with eight CPU
+  Last successful server snapshot: 52 complete, 8 planned, with eight CPU
   workers active and verified pilot outputs reused. Recheck when server usage
   access is available; no full biological scaling result is claimed.
 - [x] Summarize intrinsic scaling after auditing identical held-out targets:
@@ -116,9 +116,11 @@ Window scaling is not haplotype-diversity scaling or a scaling law.
 - [x] SSH reauthenticated; server status was successfully checked and the
   checkout was fast-forwarded. No passwords are stored in the project.
 - [ ] Diagnose six HG008 reconstruction failures. A label-free subset test found
-  repeated GPU extraction differences up to 2.7e-6; this is evidence for a
-  numerical reproducibility issue but not a cause attribution. The fixed-feature
-  probe repeatability diagnostic is implemented and awaits a server run.
+  repeated GPU extraction differences up to 2.7e-6. The fixed-feature diagnostic
+  is running on the server; its first exact-matrix C+S refit differs from the
+  archived score by +0.000438 AUPRC, while repeated/C+S+T fits remain pending.
+  This is evidence for a numerical/probe-reconstruction issue, not permission
+  to relax the 1e-4 gate.
   Detached biological jobs do not depend on the SSH window remaining connected.
 
 Unrelated user edits are left intact. No passwords are stored in this checklist,
