@@ -15,6 +15,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.metrics import average_precision_score, roc_auc_score
+from evaluation.calibration import EPSILON
 
 from tasks.entex.analyze import BASE, FULL, estimate, paired, validate_comparator_loci
 from tasks.entex.prepare import fingerprint
@@ -38,15 +39,15 @@ def scores(frame: pd.DataFrame, equal_locus: bool = False) -> dict:
     )
     if frame.y_true.nunique() != 2:
         return dict(result, auprc=np.nan, auroc=np.nan, normalized_ap=np.nan)
+    # Match manuscript binary_metrics, including ties from saturated probabilities.
+    probability = np.clip(frame.p_calibrated.to_numpy(float), EPSILON, 1 - EPSILON)
     ap = float(
-        average_precision_score(frame.y_true, frame.p_calibrated, sample_weight=weights)
+        average_precision_score(frame.y_true, probability, sample_weight=weights)
     )
     return dict(
         result,
         auprc=ap,
-        auroc=float(
-            roc_auc_score(frame.y_true, frame.p_calibrated, sample_weight=weights)
-        ),
+        auroc=float(roc_auc_score(frame.y_true, probability, sample_weight=weights)),
         normalized_ap=(ap - prevalence) / (1 - prevalence),
     )
 
@@ -152,7 +153,21 @@ def run(root: Path, out: Path, protocol_path: Path, assay: str) -> None:
             filters=[("feature_set", "in", [BASE, FULL])],
         )
         validate_comparator_loci(predictions)
+        original_metrics = pd.read_csv(path.parent / "metrics.csv").set_index(
+            "feature_set"
+        )
         for feature, frame in predictions.groupby("feature_set"):
+            unweighted = scores(frame)
+            for metric in ["auprc", "auroc", "positive_prevalence"]:
+                if not np.isclose(
+                    unweighted[metric],
+                    original_metrics.loc[feature, metric],
+                    atol=1e-12,
+                    rtol=0,
+                ):
+                    raise ValueError(
+                        f"Measurement-weight control does not reproduce original {metric}: {path}"
+                    )
             if identity_digest(frame) != identities[fold]:
                 raise ValueError(
                     "Labels/identities/metadata changed across seeds, contexts or comparators"

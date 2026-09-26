@@ -50,6 +50,25 @@ def test_strata_need_power_in_every_fold_and_do_not_use_scores():
     assert result.loc["b", "min_fold_n"] == 0
 
 
+def test_followup_reproduces_manuscript_clipping_at_extreme_probabilities():
+    from scripts.server.run_ccre_frozen_probe_fold import binary_metrics
+
+    frame = pd.DataFrame(
+        dict(
+            measurement_id=["a", "b", "c", "d"],
+            locus_id=["a", "b", "c", "d"],
+            y_true=[1, 0, 1, 0],
+            p_calibrated=[1e-12, 1e-10, 0.9, 0.5],
+        )
+    )
+    original = binary_metrics(
+        frame.y_true.to_numpy(), frame.p_calibrated.to_numpy(), 0.5
+    )
+    followup = scores(frame)
+    assert followup["auprc"] == pytest.approx(original["auprc"], abs=1e-14)
+    assert followup["auroc"] == pytest.approx(original["auroc"], abs=1e-14)
+
+
 def test_metadata_pairing_detects_donor_changes_and_not_row_order():
     frame = pd.DataFrame(
         dict(

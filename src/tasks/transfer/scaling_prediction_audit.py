@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.metrics import average_precision_score, balanced_accuracy_score
+from evaluation.calibration import EPSILON
 
 from tasks.transfer.scaling_bio_summary import canonical_feature
 
@@ -76,7 +77,9 @@ def audit_predictions(metrics: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame
             if not np.isfinite(p.p_calibrated).all():
                 raise ValueError(f"Nonfinite scores: {source}")
             for key, value in {
-                "auprc": average_precision_score(p.y_true, p.p_calibrated),
+                "auprc": average_precision_score(
+                    p.y_true, np.clip(p.p_calibrated, EPSILON, 1 - EPSILON)
+                ),
                 "balanced_accuracy": balanced_accuracy_score(p.y_true, p.y_pred),
             }.items():
                 if not np.isclose(value, metric[key], atol=1e-7, rtol=0):
