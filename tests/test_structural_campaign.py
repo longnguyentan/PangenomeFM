@@ -13,6 +13,7 @@ from tasks.transfer.report import paired_rows
 from tasks.transfer.scaling_evaluate import commands
 from scripts.server.run_ccre_frozen_probe_matrix import ProbeJob
 from argparse import Namespace
+from tasks.transfer.campaign import scaling_probe_tasks
 from tasks.entex.analyze import BASE, FULL
 
 
@@ -203,3 +204,16 @@ def test_scaling_evaluation_reuses_full_graph_and_original_probe_interfaces():
     assert plan["sv"][plan["sv"].index("--checkpoint") + 1] == "scaled/checkpoint.pt"
     assert "--measurements" in plan["ctcf"] and "--tasks" not in plan["ctcf"]
     assert plan["ctcf"][plan["ctcf"].index("--results-root") + 1] == "scaled"
+
+
+def test_scaling_campaign_has_all_scales_and_unique_tasks():
+    jobs = [
+        ProbeJob(f"fold_{c}", (f"chr{i}",), ("chr22",), seed, context)
+        for i, c in enumerate("abcde", 1)
+        for seed in [42, 314159, 20260806]
+        for context in ["strict", "1hop"]
+    ]
+    tasks = scaling_probe_tasks(jobs, Path("checkpoints"), Path("outputs"))
+    assert len(tasks) == len({t["id"] for t in tasks}) == 120
+    assert set(t["stage"] for t in tasks) == {f"batch_{i}" for i in range(8)}
+    assert all(t["command"][-3:] == ["--device", "cpu", "--execute"] for t in tasks)

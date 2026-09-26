@@ -1,0 +1,3366 @@
+{
+  "schema_version": 1,
+  "run_name": "scaling_frozen_biology_v1",
+  "tasks": [
+    {
+      "id": "scaling_probe_0.125_fold_a_42_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_a_42_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_a_314159_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_a_314159_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_a_20260806_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_a_20260806_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_b_42_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_b_42_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_b_314159_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_b_314159_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_b_20260806_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_b_20260806_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_c_42_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_c_42_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_c_314159_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_c_314159_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_c_20260806_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_c_20260806_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_d_42_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_d_42_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_d_314159_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_d_314159_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_d_20260806_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_d_20260806_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_e_42_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_e_42_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_e_314159_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_e_314159_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_e_20260806_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.125_fold_e_20260806_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.125",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.125",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_a_42_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_a_42_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_a_314159_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_a_314159_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_a_20260806_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_a_20260806_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_b_42_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_b_42_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_b_314159_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_b_314159_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_b_20260806_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_b_20260806_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_c_42_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_c_42_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_c_314159_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_c_314159_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_c_20260806_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_c_20260806_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_d_42_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_d_42_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_d_314159_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_d_314159_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_d_20260806_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_d_20260806_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_e_42_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_e_42_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_e_314159_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_e_314159_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_e_20260806_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.25_fold_e_20260806_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.25",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.25",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_a_42_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_a_42_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_a_314159_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_a_314159_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_a_20260806_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_a_20260806_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_b_42_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_b_42_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_b_314159_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_b_314159_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_b_20260806_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_b_20260806_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_c_42_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_c_42_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_c_314159_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_c_314159_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_c_20260806_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_c_20260806_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_d_42_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_d_42_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_d_314159_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_d_314159_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_d_20260806_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_d_20260806_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_e_42_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_e_42_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_e_314159_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_e_314159_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_e_20260806_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_0.5_fold_e_20260806_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_0.5",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_0.5",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_a_42_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_a_42_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_a_314159_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_a_314159_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_a_20260806_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_a_20260806_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_b_42_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_b_42_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_b_314159_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_b_314159_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_b_20260806_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_b_20260806_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_c_42_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_c_42_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_c_314159_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_c_314159_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_c_20260806_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_c_20260806_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_d_42_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_d_42_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_d_314159_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_d_314159_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_d_20260806_strict",
+      "stage": "batch_0",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_d_20260806_1hop",
+      "stage": "batch_1",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_e_42_strict",
+      "stage": "batch_2",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "42",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_e_42_1hop",
+      "stage": "batch_3",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "42",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_e_314159_strict",
+      "stage": "batch_4",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "314159",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_e_314159_1hop",
+      "stage": "batch_5",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "314159",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_e_20260806_strict",
+      "stage": "batch_6",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "20260806",
+        "--context",
+        "strict",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    },
+    {
+      "id": "scaling_probe_1_fold_e_20260806_1hop",
+      "stage": "batch_7",
+      "resource": "cpu",
+      "cost": "medium",
+      "description": "Frozen SV/cCRE/CTCF probes using identical biological data at every scale",
+      "requires_paths": [
+        "results/foundation_campaign/20260924/scaling_full/fraction_1"
+      ],
+      "command": [
+        "python",
+        "-m",
+        "tasks.transfer.scaling_evaluate",
+        "--checkpoint-root",
+        "results/foundation_campaign/20260924/scaling_full/fraction_1",
+        "--out-root",
+        "results/foundation_campaign/20260924/scaling_probes/fraction_1",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "20260806",
+        "--context",
+        "1hop",
+        "--device",
+        "cpu",
+        "--execute"
+      ]
+    }
+  ]
+}
