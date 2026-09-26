@@ -5,6 +5,11 @@ import pandas as pd
 import pytest
 
 from tasks.transfer.scaling_intrinsic import target_digest, validate_scales, summaries
+from tasks.transfer.scaling_bio_summary import (
+    FEATURE_ALIASES,
+    canonical_feature,
+    validate,
+)
 
 
 def test_target_identity_includes_labels_but_not_predictions_or_order():
@@ -84,3 +89,34 @@ def test_manuscript_bootstrap_preserves_window_weighted_estimand():
         module.reconstruction_intervals(pd.concat([frame, frame]))
     with pytest.raises(ValueError, match="Incomplete"):
         module.reconstruction_intervals(frame.iloc[:-1])
+
+
+def test_biological_scaling_summary_requires_all_paired_feature_sets():
+    assert canonical_feature("coordinate_plus_frozen_sequence_fm_pair") == "C+S"
+    rows = []
+    for feature in FEATURE_ALIASES.values():
+        rows.append(
+            dict(
+                fraction=0.125,
+                task="sv",
+                fold="fold_a",
+                seed=42,
+                context="strict",
+                feature_set=feature,
+                n_test=10,
+                positive_prevalence=0.5,
+                auprc=0.6,
+                auroc=0.7,
+                balanced_accuracy=0.6,
+                f1=0.6,
+                precision=0.6,
+                recall=0.6,
+            )
+        )
+    frame = pd.DataFrame(rows)
+    validate(frame, expected_runs=1)
+    with pytest.raises(ValueError, match="Incomplete"):
+        validate(frame.iloc[:-1], expected_runs=1)
+    frame.loc[0, "n_test"] = 9
+    with pytest.raises(ValueError, match="universe"):
+        validate(frame, expected_runs=1)
