@@ -166,6 +166,16 @@ python scripts/server/run_foundation_model_roadmap.py \
   --stage batch_0 --execute
 ```
 
+After every status file reports `complete`, aggregate the biological matrix with
+the paired-universe gate. The command refuses partial matrices, missing feature
+sets, changed test counts/prevalence, or unpaired fold/seed comparisons:
+
+```bash
+PYTHONPATH=src:. python -m tasks.transfer.scaling_bio_summary \
+  --probe-root results/foundation_campaign/20260924/scaling_probes \
+  --out-dir results/foundation_campaign/20260924/scaling_bio_summary
+```
+
 ### Manuscript interval correction
 
 The earlier reconstruction plot averaged window AP for its points but
