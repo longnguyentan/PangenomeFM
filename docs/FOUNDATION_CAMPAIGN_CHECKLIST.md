@@ -106,7 +106,8 @@ Window scaling is not haplotype-diversity scaling or a scaling law.
 - [x] Compile and visually verify revised PDF, figures, tables and citations.
 - [ ] Final funding/author contributions/acknowledgements: awaiting author details.
 - [x] Run scoped tests, cached regression, lint, compile and provenance checks.
-- [ ] Commit/push this increment and sync the server checkout through GitHub.
+- [x] Commit/push this increment. GitHub branch is at `7aba7ee`; server sync
+  is still pending the next successful authorized remote command.
 
 ## Current access and next action
 
