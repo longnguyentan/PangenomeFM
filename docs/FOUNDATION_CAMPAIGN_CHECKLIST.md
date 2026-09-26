@@ -56,7 +56,7 @@ groups but smaller in high than low complexity. Retain this result.
 - [x] Complete all 120 full-duration pretraining runs (4 fractions × 5 folds ×
   3 seeds × 2 contexts).
 - [ ] Complete frozen biological scaling evaluation: 360 task evaluations.
-  Last successful server snapshot: 28 complete, 8 planned, with eight CPU
+  Last successful server snapshot: 36 complete, 8 planned, with eight CPU
   workers active and verified pilot outputs reused. Recheck when server usage
   access is available; no full biological scaling result is claimed.
 - [x] Summarize intrinsic scaling after auditing identical held-out targets:
@@ -106,13 +106,13 @@ Window scaling is not haplotype-diversity scaling or a scaling law.
 - [x] Compile and visually verify revised PDF, figures, tables and citations.
 - [ ] Final funding/author contributions/acknowledgements: awaiting author details.
 - [x] Run scoped tests, cached regression, lint, compile and provenance checks.
-- [x] Commit/push this increment. GitHub branch is at `7aba7ee`; server sync
-  is still pending the next successful authorized remote command.
+- [x] Commit/push this increment. GitHub branch and server checkout are synced
+  at `eb4f0f2`.
 
 ## Current access and next action
 
-- [x] SSH reauthenticated; the last successful server status check was recorded
-  before a later usage-limit rejection. No passwords are stored in the project.
+- [x] SSH reauthenticated; server status was successfully checked and the
+  checkout was fast-forwarded. No passwords are stored in the project.
 - [ ] Diagnose six HG008 reconstruction failures. A label-free subset test found
   repeated GPU extraction differences up to 2.7e-6; this is evidence for a
   numerical reproducibility issue but not a cause attribution. The fixed-feature
