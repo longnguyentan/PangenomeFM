@@ -1,0 +1,12 @@
+{
+  "inputs": {
+    "primary_cross_chromosome_per_seed_chromosome.csv": "51e73af10f14d119c22c288e375eaed9724f6460e8475f6d6d35e199fcffb1d6",
+    "figure3_reconstruction.csv": "1922d062d04b5a505a24489a86deebfc50eaacb760da42a69b50f82fecdd4be5",
+    "figure3_transfer.csv": "76f8ccb2e8936d648cfef9810cf074eb6c1902ac4fce84b07dc96866cd761958",
+    "main_comparisons.csv": "80cd45375e642f4a0166e09a7ace071c50310c0f8e51def8e1550ff3bdd13fff"
+  },
+  "reconstruction_correction": "Old intervals resampled equally weighted chromosome means while points averaged windows. New intervals resample chromosome blocks with window counts retained; point estimates unchanged.",
+  "bootstrap_seed": 20260924,
+  "bootstrap_replicates": 5000,
+  "scaling_or_hg008_full_results_included": false
+}

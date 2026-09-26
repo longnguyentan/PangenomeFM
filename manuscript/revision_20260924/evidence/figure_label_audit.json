@@ -1,0 +1,52 @@
+[
+  {
+    "source": "figures/source/figure2_method.pdf",
+    "source_sha256": "2841072f90dd2c49c2b1c956ee73705f8f39228530d5d7c24a5881116296d820",
+    "output": "figures/figure2_method.pdf",
+    "output_sha256": "13ed6e77d11abdc4888498e3faf92945a5c9106e270ae29159570ae04edfb6b8",
+    "edits": [
+      {
+        "old": "SV breakpoint",
+        "new": "SV insertion/"
+      },
+      {
+        "old": "classification",
+        "new": "deletion type"
+      },
+      {
+        "old": "graph",
+        "new": "coord"
+      },
+      {
+        "old": "coord",
+        "new": "graph"
+      },
+      {
+        "old": "graph",
+        "new": "fused"
+      },
+      {
+        "old": "weighted binary cross-entropy (no biological labels)",
+        "new": "class-adaptive focal loss (no biological labels)"
+      }
+    ],
+    "plotted_values_changed": false
+  },
+  {
+    "source": "figures/source/figure4_sv.pdf",
+    "source_sha256": "4bfcefa83116a82c8661c5066049068bc07591dc194eae3198e219229a2a4c69",
+    "output": "figures/figure4_sv.pdf",
+    "output_sha256": "5c747c18b4a44eabfb7d321b1c09969bc3e41e6a608feaf3edafba447b8df1d7",
+    "edits": [
+      {
+        "old": "Structural-variant breakpoint classification",
+        "new": "Insertion versus deletion from SV segment pairs"
+      },
+      {
+        "old": "Graph organization contributes strongly to structural-variant breakpoint prediction",
+        "new": "Frozen graph representations improve insertion/deletion classification"
+      }
+    ],
+    "plotted_values_changed": false
+  }
+]

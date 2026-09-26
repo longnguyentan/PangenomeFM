@@ -117,3 +117,62 @@ PYTHONPATH=src:. python -m pytest -q tests/test_structural_campaign.py tests/tes
 All biological encoders stay frozen. Path-aware work remains a distinct
 experimental track, blocked on compatible node/path definitions; no canonical
 graph release is replaced.
+
+
+## Update: 26 September 2026
+
+All **120/120 pretraining runs** completed. The intrinsic audit verified identical
+held-out and validation candidate identities/labels at all four fractions within
+each fold/seed/context, identical training arguments except manifest/output path,
+and the same 52,033 trainable parameters. No large pretrained encoder was changed.
+
+| Requested training windows | Strict pooled-fold AP | One-hop pooled-fold AP |
+|---|---:|---:|
+| 12.5% | 0.918359 | 0.963541 |
+| 25% | 0.929192 | 0.972073 |
+| 50% | 0.937487 | 0.984692 |
+| 100% | 0.941961 | 0.990006 |
+
+Paired 100%-minus-12.5% gains are 0.023602 [0.021548, 0.025747] strict and
+0.026464 [0.025285, 0.027924] one-hop. This is an **intrinsic reconstruction**
+result, not yet downstream scaling evidence. Window counts are rounded upward
+within chromosomes and unusable slices retain the trainer's exclusions. Actual
+counts and epochs are in `scaling_intrinsic/per_run.csv`. Its
+`training_candidate_count` counts available positive+negative candidates in
+training windows before their internal split; it is not optimizer-update count.
+The architecture and epoch/patience limits are fixed, but effective compute is
+not: mean completed epochs range from 77.5 to 99.7 across fraction/context groups.
+Do not call this haplotype-diversity scaling, compute-matched scaling, or a law.
+
+```bash
+PYTHONPATH=src:. python -m tasks.transfer.scaling_intrinsic \
+  --checkpoint-root results/foundation_campaign/20260924/scaling_full \
+  --out-dir results/foundation_campaign/20260924/scaling_intrinsic
+# An existing completed output directory is never overwritten.
+```
+
+Frozen biological evaluation is running: four fractions × 30 checkpoint runs ×
+three tasks (SV, cCRE, EN-TEx CTCF) = **360 task evaluations**. The 12 completed
+pilot evaluations are reused only after checkpoint/audit verification. Eight
+CPU batches use the same device as the pilots; no biological labels update the
+encoders. The plan is `configs/scaling_probe_jobs_v1.json`:
+
+```bash
+# Launch batch_0 through batch_7 in separate sessions; four BLAS/OpenMP threads each.
+PYTHONPATH=src:. OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 \
+python scripts/server/run_foundation_model_roadmap.py \
+  --config configs/scaling_probe_jobs_v1.json \
+  --result-root results/foundation_campaign/20260924/scaling_probe_execution/batch_0 \
+  --stage batch_0 --execute
+```
+
+### Manuscript interval correction
+
+The earlier reconstruction plot averaged window AP for its points but
+bootstrapped equally weighted chromosome means for intervals. The revised
+`manuscript/revision_20260924/build_evidence.py` resamples chromosomes with their
+window counts retained. All ten headline means remain identical within 1e-12;
+a synthetic unequal-window-count test guards the distinction. This correction
+does not change original downstream probes or the four cached regression anchors.
+The working LaTeX includes completed EN-TEx, structural and intrinsic scaling
+findings while explicitly withholding unfinished biological scaling/HG008 claims.

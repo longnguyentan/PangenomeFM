@@ -371,3 +371,7 @@ docs/PSB_EXPERIMENT_PLAN.md
 /manuscript/**/*.out
 /manuscript/**/*.toc
 /manuscript/**/*.log
+
+!/results/foundation_campaign/20260924/scaling_intrinsic/
+!/results/foundation_campaign/20260924/scaling_intrinsic/**
+/manuscript/**/main.pdf
