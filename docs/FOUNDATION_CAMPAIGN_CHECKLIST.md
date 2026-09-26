@@ -56,12 +56,14 @@ groups but smaller in high than low complexity. Retain this result.
 - [x] Complete all 120 full-duration pretraining runs (4 fractions × 5 folds ×
   3 seeds × 2 contexts).
 - [ ] Complete frozen biological scaling evaluation: 360 task evaluations.
-  Last successful server snapshot: 36 complete, 8 planned, with eight CPU
+  Last successful server snapshot: 37 complete, 8 planned, with eight CPU
   workers active and verified pilot outputs reused. Recheck when server usage
   access is available; no full biological scaling result is claimed.
 - [x] Summarize intrinsic scaling after auditing identical held-out targets:
   120 runs; monotonic mean reconstruction gain across four fractions.
 - [ ] Evaluate high-complexity SV across fractions and produce paired figures.
+- [x] Implement the gated 360-task biological scaling aggregator; it requires
+  all seven feature sets and identical paired task universes before summarizing.
 - [x] Audit parameter counts, training budgets, checkpoint selection and
   comparability to the newly trained 100% control (52,033 parameters; report
   variable epochs/window counts, not compute-matched scaling).
