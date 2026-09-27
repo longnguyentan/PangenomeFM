@@ -132,9 +132,10 @@ def test_validation_only_final_scoring_never_requests_test(monkeypatch):
     assert {r["evaluation_scope"] for r in rows} == {"validation_only"}
 
 
-@pytest.mark.parametrize("direction,linear,frozen", [("incoming", False, False), ("bidirectional", True, False),
-                                                    ("bidirectional", True, True), ("incoming", False, True)])
-def test_native_training_cli_validation_only_checkpoint(tmp_path, direction, linear, frozen):
+@pytest.mark.parametrize("direction,linear,frozen,sequence", [("incoming", False, False, False), ("bidirectional", True, False, False),
+                                                    ("bidirectional", True, True, False), ("incoming", False, True, False),
+                                                    ("bidirectional", False, False, True)])
+def test_native_training_cli_validation_only_checkpoint(tmp_path, direction, linear, frozen, sequence):
     """Exercise loading, masking, training, final scoring and checkpoint reload."""
     segments, manifest = [], []
     for chromosome in [1, 2, 3]:
@@ -166,6 +167,12 @@ def test_native_training_cli_validation_only_checkpoint(tmp_path, direction, lin
         cmd.append("--linear_predictor")
     if frozen:
         cmd.append("--freeze_encoder")
+    if sequence:
+        import json
+        cache = tmp_path / 'nt.npz'
+        np.savez(cache, segid=np.arange(456), embeddings=np.random.default_rng(42).normal(size=(456, 512)).astype(np.float32))
+        Path(f'{cache}.audit.json').write_text(json.dumps(dict(status='complete', downstream_label_access='none')))
+        cmd += ['--node_extra_features', 'cache', '--node_feature_cache', str(cache), '--node_feature_min_coverage', '1.0']
     env = dict(os.environ, PYTHONPATH="src:.", OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1", MKL_NUM_THREADS="1")
     result = subprocess.run(cmd, env=env, capture_output=True, text=True, timeout=60)
     assert result.returncode == 0, result.stdout + result.stderr
@@ -179,6 +186,7 @@ def test_native_training_cli_validation_only_checkpoint(tmp_path, direction, lin
     model, head = _build_model_from_checkpoint(saved, _namespace_from_checkpoint(saved, 42), torch.device("cpu"))
     assert model.graph_message_direction == direction
     assert isinstance(head, LinearLinkPredictor) == linear
+    assert saved['in_dim'] == (519 if sequence else 7)
 
 
 def test_pilot_gate_is_context_specific_without_relaxing_coverage(tmp_path):
@@ -217,3 +225,41 @@ def test_pilot_commands_keep_validation_scope_and_fixed_budget():
         assert cmd[cmd.index('--epochs') + 1] == '10'
         assert ('--linear_predictor' in cmd) == name.endswith('_linear')
         assert cmd[cmd.index('--graph_message_direction') + 1] == name.split('_')[0]
+
+
+def test_sequence_pilot_keeps_fixed_budget_and_requires_complete_inputs():
+    from scripts.server.run_junction_geometry_pilot import commands
+    receipt = dict(manifest=dict(path='manifest.csv'), full_segments=dict(path='segments.csv'),
+                   native_args=dict(seed=42, split_seed=20260806, test_chrs=['chr1'], val_chrs=['chr2']))
+    jobs = commands(Path('results/nt_pilot'), receipt, '1hop',
+                    arms=['bidirectional_default', 'bidirectional_linear'], node_feature_cache=Path('nt.npz'))
+    assert list(jobs) == ['bidirectional_default', 'bidirectional_linear']
+    for cmd in jobs.values():
+        assert cmd[cmd.index('--node_feature_min_coverage') + 1] == '1.0'
+        assert cmd[cmd.index('--node_feature_cache') + 1] == 'nt.npz'
+        assert '--validation_only' in cmd and cmd[cmd.index('--epochs') + 1] == '10'
+    with pytest.raises(ValueError, match='unique'):
+        commands(Path('out'), receipt, '1hop', arms=['bidirectional_default'] * 2)
+
+
+def test_sequence_pilot_rejects_missing_benchmark_inputs(tmp_path, monkeypatch):
+    from scripts.server.run_junction_geometry_pilot import check_sequence_cache
+    contract = dict(model_name='InstaDeepAI/nucleotide-transformer-v2-50m-multi-species',
+                    resolved_revision='81b29e5786726d891dbf929404ef20adca5b36f1',
+                    maximum_token_length=1000, maximum_raw_bases=6000, full_segments_sha256='graph',
+                    pooling='mean final hidden state over non-special, non-padding tokens',
+                    raw_sequence_sampling='long nodes retain balanced prefix and suffix separated by N before tokenizer truncation',
+                    truncation_policy='tokenizer truncation at maximum_token_length; complete raw sequences remain in the source table')
+    monkeypatch.setattr('scripts.server.merge_node_sequence_fm_caches.sequence_contract', lambda _: contract)
+    monkeypatch.setattr('scripts.server.complete_node_sequence_fm_cache.benchmark_targets',
+                        lambda *args: (np.array([1, 2]), {}))
+    cache = tmp_path / 'nt.npz'
+    receipt = dict(full_segments=dict(path='segments', sha256='graph'), manifest=dict(path='manifest'))
+    np.savez(cache, segid=[1], embeddings=np.ones((1, 512)))
+    with pytest.raises(ValueError, match='miss 1'):
+        check_sequence_cache(cache, receipt, '1hop')
+    np.savez(cache, segid=[1, 2], embeddings=np.ones((2, 512)))
+    assert check_sequence_cache(cache, receipt, '1hop')['coverage'] == 1.0
+    contract['full_segments_sha256'] = 'other graph'
+    with pytest.raises(ValueError, match='different graph'):
+        check_sequence_cache(cache, receipt, '1hop')

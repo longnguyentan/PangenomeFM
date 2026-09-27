@@ -76,6 +76,35 @@ def test_junction_identity_uses_endpoints_and_labels_and_rejects_test_rows():
         validation_predictions(pd.concat([frame, frame.iloc[:1]]))
 
 
+def test_junction_pilot_report_pairs_input_contract_and_initialization(tmp_path):
+    import json
+    import torch
+    from tasks.transfer.junction_pilot_report import summarize_roots
+
+    arm = 'bidirectional_default'
+    roots = [tmp_path / 'trained', tmp_path / 'random']
+    for root, frozen in zip(roots, [False, True]):
+        directory = root / arm / 'run_001'
+        directory.mkdir(parents=True)
+        (root / 'status.json').write_text(json.dumps(dict(status='complete', heldout_predictions_requested=False,
+            biological_labels_used=False, commands={arm: []}, returncodes={arm: 0}, sequence_inputs={'sha': 'cache'})))
+        pd.DataFrame(dict(slice=['a'] * 2, target_sn=['chr2'] * 2, closure=['1hop'] * 2,
+                          u_local=[1, 1], v_local=[2, 3], y_true=[1, 0], p_edge=[.8, .2],
+                          split=['val_chr_val'] * 2)).to_csv(directory / 'pooled_predictions.csv.gz', index=False)
+        cfg = dict(validation_only=True, seed=42, junction_geometry_match='signed_gap_bins',
+                   freeze_encoder=frozen, node_extra_features='cache')
+        torch.save(dict(args=cfg, initial_encoder_sha256='initial', final_encoder_sha256='initial' if frozen else 'trained',
+                        best_val_auc=1.0, epochs_run=1), directory / 'ckpt_model.pt')
+    frame, _ = summarize_roots(*roots)
+    assert len(frame) == 2 and frame.representation.eq('sequence_conditioned_graph').all()
+    checkpoint = roots[1] / arm / 'run_001/ckpt_model.pt'
+    saved = torch.load(checkpoint, weights_only=False)
+    saved['initial_encoder_sha256'] = saved['final_encoder_sha256'] = 'different random seed'
+    torch.save(saved, checkpoint)
+    with pytest.raises(ValueError, match='initialization'):
+        summarize_roots(*roots)
+
+
 def test_audited_development_run_replays_metrics_and_refuses_test_scope(tmp_path):
     import json
     import numpy as np

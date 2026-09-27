@@ -27,8 +27,10 @@ results, and the other implementation worktree are preserved.
 - [ ] Promote a full v2 matrix: current gate fails cCRE trained-versus-random and
   lacks an eligible strict reconstruction context. SV development improves.
 - [x] Audit exact one-hop sequence-cache coverage and implement compatible completion.
-- [ ] Finish the 176,052 missing benchmark NT embeddings (running on GPUs 1 and 3),
-  then evaluate a separately identified sequence-conditioned candidate.
+- [x] Finish the 176,052 missing benchmark NT embeddings; exact 479,477-node
+  benchmark coverage and bitwise preservation of all 303,425 original vectors pass.
+- [ ] Evaluate the separately identified sequence-conditioned candidate with
+  matched frozen-random and raw-input controls.
 - [x] Resolve historical HG008 replay failures or run a separately identified,
   prospective deterministic probe-refit protocol; never relabel a refit as replay.
 - [ ] Measured genotypability labels and verified path-to-segment correspondence
@@ -475,7 +477,7 @@ or preprocessing. This job is **running**, not a completed sequence-conditioned
 model experiment. The final merge verifies graph/model/preprocessing identities,
 disjoint shards, and exact target coverage before declaring completion.
 
-Final local verification after these changes: **335 tests passed**, with existing
+Local verification after the biological-strata changes: **336 tests passed**, with existing
 non-fatal library warnings; focused changed-file Ruff and `git diff --check` pass.
 The other LLM's main checkout and historical result directories remain intact.
 
@@ -495,3 +497,58 @@ The >=1 Mb bin has only four insertions and no meaningful binary ranking metric.
 The three lower-frequency bins show +0.003082 to +0.004681; AF >=0.5 shows
 -0.000389. These observations support a limited, size-dependent development
 improvement, not universal superiority or a claim about rare/large SVs.
+
+## Sequence-conditioned development protocol (specified before training)
+
+Complete the unchanged manuscript NT representation for the existing one-hop
+benchmark union, then append its 512 frozen features to the seven native node
+inputs. Both oriented handles retain the same segment sequence vector, exactly
+as in the existing cache-input implementation; this is not a new allele- or
+orientation-specific sequence representation. Name the representation
+`sequence_conditioned_graph`, separate from topology-native T.
+
+Use the same eligible one-hop repaired-junction candidates, fold A, seed 42,
+48-dimensional/two-layer bidirectional encoder, two heads (existing MLP and
+linear interaction), optimizer and ten-epoch/three-patience budget. Fit each
+head with both a trainable graph encoder and a frozen matched random encoder.
+NT is never updated. No biological labels or held-out predictions are used.
+No expanded hyperparameter search is introduced after seeing development scores.
+
+The existing pilot launcher now accepts `--arms bidirectional_default
+bidirectional_linear --node-feature-cache <completed benchmark_nt.npz>`.
+Run the trained roots on GPUs 0/2 and matched frozen-random roots on 1/3 only
+after cache generation releases its GPUs. Input checks require exact graph,
+NT revision, pooling/truncation contract, finite 512-dimensional features and
+100% native benchmark-node coverage. The report requires identical candidate
+identities, initial encoder parameters, model settings and input-cache receipts.
+Biological probing remains a separate frozen, aligned validation experiment.
+
+This comparison can establish whether self-supervised learning improves the
+sequence-conditioned representation relative to its random counterpart. It
+cannot by itself attribute gains to graph messages: raw-sequence/input controls
+and a message-free control remain necessary before a graph-specific claim.
+The earlier topology-native gate is unchanged and remains `not_promoted`.
+
+### NT completion verified
+
+Both shards completed in approximately 1,230 seconds. The final audited cache
+contains 479,477 finite 512-dimensional vectors, with exact target coverage 1.0.
+SHA256: `9f5015336bd1c0b9c5f81ed98e659e23f498ca28b57e5646d17ce411f93baabe`.
+The source cache's checksum is unchanged, and a separate array comparison
+verified all 303,425 original vectors are **bitwise identical** in the completed
+cache. The cache contains 176,052 additional vectors. This completes the
+benchmark union, not all 751,237 nodes of the processed graph.
+
+Server cache:
+`/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/benchmark_nt.npz`.
+Compact `status.json`, `benchmark_nt.npz.audit.json` and
+`preservation_audit.json` are imported under the same relative results directory.
+No model/checkpoint/source-graph release was replaced.
+
+Validation: 340 local tests pass, including native sequence-conditioned training
+and checkpoint reload. The stricter report was also replayed on the existing
+topology pilot: its metrics are unchanged. Historical trained checkpoints lack
+initial-weight hashes (the random controls do contain them), so that specific
+paired-initialization check is marked unavailable for those historical runs;
+all new sequence-conditioned runs require the hashes on both sides. This does
+not weaken the frozen-random weight-invariance check.

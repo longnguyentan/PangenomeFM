@@ -1,0 +1,51 @@
+{
+  "model_name": "InstaDeepAI/nucleotide-transformer-v2-50m-multi-species",
+  "resolved_revision": "81b29e5786726d891dbf929404ef20adca5b36f1",
+  "full_segments_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+  "pooling": "mean final hidden state over non-special, non-padding tokens",
+  "maximum_token_length": 1000,
+  "maximum_raw_bases": 6000,
+  "raw_sequence_sampling": "long nodes retain balanced prefix and suffix separated by N before tokenizer truncation",
+  "truncation_policy": "tokenizer truncation at maximum_token_length; complete raw sequences remain in the source table",
+  "schema_version": 1,
+  "status": "complete",
+  "generated_at": "2026-09-27T21:58:45+0000",
+  "output": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/benchmark_nt.npz",
+  "output_sha256": "9f5015336bd1c0b9c5f81ed98e659e23f498ca28b57e5646d17ce411f93baabe",
+  "target_caches": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/all_targets.npz",
+      "sha256": "c5d838c94f42eca5e7a9252e521df7fbb3b5d86cdc3342f5a57410630f649b8e",
+      "segids": 479477,
+      "unique_segids": 479477,
+      "new_union_segids": 479477
+    }
+  ],
+  "target_union_nodes": 479477,
+  "embedded_nodes": 479477,
+  "coverage_fraction": 1.0,
+  "embedding_dimension": 512,
+  "source_shards": [
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+      "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de",
+      "audit_sha256": "0bbc6c075c4105d9cbbef25521431415ec57a89a5240fa101fe4d0ae39e05399"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/missing_nt_0.npz",
+      "sha256": "93365ba681c481a8d08437461a8175a22f09d94f46c1b22c0bc15de51205bcc4",
+      "audit_sha256": "580d5cad976959a65e1caf286f1fafee4cca47897002984c0192ff45bde39ff7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/missing_nt_1.npz",
+      "sha256": "af280fc4c4b1033ae4c2c42e84e8977540657bdf61ce5977a614cea9bd23856e",
+      "audit_sha256": "e9bbdd7e58c0ab77b61cf1fdb9d61f5ae67ea6744a456b6a2aaa677a2167cc3d"
+    }
+  ],
+  "fine_tuned": false,
+  "model_parameters_frozen": true,
+  "downstream_label_access": "none",
+  "target_selection_note": "target caches contribute segid arrays only; no label or split array is read",
+  "scope": "complete_target_union",
+  "wall_seconds": 48.319147888571024
+}

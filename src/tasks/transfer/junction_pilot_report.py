@@ -32,15 +32,22 @@ def validation_predictions(frame: pd.DataFrame) -> tuple[pd.DataFrame, str]:
 
 def summarize_roots(trained: Path, random: Path) -> tuple[pd.DataFrame, list[dict]]:
     rows, sources = [], []
+    declared_arms, sequence_inputs = None, None
+    configs = {}
     for root, mode in [(trained, "trained"), (random, "frozen_random")]:
         status = json.loads((root / "status.json").read_text())
+        arms = list(status.get("commands", {}))
         if (status.get("status") != "complete" or status.get("heldout_predictions_requested", True)
                 or status.get("biological_labels_used", True)
-                or set(status["commands"]) != set(ARMS)
-                or any(status["returncodes"].get(arm) != 0 for arm in ARMS)):
+                or not arms or set(arms) - set(ARMS)
+                or any(status["returncodes"].get(arm) != 0 for arm in arms)):
             raise ValueError("Incomplete or incorrectly scoped pilot")
+        if declared_arms is None:
+            declared_arms, sequence_inputs = arms, status.get("sequence_inputs")
+        elif arms != declared_arms or status.get("sequence_inputs") != sequence_inputs:
+            raise ValueError("Trained/random arms or sequence inputs differ")
         sources.append(fingerprint(root / "status.json"))
-        for arm in ARMS:
+        for arm in arms:
             directory = root / arm / "run_001"
             paths = list(directory.glob("*pooled_predictions*.csv.gz"))
             checkpoints = list(directory.glob("ckpt_*.pt"))
@@ -55,6 +62,15 @@ def summarize_roots(trained: Path, random: Path) -> tuple[pd.DataFrame, list[dic
             is_random = mode == "frozen_random"
             if bool(cfg.get("freeze_encoder", False)) != is_random:
                 raise ValueError("Checkpoint random/trained attribution mismatch")
+            expected_inputs = "cache" if sequence_inputs else "none"
+            if cfg.get("node_extra_features", "none") != expected_inputs:
+                raise ValueError("Checkpoint node-input attribution mismatch")
+            configs[(arm, mode)] = {key: cfg.get(key) for key in [
+                "seed", "split_seed", "val_chrs", "test_chrs", "hidden_dim", "n_layers", "n_heads",
+                "graph_message_direction", "linear_predictor", "junction_geometry_match",
+                "junction_geometry_bin_ratio", "node_structure_source", "node_extra_features",
+                "node_feature_cache", "node_feature_min_coverage", "epochs", "patience",
+                "lr", "weight_decay", "drop_edge_rate", "mask_query_edges"]}
             if is_random and (not checkpoint.get("initial_encoder_sha256")
                               or checkpoint["initial_encoder_sha256"] != checkpoint["final_encoder_sha256"]):
                 raise ValueError("Frozen random encoder weights changed")
@@ -67,11 +83,22 @@ def summarize_roots(trained: Path, random: Path) -> tuple[pd.DataFrame, list[dic
                              auroc=roc_auc_score(val.y_true, val.p_edge), macro_window_auroc=macro,
                              epochs_run=checkpoint["epochs_run"], candidates_sha256=digest,
                              checkpoint_sha256=fingerprint(checkpoints[0])["sha256"],
+                             initial_encoder_sha256=checkpoint.get("initial_encoder_sha256"),
                              prediction_sha256=fingerprint(paths[0])["sha256"],
+                             representation="sequence_conditioned_graph" if sequence_inputs else "topology_native",
                              evaluation_partition="development_validation"))
     frame = pd.DataFrame(rows)
     if frame.candidates_sha256.nunique() != 1:
         raise ValueError("Candidate identity or labels differ across trained/random arms")
+    frame['initialization_check'] = 'passed'
+    for arm, group in frame.groupby("arm"):
+        missing_initialization = group.initial_encoder_sha256.isna().any()
+        if ((sequence_inputs is not None and missing_initialization)
+                or (not missing_initialization and group.initial_encoder_sha256.nunique() != 1)
+                or configs[(arm, "trained")] != configs[(arm, "frozen_random")]):
+            raise ValueError("Trained/random initialization or experiment settings differ")
+        if missing_initialization:
+            frame.loc[frame.arm.eq(arm), 'initialization_check'] = 'unavailable_in_historical_trained_checkpoint'
     return frame, sources
 
 
@@ -95,6 +122,8 @@ def main() -> None:
     (args.out_dir / "audit.json").write_text(json.dumps(dict(
         status="complete", source_receipts=sources, candidate_identity="passed",
         frozen_random_parameter_identity="passed", checkpoint_metric_replay="passed",
+        matched_initialization=sorted(frame.initialization_check.unique()),
+        matched_configuration="passed", representation=selected.representation,
         selected_arm=selected.arm, selection_criterion="native window-macro validation AUROC",
         selected_checkpoint_sha256=selected.checkpoint_sha256,
         scope="single-fold development comparison; not independent biological evidence",
@@ -107,12 +136,14 @@ def main() -> None:
     plt.rcParams.update({"font.size": 10, "svg.fonttype": "none", "pdf.fonttype": 42,
                          "axes.spines.top": False, "axes.spines.right": False})
     fig, ax = plt.subplots(figsize=(8, 4), layout="constrained")
+    arms = frame.arm.drop_duplicates().tolist()
     for mode, color, offset in [("trained", "#245a81", -0.15), ("frozen_random", "#be6831", 0.15)]:
-        data = frame.loc[frame.encoder.eq(mode)].set_index("arm").loc[ARMS]
-        ax.bar(np.arange(4) + offset, data.auprc, width=0.3, label=mode.replace("_", " "), color=color)
+        data = frame.loc[frame.encoder.eq(mode)].set_index("arm").loc[arms]
+        ax.bar(np.arange(len(arms)) + offset, data.auprc, width=0.3, label=mode.replace("_", " "), color=color)
     ax.axhline(0.5, color="0.4", ls="--", lw=1, label="Prevalence")
-    ax.set(xticks=range(4), xticklabels=["Incoming\nMLP", "Incoming\nLinear", "Bidirectional\nMLP", "Bidirectional\nLinear"],
-           ylim=(0, 1), ylabel="Validation AUPRC", title="Junction reconstruction: identical validation candidates")
+    labels = dict(zip(ARMS, ["Incoming\nMLP", "Incoming\nLinear", "Bidirectional\nMLP", "Bidirectional\nLinear"]))
+    ax.set(xticks=range(len(arms)), xticklabels=[labels[arm] for arm in arms],
+           ylim=(0, 1), ylabel="Validation AUPRC", title=f"Junction reconstruction: {selected.representation.replace('_', ' ')}")
     ax.legend(frameon=False, loc="upper left")
     save_figure(fig, args.out_dir, "junction_validation")
     plt.close(fig)

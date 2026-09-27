@@ -1,5 +1,5 @@
 {
-  "status": "running",
+  "status": "complete",
   "graph_segments": 751237,
   "target_segments": 479477,
   "missing_segments": 176052,
@@ -99,8 +99,8 @@
     3
   ],
   "active_commands": [
-    0,
-    1
+    2
   ],
-  "phase": "embedding_shards"
+  "phase": "merging",
+  "output": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/benchmark_nt.npz"
 }

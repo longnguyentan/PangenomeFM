@@ -10,8 +10,42 @@ import subprocess
 import sys
 
 import pandas as pd
+import numpy as np
 
 from tasks.entex.prepare import fingerprint
+
+ARMS = ['incoming_default', 'incoming_linear', 'bidirectional_default', 'bidirectional_linear']
+
+
+def check_sequence_cache(path: Path, receipt: dict, context: str) -> dict:
+    """Require the same frozen NT policy and complete native benchmark coverage."""
+    from scripts.server.complete_node_sequence_fm_cache import benchmark_targets
+    from scripts.server.merge_node_sequence_fm_caches import sequence_contract
+
+    contract = sequence_contract(path)
+    if contract['full_segments_sha256'] != receipt['full_segments']['sha256']:
+        raise ValueError('Sequence inputs use a different graph')
+    expected = dict(model_name='InstaDeepAI/nucleotide-transformer-v2-50m-multi-species',
+                    resolved_revision='81b29e5786726d891dbf929404ef20adca5b36f1',
+                    maximum_token_length=1000, maximum_raw_bases=6000,
+                    pooling='mean final hidden state over non-special, non-padding tokens',
+                    raw_sequence_sampling='long nodes retain balanced prefix and suffix separated by N before tokenizer truncation',
+                    truncation_policy='tokenizer truncation at maximum_token_length; complete raw sequences remain in the source table')
+    if any(contract.get(key) != value for key, value in expected.items()):
+        raise ValueError('Sequence inputs differ from the manuscript NT model/preprocessing')
+    required, scope = benchmark_targets(Path(receipt['full_segments']['path']),
+                                        Path(receipt['manifest']['path']), context)
+    with np.load(path, allow_pickle=False) as cache:
+        ids, values = cache['segid'], cache['embeddings']
+        if (len(np.unique(ids)) != len(ids) or values.shape != (len(ids), 512)
+                or not np.isfinite(values).all()):
+            raise ValueError('Invalid sequence input cache')
+        missing = np.setdiff1d(required, ids)
+    if len(missing):
+        raise ValueError(f'Sequence inputs miss {len(missing)} native benchmark nodes')
+    return dict(cache=fingerprint(path), contract=contract, benchmark_scope=scope,
+                coverage=1.0, biological_labels_used=False,
+                orientation_policy='same frozen segment sequence vector for both oriented handles')
 
 
 def check_context(audit_dir: Path, context: str, direction: str, required: set[str]) -> dict:
@@ -39,7 +73,8 @@ def check_context(audit_dir: Path, context: str, direction: str, required: set[s
     return receipt
 
 
-def commands(root: Path, receipt: dict, context: str) -> dict[str, list[str]]:
+def commands(root: Path, receipt: dict, context: str, *,
+             arms: list[str] | None = None, node_feature_cache: Path | None = None) -> dict[str, list[str]]:
     native = receipt['native_args']
     if native['seed'] != 42 or native['split_seed'] != 20260806:
         raise ValueError('Fixed fold-A pilot requires the predefined seeds')
@@ -56,9 +91,17 @@ def commands(root: Path, receipt: dict, context: str) -> dict[str, list[str]]:
         '--lr', '0.0005', '--weight_decay', '0.0001', '--device', 'cuda',
         '--test_chrs', *native['test_chrs'], '--val_chrs', *native['val_chrs']]
     result = {}
+    selected = ARMS if arms is None else arms
+    if not selected or len(set(selected)) != len(selected) or set(selected) - set(ARMS):
+        raise ValueError('Select unique existing pilot arms')
+    if node_feature_cache is not None:
+        common += ['--node_extra_features', 'cache', '--node_feature_cache', str(node_feature_cache),
+                   '--node_feature_min_coverage', '1.0']
     for direction in ['incoming', 'bidirectional']:
         for head in ['default', 'linear']:
             name = f'{direction}_{head}'
+            if name not in selected:
+                continue
             result[name] = common + ['--out_dir', str(root / name), '--graph_message_direction', direction]
             if head == 'linear':
                 result[name].append('--linear_predictor')
@@ -71,12 +114,15 @@ def main() -> None:
     parser.add_argument('--bidirectional-audit', type=Path, required=True)
     parser.add_argument('--context', choices=['strict', '1hop'], default='1hop')
     parser.add_argument('--out-root', type=Path, required=True)
-    parser.add_argument('--gpus', type=int, nargs=4, default=[0, 1, 2, 3])
+    parser.add_argument('--gpus', type=int, nargs='+', default=[0, 1, 2, 3])
+    parser.add_argument('--arms', nargs='+', choices=ARMS, default=ARMS)
+    parser.add_argument('--node-feature-cache', type=Path,
+                        help='Audited benchmark-complete frozen NT inputs; defines a separate multimodal model')
     parser.add_argument('--execute', action='store_true')
     parser.add_argument('--random-encoder-control', action='store_true',
                         help='Repeat the fixed four arms with frozen random backbones and fitted heads')
     args = parser.parse_args()
-    if len(set(args.gpus)) != 4:
+    if len(set(args.gpus)) != len(args.arms) or len(args.gpus) != len(args.arms):
         raise ValueError('Use a different GPU for each fixed arm')
     required = set(json.loads(Path('configs/server_full_multicohort_20260806.json').read_text())['primary_chromosomes'])
     incoming = check_context(args.incoming_audit, args.context, 'incoming', required)
@@ -88,8 +134,10 @@ def main() -> None:
             raise ValueError('Audited resource changed')
     if incoming['split'] != bidir['split']:
         raise ValueError('Control audits use different chromosome partitions')
+    sequence_inputs = check_sequence_cache(args.node_feature_cache, incoming, args.context) if args.node_feature_cache else None
     args.out_root.mkdir(parents=True, exist_ok=False)
-    jobs = commands(args.out_root, incoming, args.context)
+    jobs = commands(args.out_root, incoming, args.context, arms=args.arms,
+                    node_feature_cache=args.node_feature_cache)
     if args.random_encoder_control:
         for command in jobs.values():
             command.append('--freeze_encoder')
@@ -98,6 +146,8 @@ def main() -> None:
                   bidirectional_audit=fingerprint(args.bidirectional_audit / 'audit.json'),
                   code_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
                   biological_labels_used=False, heldout_predictions_requested=False)
+    record['sequence_inputs'] = sequence_inputs
+    record['representation'] = 'sequence_conditioned_graph' if sequence_inputs else 'topology_native'
     record['random_encoder_control'] = args.random_encoder_control
     path = args.out_root / 'status.json'
     path.write_text(json.dumps(record, indent=2) + '\n')
