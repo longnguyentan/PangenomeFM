@@ -21,7 +21,8 @@ in-end from another hidden junction in the same span, chosen to match the
 genomic separation of ``(u_i, v_i)`` as closely as possible.  Positive and negative candidates have identical endpoint marginals within
 each retained group. This removes marginal endpoint reuse as a label cue;
 shared endpoints and pairwise structure still require empirical shortcut audits.
-Groups without a complete admissible cross-pairing are excluded and counted.
+Only complete cycles of an admissible cross-pairing are retained; unmatched
+junctions are excluded and counted. No unpaired positive is emitted.
 
 Candidate construction uses NumPy, pandas and SciPy assignment so that the candidate construction can
 be audited without PyTorch and reused by heuristic baselines.
@@ -248,8 +249,20 @@ def build_junction_repair_candidates(
                         else:
                             # Both differences below stay inside a single SN.
                             cost[ii, jj] = abs(int(so_u[i]) - int(so_u[j])) + abs(int(so_v[i]) - int(so_v[j]))
+                # Allow a junction to remain unused through a diagonal dummy.
+                # A large cost first maximizes the number of re-paired ends;
+                # distance mismatch breaks ties. Nontrivial permutation cycles
+                # preserve endpoint counts even if the full span is infeasible.
+                finite = cost[np.isfinite(cost)]
+                penalty = (float(finite.max()) + 1.0) * (len(group) + 1) if len(finite) else 1.0
+                np.fill_diagonal(cost, penalty)
                 try:
                     ri, ci = linear_sum_assignment(cost)
+                    selected = ri != ci
+                    ri, ci = ri[selected], ci[selected]
+                    if len(ri) < 2:
+                        rejected += 1
+                        continue
                 except ValueError:  # no complete admissible permutation
                     rejected += 1
                     continue
@@ -258,7 +271,7 @@ def build_junction_repair_candidates(
                 if len(set(keys)) != len(keys):
                     rejected += 1
                     continue
-                # Emit only complete groups, preserving each endpoint's count.
+                # Emit complete cycles, preserving each retained endpoint count.
                 for ii, jj in zip(ri, ci):
                     i, j = int(group[ii]), int(group[jj])
                     mismatch = float(mismatch_matrix[ii, jj])

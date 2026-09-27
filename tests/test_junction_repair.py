@@ -154,3 +154,12 @@ def test_candidate_construction_is_invariant_to_reverse_equivalent_storage():
     reverse, _ = build_junction_repair_candidates(v[::-1] ^ 1, u[::-1] ^ 1, so, **kw)
     import pandas as pd
     pd.testing.assert_frame_equal(forward, reverse)
+
+
+def test_feasible_cycle_survives_an_unmatchable_span_member():
+    u, v = np.array([0, 4, 8]), np.array([2, 6, 10])
+    so = {0: 0, 2: 100, 4: 300, 6: 400, 8: 100000, 10: 100100}
+    c, audit = build_junction_repair_candidates(
+        u, v, so, oid_to_sn={x: "chrT" for x in so}, scope="all", span_size=16)
+    assert audit.n_positive_candidates == audit.n_negative_candidates == 2
+    assert set(c.u_oid) == {0, 4} and set(c.v_oid) == {2, 6}

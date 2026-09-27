@@ -247,7 +247,7 @@ def main() -> int:
     (out / "audit.json").write_text(json.dumps({
         "slices": len(files), "slices_scored": int(frame["slice"].nunique()),
         "seed": args.seed, "span_size": args.span_size, "scope": args.scope,
-        "processing_version": 2,
+        "processing_version": 3,
         "v1_mask": "single query; not a full batched training replay",
         "v2_mask": "all held-out positives plus current training group; no drop-edge",
         "direction_free_scores": "evaluation-label-selected optimistic diagnostic upper envelope",
