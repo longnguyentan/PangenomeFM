@@ -88,6 +88,19 @@ def validate_checkpoint_holdout(
     }
 
 
+def load_topology_control(path: Path | None, required_segids) -> tuple[dict[int, int], np.ndarray, dict] | None:
+    """Load the handcrafted topology-control cache and enforce full coverage."""
+
+    if path is None:
+        return None
+    segids, values, audit = load_frozen_node_embedding_cache(path)
+    positions = {int(segid): index for index, segid in enumerate(segids)}
+    missing = [int(s) for s in required_segids if int(s) not in positions]
+    if missing:
+        raise KeyError(f"Topology-control cache misses {len(missing)} required segments")
+    return positions, values, audit
+
+
 def sha256_file(path: Path, chunk_size: int = 8 * 1024 * 1024) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -241,6 +254,7 @@ def run_probe(
     minimum_external_coverage: float = 0.95,
     feature_sets: list[str] | None = None,
     canonical_conflict_policy: str = "exclude",
+    topology_control_cache: Path | None = None,
 ) -> dict[str, object]:
     if (out_dir / "audit.json").exists():
         raise FileExistsError(f"Refusing to overwrite completed output: {out_dir}")
@@ -319,9 +333,17 @@ def run_probe(
             [external_positions[int(segid)] for segid in labels_frame["segid"]]
         )
         components["frozen_sequence_fm"] = external_values[external_indices]
+    topology_control = load_topology_control(
+        topology_control_cache, labels_frame["segid"].astype(int).tolist()
+    )
+    if topology_control is not None:
+        components["topology_control"] = topology_control[1][
+            [topology_control[0][int(segid)] for segid in labels_frame["segid"]]
+        ]
     features = build_modality_factorial(
         components,
         include_external_sequence=external_values is not None,
+        include_topology_control=topology_control is not None,
     )
     features["graph"] = cached_features["graph"]
     features["structural"] = cached_features["structural"]
@@ -433,6 +455,11 @@ def main() -> int:
         choices=["error", "exclude"],
         default="exclude",
     )
+    parser.add_argument(
+        "--topology-control-cache",
+        type=Path,
+        help="Handcrafted topology NPZ (tasks.transfer.topology_controls) adding C+S+H and C+S+H+T sets.",
+    )
     args = parser.parse_args()
     run_probe(
         checkpoint=args.checkpoint,
@@ -452,6 +479,7 @@ def main() -> int:
         minimum_external_coverage=args.minimum_external_coverage,
         feature_sets=args.feature_sets,
         canonical_conflict_policy=args.canonical_conflict_policy,
+        topology_control_cache=args.topology_control_cache,
     )
     return 0
 

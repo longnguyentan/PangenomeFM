@@ -53,6 +53,19 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def load_topology_control(path: Path | None, required_segids) -> tuple[dict[int, int], np.ndarray, dict] | None:
+    """Load the handcrafted topology-control cache and enforce full coverage."""
+
+    if path is None:
+        return None
+    segids, values, audit = load_frozen_node_embedding_cache(path)
+    positions = {int(segid): index for index, segid in enumerate(segids)}
+    missing = [int(s) for s in required_segids if int(s) not in positions]
+    if missing:
+        raise KeyError(f"Topology-control cache misses {len(missing)} required segments")
+    return positions, values, audit
+
+
 def pair_features(left: np.ndarray, right: np.ndarray) -> np.ndarray:
     return np.concatenate([left, right, np.abs(left - right), left * right], axis=1).astype(np.float32)
 
@@ -154,6 +167,7 @@ def run_probe(
     minimum_external_coverage: float = 0.95,
     feature_sets: list[str] | None = None,
     canonical_conflict_policy: str = "exclude",
+    topology_control_cache: Path | None = None,
 ) -> dict[str, object]:
     if out_dir.exists():
         raise FileExistsError(f"Refusing to overwrite output: {out_dir}")
@@ -239,10 +253,19 @@ def run_probe(
             node_values=external_values,
             positions=external_positions,
         )
+    topology_control = load_topology_control(
+        topology_control_cache,
+        set(examples["start_segid"].astype(int)) | set(examples["end_segid"].astype(int)),
+    )
+    if topology_control is not None:
+        components["topology_control"] = build_pair_matrix(
+            examples, node_values=topology_control[1], positions=topology_control[0]
+        )
     features = build_modality_factorial(
         components,
         suffix="_pair",
         include_external_sequence=external_values is not None,
+        include_topology_control=topology_control is not None,
     )
     features["graph_pair"] = cached["graph"]
     features["structural_pair"] = cached["structural"]
@@ -349,6 +372,11 @@ def main() -> int:
         choices=["error", "exclude"],
         default="exclude",
     )
+    parser.add_argument(
+        "--topology-control-cache",
+        type=Path,
+        help="Handcrafted topology NPZ (tasks.transfer.topology_controls) adding C+S+H and C+S+H+T sets.",
+    )
     args = parser.parse_args()
     run_probe(
         checkpoint=args.checkpoint,
@@ -368,6 +396,7 @@ def main() -> int:
         minimum_external_coverage=args.minimum_external_coverage,
         feature_sets=args.feature_sets,
         canonical_conflict_policy=args.canonical_conflict_policy,
+        topology_control_cache=args.topology_control_cache,
     )
     return 0
 

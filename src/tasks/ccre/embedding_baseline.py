@@ -112,6 +112,8 @@ def _extract_embeddings(
     if canonical_conflict_policy not in {"error", "exclude"}:
         raise ValueError("canonical_conflict_policy must be 'error' or 'exclude'")
     eval_args.canonical_conflict_policy = canonical_conflict_policy
+    # v2 junction-repair checkpoints: extraction needs nodes, not candidates.
+    eval_args.extraction_mode = True
 
     segments = read_segments_csv(full_segments)
     seg_index, _ = build_global_index(segments)

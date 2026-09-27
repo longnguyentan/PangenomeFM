@@ -52,6 +52,32 @@ EXTERNAL_SEQUENCE_COMBINATIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
 )
 
 
+TOPOLOGY_CONTROL_COMBINATIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("topology_control", ("topology_control",)),
+    ("coordinate_plus_topology_control", ("coordinate", "topology_control")),
+    (
+        "coordinate_plus_sequence_kmer_plus_topology_control",
+        ("coordinate", "sequence_kmer", "topology_control"),
+    ),
+    (
+        "coordinate_plus_sequence_kmer_plus_topology_control_plus_frozen_pangenomefm",
+        ("coordinate", "sequence_kmer", "topology_control", "frozen_pangenomefm"),
+    ),
+)
+
+
+EXTERNAL_TOPOLOGY_CONTROL_COMBINATIONS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    (
+        "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+        ("coordinate", "frozen_sequence_fm", "topology_control"),
+    ),
+    (
+        "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+        ("coordinate", "frozen_sequence_fm", "topology_control", "frozen_pangenomefm"),
+    ),
+)
+
+
 def concatenate_modalities(
     components: Mapping[str, np.ndarray],
     names: Sequence[str],
@@ -89,12 +115,21 @@ def build_modality_factorial(
     *,
     suffix: str = "",
     include_external_sequence: bool = False,
+    include_topology_control: bool = False,
 ) -> dict[str, np.ndarray]:
-    """Build C/S/T singles, pairs, and triple on one fixed row universe."""
+    """Build C/S/T singles, pairs, and triple on one fixed row universe.
+
+    ``include_topology_control`` adds handcrafted-topology (H) sets so that the
+    pretrained T can be tested beyond cheap graph statistics (C+S+H vs C+S+H+T).
+    """
 
     combinations = list(CORE_MODALITY_COMBINATIONS)
     if include_external_sequence:
         combinations.extend(EXTERNAL_SEQUENCE_COMBINATIONS)
+    if include_topology_control:
+        combinations.extend(TOPOLOGY_CONTROL_COMBINATIONS)
+        if include_external_sequence:
+            combinations.extend(EXTERNAL_TOPOLOGY_CONTROL_COMBINATIONS)
     return {
         f"{feature_name}{suffix}": concatenate_modalities(components, names)
         for feature_name, names in combinations
@@ -116,6 +151,12 @@ def factorial_feature_access(*, suffix: str = "") -> dict[str, str]:
         "coordinate_plus_frozen_sequence_fm": "C+S-FM: coordinate and frozen sequence-model embedding",
         "frozen_sequence_fm_plus_frozen_pangenomefm": "S-FM+T: frozen sequence-model and topology embeddings",
         "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm": "C+S-FM+T: coordinate, frozen sequence-model, and topology embeddings",
+        "topology_control": "H: handcrafted label-free local topology statistics only",
+        "coordinate_plus_topology_control": "C+H: coordinate and handcrafted topology statistics",
+        "coordinate_plus_sequence_kmer_plus_topology_control": "C+S+H: coordinate, sequence composition, handcrafted topology",
+        "coordinate_plus_sequence_kmer_plus_topology_control_plus_frozen_pangenomefm": "C+S+H+T: adds frozen PangenomeFM beyond handcrafted topology",
+        "coordinate_plus_frozen_sequence_fm_plus_topology_control": "C+S-FM+H: coordinate, frozen sequence model, handcrafted topology",
+        "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm": "C+S-FM+H+T: adds frozen PangenomeFM beyond handcrafted topology",
     }
     return {f"{name}{suffix}": description for name, description in descriptions.items()}
 

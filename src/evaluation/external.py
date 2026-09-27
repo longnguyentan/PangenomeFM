@@ -34,6 +34,13 @@ from training.pretrain import (
     mask_positive_query_edges,
     tensorize_slice,
 )
+from training.node_inputs import (
+    PAIR_GEOMETRY_DIM,
+    objective_of,
+    pair_geom_rows,
+    structure_source_of,
+    visible_structure_features,
+)
 from utils.versioning import resolve_run_dir
 
 
@@ -96,6 +103,7 @@ def _build_model_from_checkpoint(ckpt: Dict, args: argparse.Namespace, device):
             hidden_dim=args.hidden_dim,
             mlp_dim=args.hidden_dim * 2,
             dropout=args.dropout,
+            geom_dim=PAIR_GEOMETRY_DIM if getattr(args, "pair_geometry", False) else 0,
         ).to(device)
         predictor.load_state_dict(ckpt["predictor_state"])
 
@@ -151,8 +159,31 @@ def _score_slice(
     label_batches = []
     qu_batches = []
     qv_batches = []
-    for start in range(0, len(idx), mask_batch_size):
-        batch_idx = idx[start : start + mask_batch_size]
+    junction_mode = (
+        objective_of(args) == "junction_repair" and sd.get("group_ids") is not None
+    )
+    if junction_mode:
+        # Junction re-pairing negatives are only valid when both source
+        # junctions are hidden together, so batches contain whole span groups.
+        idx_np = idx.cpu().numpy()
+        group_of = np.asarray(sd["group_ids"])[idx_np]
+        batch_list, current = [], []
+        for group in dict.fromkeys(group_of.tolist()):
+            current.extend(idx_np[group_of == group].tolist())
+            if len(current) >= mask_batch_size:
+                batch_list.append(current)
+                current = []
+        if current:
+            batch_list.append(current)
+        batch_list = [
+            torch.as_tensor(b, dtype=torch.long, device=idx.device) for b in batch_list
+        ]
+    else:
+        batch_list = [
+            idx[start : start + mask_batch_size]
+            for start in range(0, len(idx), mask_batch_size)
+        ]
+    for batch_idx in batch_list:
         src_for_mp = sd["src"]
         dst_for_mp = sd["dst"]
         edge_attr_for_mp = sd["edge_attr"]
@@ -165,10 +196,16 @@ def _score_slice(
                 sd["q_v"],
                 sd["labels"],
                 batch_idx,
+                sd["node_oids"] if junction_mode else None,
             )
+        x_in = (
+            visible_structure_features(sd["X"], src_for_mp, dst_for_mp, sd["deg_norm"])
+            if structure_source_of(args) == "visible"
+            else sd["X"]
+        )
 
         h = model.encode_nodes(
-            sd["X"],
+            x_in,
             sd["so"],
             src_for_mp,
             dst_for_mp,
@@ -182,7 +219,7 @@ def _score_slice(
         qv = sd["q_v"][batch_idx]
         labels = sd["labels"][batch_idx]
         if predictor is not None:
-            logits = predictor(h[qu], h[qv])
+            logits = predictor(h[qu], h[qv], pair_geom_rows(sd, batch_idx))
         else:
             logits = model.edge_predictor(
                 torch.cat([h[qu], h[qv]], dim=-1)

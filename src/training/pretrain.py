@@ -83,6 +83,16 @@ from models.dual_stream_gat import (
     build_pop_ids_array,
 )
 from models.losses import focal_bce_loss
+from graph.junction_repair import build_junction_repair_candidates, group_batches
+from training.node_inputs import (
+    PAIR_GEOMETRY_DIM,
+    append_extra_node_features,
+    objective_of,
+    pair_geometry,
+    pair_geom_rows,
+    structure_source_of,
+    visible_structure_features,
+)
 from evaluation.splits import normalize_chrom, validate_chromosome_split
 
 
@@ -228,10 +238,18 @@ class ExpressiveLinkPredictor(nn.Module):
     compared to a simple [h_u || h_v] MLP.
     """
 
-    def __init__(self, hidden_dim: int, mlp_dim: int = 128, dropout: float = 0.1):
+    def __init__(
+        self,
+        hidden_dim: int,
+        mlp_dim: int = 128,
+        dropout: float = 0.1,
+        geom_dim: int = 0,
+    ):
         super().__init__()
-        # Input: [h_u, h_v, h_u*h_v, |h_u-h_v|] = 4 * hidden_dim
-        in_dim = 4 * hidden_dim
+        # Input: [h_u, h_v, h_u*h_v, |h_u-h_v|] = 4 * hidden_dim (+ optional
+        # explicit pair geometry, see training.node_inputs.pair_geometry).
+        self.geom_dim = int(geom_dim)
+        in_dim = 4 * hidden_dim + self.geom_dim
         self.mlp = nn.Sequential(
             nn.Linear(in_dim, mlp_dim),
             nn.LayerNorm(mlp_dim),
@@ -243,12 +261,18 @@ class ExpressiveLinkPredictor(nn.Module):
             nn.Linear(mlp_dim // 2, 1),
         )
 
-    def forward(self, h_u: "torch.Tensor", h_v: "torch.Tensor") -> "torch.Tensor":
-        features = torch.cat(
-            [h_u, h_v, h_u * h_v, (h_u - h_v).abs()],
-            dim=-1,
-        )
-        return self.mlp(features).squeeze(-1)
+    def forward(
+        self,
+        h_u: "torch.Tensor",
+        h_v: "torch.Tensor",
+        geom: Optional["torch.Tensor"] = None,
+    ) -> "torch.Tensor":
+        parts = [h_u, h_v, h_u * h_v, (h_u - h_v).abs()]
+        if self.geom_dim:
+            if geom is None:
+                raise ValueError("this predictor was built with pair geometry inputs")
+            parts.append(geom)
+        return self.mlp(torch.cat(parts, dim=-1)).squeeze(-1)
 
 
 if TORCH_AVAILABLE:
@@ -418,6 +442,14 @@ def load_slice(
         oid_to_component_id=stats.oid_to_component_id,
     )
 
+    deg_values = np.array([deg_map.get(int(n), 0) for n in nodes], dtype=np.float64)
+    deg_norm = float(np.log1p(deg_values).max()) if len(deg_values) else 0.0
+    if structure_source_of(args) == "visible":
+        # Connected-component identity is computed on the unmasked graph and
+        # cannot be recomputed cheaply per mask; it is removed, not leaked.
+        X[:, 6] = 0.0
+    X = append_extra_node_features(X, nodes, seg_sub, seg_index, args)
+
     so_arr = np.array([md["oid_to_so"].get(int(n), 0) for n in nodes], dtype=np.int64)
     orient_arr = (nodes % 2).astype(np.int8)
     pop_ids_arr = (
@@ -435,6 +467,31 @@ def load_slice(
     if args.use_edge_features:
         edge_attr_arr = build_edge_features(u_struct, v_struct, nodes, md)
 
+    junction_audit = None
+    train_groups = None
+    extraction_only = bool(getattr(args, "extraction_mode", False))
+    if objective_of(args) == "junction_repair" and not extraction_only:
+        import zlib
+
+        split_seed_jr = args.seed if args.split_seed is None else args.split_seed
+        slice_seed = (zlib.crc32(str(row["name"]).encode()) ^ int(split_seed_jr)) & 0x7FFFFFFF
+        edge_df, junction_audit_obj = build_junction_repair_candidates(
+            u_struct,
+            v_struct,
+            md["oid_to_so"],
+            scope=getattr(args, "junction_scope", "branching"),
+            span_size=int(getattr(args, "junction_span_size", 16)),
+            split_seed=int(split_seed_jr),
+            rng_seed=int(slice_seed),
+        )
+        junction_audit = junction_audit_obj.as_dict()
+    elif objective_of(args) == "junction_repair" and extraction_only:
+        # Frozen extraction never scores candidates; keep every slice so that
+        # embedding coverage does not depend on how many junctions it holds.
+        edge_df = pd.DataFrame(
+            {"u_oid": u_struct[:1], "v_oid": v_struct[:1], "label": [1.0][: len(u_struct[:1])]}
+        )
+
     valid_mask = edge_df["u_oid"].isin(oid_to_idx) & edge_df["v_oid"].isin(oid_to_idx)
     edge_df_v = edge_df[valid_mask].reset_index(drop=True)
     if len(edge_df_v) == 0:
@@ -447,13 +504,38 @@ def load_slice(
         [oid_to_idx[int(x)] for x in edge_df_v["v_oid"]], dtype=np.int64
     )
     labels_arr = edge_df_v["label"].to_numpy(dtype=np.float32)
+    pair_geom_arr = (
+        pair_geometry(
+            edge_df_v["u_oid"].to_numpy(np.int64),
+            edge_df_v["v_oid"].to_numpy(np.int64),
+            md,
+        )
+        if getattr(args, "pair_geometry", False)
+        else None
+    )
 
     # Train/val/test split per slice
     n = len(labels_arr)
     split_seed = args.seed if args.split_seed is None else args.split_seed
-    train_idx, val_idx, test_idx = split_candidate_indices(n, split_seed)
+    if junction_audit is not None:
+        split_col = edge_df_v["split"].astype(str).to_numpy()
+        train_idx = np.flatnonzero(split_col == "train").astype(np.int64)
+        val_idx = np.flatnonzero(split_col == "val").astype(np.int64)
+        test_idx = np.flatnonzero(split_col == "test").astype(np.int64)
+        group_col = edge_df_v["group_id"].to_numpy(np.int64)
+        train_groups = [
+            train_idx[group_col[train_idx] == g] for g in np.unique(group_col[train_idx])
+        ]
+    elif objective_of(args) == "junction_repair" and extraction_only:
+        train_idx = np.arange(n, dtype=np.int64)
+        val_idx = np.empty(0, dtype=np.int64)
+        test_idx = np.empty(0, dtype=np.int64)
+    else:
+        train_idx, val_idx, test_idx = split_candidate_indices(n, split_seed)
 
-    if len(train_idx) < 10:
+    if len(train_idx) < 10 and not (
+        objective_of(args) == "junction_repair" and extraction_only
+    ):
         return None
 
     return {
@@ -479,6 +561,13 @@ def load_slice(
         "n_pos": int(labels_arr.sum()),
         "n_neg": int((1 - labels_arr).sum()),
         "canonical_candidate_audit": canonical_candidate_audit,
+        "deg_norm": deg_norm,
+        "pair_geom": pair_geom_arr,
+        "train_groups": train_groups,
+        "group_ids": (
+            edge_df_v["group_id"].to_numpy(np.int64) if junction_audit is not None else None
+        ),
+        "junction_audit": junction_audit,
     }
 
 
@@ -524,6 +613,14 @@ def tensorize_slice(slice_data: Dict, device: "torch.device", args) -> Dict:
         else None
     )
     d["branching_frac"] = slice_data["branching_frac"]
+    d["deg_norm"] = float(slice_data.get("deg_norm", 0.0))
+    d["train_groups"] = slice_data.get("train_groups")
+    d["group_ids"] = slice_data.get("group_ids")
+    d["pair_geom"] = (
+        torch.tensor(slice_data["pair_geom"], dtype=torch.float32, device=device)
+        if slice_data.get("pair_geom") is not None
+        else None
+    )
     d["name"] = slice_data["name"]
     d["target_sn"] = slice_data["target_sn"]
     d["closure"] = slice_data["closure"]
@@ -621,15 +718,24 @@ def train_one_epoch_shared(
         # Candidate mini-batches are essential here. Masking every training
         # positive simultaneously would erase nearly the whole structural
         # graph, while leaving validation/test positives visible would leak.
-        permutation = torch.as_tensor(
-            rng.permutation(len(train_idx)), dtype=torch.long, device=train_idx.device
-        )
-        shuffled_train_idx = train_idx[permutation]
         candidate_batch_size = max(1, int(args.batch_size))
-        for batch_start in range(0, len(shuffled_train_idx), candidate_batch_size):
-            batch_idx = shuffled_train_idx[
-                batch_start : batch_start + candidate_batch_size
+        if objective_of(args) == "junction_repair" and sd.get("train_groups"):
+            # Whole span groups only: both source junctions of every negative
+            # must be hidden in the same forward pass.
+            batch_list = [
+                torch.as_tensor(b, dtype=torch.long, device=train_idx.device)
+                for b in group_batches(sd["train_groups"], candidate_batch_size, rng)
             ]
+        else:
+            permutation = torch.as_tensor(
+                rng.permutation(len(train_idx)), dtype=torch.long, device=train_idx.device
+            )
+            shuffled_train_idx = train_idx[permutation]
+            batch_list = [
+                shuffled_train_idx[start : start + candidate_batch_size]
+                for start in range(0, len(shuffled_train_idx), candidate_batch_size)
+            ]
+        for batch_idx in batch_list:
 
             src_for_mp = sd["src"]
             dst_for_mp = sd["dst"]
@@ -654,9 +760,14 @@ def train_one_epoch_shared(
                 edge_attr=edge_attr_for_mp,
                 training=True,
             )
+            x_in = (
+                visible_structure_features(sd["X"], src_aug, dst_aug, sd["deg_norm"])
+                if structure_source_of(args) == "visible"
+                else sd["X"]
+            )
 
             h = model.encode_nodes(
-                sd["X"],
+                x_in,
                 sd["so"],
                 src_aug,
                 dst_aug,
@@ -671,7 +782,7 @@ def train_one_epoch_shared(
             labels = sd["labels"][batch_idx]
 
             if predictor is not None:
-                logits = predictor(h[qu], h[qv])
+                logits = predictor(h[qu], h[qv], pair_geom_rows(sd, batch_idx))
                 probs = torch.sigmoid(logits)
             else:
                 probs = model.edge_predictor(
@@ -806,8 +917,13 @@ def evaluate_shared(
                 sd["node_oids"],
             )
 
+        x_in = (
+            visible_structure_features(sd["X"], src_for_mp, dst_for_mp, sd["deg_norm"])
+            if args is not None and structure_source_of(args) == "visible"
+            else sd["X"]
+        )
         h = model.encode_nodes(
-            sd["X"],
+            x_in,
             sd["so"],
             src_for_mp,
             dst_for_mp,
@@ -822,7 +938,7 @@ def evaluate_shared(
         labels = sd["labels"][idx]
 
         if predictor is not None:
-            logits = predictor(h[qu], h[qv])
+            logits = predictor(h[qu], h[qv], pair_geom_rows(sd, idx))
             probs = torch.sigmoid(logits).cpu().numpy()
         else:
             probs = model.edge_predictor(torch.cat([h[qu], h[qv]], dim=-1)).squeeze(-1)
@@ -1100,6 +1216,51 @@ def main():
     )
     ap.add_argument("--device", default="cpu", choices=["cpu", "cuda", "mps"])
     ap.add_argument("--batch_size", type=int, default=512)
+    # ── v2 pretraining objective and node inputs ─────────────────────────────
+    ap.add_argument(
+        "--objective",
+        choices=["edge_masking", "junction_repair"],
+        default="edge_masking",
+        help=(
+            "edge_masking reproduces the v1 benchmark candidates. junction_repair "
+            "hides span groups of junctions and uses cross-pairings of their "
+            "dangling ends as negatives, removing the visible-degree shortcut."
+        ),
+    )
+    ap.add_argument("--junction_scope", choices=["branching", "all"], default="branching")
+    ap.add_argument("--junction_span_size", type=int, default=16)
+    ap.add_argument(
+        "--node_structure_source",
+        choices=["unmasked", "visible"],
+        default="unmasked",
+        help=(
+            "unmasked reproduces v1 (degree/component features include hidden "
+            "edges). visible recomputes degree on the message-passing graph after "
+            "masking and drops the component feature."
+        ),
+    )
+    ap.add_argument(
+        "--node_extra_features",
+        choices=["none", "kmer", "cache"],
+        default="none",
+        help="Sequence-conditioned encoder inputs appended to the 7 base features.",
+    )
+    ap.add_argument(
+        "--node_feature_cache",
+        default=None,
+        help="NPZ with arrays segid/embeddings (plus .audit.json) for --node_extra_features cache.",
+    )
+    ap.add_argument("--node_feature_min_coverage", type=float, default=0.99)
+    ap.add_argument(
+        "--pair_geometry",
+        action="store_true",
+        help=(
+            "Give the connection scorer explicit signed offset, contiguity gap, "
+            "orientation agreement and same-coordinate-system flags. Coordinates "
+            "are an allowed input; this stops log-scaled node features from "
+            "hiding exact local geometry. Implies the expressive scorer."
+        ),
+    )
     ap.add_argument(
         "--lazy_tensorize",
         action="store_true",
@@ -1203,6 +1364,14 @@ def main():
         _lp.append("exppred")
     if args.mask_query_edges:
         _lp.append("maskedq")
+    if args.objective != "edge_masking":
+        _lp.append(f"jr{args.junction_scope}{args.junction_span_size}")
+    if args.node_structure_source != "unmasked":
+        _lp.append("visdeg")
+    if args.node_extra_features != "none":
+        _lp.append(f"x{args.node_extra_features}")
+    if args.pair_geometry:
+        _lp.append("pgeom")
     if args.split_seed is not None:
         _lp.append(f"splitseed{args.split_seed}")
     if args.extra_datasets:
@@ -1422,11 +1591,12 @@ def main():
 
         # Optional: expressive predictor replaces default edge_predictor
         predictor = None
-        if args.expressive_predictor:
+        if args.expressive_predictor or args.pair_geometry:
             predictor = ExpressiveLinkPredictor(
                 hidden_dim=args.hidden_dim,
                 mlp_dim=args.hidden_dim * 2,
                 dropout=args.dropout,
+                geom_dim=PAIR_GEOMETRY_DIM if args.pair_geometry else 0,
             ).to(device)
 
         domain_classifier = None
