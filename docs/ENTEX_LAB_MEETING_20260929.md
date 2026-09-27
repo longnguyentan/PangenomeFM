@@ -267,3 +267,13 @@ bash scripts/server/run_entex_meeting_20260929.sh followups
 4. **5 min:** decide what belongs in the main text and which distinct path/donor
    experiments justify additional data/model work. Do not select assays or bins
    solely because they yield larger gains.
+
+### Update: additional assays launched (27 September, 07:15 UTC)
+
+All three additional assay smoke runs passed the 100% C/K/S/T and measurement
+coverage checks. One-fold topology gains were negative: ATAC −0.000231,
+H3K4me3 −0.000451, H3K27me3 −0.002823. These are not multi-fold results.
+All three still proceed through the predefined 90-run matrix; none was selected
+by its score. Full results and equal-locus/donor/tissue checks are running.
+The fixed plan and server commands are in
+[the evidence extension](FOUNDATION_EVIDENCE_EXTENSION_20260927.md).

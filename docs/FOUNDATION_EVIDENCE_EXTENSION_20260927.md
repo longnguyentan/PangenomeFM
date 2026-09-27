@@ -170,3 +170,59 @@ strict, Δ AUPRC was −0.000231 (ATAC), −0.000451 (H3K4me3), and −0.002823
 predefined assay proceeds to the full matrix regardless of its smoke score.
 The compact metrics and audit receipts are in
 `results/entex/extension_20260927/smoke_qc/`.
+
+## Full matrix launch and native v2 readiness plan
+
+At 07:15 UTC on 27 September, the full predefined EN-TEx panel was launched
+from the isolated reporting checkout at `cb21325`, using the data and output
+roots in the execution checkout. GPUs 2/3 are assigned to it; the H/R workers
+keep GPUs 0/1. As of the next progress check, 12/15 H/R fold/seed jobs had
+completed (96/120 biological probe runs), with two final-fold jobs running.
+The H/R report waits for all 15 successful receipts before replaying predictions.
+No partial-matrix inference is presented.
+
+### Native v2 audit: analysis plan fixed before its scores
+
+**Decision:** whether the corrected junction objective has sufficient coverage
+for a full v2 run, and whether coordinate geometry or visible degree alone can
+solve its validation task. This concerns self-supervised connection labels;
+no EN-TEx or other biological labels are used.
+
+**Observed starting point:** the 72-window v2 smoke executes, but the earlier
+20-window diagnostic used simplified masking and retained a distance cue.
+A full model campaign remains premature.
+
+**Implementation:** `tasks.transfer.junction_readiness` loads the same global
+HPRC R2 index and all strict/one-hop manifest windows using the native training
+loader and the smoke checkpoint's saved objective settings. The new optional
+loader receipt reports exclusions without changing returned training arrays.
+The auditor verifies balanced labels, endpoint multiplicities and unsplit
+groups after node filtering. It requires every canonical chromosome in both
+contexts to retain a window, and to have at least one native validation/test
+window with four candidates (the native evaluator's minimum). Counts, failed
+windows, graph/checkpoint/manifest and per-window source hashes are retained.
+
+**Baselines:** fixed standardized logistic regression (C=1, balanced classes)
+using geometry only, visible degree only, and their union. Geometry includes
+the native signed offset/gap, orientation and same-coordinate-system flags;
+cross-system offsets remain gated. Degree comes from the actual masked
+message graph. Training uses complete packed groups, all internal held-out
+positives masked, and one reproducible DropEdge draw per slice with the saved
+rate. Validation uses native evaluation masks and no DropEdge. This reuses
+the native protocol; it is not a replay of the historical training RNG trace.
+
+**Partitions and interpretation:** fit only internal training candidates on
+training chromosomes; report pooled AP/AUROC and native-style window-macro
+AUROC on validation chromosomes/internal validation candidates. No score
+direction or regularization search, and no held-out chromosome predictions.
+Above-chance geometry identifies a remaining nuisance route; chance-level
+linear controls alone do not establish the absence of more complex shortcuts.
+These are validation diagnostics, with no biological superiority claim.
+
+```bash
+PYTHONPATH=src:. python -m tasks.transfer.junction_readiness \
+  --checkpoint /home/tuv43532/PangenomeFM_junction_audit_20260927/results/v2_review_20260927/smoke_72/training/run_001/ckpt_strict__shared_dual_mscale3_orient_maskedq_jrbranching16_visdeg_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep1_pat1.pt \
+  --manifest /home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv \
+  --full-segments /home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz \
+  --out-dir results/foundation_evidence_20260927/junction_readiness
+```

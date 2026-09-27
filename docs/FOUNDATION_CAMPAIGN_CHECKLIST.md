@@ -215,3 +215,16 @@ model requirements are in `docs/FOUNDATION_EVIDENCE_EXTENSION_20260927.md`.
 - [x] Repair report final-status handling and test both success and validation
   failure; full H/R inference still requires all 120 evaluations.
 - [ ] Finish the predefined 90-run EN-TEx extension and replay its predictions.
+
+### 27 September — full panel launched; native v2 audit implemented
+
+- [x] Push `cb21325` to GitHub and synchronize the isolated server reporting
+  checkout; the other LLM's checkout and active execution workers are unchanged.
+- [x] Launch full ATAC/H3K4me3/H3K27me3 chromosome matrix with the original
+  frozen encoders and fixed assay panel (07:15 UTC).
+- [x] Launch the complete-matrix H/R prediction auditor with a bounded dependency
+  wait; 12/15 fold/seed jobs were complete at the latest check.
+- [x] Implement native v2 coverage and validation-only geometry/degree controls.
+  Tests check native masking, no validation-label fitting, and identical native
+  loader arrays with/without the optional diagnostic receipt.
+- [ ] Run and inspect the full native v2 audit before a larger v2 training run.

@@ -408,10 +408,13 @@ def load_slice(
     md: Dict,
     full_segments: pd.DataFrame,
     args: argparse.Namespace,
+    audit_out: Optional[Dict] = None,
 ) -> Optional[Dict]:
     """Load one manifest row into tensors."""
     seg_sub = pd.read_csv(row["segments_path"], compression="infer")
     links_sub = pd.read_csv(row["links_path"], compression="infer")
+    if audit_out is not None:
+        audit_out.update(n_segments=len(seg_sub), n_stored_links=len(links_sub))
     edge_df = (pd.read_csv(row["edge_pred_path"], compression="infer")
                if objective_of(args) == "edge_masking" else
                pd.DataFrame(columns=["u_oid", "v_oid", "label"]))
@@ -424,6 +427,8 @@ def load_slice(
     )
 
     if len(links_sub) == 0 or (objective_of(args) == "edge_masking" and len(edge_df) == 0):
+        if audit_out is not None:
+            audit_out["exclusion"] = "empty_structural_graph_or_candidates"
         return None
 
     u_struct, v_struct = oriented_ids_from_links(links_sub, seg_index)
@@ -488,6 +493,8 @@ def load_slice(
             rng_seed=int(slice_seed),
         )
         junction_audit = junction_audit_obj.as_dict()
+        if audit_out is not None:
+            audit_out.update(junction_audit)
     elif objective_of(args) == "junction_repair" and extraction_only:
         # Frozen extraction never scores candidates; keep every slice so that
         # embedding coverage does not depend on how many junctions it holds.
@@ -497,7 +504,11 @@ def load_slice(
 
     valid_mask = edge_df["u_oid"].isin(oid_to_idx) & edge_df["v_oid"].isin(oid_to_idx)
     edge_df_v = edge_df[valid_mask].reset_index(drop=True)
+    if audit_out is not None:
+        audit_out["n_candidate_node_filter_exclusions"] = int((~valid_mask).sum())
     if len(edge_df_v) == 0:
+        if audit_out is not None:
+            audit_out["exclusion"] = "no_valid_candidates"
         return None
 
     query_u_arr = np.array(
@@ -536,10 +547,18 @@ def load_slice(
     else:
         train_idx, val_idx, test_idx = split_candidate_indices(n, split_seed)
 
+    if audit_out is not None:
+        audit_out.update(n_train_candidates=len(train_idx), n_val_candidates=len(val_idx),
+                         n_test_candidates=len(test_idx))
     if len(train_idx) < 10 and not (
         objective_of(args) == "junction_repair" and extraction_only
     ):
+        if audit_out is not None:
+            audit_out["exclusion"] = "fewer_than_10_training_candidates"
         return None
+
+    if audit_out is not None:
+        audit_out["exclusion"] = "retained"
 
     return {
         "name": row["name"],
