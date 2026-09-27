@@ -118,3 +118,27 @@ def test_optional_loader_receipt_does_not_change_native_arrays(tmp_path, objecti
             assert receipt["n_candidate_node_filter_exclusions"] == 2
     else:
         assert receipt["n_candidate_node_filter_exclusions"] == 0
+
+
+def test_raw_node_controls_use_visible_features_and_no_validation_label_fit():
+    from tasks.transfer.junction_readiness import GEOMETRY, DEGREE
+    sd = native_fixture()
+    args = Namespace(seed=42, batch_size=4, orientation_rope=False, pop_cond=False,
+                     drop_edge=False, drop_edge_rate=.1, include_node_controls=True)
+    rows = feature_rows(sd, args, 'train')
+    np.testing.assert_array_equal(rows.node_4_u, rows.degree_u)
+    assert rows.node_6_u.eq(0).all()
+    records = []
+    for partition, chrom in [('train', 'chr3'), ('validation', 'chr2')]:
+        for i in range(80):
+            row = {key: 0. for key in GEOMETRY + DEGREE}
+            row.update(node_0_u=float(i % 2), node_0_v=float(i % 2), label=i % 2,
+                       partition=partition, chrom=chrom, context='1hop', slice=chrom,
+                       candidate_index=i)
+            records.append(row)
+    data = pd.DataFrame(records)
+    scores, predictions = fit_validation_baselines(data)
+    assert set(scores.baseline) >= {'node_inputs_linear', 'node_inputs_boosting'}
+    data.loc[data.partition.eq('validation'), 'label'] ^= 1
+    _, changed = fit_validation_baselines(data)
+    np.testing.assert_array_equal(predictions.probability, changed.probability)

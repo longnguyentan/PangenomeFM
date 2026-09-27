@@ -162,3 +162,16 @@ inadequate coverage, wrong masking configuration, or nuisance scores above the
 fixed gate. Without `--execute` it writes the exact commands and gate receipts.
 Training writes per-epoch loss and validation AUROC, atomic recovery checkpoints,
 and final validation-only predictions. No test predictions are requested.
+
+## Additional raw-input diagnostic (fixed before its results)
+
+Chance performance for geometry/degree alone does not exclude nonlinear node
+attribute cues. The optional `--include-node-controls` audit uses the model's
+actual visible seven input features at both endpoints, plus fixed products and
+absolute differences, without a graph encoder. It fits a fixed standardized
+logistic probe and a fixed histogram-gradient-boosting probe (100 iterations,
+7 leaves, learning rate 0.05, L2=1, no random internal validation/early stopping).
+These fit training chromosomes only; validation labels are only scored. This
+additional diagnostic neither changes the candidate matcher nor tunes pilot
+hyperparameters. Failure means further objective investigation is needed before
+claiming that the reconstruction requires learned graph context.

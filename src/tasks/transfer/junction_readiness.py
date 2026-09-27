@@ -19,6 +19,7 @@ import zlib
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.metrics import average_precision_score, roc_auc_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
@@ -89,6 +90,16 @@ def feature_rows(sd: dict, args: argparse.Namespace, partition: str) -> pd.DataF
             values = np.column_stack([geom, abs(geom[:, 0]), abs(geom[:, 1]),
                                       du, dv, du + dv, du * dv, abs(du - dv)])
             frame = pd.DataFrame(values, columns=GEOMETRY + DEGREE)
+            if getattr(args, "include_node_controls", False):
+                # Exactly the model's visible, unlabelled node inputs. These
+                # controls test raw attribute compatibility without an encoder.
+                xu = x[native["q_u"][idx]].numpy()
+                xv = x[native["q_v"][idx]].numpy()
+                for i in range(xu.shape[1]):
+                    for suffix, values in [("u", xu[:, i]), ("v", xv[:, i]),
+                                           ("product", xu[:, i] * xv[:, i]),
+                                           ("absdiff", abs(xu[:, i] - xv[:, i]))]:
+                        frame[f"node_{i}_{suffix}"] = values
             frame["label"] = sd["labels"][batch].astype(int)
             frame["slice"] = sd["name"]
             frame["chrom"] = normalize_chrom(sd["target_sn"])
@@ -111,12 +122,24 @@ def fit_validation_baselines(frame: pd.DataFrame) -> tuple[pd.DataFrame, pd.Data
             raise ValueError("Training/validation chromosomes overlap")
         if train.label.nunique() != 2 or val.label.nunique() != 2:
             raise ValueError("Both baseline partitions require both classes")
-        for name, columns in [("geometry", GEOMETRY), ("visible_degree", DEGREE),
-                              ("geometry_and_visible_degree", GEOMETRY + DEGREE)]:
-            model = make_pipeline(StandardScaler(), LogisticRegression(
-                C=1.0, class_weight="balanced", solver="lbfgs", max_iter=2000, random_state=42))
+        specifications = [("geometry", GEOMETRY), ("visible_degree", DEGREE),
+                          ("geometry_and_visible_degree", GEOMETRY + DEGREE)]
+        node_columns = [c for c in frame if c.startswith("node_")]
+        if node_columns:
+            specifications += [("node_inputs_linear", node_columns),
+                               ("node_inputs_boosting", node_columns)]
+        for name, columns in specifications:
+            if name.endswith("boosting"):
+                # Fixed budget; disable sklearn's random internal validation
+                # split. No chromosome-validation label selects this model.
+                model = HistGradientBoostingClassifier(
+                    max_iter=100, max_leaf_nodes=7, learning_rate=0.05,
+                    l2_regularization=1.0, early_stopping=False, random_state=42)
+            else:
+                model = make_pipeline(StandardScaler(), LogisticRegression(
+                    C=1.0, class_weight="balanced", solver="lbfgs", max_iter=2000, random_state=42))
             model.fit(train[columns], train.label)
-            if model[-1].n_iter_.max() >= model[-1].max_iter:
+            if not name.endswith("boosting") and model[-1].n_iter_.max() >= model[-1].max_iter:
                 raise RuntimeError("Nuisance baseline did not converge")
             p = model.predict_proba(val[columns])[:, 1]
             pred = val[["slice", "chrom", "context", "candidate_index", "label"]].copy()
@@ -154,6 +177,7 @@ def run(args: argparse.Namespace) -> None:
             native_args.drop_edge_rate = args.training_drop_edge_rate
             native_args.drop_edge = args.training_drop_edge_rate > 0
         receipt["training_drop_edge_rate_override"] = args.training_drop_edge_rate
+        native_args.include_node_controls = getattr(args, "include_node_controls", False)
         for field in ["junction_geometry_match", "junction_geometry_bin_ratio", "graph_message_direction"]:
             if getattr(args, field, None) is not None:
                 setattr(native_args, field, getattr(args, field))
@@ -161,7 +185,9 @@ def run(args: argparse.Namespace) -> None:
         native_args.pair_geometry = True
         split = validate_chromosome_split(val_chrs=native_args.val_chrs, test_chrs=native_args.test_chrs)
         receipt.update(native_args=vars(native_args), split=split, checkpoint_weights_used=False,
-                       baseline="Fixed standardized logistic C=1; train only; no test scores or hyperparameter search",
+                       baseline=("Fixed standardized logistic C=1; optional raw-node interactions and "
+                                 "100-step/7-leaf boosting with early_stopping=False; train only; "
+                                 "no test scores or hyperparameter search"),
                        mask="Native held-out masks; complete packed train groups and one fixed DropEdge draw per slice",
                        limitations="Validation diagnostics, not independent biological performance or a proof of no shortcuts")
         segments = pd.read_csv(args.full_segments, usecols=["id", "name", "LN", "SN", "SO", "SR"])
@@ -236,6 +262,8 @@ def main() -> None:
     parser.add_argument("--junction-geometry-match", choices=["distance", "signed_gap_bins"])
     parser.add_argument("--junction-geometry-bin-ratio", type=float)
     parser.add_argument("--graph-message-direction", choices=["incoming", "bidirectional"])
+    parser.add_argument("--include-node-controls", action="store_true",
+                        help="Also fit fixed linear-interaction and boosting controls on visible raw node inputs")
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     torch.set_num_threads(4)
     run(parser.parse_args())
