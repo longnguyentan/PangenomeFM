@@ -1,6 +1,6 @@
 # EN-TEx biological transfer — team brief for Tuesday, 29 September 2026
 
-Prepared 26 September 2026. This document separates completed biological
+Prepared 26 September; updated 27 September 2026. This document separates completed biological
 results, completed exploratory follow-ups, and remaining limitations. The maintained
 project-wide checklist is [here](FOUNDATION_CAMPAIGN_CHECKLIST.md).
 
@@ -277,3 +277,14 @@ All three still proceed through the predefined 90-run matrix; none was selected
 by its score. Full results and equal-locus/donor/tissue checks are running.
 The fixed plan and server commands are in
 [the evidence extension](FOUNDATION_EVIDENCE_EXTENSION_20260927.md).
+
+### Model-readiness update for discussion
+
+The native full-window v2 audit caught a preprocessing defect in one-hop
+candidates: removing individual rows with unavailable oriented nodes can break
+balanced endpoint counts. A tested correction drops complete affected masking
+groups, explicitly reporting the additional loss. It preserves v1 behavior and
+the graph release. The old v2 smoke is not evidence that this corrected model
+works better. The corrected audit, full H/R controls and independent validation
+are prerequisites for a stronger model claim; expanding the assay list alone
+does not establish it. The correction is committed as `28728fd`; 300 tests pass.

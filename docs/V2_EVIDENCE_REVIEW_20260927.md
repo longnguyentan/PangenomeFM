@@ -66,7 +66,7 @@ The [checked list](FOUNDATION_CAMPAIGN_CHECKLIST.md) retains outstanding items.
    current training group; it excludes stochastic drop-edge and larger packed
    groups. v1 single-query masking is explicitly separate from batched training.
 
-All v1 defaults stay unchanged. The full local suite passes: **281 tests**;
+All v1 defaults stay unchanged. The latest full local suite passes: **300 tests**;
 scoped Ruff/compile checks also pass. The old benchmark and result files remain
 unchanged. Existing helpers with ambiguous hosts/reset behavior were not used;
 reviewed commands run in new server worktrees/output roots.

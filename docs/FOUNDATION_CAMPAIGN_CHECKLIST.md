@@ -4,6 +4,24 @@ Last verified: 27 September 2026. Owner: this research task. A checked item mean
 its stated scope is complete, not that its scientific hypothesis was supported.
 Server: existing Temple checkout; canonical graph and completed results are preserved.
 
+## Latest verified status — 27 September
+
+For a consolidated recent-work summary and decision roadmap, see
+[PROJECT_STATUS_AND_ROADMAP_20260927.md](PROJECT_STATUS_AND_ROADMAP_20260927.md).
+
+| Workstream | Status | Evidence / next step |
+|---|---|---|
+| Core EN-TEx + RNA | Complete | 330 primary fits + 30 RNA fits; paired results and team figures available |
+| ATAC/H3K4me3/H3K27me3 | Launched; refresh pending | All three smoke gates passed; 2/90 full-panel fits complete at last server check, no recorded failures |
+| Trained/random/H controls | Launched; refresh pending | 12/15 fold/seed jobs complete (96/120 evaluations); full inference waits for every receipt |
+| Native v2 objective | Correction tested | Full-window audit exposed loss of endpoint balance; whole-group filtering fix pushed as `28728fd` |
+| Corrected v2 audit | Pending server deployment | Prior SSH session expired before synchronization; direct authentication window reopened |
+| Verification | Passed | 300 tests; scoped Ruff/compile; original cached cCRE/SV regression anchors unchanged |
+| General foundation-model superiority | Unestablished | Requires valid v2 training, trained/random/H comparisons, stronger sequence controls and independent transfer |
+
+Counts are the last authenticated observation, not inferred progress while
+disconnected. Detached server jobs are independent of the SSH session.
+
 ## Completed EN-TEx programme
 
 - [x] Inspect and validate sources; resolve legacy cCRE registry accessions.
@@ -125,8 +143,8 @@ Window scaling is not haplotype-diversity scaling or a scaling law.
 - [x] Correct gate/loss/scorer, ordered SV pair representation, target naming,
   donor aliases, split counts and degree-control interpretation.
 - [x] Integrate completed EN-TEx and structural findings with null results retained.
-- [x] Add the completed intrinsic reconstruction scaling audit to the working
-  supplement while withholding unfinished biological scaling/HG008/path claims.
+- [x] Add completed intrinsic and biological scaling evidence to the working
+  revision; retain task-dependent findings and withhold unfinished HG008/path claims.
 - [x] Compile and visually verify revised PDF, figures, tables and citations.
 - [ ] Final funding/author contributions/acknowledgements: awaiting author details.
 - [x] Run scoped tests, cached regression, lint, compile and provenance checks.
@@ -134,7 +152,7 @@ Window scaling is not haplotype-diversity scaling or a scaling law.
   The exact current commit is obtained with `git rev-parse HEAD`; do not confuse
   code synchronization with completion of the long-running experiments.
 
-## Current access and next action
+## Earlier authenticated access and numerical diagnostics
 
 - [x] SSH reauthenticated; server status was successfully checked and the
   checkout was fast-forwarded. No passwords are stored in the project.
