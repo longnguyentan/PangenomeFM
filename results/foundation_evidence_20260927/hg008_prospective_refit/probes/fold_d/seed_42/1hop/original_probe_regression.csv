@@ -1,0 +1,3 @@
+feature_set,reconstructed_auprc,cached_auprc,auprc_difference,protocol,historical_replay_passed,max_score_error
+coordinate_plus_frozen_sequence_fm_pair,0.8590239082735555,0.8585858222977245,0.00043808597583094855,prospective_refit,False,0.01144505267188084
+coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm_pair,0.9045571877225931,0.9052495702080753,-0.0006923824854822014,prospective_refit,False,0.022733948489373323

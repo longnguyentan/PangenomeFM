@@ -23,7 +23,7 @@ results, and the other implementation worktree are preserved.
 - [x] Audit coverage and nuisance baselines under new matching: one-hop passes the stated gate; strict fails and remains excluded.
 - [x] Complete the bounded validation-only comparison and matched frozen-random controls.
 - [ ] Evaluate a selected model with frozen biological probes and matched random twins.
-- [ ] Resolve historical HG008 replay failures or run a separately identified,
+- [x] Resolve historical HG008 replay failures or run a separately identified,
   prospective deterministic probe-refit protocol; never relabel a refit as replay.
 - [ ] Measured genotypability labels and verified path-to-segment correspondence
   remain data requirements; FILTER flags and mismatched paths are not substitutes.
@@ -257,3 +257,76 @@ Server access remains available. All 30 prospective HG008 refits have completed;
 strict AP gain is +0.032525 (95% CI -0.053371 to +0.110254), and one-hop is
 +0.064863 (-0.066739 to +0.212115). This 69-variant, one-genome result is
 inconclusive. It does not repair or replace the historical replay receipts.
+
+## Audited results and commands
+
+The reconstruction table is recomputed from predictions, checks exact candidate
+identities across all eight runs, verifies the unchanged random-backbone hashes,
+and replays each selected checkpoint's native macro-AUROC. It selects
+`bidirectional_default` without using biological labels.
+
+```bash
+PYTHONPATH=src:. python -m tasks.transfer.junction_pilot_report \
+  --trained-root results/foundation_evidence_20260927/geometry_pilot \
+  --random-root results/foundation_evidence_20260927/geometry_random_controls \
+  --out-dir results/foundation_evidence_20260927/junction_pilot_analysis
+```
+
+Tables: `junction_pilot_analysis/validation_metrics.csv` and
+`junction_pilot_analysis/paired_differences.csv`; figure:
+`junction_pilot_analysis/junction_validation.{pdf,svg,png}` (all under
+`results/foundation_evidence_20260927/`). No post-selection confidence intervals
+are inferred from this single development fold/seed.
+
+The 30-run HG008 prospective-refit outputs are now downloaded locally under
+`results/foundation_evidence_20260927/hg008_prospective_refit/`. Saved logistic
+models remain on the server at the same relative path in
+`/home/tuv43532/PangenomeFM_refit_20260927`; local compact artifacts omit joblib
+files. Each model was saved and reloaded before external scoring, with exact
+prediction replay. `analysis/audit.json` verifies complete folds/seeds/contexts,
+69 external variants, and 100% external feature coverage. Historical replay
+differences remain in `analysis/original_probe_regression.csv`.
+
+| HG008, new HGSVC-only refit | Mean C+S AP | Mean C+S+T AP | Paired gain, 95% CI |
+|---|---:|---:|---:|
+| Strict | 0.426009 | 0.458534 | +0.032525 [-0.053371, +0.110254] |
+| One-hop | 0.426009 | 0.490872 | +0.064863 [-0.066739, +0.212115] |
+
+This is insertion/deletion classification on one cancer genome. Neither gain
+establishes general cancer prediction, and external labels will not tune a new
+probe. Figure: `analysis/hg008_transfer.{png,svg}`; complete metric tables:
+`analysis/per_run.csv`, `analysis/summary.csv`, `analysis/paired_gains.csv`.
+
+### Biological validation running (17:03 EDT)
+
+The server passed 27 focused tests before launching the eight frozen probe jobs
+in tmux session `bioval` on socket `evidence-20260927`, using commit `16d7e9a`.
+The authoritative command list is
+`results/foundation_evidence_20260927/biological_validation/status.json` in
+`/home/tuv43532/PangenomeFM_model_repair_20260927`.
+It compares v1, v1-random, selected v2, and its matched frozen-random backbone,
+for both cCRE and insertion/deletion, on fold A/seed 42/one-hop. The exact
+manuscript graph, NT cache and provenance-checked H cache are reused.
+
+Once all eight finish, run:
+
+```bash
+PYTHONPATH=src:. python -m tasks.transfer.development_report \
+  --root results/foundation_evidence_20260927/biological_validation \
+  --out-dir results/foundation_evidence_20260927/biological_validation_analysis
+```
+
+This report rejects changed locus/label identities, changed non-embedding
+baseline predictions, incomplete matrices, or any test-partition prediction.
+The historical H/R report shares the prediction audit; its test-scoring default
+is preserved. Tests cover these failure cases and replay development metrics.
+The full suite passes 327 tests; one additional metric-replay test also passes.
+
+### Data limitations still requiring real inputs
+
+The genotypability starting-point assessment is saved as
+`results/foundation_evidence_20260927/genotypability_starting_point.json`.
+The examined HPRC release summary reports self-genotyping, while the HGSVC3
+workflow describes leave-one-out concordance without a located public table of
+per-variant outcomes. Self-genotyping/FILTER flags are not the requested measured
+leave-one-out labels. No substitute performance result is claimed.

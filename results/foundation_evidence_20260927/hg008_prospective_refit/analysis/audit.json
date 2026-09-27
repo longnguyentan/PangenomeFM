@@ -1,0 +1,13 @@
+{
+  "status": "complete",
+  "protocol": "prospective_refit",
+  "historical_replay_claim": false,
+  "n_runs": 30,
+  "external_variants": 69,
+  "minimum_feature_coverage": 1.0,
+  "primary_context": "strict",
+  "primary_metric": "auprc",
+  "uncertainty": "paired chromosome-fold then seed bootstrap, 10000 draws; descriptive one-genome result",
+  "pooled_scores": "secondary cross-fitted scores; fold-specific calibrations can affect pooled ranking",
+  "null_or_negative_results_retained": true
+}

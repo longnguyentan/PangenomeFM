@@ -1,0 +1,58 @@
+{
+  "artifact_type": "starting_point_assessment",
+  "date": "2026-09-27",
+  "objective": "Predict measured leave-one-out SV genotyping accuracy using frozen graph/sequence representations",
+  "materials": [
+    {
+      "identity": "HGSVC3 PanGenie 1.0",
+      "reference": "CHM13",
+      "role": "released panel and filtered cohort genotypes",
+      "status": "observed",
+      "source": "https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/HGSVC3/release/Genotyping_1kGP/PanGenie-genotypes/1.0/",
+      "finding": "Release listing contains panel/decomposed VCFs and a filtered 34G cohort VCF, not variant-level leave-one-out outcomes. No large VCF downloaded."
+    },
+    {
+      "identity": "HPRC PanGenie Zenodo 6797328",
+      "reference": "GRCh38",
+      "role": "candidate statistics source",
+      "status": "observed",
+      "source": "https://zenodo.org/records/6797328",
+      "finding": "Bounded 131072-byte HTTP ranges returned 206. bi_all_filters has score_SVR/confidence_level; summary_bi_all has self-genotyping correctness and confusion counts. Neither inspected header contains leave-one-out accuracy.",
+      "sizes_bytes": {
+        "bi_all_filters.tsv.gz": 393357812,
+        "summary_bi_all.tsv.gz": 1666911750
+      }
+    },
+    {
+      "identity": "Author HGSVC3 workflow",
+      "role": "definition of actual leave-one-out comparison",
+      "status": "observed",
+      "source": "https://github.com/eblerjana/hgsvc3/tree/07ac186ebd2479c58dbaf3edfe3404d0e08ca57b/experiments/genotyping",
+      "finding": "leave-one-out.smk removes sample from panel, prepares assembly truth, excludes untypable variants, and emits concordance summaries. Implementation is public; per-variant result files were not located in inspected releases."
+    }
+  ],
+  "evidence": [
+    {
+      "status": "observed",
+      "statement": "HPRC README calls the correctness fields self-genotyping accuracies across panel samples",
+      "source": "https://zenodo.org/records/6797328/files/README-HPRC-PanGenie.txt?download=1"
+    },
+    {
+      "status": "inferred",
+      "statement": "Self-genotyping and SVR confidence cannot be substituted for unseen-sample leave-one-out accuracy."
+    }
+  ],
+  "supportable_tasks": [
+    "A separately labelled in-panel self-genotyping robustness task may be feasible after complete provenance/coverage review; it would not answer the requested leave-one-out endpoint."
+  ],
+  "missing": [
+    "Per-variant sample-excluded truth versus predicted genotype outcomes and callable/typable denominator",
+    "Validated CHM13-to-GRCh38 correspondence if using HGSVC3 labels"
+  ],
+  "open_questions": [
+    "Whether public working archives contain the per-variant leave-one-out outcomes, rather than only aggregate plots."
+  ],
+  "pending_user_decision": null,
+  "justified_handoff": "Continue targeted source discovery; do not generate surrogate performance labels or start full genotypability training from FILTER/SVR fields.",
+  "large_data_downloads": false
+}

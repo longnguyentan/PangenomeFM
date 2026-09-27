@@ -1,0 +1,138 @@
+{
+  "status": "complete",
+  "inputs": {
+    "server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+      "bytes": 870096546,
+      "mtime_ns": 1786041795869081191,
+      "sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347"
+    },
+    "server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+      "bytes": 37629106,
+      "mtime_ns": 1786349512365280119,
+      "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68"
+    },
+    "server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+      "bytes": 573489289,
+      "mtime_ns": 1786930030728110426,
+      "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de"
+    },
+    "server_workspace/data/processed/hgsvc3_sv_breakpoint_examples_20260809/sv_breakpoint_examples.csv.gz": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hgsvc3_sv_breakpoint_examples_20260809/sv_breakpoint_examples.csv.gz",
+      "bytes": 6009997,
+      "mtime_ns": 1786425872241159017,
+      "sha256": "f36727704d4e4dbd0eb55e3550832d6d83e89c035c06b6829dc8a683aadf54b6"
+    }
+  },
+  "external_examples": {
+    "path": "/home/tuv43532/PangenomeFM/data/downstream_v2/v1/hg008_mapping/sv_breakpoint_examples.csv.gz",
+    "bytes": 2851,
+    "mtime_ns": 1790102119490424290,
+    "sha256": "5efe6195773f702695743b230ebe59eb8bf71a974d4608ad8b55771dd5db9952"
+  },
+  "checkpoint": {
+    "checkpoint_sha256": "66583b6f856f29b23002435bd205d9898382e5bf31bc27088311f20dfb5f241c",
+    "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+    "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+    "seed": 314159,
+    "closure": "1hop",
+    "canonical_conflict_policy": "exclude"
+  },
+  "holdout": {
+    "checkpoint_test_chromosomes": [
+      "chr14",
+      "chr19",
+      "chr4",
+      "chr9",
+      "chrY"
+    ],
+    "checkpoint_validation_chromosomes": [
+      "chr10",
+      "chr15",
+      "chr20",
+      "chr5"
+    ],
+    "checkpoint_closure": "1hop",
+    "checkpoint_seed": 314159
+  },
+  "extraction": {
+    "canonical_conflict_policy": "exclude",
+    "slices_with_conflicting_pairs": 18,
+    "orientation_equivalent_conflicting_pairs": 23,
+    "conflicting_candidate_rows_excluded": 46,
+    "same_label_equivalent_rows_collapsed": 13,
+    "cache_status": "reused",
+    "cache_path": "results/entex/v1/topology_cache_all_reference/fold_d/seed_314159/1hop.npz"
+  },
+  "external_feature_coverage": 1.0,
+  "n_external": 9,
+  "original_training_source": "server_workspace/data/processed/hgsvc3_sv_breakpoint_examples_20260809/sv_breakpoint_examples.csv.gz",
+  "original_feature_coverage": 0.9996321183659158,
+  "encoder_training": false,
+  "hg008_training_or_calibration": false,
+  "probe": "new deterministic HGSVC-only logistic probe; NOT historical replay",
+  "protocol": "prospective_refit",
+  "historical_replay_claim": false,
+  "artifacts_verified_before_external_scoring": true,
+  "python_version": "3.11.16",
+  "threadpools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/home/tuv43532/miniconda3/envs/pangenomefm-server/lib/python3.11/site-packages/numpy.libs/libscipy_openblas64_-32a4b2a6.so",
+      "version": "0.3.31.188.0",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "/home/tuv43532/miniconda3/envs/pangenomefm-server/lib/python3.11/site-packages/scipy.libs/libscipy_openblas-6cdc3b4a.so",
+      "version": "0.3.30",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    },
+    {
+      "user_api": "openmp",
+      "internal_api": "openmp",
+      "num_threads": 1,
+      "prefix": "libgomp",
+      "filepath": "/home/tuv43532/miniconda3/envs/pangenomefm-server/lib/python3.11/site-packages/scikit_learn.libs/libgomp-e985bcbb.so.1.0.0",
+      "version": null
+    },
+    {
+      "user_api": "openmp",
+      "internal_api": "openmp",
+      "num_threads": 1,
+      "prefix": "libgomp",
+      "filepath": "/home/tuv43532/miniconda3/envs/pangenomefm-server/lib/python3.11/site-packages/torch/lib/libgomp-a34b3233.so.1",
+      "version": null
+    }
+  ],
+  "original_probe_regression": [
+    {
+      "feature_set": "coordinate_plus_frozen_sequence_fm_pair",
+      "reconstructed_auprc": 0.8590239082735555,
+      "cached_auprc": 0.8585858222977245,
+      "auprc_difference": 0.00043808597583094855,
+      "protocol": "prospective_refit",
+      "historical_replay_passed": false,
+      "max_score_error": 0.01144505267188084
+    },
+    {
+      "feature_set": "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm_pair",
+      "reconstructed_auprc": 0.8959854678712866,
+      "cached_auprc": 0.896163280793605,
+      "auprc_difference": -0.00017781292231833223,
+      "protocol": "prospective_refit",
+      "historical_replay_passed": false,
+      "max_score_error": 0.012903235305566696
+    }
+  ]
+}

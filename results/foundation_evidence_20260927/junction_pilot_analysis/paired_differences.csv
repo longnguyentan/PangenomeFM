@@ -1,0 +1,13 @@
+arm,metric,trained_minus_random
+incoming_default,auprc,-0.002035619002086375
+incoming_default,auroc,-0.0006700773349196387
+incoming_default,macro_window_auroc,-0.012319963011092283
+incoming_linear,auprc,0.01761034415230922
+incoming_linear,auroc,0.024927067221891752
+incoming_linear,macro_window_auroc,0.023274856024475765
+bidirectional_default,auprc,0.16398640385448515
+bidirectional_default,auroc,0.128478762641285
+bidirectional_default,macro_window_auroc,0.15435068464687574
+bidirectional_linear,auprc,0.1951807375954956
+bidirectional_linear,auroc,0.16841879833432483
+bidirectional_linear,macro_window_auroc,0.15284171061816243

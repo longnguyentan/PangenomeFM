@@ -1,0 +1,1 @@
+example_id,chrom,pos,end,variant_id,svtype,svlen,filter,length_bin,allele_frequency,af_bin,event_id,complex,subclonal,end_inferred,biological_start0,biological_end0,start0,end0,start_segid,end_segid,start_mapping_distance,end_mapping_distance,start_mapping_rule,end_mapping_rule,binary_svtype_label

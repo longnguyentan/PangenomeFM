@@ -1,0 +1,25 @@
+{
+  "status": "complete",
+  "source_receipts": [
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/geometry_pilot/status.json",
+      "bytes": 8154,
+      "mtime_ns": 1790541933000000000,
+      "sha256": "2cd7b0130729a1b79b6f1f85c98c15ee5b41a2c27fdbfe2ab37d239e3fdd87cb"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/geometry_random_controls/status.json",
+      "bytes": 8332,
+      "mtime_ns": 1790542454000000000,
+      "sha256": "ce26e12ca624fb96369fa621b2acc470d16bef4a35f9d56903deb46eb050a892"
+    }
+  ],
+  "candidate_identity": "passed",
+  "frozen_random_parameter_identity": "passed",
+  "checkpoint_metric_replay": "passed",
+  "selected_arm": "bidirectional_default",
+  "selection_criterion": "native window-macro validation AUROC",
+  "selected_checkpoint_sha256": "6f46ec8ea5f8a6daa6450b1373b6d4af66b07851ec7da1eb0e358f4fdbdf416a",
+  "scope": "single-fold development comparison; not independent biological evidence",
+  "confidence_intervals": "not estimated after selection on this development partition"
+}

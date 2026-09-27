@@ -23,12 +23,18 @@ from tasks.transfer.scaling_prediction_audit import target_digest
 
 
 def audited_run(directory: Path, model: str, task: str, fold: str, seed: int,
-                context: str) -> pd.DataFrame:
+                context: str, *, validation_only: bool = False) -> pd.DataFrame:
     audit = json.loads((directory / "audit.json").read_text())
     if (audit.get("status") != "complete" or audit.get("fold") != fold
             or audit.get("seed") != seed or audit.get("closure") != context
             or not audit.get("checkpoint_sha256")):
         raise ValueError(f"Incomplete or mismatched run: {directory}")
+    partition = "development_validation" if validation_only else "test"
+    if audit.get("evaluation_partition", "test") != partition:
+        raise ValueError("Requested and recorded evaluation partitions differ")
+    if validation_only and (audit.get("heldout_predictions_produced", True)
+                            or (directory / "test_predictions.csv.gz").exists()):
+        raise ValueError("Development run unexpectedly produced held-out predictions")
     metrics = pd.read_csv(directory / "metrics.csv", float_precision="round_trip")
     if metrics.feature_set.duplicated().any():
         raise ValueError("Duplicate feature metrics")
@@ -36,7 +42,8 @@ def audited_run(directory: Path, model: str, task: str, fold: str, seed: int,
     metrics = metrics.set_index("feature_set")
     identity = "example_id" if task == "sv" else "segid"
     columns = [identity, "chromosome", "y_true", "p_calibrated", "feature_set", "threshold", "y_pred"]
-    predictions = pd.read_csv(directory / "test_predictions.csv.gz", usecols=columns,
+    prediction_file = "validation_predictions.csv.gz" if validation_only else "test_predictions.csv.gz"
+    predictions = pd.read_csv(directory / prediction_file, usecols=columns,
                               float_precision="round_trip")
     rows = []
     for feature, raw in names.items():
@@ -47,8 +54,12 @@ def audited_run(directory: Path, model: str, task: str, fold: str, seed: int,
             raise ValueError("Stored metric partition mismatch")
         p = predictions.loc[predictions.feature_set.eq(raw)].copy()
         digest = target_digest(p, identity, "chromosome")
-        if (len(p) != metric.n_test or p.y_true.nunique() != 2
-                or set(p.chromosome) != set(audit["test_chromosomes"])
+        count = metric.n_validation if validation_only else metric.n_test
+        chrom_key = "validation_chromosomes" if validation_only else "test_chromosomes"
+        if validation_only and (metric.n_test != 0 or metric.scope != partition):
+            raise ValueError("Development metric is mislabeled as a test result")
+        if (len(p) != count or p.y_true.nunique() != 2
+                or set(p.chromosome) != set(audit[chrom_key])
                 or not p.threshold.eq(float(metric.threshold)).all()
                 or not p.p_calibrated.between(0, 1).all()):
             raise ValueError(f"Prediction universe, threshold or scores invalid: {directory}/{raw}")
@@ -63,8 +74,10 @@ def audited_run(directory: Path, model: str, task: str, fold: str, seed: int,
         ordered = p.assign(_id=p[identity].astype(str)).sort_values("_id")
         score_digest = hashlib.sha256(ordered.p_calibrated.to_numpy("<f8").tobytes()).hexdigest()
         rows.append(dict(model=model, task=task, fold=fold, seed=seed, context=context,
-                         feature=feature, embedding="R" if model == "random" else "T",
-                         n_train=int(metric.n_train), n_val=int(metric.n_validation), n_test=len(p),
+                         feature=feature, embedding="R" if model.endswith("random") else "T",
+                         evaluation_partition=partition, n_evaluated=len(p),
+                         n_train=int(metric.n_train), n_val=int(metric.n_validation),
+                         n_test=0 if validation_only else len(p),
                          positive_prevalence=prevalence,
                          auprc=replay["auprc"], auroc=replay["auroc"],
                          normalized_ap=(replay["auprc"] - prevalence) / (1 - prevalence),
