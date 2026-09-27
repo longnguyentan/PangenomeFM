@@ -20,7 +20,8 @@ checkpoint archive remain unresolved. No placeholder funding details were invent
 - Correct reconstruction interval weighting while preserving all ten published
   window-mean point estimates. The capacity table instead averages pooled-fold AP.
 - Add the completed 120-run intrinsic window-scaling study in the supplement.
-  Biological scaling, HG008 and a path-aware model remain unfinished.
+- Add the completed 360-run frozen biological scaling audit with task/context
+  dependent results; HG008 and a path-aware model remain unfinished.
 
 ## Rebuild
 
@@ -54,7 +55,8 @@ figures, source data and regeneration scripts are version controlled.
 
 Keep the frozen cCRE/SV contrasts, degree-control limitation and corrected SV
 complexity result in the main narrative. Retain full EN-TEx sensitivities,
-donor/haplotype distributions and intrinsic scaling in the supplement. Promote
-biological scaling or HG008 only after their complete-matrix and regression gates
-pass. Keep path-aware claims out of the title until a compatible experiment and
-frozen downstream benefit are actually demonstrated.
+donor/haplotype distributions, intrinsic scaling and biological scaling in the
+supplement until its task-dependent interpretation is agreed by the authors.
+Promote HG008 only after its regression gate passes. Keep path-aware claims out
+of the title until a compatible experiment and frozen downstream benefit are
+actually demonstrated.
