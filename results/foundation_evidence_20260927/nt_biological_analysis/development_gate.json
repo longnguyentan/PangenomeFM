@@ -1,0 +1,31 @@
+{
+  "status": "not_applicable_to_topology_native_promotion",
+  "checks": [
+    {
+      "task": "ccre",
+      "context": "1hop",
+      "v2_minus_v1": 0.004127451594933773,
+      "v2_minus_random": 0.00179763891093343,
+      "v2_given_handcrafted": 0.005975058182411175,
+      "within_0_005_of_v1": true,
+      "beats_random": true,
+      "adds_beyond_handcrafted": true,
+      "passes_context_task_gate": true
+    },
+    {
+      "task": "sv",
+      "context": "1hop",
+      "v2_minus_v1": -0.018802352603676242,
+      "v2_minus_random": 0.008830261058226041,
+      "v2_given_handcrafted": 0.009432620577980777,
+      "within_0_005_of_v1": false,
+      "beats_random": true,
+      "adds_beyond_handcrafted": true,
+      "passes_context_task_gate": false
+    }
+  ],
+  "missing_required_contexts": [
+    "strict"
+  ],
+  "limitation": "Sequence-conditioned candidate; descriptive point estimates do not promote topology-native T"
+}

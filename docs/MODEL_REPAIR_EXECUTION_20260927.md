@@ -29,12 +29,16 @@ results, and the other implementation worktree are preserved.
 - [x] Audit exact one-hop sequence-cache coverage and implement compatible completion.
 - [x] Finish the 176,052 missing benchmark NT embeddings; exact 479,477-node
   benchmark coverage and bitwise preservation of all 303,425 original vectors pass.
-- [ ] Evaluate the separately identified sequence-conditioned candidate with
+- [x] Evaluate the separately identified sequence-conditioned candidate with
   matched frozen-random and raw-input controls.
 - [x] Complete the bounded sequence-conditioned reconstruction comparison:
   both heads, matched random encoders, exact starting-weight hashes and raw NT controls.
-- [ ] Complete and audit frozen biological validation for that candidate
-  (cCRE fits complete; SV fits running at the latest check).
+- [x] Complete and audit frozen biological validation for that candidate:
+  cCRE improves; SV remains better with topology-native v2.
+- [ ] Test whether separate topology/sequence representations preserve both
+  benefits, and perform a coordinate-stream/message ablation before graph-specific claims.
+- [ ] Replicate the resulting prespecified candidate across chromosome folds
+  and seeds; current improvements are development evidence only.
 - [x] Resolve historical HG008 replay failures or run a separately identified,
   prospective deterministic probe-refit protocol; never relabel a refit as replay.
 - [ ] Measured genotypability labels and verified path-to-segment correspondence
@@ -656,3 +660,73 @@ diagnostic's full native arguments and processing commit are in its `audit.json`
 The biological runner's four exact commands are in
 `nt_biological_validation/status.json`. The latest full local suite passes
 **343 tests**, followed by the focused identity-encoding regression and Ruff.
+
+## Completed NT-conditioned biological validation
+
+All four new frozen probes completed: trained/random × SV/cCRE. Their report
+compares them with the previously completed topology-v2 trained/random probes.
+Training counts, validation loci and labels, and every C+S/C+S+H prediction are
+exactly matched. SV has 91,932 training and 43,217 validation examples; cCRE has
+164,435 and 73,988. No test-chromosome prediction was produced. NT and the graph
+encoders stayed frozen throughout biological fitting.
+
+| Task / features | Topology v2 | NT-conditioned | Matched NT random | NT − topology v2 | NT − its random |
+|---|---:|---:|---:|---:|---:|
+| cCRE, C+S+E | 0.916260 | **0.920388** | 0.918590 | +0.004127 | +0.001798 |
+| cCRE, C+S+H+E | 0.916574 | **0.920628** | 0.919334 | +0.004054 | +0.001294 |
+| SV, C+S+E | **0.911535** | 0.892733 | 0.883903 | -0.018802 | +0.008830 |
+| SV, C+S+H+E | **0.916828** | 0.905693 | 0.900871 | -0.011134 | +0.004822 |
+
+Values are validation AUPRC on fold A, seed 42, one-hop. E identifies each
+model's frozen embedding; the NT-conditioned column is not topology-only T.
+The sequence-conditioned model improves regulatory prediction and beats its
+matched random model on both tasks, but it **does not replace topology-v2 for
+SV**. Better reconstruction did not translate into better SV transfer. These
+are developmental point estimates without replicated confidence intervals.
+Model-family selection must be followed by independent evaluation, not per-task
+selection from already observed test results.
+
+The inherited SV strata are all retained. With C+S+H+E, the NT-conditioned
+model trails topology-v2 in every estimable length bin, including -0.020532
+for 50–100 bp (n=15,326) and -0.070902 for 100 kb–1 Mb (n=37). The >=1 Mb bin
+remains undefined (four insertions). Sparse/unfavorable bins were not dropped.
+
+Tables, audit, gate status and figures:
+`results/foundation_evidence_20260927/nt_biological_analysis/`.
+They include `audited_per_run.csv`, `paired_differences.csv`,
+`sv_validation_strata_{absolute,differences}.csv`, `audit.json`,
+`development_gate.json`, and `biological_validation{,_differences}.{pdf,svg,png}`.
+All figures were visually checked. Source receipts, metrics and predictions
+are under `nt_biological_validation/`. In generic comparison tables, internal
+`v1`/`random` roles refer to **topology-v2** sources and `v2`/`v2_random` roles
+refer to **NT-conditioned** sources; `model_identity`, display labels, source
+paths and the audit's explicit mapping disambiguate those reusable role names.
+
+Reproduce this paired report in a fresh output directory:
+
+```bash
+PYTHONPATH=src:. python -m tasks.transfer.development_report \
+  --root results/foundation_evidence_20260927/nt_biological_validation \
+  --reference-root results/foundation_evidence_20260927/biological_validation_common \
+  --candidate-model nt --candidate-random-model nt_random \
+  --reference-model v2 --reference-random-model v2_random \
+  --candidate-label NT-conditioned --reference-label 'Topology v2' \
+  --out-dir <new-report-directory>
+```
+
+### Technical decision after this development pass
+
+Keep topology-v2 and NT-conditioned checkpoints as distinct candidates. The
+next useful controlled experiment is to preserve the topology representation
+while adding sequence, for example by comparing concatenated frozen embeddings
+with the corresponding dimension-matched random controls. This is a proposed
+experiment, not a completed result or a promise of improvement. A matched
+coordinate-stream ablation would further isolate the contribution of graph
+messages. Replication across folds/seeds follows model/protocol selection;
+another EN-TEx assay panel or longer training alone does not resolve this trade-off.
+
+The topology-native promotion gate remains unmet, strict reconstruction remains
+ineligible under the current matched objective, and measured leave-one-out
+genotypability/path correspondence remain external data requirements. No new
+surrogate labels, replacement graph releases or claimed full-matrix performance
+were introduced in this pass.

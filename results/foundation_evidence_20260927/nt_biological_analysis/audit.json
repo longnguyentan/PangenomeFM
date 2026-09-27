@@ -1,0 +1,41 @@
+{
+  "status": "complete",
+  "source": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/nt_biological_validation/status.json",
+    "bytes": 11174,
+    "mtime_ns": 1790547461000000000,
+    "sha256": "ccc0e76707bdb1b6d9eb36ce114b0b9ef43844b0ab1b42444d6690242e55a964"
+  },
+  "reference_source": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/biological_validation_common/status.json",
+    "bytes": 11136,
+    "mtime_ns": 1790545011000000000,
+    "sha256": "746db7cb9c9796bee833a8390dc4074a8d224e90b54bb5703578615d25934ab4"
+  },
+  "reference_source_scope": "only declared reference/model-random probes audited; other source models excluded",
+  "model_role_to_source": {
+    "v1": "v2",
+    "random": "v2_random",
+    "v2": "nt",
+    "v2_random": "nt_random"
+  },
+  "model_display_labels": {
+    "v1": "Topology v2",
+    "random": "Topology v2 random",
+    "v2": "NT-conditioned",
+    "v2_random": "NT-conditioned random"
+  },
+  "representation_by_role": {
+    "random": "topology_native",
+    "v1": "topology_native",
+    "v2": "sequence_conditioned_graph",
+    "v2_random": "sequence_conditioned_graph"
+  },
+  "embedding_notation": "E means the explicitly identified frozen model embedding; sequence-conditioned E is not topology-only T",
+  "n_runs": 8,
+  "n_folds": 1,
+  "prediction_identity_and_baseline_invariance": "passed",
+  "scope": "development validation; calibration/threshold use these labels; no independent test estimate",
+  "confidence_intervals": "not estimated from a single selected development fold/seed",
+  "heldout_predictions_produced": false
+}
