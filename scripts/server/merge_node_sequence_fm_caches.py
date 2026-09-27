@@ -13,6 +13,40 @@ import numpy as np
 
 from scripts.server.prepare_node_sequence_fm_cache import requested_segids, sha256_file
 
+CONTRACT_FIELDS = ("model_name", "resolved_revision", "full_segments_sha256", "pooling",
+                   "maximum_token_length", "maximum_raw_bases", "raw_sequence_sampling", "truncation_policy")
+
+
+def sequence_contract(cache: Path, seen: frozenset[Path] = frozenset()) -> dict:
+    """Recover and verify preprocessing identity, including historical merged caches."""
+    cache = cache.resolve()
+    if cache in seen:
+        raise ValueError("Cyclic sequence-cache provenance")
+    audit = json.loads(Path(f"{cache}.audit.json").read_text())
+    if audit.get("status") != "complete" or sha256_file(cache) != audit.get("output_sha256"):
+        raise ValueError("Incomplete or checksum-mismatched sequence cache")
+    if (audit.get("fine_tuned") is not False or audit.get("model_parameters_frozen") is not True
+            or audit.get("downstream_label_access") != "none"):
+        raise ValueError("Sequence cache must be frozen and label-blind")
+    if all(key in audit for key in CONTRACT_FIELDS):
+        return {key: audit[key] for key in CONTRACT_FIELDS}
+    children = audit.get("source_shards", [])
+    if not children:
+        raise ValueError("Sequence cache lacks its graph/preprocessing contract")
+    contracts = []
+    for child in children:
+        path = Path(child["path"])
+        if (sha256_file(Path(f"{path}.audit.json")) != child["audit_sha256"]
+                or sha256_file(path) != child["sha256"]):
+            raise ValueError("Historical source-shard provenance changed")
+        contracts.append(sequence_contract(path, seen | {cache}))
+    if any(item != contracts[0] for item in contracts):
+        raise ValueError("Sequence shard preprocessing contracts differ")
+    contract = contracts[0]
+    if any(audit.get(key) != contract[key] for key in ["model_name", "resolved_revision"]):
+        raise ValueError("Merged sequence-model identity differs from source shards")
+    return contract
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -28,6 +62,7 @@ def main() -> int:
     arrays: list[np.ndarray] = []
     segid_arrays: list[np.ndarray] = []
     audits: list[dict[str, object]] = []
+    contracts = []
     for shard in args.shard:
         sidecar = Path(f"{shard}.audit.json")
         audit = json.loads(sidecar.read_text(encoding="utf-8"))
@@ -39,12 +74,15 @@ def main() -> int:
             segid_arrays.append(cache["segid"].astype(np.int64))
             arrays.append(cache["embeddings"].astype(np.float32))
         audits.append(audit)
+        contracts.append(sequence_contract(shard))
     model_identity = {
         (audit.get("model_name"), audit.get("resolved_revision")) for audit in audits
     }
     dimensions = {int(array.shape[1]) for array in arrays}
     if len(model_identity) != 1 or len(dimensions) != 1:
         raise ValueError("Sequence-model shard identities or dimensions differ")
+    if any(contract != contracts[0] for contract in contracts):
+        raise ValueError("Sequence shard graph/preprocessing contracts differ")
     segids = np.concatenate(segid_arrays)
     embeddings = np.concatenate(arrays, axis=0)
     if len(np.unique(segids)) != len(segids):
@@ -65,6 +103,7 @@ def main() -> int:
     temporary.replace(args.output)
     model_name, resolved_revision = next(iter(model_identity))
     audit = {
+        **contracts[0],
         "schema_version": 1,
         "status": "complete",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
