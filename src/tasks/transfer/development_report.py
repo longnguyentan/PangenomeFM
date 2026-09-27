@@ -82,14 +82,20 @@ def development_gate(frame: pd.DataFrame) -> dict:
                 limitation="single-fold development point estimates; no independent performance claim")
 
 
-def difference_figure(differences: pd.DataFrame, out: Path) -> None:
+def difference_figure(differences: pd.DataFrame, out: Path, labels_by_model: dict | None = None) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     plt.rcParams.update({"font.size": 10, "svg.fonttype": "none", "pdf.fonttype": 42,
                          "axes.spines.top": False, "axes.spines.right": False})
     names = ["v2_minus_v1_cst", "v2_minus_random_cst", "v2_minus_v1_csht", "v2_minus_random_csht"]
-    labels = ["v2 − v1, C+S+T", "v2 − random, C+S+T/R", "v2 − v1, C+S+H+T", "v2 − random, C+S+H+T/R"]
+    labels_by_model = labels_by_model or {m: m for m in MODELS}
+    candidate, reference = labels_by_model['v2'], labels_by_model['v1']
+    labels = [f"{candidate} − {reference}, C+S+E", f"{candidate} − matched random, C+S+E",
+              f"{candidate} − {reference}, C+S+H+E", f"{candidate} − matched random, C+S+H+E"]
+    visible = differences.loc[differences.metric.eq('auprc') & differences.contrast.isin(names), 'difference']
+    low, high = min(0., visible.min()), max(0., visible.max())
+    pad = max((high - low) * .3, .001)
     fig, axes = plt.subplots(1, 2, figsize=(11, 3.8), layout="constrained", sharex=True, sharey=True)
     for ax, task in zip(axes, ["sv", "ccre"]):
         part = differences.loc[differences.task.eq(task) & differences.metric.eq("auprc")].set_index("contrast")
@@ -98,7 +104,7 @@ def difference_figure(differences: pd.DataFrame, out: Path) -> None:
         for y, value in enumerate(values):
             ax.annotate(f"{value:+.6f}", (value, y), xytext=(5, 7), textcoords="offset points", fontsize=9)
         ax.axvline(0, color="0.5", lw=0.8)
-        ax.set(yticks=range(4), yticklabels=labels, ylim=(3.5, -0.5), xlim=(-0.002, 0.0115),
+        ax.set(yticks=range(4), yticklabels=labels, ylim=(3.5, -0.5), xlim=(low-pad, high+pad),
                xlabel="Paired validation Δ AUPRC", title="SV insertion/deletion" if task == "sv" else "cCRE")
     fig.suptitle("Repaired-model comparison: one development fold/seed; no uncertainty interval")
     save_figure(fig, out, "biological_validation_differences")
@@ -138,6 +144,12 @@ def main() -> None:
     parser.add_argument("--reference-root", type=Path,
                         help="Reuse completed v1/random probes; other models in this source are ignored")
     parser.add_argument("--out-dir", type=Path, required=True)
+    parser.add_argument('--candidate-model', default='v2')
+    parser.add_argument('--candidate-random-model', default='v2_random')
+    parser.add_argument('--reference-model', default='v1')
+    parser.add_argument('--reference-random-model', default='random')
+    parser.add_argument('--candidate-label', default='v2')
+    parser.add_argument('--reference-label', default='v1')
     args = parser.parse_args()
     receipt = json.loads((args.root / "status.json").read_text())
     if (receipt.get("status") != "complete"
@@ -151,11 +163,20 @@ def main() -> None:
             or not reference.get("encoders_frozen") or reference["fold"] != receipt["fold"]
             or reference["seed"] != receipt["seed"] or reference["graph_sha256"] != receipt["graph_sha256"]):
         raise ValueError("Reference development source differs in scope, folds or graph")
+    model_sources = dict(v1=args.reference_model, random=args.reference_random_model,
+                         v2=args.candidate_model, v2_random=args.candidate_random_model)
+    for value in model_sources.values():
+        if not value.replace('_', '').replace('-', '').isalnum():
+            raise ValueError('Model source names must be simple identifiers')
+    labels_by_model = dict(v1=args.reference_label, random=args.reference_label + ' random',
+                           v2=args.candidate_label, v2_random=args.candidate_label + ' random')
     frame = pd.concat([
-        audited_run((reference_root if model in ["v1", "random"] else args.root) / "probes" / model / task / "1hop", model, task,
+        audited_run((reference_root if model in ["v1", "random"] else args.root) / "probes" / model_sources[model] / task / "1hop", model, task,
                     receipt["fold"]["name"], receipt["seed"], "1hop", validation_only=True)
         for model, task in product(MODELS, ["sv", "ccre"])
     ], ignore_index=True)
+    frame['model_identity'] = frame.model.map(model_sources)
+    frame['model_display_label'] = frame.model.map(labels_by_model)
     differences = contrasts(frame)
     args.out_dir.mkdir(parents=True, exist_ok=False)
     frame.to_csv(args.out_dir / "audited_per_run.csv", index=False)
@@ -163,7 +184,7 @@ def main() -> None:
     strata = []
     for model in MODELS:
         source = reference_root if model in ["v1", "random"] else args.root
-        table = pd.read_csv(source / "probes" / model / "sv/1hop/stratified_metrics.csv", float_precision="round_trip")
+        table = pd.read_csv(source / "probes" / model_sources[model] / "sv/1hop/stratified_metrics.csv", float_precision="round_trip")
         table = table.loc[table.stratum.isin(["length_bin", "allele_frequency_bin", "chromosome"])].copy()
         table["feature"] = table.feature_set.map({raw: short for short, raw in _feature_names("sv").items()})
         table["model"] = model
@@ -171,12 +192,19 @@ def main() -> None:
     strata = pd.concat(strata, ignore_index=True)
     strata.to_csv(args.out_dir / "sv_validation_strata_absolute.csv", index=False)
     stratum_contrasts(strata).to_csv(args.out_dir / "sv_validation_strata_differences.csv", index=False)
-    (args.out_dir / "development_gate.json").write_text(json.dumps(development_gate(frame), indent=2) + "\n")
-    difference_figure(differences, args.out_dir)
+    gate = development_gate(frame)
+    if not frame.loc[frame.model.eq('v2'), 'embedding_representation'].eq('topology_native').all():
+        gate.update(status='not_applicable_to_topology_native_promotion',
+                    limitation='Sequence-conditioned candidate; descriptive point estimates do not promote topology-native T')
+    (args.out_dir / "development_gate.json").write_text(json.dumps(gate, indent=2) + "\n")
+    difference_figure(differences, args.out_dir, labels_by_model)
     (args.out_dir / "audit.json").write_text(json.dumps(dict(
         status="complete", source=fingerprint(args.root / "status.json"),
         reference_source=fingerprint(reference_root / "status.json"),
-        reference_source_scope="only completed v1/random probes audited; unused candidate probes are excluded",
+        reference_source_scope="only declared reference/model-random probes audited; other source models excluded",
+        model_role_to_source=model_sources, model_display_labels=labels_by_model,
+        representation_by_role=frame.groupby('model').embedding_representation.first().to_dict(),
+        embedding_notation='E means the explicitly identified frozen model embedding; sequence-conditioned E is not topology-only T',
         n_runs=8, n_folds=1, prediction_identity_and_baseline_invariance="passed",
         scope="development validation; calibration/threshold use these labels; no independent test estimate",
         confidence_intervals="not estimated from a single selected development fold/seed",
@@ -192,8 +220,8 @@ def main() -> None:
     for ax, task in zip(axes, ["sv", "ccre"]):
         for index, (model, color) in enumerate(zip(MODELS, ["#245a81", "#83afcb", "#a45021", "#e7ad7e"])):
             part = frame.loc[frame.task.eq(task) & frame.model.eq(model)].set_index("feature")
-            ax.plot(range(4), part.loc[FEATURES, "auprc"], "o-", color=color, label=model)
-        ax.set(xticks=range(4), xticklabels=["C+S", "C+S+H", "C+S+T/R", "C+S+H+T/R"],
+            ax.plot(range(4), part.loc[FEATURES, "auprc"], "o-", color=color, label=labels_by_model[model])
+        ax.set(xticks=range(4), xticklabels=["C+S", "C+S+H", "C+S+E", "C+S+H+E"],
                ylim=(0, 1), ylabel="Validation AUPRC", title="SV insertion/deletion" if task == "sv" else "cCRE")
         ax.tick_params(axis="x", rotation=20)
     axes[0].legend(frameon=False)

@@ -5,6 +5,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pytest
 import torch
 
 from tasks.ccre.embedding_baseline import _manifest_target_chromosome
@@ -99,7 +100,9 @@ def test_validation_development_never_scores_heldout_features_or_labels() -> Non
         MODULE.evaluate_feature_sets(**dict(kwargs, val_chrs={'chr1'}))
 
 
-def test_manuscript_extraction_policy_matches_window_universe_without_changing_features(tmp_path):
+@pytest.mark.parametrize('sequence', [False, True])
+def test_manuscript_extraction_policy_matches_window_universe_without_changing_features(tmp_path, sequence):
+    import json
     from models.dual_stream_gat import DualStreamPangenomeGAT
     from tasks.ccre.embedding_baseline import _extract_embeddings
     from scripts.server.prepare_node_sequence_fm_cache import sha256_file
@@ -124,9 +127,16 @@ def test_manuscript_extraction_policy_matches_window_universe_without_changing_f
     pd.DataFrame(rows).to_csv(manifest, index=False)
     args = dict(hidden_dim=8, n_heads=2, n_layers=1, dropout=0, stream_mode="graph",
                 node_structure_source="visible", objective="junction_repair", seed=42, split_seed=20260806)
-    model = DualStreamPangenomeGAT(in_dim=7, hidden_dim=8, n_heads=2, n_layers=1, dropout=0, stream_mode="graph", edge_mlp_dim=16)
+    dim = 7
+    if sequence:
+        cache = tmp_path / 'nt.npz'
+        np.savez(cache, segid=np.arange(60), embeddings=np.random.default_rng(42).normal(size=(60, 512)).astype(np.float32))
+        Path(f'{cache}.audit.json').write_text(json.dumps(dict(status='complete', downstream_label_access='none')))
+        args.update(node_extra_features='cache', node_feature_cache=str(cache), node_feature_min_coverage=1.)
+        dim += 512
+    model = DualStreamPangenomeGAT(in_dim=dim, hidden_dim=8, n_heads=2, n_layers=1, dropout=0, stream_mode="graph", edge_mlp_dim=16)
     checkpoint = tmp_path / "checkpoint.pt"
-    torch.save(dict(model_state=model.state_dict(), args=args, in_dim=7, edge_feat_dim=0), checkpoint)
+    torch.save(dict(model_state=model.state_dict(), args=args, in_dim=dim, edge_feat_dim=0), checkpoint)
     before = sha256_file(checkpoint)
     kwargs = dict(checkpoint=checkpoint, manifest=manifest, full_segments=full,
                   labeled_segids=set(range(60)), closure="1hop", device_name="cpu", seed=42,
@@ -136,6 +146,7 @@ def test_manuscript_extraction_policy_matches_window_universe_without_changing_f
     assert set(native) == set(range(60)) and set(common) == set(range(30))
     assert audit["retained_slices"] == ["window0"]
     assert audit["checkpoint_objective"] == "junction_repair"
+    assert audit['embedding_representation'] == ('sequence_conditioned_graph' if sequence else 'topology_native')
     for key in common:
         np.testing.assert_array_equal(common[key], native[key])
     assert sha256_file(checkpoint) == before

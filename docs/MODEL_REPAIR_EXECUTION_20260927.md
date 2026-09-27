@@ -576,3 +576,22 @@ The four model fits launched successfully in the readiness worktree at commit
 tmux sessions. Resource checks found all four GPUs free and >230 GB available
 host memory. The existing native loader is preparing benchmark windows; results
 remain pending until checkpoints, predictions and pairing audits complete.
+
+### Frozen sequence-conditioned biological comparison
+
+After the four reconstruction fits complete, choose the trained head by the
+same native window-macro validation AUROC and pair it with the random encoder
+having the identical architecture, initial weights and input cache. Run only
+fold A / seed 42 / one-hop biological validation. Use the existing logistic
+probes, exact manuscript window eligibility, unchanged C/S/H caches and four
+primary feature sets. Reuse the audited topology-v2 and its matched random
+probe outputs as the reference. No held-out biological predictions are requested.
+
+The source models are explicitly named `nt` and `nt_random`. Probe receipts and
+reports mark their embedding as `sequence_conditioned_graph`; the legacy
+`frozen_pangenomefm` feature column is an implementation alias for this combined
+representation. Figures use **E** for the identified embedding, reserving
+topology-only T for the original model. Reports record the mapping between
+reference/candidate roles and source models. They refuse mismatched examples
+or non-embedding predictions and do not apply the topology-native promotion
+gate to this different representation family.

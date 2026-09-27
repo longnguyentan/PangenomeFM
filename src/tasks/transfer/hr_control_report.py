@@ -84,7 +84,8 @@ def audited_run(directory: Path, model: str, task: str, fold: str, seed: int,
                          balanced_accuracy=float(balanced_accuracy_score(p.y_true, predicted)),
                          f1=replay["f1"], precision=replay["precision"], recall=replay["recall"],
                          targets_sha256=digest, scores_sha256=score_digest,
-                         checkpoint_sha256=audit["checkpoint_sha256"], source=str(directory)))
+                         checkpoint_sha256=audit["checkpoint_sha256"], source=str(directory),
+                         embedding_representation=audit.get('embedding_representation', 'topology_native')))
     return pd.DataFrame(rows)
 
 

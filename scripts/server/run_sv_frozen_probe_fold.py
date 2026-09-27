@@ -276,6 +276,13 @@ def run_probe(
     features["random_uniform"] = np.empty((len(examples), 0), dtype=np.float32)
     features = select_feature_sets(features, feature_sets)
     selected_feature_access = {name: FEATURE_ACCESS[name] for name in features}
+    representation = canonical_candidate_audit['embedding_representation']
+    if representation != 'topology_native':
+        for name in selected_feature_access:
+            if 'pangenomefm' in name:
+                selected_feature_access[name] = (
+                    'Frozen sequence-conditioned graph embedding; legacy T column is a multimodal embedding. '
+                    'Sequence-model and graph-encoder parameters are frozen during biological fitting.')
     metrics, per_chromosome, predictions = evaluate_feature_sets(
         segids=examples["example_id"].to_numpy(np.int64),
         chromosomes=examples["chrom"].to_numpy(),
@@ -311,6 +318,7 @@ def run_probe(
         "closure": closure,
         "checkpoint": str(checkpoint.resolve()),
         "checkpoint_sha256": sha256_file(checkpoint),
+        "embedding_representation": representation,
         "examples": str(examples_path.resolve()),
         "examples_sha256": sha256_file(examples_path),
         "feature_cache": str(feature_cache.resolve()),

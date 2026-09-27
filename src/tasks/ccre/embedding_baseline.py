@@ -15,12 +15,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.metrics import (
-    average_precision_score,
-    balanced_accuracy_score,
     classification_report,
     confusion_matrix,
     f1_score,
-    roc_auc_score,
 )
 
 try:
@@ -146,6 +143,10 @@ def _extract_embeddings(
     canonical_audit = {
         "extraction_candidate_policy": extraction_candidate_policy,
         "checkpoint_objective": checkpoint_objective,
+        "embedding_representation": ("topology_native" if getattr(eval_args, "node_extra_features", "none") == "none"
+                                     else "sequence_conditioned_graph"),
+        "node_extra_features": getattr(eval_args, "node_extra_features", "none"),
+        "node_feature_cache": getattr(eval_args, "node_feature_cache", None),
         "retained_slices": [],
         "canonical_conflict_policy": canonical_conflict_policy,
         "slices_with_conflicting_pairs": 0,
