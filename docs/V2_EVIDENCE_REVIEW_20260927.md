@@ -270,3 +270,14 @@ requires one exact checkpoint, records all argv and commit IDs, and stops on a
 failed command. Controls run at commit `972d0de`; the separate sampler audit/smoke
 worktree runs `6337685`. Later documentation synchronization does not change
 those recorded provenance identities. No authentication is currently needed.
+
+## Update: native one-hop filtering defect (27 September)
+
+The full-manifest native audit found a correctness issue beyond the bounded
+strict-slice sampler audit: canonical oriented handles may be absent from the
+stored-direction node set, and rowwise filtering can break a group's balanced
+endpoint counts. The v2 loader now excludes complete affected groups and records
+the loss; original v1 behavior is preserved. Tests cover mixed link storage.
+The old one-epoch v2 smoke is not a validation of the corrected loader. A fresh
+full-manifest audit with validation-only geometry/visible-degree controls is
+required; see the [evidence extension](FOUNDATION_EVIDENCE_EXTENSION_20260927.md).

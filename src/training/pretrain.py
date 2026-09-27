@@ -83,7 +83,7 @@ from models.dual_stream_gat import (
     build_pop_ids_array,
 )
 from models.losses import focal_bce_loss
-from graph.junction_repair import build_junction_repair_candidates, group_batches
+from graph.junction_repair import build_junction_repair_candidates, complete_group_node_mask, group_batches
 from training.node_inputs import (
     PAIR_GEOMETRY_DIM,
     append_extra_node_features,
@@ -503,6 +503,16 @@ def load_slice(
         )
 
     valid_mask = edge_df["u_oid"].isin(oid_to_idx) & edge_df["v_oid"].isin(oid_to_idx)
+    if junction_audit is not None:
+        complete_mask = complete_group_node_mask(edge_df, oid_to_idx)
+        junction_audit.update(
+            n_candidate_missing_node_rows=int((~valid_mask).sum()),
+            n_groups_excluded_for_missing_nodes=int(edge_df.loc[~complete_mask, "group_id"].nunique()),
+            n_valid_partner_rows_excluded=int((valid_mask & ~complete_mask).sum()),
+        )
+        valid_mask = complete_mask
+        if audit_out is not None:
+            audit_out.update(junction_audit)
     edge_df_v = edge_df[valid_mask].reset_index(drop=True)
     if audit_out is not None:
         audit_out["n_candidate_node_filter_exclusions"] = int((~valid_mask).sum())

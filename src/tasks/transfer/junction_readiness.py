@@ -147,6 +147,12 @@ def run(args: argparse.Namespace) -> None:
         if (native_args.objective != "junction_repair" or not native_args.mask_query_edges
                 or native_args.node_structure_source != "visible"):
             raise ValueError("A native masked-junction/visible-degree checkpoint configuration is required")
+        if args.training_drop_edge_rate is not None:
+            if not 0 <= args.training_drop_edge_rate < 1:
+                raise ValueError("Training DropEdge rate must be in [0, 1)")
+            native_args.drop_edge_rate = args.training_drop_edge_rate
+            native_args.drop_edge = args.training_drop_edge_rate > 0
+        receipt["training_drop_edge_rate_override"] = args.training_drop_edge_rate
         # Geometry is collected for the control, without changing any encoder.
         native_args.pair_geometry = True
         split = validate_chromosome_split(val_chrs=native_args.val_chrs, test_chrs=native_args.test_chrs)
@@ -169,7 +175,11 @@ def run(args: argparse.Namespace) -> None:
             sd = load_slice(row, seg_index, md, segments, native_args, audit_out=record)
             counts.append(record)
             if sd is not None:
-                validate_groups(sd)
+                try:
+                    validate_groups(sd)
+                except ValueError as exc:
+                    pd.DataFrame(counts).to_csv(args.out_dir / "per_window.csv", index=False)
+                    raise ValueError(f"{row['name']}: {exc}") from exc
                 if record["chrom"] not in split["test_chrs"]:
                     partition = "validation" if record["chrom"] in split["val_chrs"] else "train"
                     feature = feature_rows(sd, native_args, partition)
@@ -210,6 +220,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     for key in ["checkpoint", "manifest", "full-segments", "out-dir"]:
         parser.add_argument("--" + key, type=Path, required=True)
+    parser.add_argument("--training-drop-edge-rate", type=float,
+                        help="Explicit proposed training rate; omit to use the smoke checkpoint setting")
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     torch.set_num_threads(4)
     run(parser.parse_args())

@@ -1,0 +1,23 @@
+{
+  "n_segments": 5590,
+  "n_stored_links": 7596,
+  "n_observed_connections": 7596,
+  "n_scope_connections": 7509,
+  "n_positive_candidates": 5582,
+  "n_negative_candidates": 5582,
+  "n_groups": 946,
+  "n_missing_coordinate_connections": 0,
+  "n_rejected_groups": 899,
+  "n_cross_coordinate_groups": 731,
+  "median_abs_distance_mismatch_bp": 71.0,
+  "fraction_distance_within_tolerance": 1.0,
+  "n_candidate_node_filter_exclusions": 3082,
+  "n_train_candidates": 6094,
+  "n_val_candidates": 588,
+  "n_test_candidates": 1400,
+  "exclusion": "retained",
+  "window": "slice_GRCh38_0_chr1_0_5000000_1hop",
+  "error": "Endpoint imbalance after native filtering",
+  "segments_path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chr1_0_5000000_1hop_segments.csv.gz",
+  "links_path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chr1_0_5000000_1hop_links.csv.gz"
+}

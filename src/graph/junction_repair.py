@@ -324,6 +324,21 @@ def group_batches(
     return batches
 
 
+def complete_group_node_mask(candidates: pd.DataFrame, available_nodes: Iterable[int]) -> pd.Series:
+    """Keep a junction group only if every candidate endpoint is encodable.
+
+    Canonical reverse-equivalent handles need not occur among stored-direction
+    nodes. Dropping individual rows can preserve class counts while breaking
+    the balanced endpoint marginals. Keep or remove the whole masking group.
+    This is deliberately conservative and never changes the graph node space.
+    """
+    available_nodes = set(available_nodes)
+    valid = candidates.u_oid.isin(available_nodes) & candidates.v_oid.isin(available_nodes)
+    if candidates.empty:
+        return valid
+    return valid.groupby(candidates.group_id).transform("all")
+
+
 def visible_degree_after_masking(
     u: np.ndarray, v: np.ndarray, hidden: Iterable[Tuple[int, int]]
 ) -> Dict[int, int]:

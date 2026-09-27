@@ -194,7 +194,7 @@ superiority or venue readiness; those depend on observed comparative evidence.
   H3K4me3 and H3K27me3, retaining all eligible assays and outcomes.
 - [x] Reuse preparation/mapping/probes; validate both classes in every original
   partition; all three sources prepared and 100% of loci mapped to one segment.
-- [ ] Finish and inspect all three seven-feature smoke fits.
+- [x] Finish and inspect all three seven-feature smoke fits.
 - [ ] Finish the 90-run full panel with complexity and equal-locus/donor/tissue
   follow-ups, paired intervals and multiplicity sensitivity.
 - [x] Audit original eight-run H/R predictions: identical labels/IDs and exact
@@ -228,3 +228,15 @@ model requirements are in `docs/FOUNDATION_EVIDENCE_EXTENSION_20260927.md`.
   Tests check native masking, no validation-label fitting, and identical native
   loader arrays with/without the optional diagnostic receipt.
 - [ ] Run and inspect the full native v2 audit before a larger v2 training run.
+
+### Native v2 filtering error found and repaired
+
+- [x] Run the native audit on real canonical windows; it correctly stops at a
+  one-hop window with endpoint imbalance after row-wise node filtering.
+- [x] Preserve the failed audit and offending window; no failed result was
+  overwritten or called complete.
+- [x] Implement whole-group exclusion for missing oriented nodes in the v2
+  junction objective, preserving v1 filtering and the original graph.
+- [x] Test mixed link storage and group balance after the actual native loader.
+- [ ] Complete the corrected full-manifest audit and inspect validation-only
+  geometry/degree controls before larger v2 training.

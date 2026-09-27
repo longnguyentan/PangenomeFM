@@ -71,7 +71,8 @@ def test_validation_baselines_fit_only_training_labels():
 
 
 @pytest.mark.parametrize("objective", ["edge_masking", "junction_repair"])
-def test_optional_loader_receipt_does_not_change_native_arrays(tmp_path, objective):
+@pytest.mark.parametrize("mixed_storage", [False, True])
+def test_optional_loader_receipt_does_not_change_native_arrays(tmp_path, objective, mixed_storage):
     from graph.features import build_oid_metadata_from_segments
     from graph.slicing import build_global_index
     from training.pretrain import load_slice
@@ -83,7 +84,13 @@ def test_optional_loader_receipt_does_not_change_native_arrays(tmp_path, objecti
     right = list(range(1, n)) + list(range(2, n, 3))
     links = pd.DataFrame(dict(from_seg=[str(i) for i in left], to_seg=[str(i) for i in right],
                              from_orient="+", to_orient="+"))
-    edges = pd.DataFrame(dict(u_oid=np.arange(0, 80, 2), v_oid=np.arange(2, 82, 2), label=1))
+    if mixed_storage:
+        # Make one canonical forward handle unavailable, while preserving
+        # enough unaffected groups to exercise a retained native slice.
+        reverse = (np.asarray(left) == 43) | (np.asarray(right) == 43)
+        links.loc[reverse, ["from_seg", "to_seg"]] = links.loc[reverse, ["to_seg", "from_seg"]].to_numpy()
+        links.loc[reverse, ["from_orient", "to_orient"]] = "-"
+    edges = pd.DataFrame(dict(u_oid=np.arange(0, 120, 2), v_oid=np.arange(2, 122, 2), label=1))
     paths = {}
     for kind, data in [("segments", segments), ("links", links), ("edge_pred", edges)]:
         path = tmp_path / (kind + ".csv")
@@ -102,4 +109,12 @@ def test_optional_loader_receipt_does_not_change_native_arrays(tmp_path, objecti
         if isinstance(original[key], np.ndarray):
             np.testing.assert_array_equal(original[key], audited[key])
     assert original.keys() == audited.keys()
-    assert receipt["n_candidate_node_filter_exclusions"] == 0
+    if mixed_storage:
+        assert receipt["n_candidate_node_filter_exclusions"] > 0
+        if objective == "junction_repair":
+            validate_groups(audited)
+            assert receipt["n_valid_partner_rows_excluded"] > 0
+        else:
+            assert receipt["n_candidate_node_filter_exclusions"] == 2
+    else:
+        assert receipt["n_candidate_node_filter_exclusions"] == 0

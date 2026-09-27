@@ -224,5 +224,33 @@ PYTHONPATH=src:. python -m tasks.transfer.junction_readiness \
   --checkpoint /home/tuv43532/PangenomeFM_junction_audit_20260927/results/v2_review_20260927/smoke_72/training/run_001/ckpt_strict__shared_dual_mscale3_orient_maskedq_jrbranching16_visdeg_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep1_pat1.pt \
   --manifest /home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv \
   --full-segments /home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz \
-  --out-dir results/foundation_evidence_20260927/junction_readiness
+  --training-drop-edge-rate 0.1 \
+  --out-dir results/foundation_evidence_20260927/junction_readiness_corrected
 ```
+
+### Native audit failure and correction (27 September)
+
+The first full-manifest audit stopped on
+`slice_GRCh38_0_chr1_0_5000000_1hop`. Candidate generation produced 5,582
+positive and 5,582 negative candidates, but row-wise node filtering removed
+3,082 rows and broke endpoint balance in at least one retained group. The
+canonical reverse-complement handle is not always represented in the
+stored-direction encoder node set. Balanced class counts alone do not detect
+this problem. The failed receipt and offending window are preserved in
+`results/foundation_evidence_20260927/junction_readiness_failed/`.
+
+**Correction:** for the junction objective only, the native loader now excludes
+an entire masking group if any candidate endpoint is unavailable. It counts
+missing-node rows, excluded groups, and valid partner rows excluded to preserve
+balance. It does not add nodes/edges or change the graph release. Tests include
+mixed forward/reverse link storage and check endpoint balance after native
+filtering. The v1 row filtering path is unchanged. Historical v2 smoke results
+remain archived as execution evidence; they are not validation of this corrected
+loader and must not be used to promote a full v2 model.
+
+The repeat uses a fresh output directory `junction_readiness_corrected`. Its
+explicit `--training-drop-edge-rate 0.1` matches the proposed full v2 training
+launcher; the old one-epoch smoke had DropEdge disabled. This override is fixed
+before new baseline scores and recorded in the receipt. Geometry collection
+also enables the native four-column pair geometry for the nuisance control;
+checkpoint weights are not loaded into a model or evaluated.

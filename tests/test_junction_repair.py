@@ -10,6 +10,7 @@ from graph.junction_repair import (
     build_junction_repair_candidates,
     group_batches,
     junction_mask,
+    complete_group_node_mask,
     visible_degree_after_masking,
 )
 from graph.neg_sampling import (
@@ -163,3 +164,19 @@ def test_feasible_cycle_survives_an_unmatchable_span_member():
         u, v, so, oid_to_sn={x: "chrT" for x in so}, scope="all", span_size=16)
     assert audit.n_positive_candidates == audit.n_negative_candidates == 2
     assert set(c.u_oid) == {0, 4} and set(c.v_oid) == {2, 6}
+
+
+def test_missing_oriented_node_discards_entire_group_not_unbalanced_rows():
+    import pandas as pd
+
+    candidates = pd.DataFrame(dict(
+        u_oid=[0, 4, 0, 4, 8, 12, 8, 12], v_oid=[2, 6, 6, 2, 10, 14, 14, 10],
+        label=[1, 1, 0, 0] * 2, group_id=[0] * 4 + [1] * 4,
+    ))
+    # Rowwise filtering leaves one positive/negative in group 0, but different
+    # out-end marginals (positive 0; negative 4): balanced labels are insufficient.
+    nodes = {0, 2, 4, 8, 10, 12, 14}
+    keep = complete_group_node_mask(candidates, nodes)
+    assert keep.tolist() == [False] * 4 + [True] * 4
+    assert complete_group_node_mask(candidates, nodes | {6}).all()
+    assert complete_group_node_mask(candidates.iloc[:0], nodes).empty
