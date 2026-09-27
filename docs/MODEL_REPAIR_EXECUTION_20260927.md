@@ -31,6 +31,10 @@ results, and the other implementation worktree are preserved.
   benchmark coverage and bitwise preservation of all 303,425 original vectors pass.
 - [ ] Evaluate the separately identified sequence-conditioned candidate with
   matched frozen-random and raw-input controls.
+- [x] Complete the bounded sequence-conditioned reconstruction comparison:
+  both heads, matched random encoders, exact starting-weight hashes and raw NT controls.
+- [ ] Complete and audit frozen biological validation for that candidate
+  (cCRE fits complete; SV fits running at the latest check).
 - [x] Resolve historical HG008 replay failures or run a separately identified,
   prospective deterministic probe-refit protocol; never relabel a refit as replay.
 - [ ] Measured genotypability labels and verified path-to-segment correspondence
@@ -595,3 +599,60 @@ topology-only T for the original model. Reports record the mapping between
 reference/candidate roles and source models. They refuse mismatched examples
 or non-embedding predictions and do not apply the topology-native promotion
 gate to this different representation family.
+
+## Completed sequence-conditioned reconstruction development result
+
+All comparisons use the same 2,050 validation candidates in 104 windows,
+prevalence 0.5. The raw-input controls fit 66,170 training candidates. Candidate
+identities, NT-cache checksums, trained/random initial weights, frozen-random
+final weights and stored checkpoint validation metrics all pass verification.
+
+| Model/control | Validation AUPRC | Window-macro AUROC |
+|---|---:|---:|
+| Trained NT-conditioned graph, MLP head | 0.840748 | 0.866850 |
+| Matched random NT-conditioned graph, MLP head | 0.679359 | 0.741072 |
+| Trained NT-conditioned graph, linear interaction head | **0.869981** | **0.904021** |
+| Matched random NT-conditioned graph, linear interaction head | 0.654747 | 0.693320 |
+| Raw structural/coordinate/NT inputs, fixed logistic | 0.709684 | 0.736152 |
+| Raw structural/coordinate/NT inputs, fixed boosting | 0.734008 | 0.798576 |
+| Geometry plus visible degree | 0.506812 | 0.503620 |
+
+The linear head is selected by the prespecified macro-AUROC criterion, before
+biological fitting. Its trained-minus-random AP gain is +0.215234; its gain over
+the fixed raw-input boosting control is +0.135973. This supports learning beyond
+these controls for the repaired reconstruction task. It is not an independent
+biological result, a replication across chromosomes/seeds, or proof that graph
+messages alone cause the gain. A coordinate-stream/message ablation remains
+useful before making that stronger claim.
+
+The initial raw/model identity comparison refused integer `1` versus floating
+`1.0` label serialization even though native endpoints and labels matched.
+The report now canonicalizes exact integer endpoints and binary labels before
+hashing; it still rejects fractional identifiers, changed endpoints and labels.
+A regression test covers both equivalent encodings. No prediction or label was
+changed. The candidate identity encoding is recorded as schema v2.
+
+Results: `results/foundation_evidence_20260927/nt_junction_analysis/`, containing
+`validation_metrics.csv`, `paired_differences.csv`, `raw_input_controls.csv`,
+`audit.json`, and `junction_validation.{pdf,svg,png}`. The figure uses a 0–1
+axis and shows the raw-input controls. Source model receipts and predictions
+are under `nt_conditioned_trained/`, `nt_conditioned_random/`, and
+`nt_raw_input_controls/`. `nt_checkpoint_selection.json` records the selected
+checkpoint's hash and absence of biological labels in model selection.
+
+Reproduce the audited reconstruction report, choosing a fresh output directory:
+
+```bash
+PYTHONPATH=src:. python -m tasks.transfer.junction_pilot_report \
+  --trained-root results/foundation_evidence_20260927/nt_conditioned_trained \
+  --random-root results/foundation_evidence_20260927/nt_conditioned_random \
+  --input-control-root results/foundation_evidence_20260927/nt_raw_input_controls \
+  --out-dir <new-report-directory>
+```
+
+All four exact training commands, GPU assignments, graph/manifest fingerprints
+and NT input contracts are in the two source `status.json` receipts. The input
+diagnostic's full native arguments and processing commit are in its `audit.json`.
+The biological runner's four exact commands are in
+`nt_biological_validation/status.json`. The latest full local suite passes
+**343 tests**, followed by the focused identity-encoding regression and Ruff.

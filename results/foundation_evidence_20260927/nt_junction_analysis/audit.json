@@ -1,0 +1,37 @@
+{
+  "status": "complete",
+  "source_receipts": [
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/nt_conditioned_trained/status.json",
+      "bytes": 6886,
+      "mtime_ns": 1790547001000000000,
+      "sha256": "3ab795c06a9199c21b21dae29f808d5af368b7aabf528fd6c350758a85428449"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/nt_conditioned_random/status.json",
+      "bytes": 6935,
+      "mtime_ns": 1790546876000000000,
+      "sha256": "252d9254080010a005de6b73554728da7bd14ac58574c85614febd1221dd00ff"
+    }
+  ],
+  "candidate_identity": "passed",
+  "candidate_identity_encoding": "CSV with exact integer endpoints and binary labels; schema v2",
+  "raw_input_control_source": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/nt_raw_input_controls/audit.json",
+    "bytes": 6248,
+    "mtime_ns": 1790547105000000000,
+    "sha256": "ee39b0aad96d798701450482ad0c02ca03af3906273b376c19bca98140611eda"
+  },
+  "frozen_random_parameter_identity": "passed",
+  "checkpoint_metric_replay": "passed",
+  "matched_initialization": [
+    "passed"
+  ],
+  "matched_configuration": "passed",
+  "representation": "sequence_conditioned_graph",
+  "selected_arm": "bidirectional_linear",
+  "selection_criterion": "native window-macro validation AUROC",
+  "selected_checkpoint_sha256": "15fe0a7466ba1396c9f0fd64408f88e3444915b20c9d96fe1a23b2a5ee7387ea",
+  "scope": "single-fold development comparison; not independent biological evidence",
+  "confidence_intervals": "not estimated after selection on this development partition"
+}

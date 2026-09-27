@@ -65,6 +65,11 @@ def test_junction_identity_uses_endpoints_and_labels_and_rejects_test_rows():
                               p_edge=[0.7, 0.2, 0.3, 0.8], split=["val_chr_val"] * 4))
     _, digest = validation_predictions(frame)
     assert validation_predictions(frame.iloc[::-1])[1] == digest
+    assert validation_predictions(frame.astype({'y_true': float, 'u_local': float, 'v_local': float}))[1] == digest
+    fractional = frame.astype({'u_local': float})
+    fractional.loc[0, 'u_local'] = 1.5
+    with pytest.raises(ValueError, match='exact integers'):
+        validation_predictions(fractional)
     changed = frame.copy()
     changed.loc[0, "u_local"] = 9
     assert validation_predictions(changed)[1] != digest

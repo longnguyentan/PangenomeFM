@@ -26,6 +26,13 @@ def validation_predictions(frame: pd.DataFrame) -> tuple[pd.DataFrame, str]:
     if (val.empty or val.duplicated(IDENTITY[:-1]).any() or set(val.y_true) != {0, 1}
             or not val.p_edge.between(0, 1).all()):
         raise ValueError("Invalid or duplicate validation candidates")
+    # Native trainer CSV labels are float32 (1.0); raw diagnostic labels are
+    # integers (1). Canonicalize exact integer identities before serializing.
+    for column in ['u_local', 'v_local', 'y_true']:
+        values = pd.to_numeric(val[column], errors='raise')
+        if not np.isfinite(values).all() or (values % 1 != 0).any():
+            raise ValueError('Candidate identifiers and labels must be exact integers')
+        val[column] = values.astype(np.int64)
     digest = hashlib.sha256(val[IDENTITY].to_csv(index=False).encode()).hexdigest()
     return val, digest
 
@@ -161,6 +168,7 @@ def main() -> None:
     selected = frame.loc[frame.encoder.eq("trained")].sort_values("macro_window_auroc", ascending=False).iloc[0]
     (args.out_dir / "audit.json").write_text(json.dumps(dict(
         status="complete", source_receipts=sources, candidate_identity="passed",
+        candidate_identity_encoding='CSV with exact integer endpoints and binary labels; schema v2',
         raw_input_control_source=control_source,
         frozen_random_parameter_identity="passed", checkpoint_metric_replay="passed",
         matched_initialization=sorted(frame.initialization_check.unique()),
@@ -170,23 +178,31 @@ def main() -> None:
         scope="single-fold development comparison; not independent biological evidence",
         confidence_intervals="not estimated after selection on this development partition",
     ), indent=2) + "\n")
+    plot_validation(frame, controls, args.out_dir)
 
+
+def plot_validation(frame: pd.DataFrame, controls: pd.DataFrame | None, out: Path) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     plt.rcParams.update({"font.size": 10, "svg.fonttype": "none", "pdf.fonttype": 42,
                          "axes.spines.top": False, "axes.spines.right": False})
-    fig, ax = plt.subplots(figsize=(8, 4), layout="constrained")
+    fig, ax = plt.subplots(figsize=(10, 4), layout="constrained")
     arms = frame.arm.drop_duplicates().tolist()
     for mode, color, offset in [("trained", "#245a81", -0.15), ("frozen_random", "#be6831", 0.15)]:
         data = frame.loc[frame.encoder.eq(mode)].set_index("arm").loc[arms]
         ax.bar(np.arange(len(arms)) + offset, data.auprc, width=0.3, label=mode.replace("_", " "), color=color)
     ax.axhline(0.5, color="0.4", ls="--", lw=1, label="Prevalence")
+    if controls is not None:
+        indexed = controls.set_index('baseline')
+        for name, label, color in [('node_inputs_linear', 'Raw inputs: logistic', '#5d7547'),
+                                   ('node_inputs_boosting', 'Raw inputs: boosting', '#87549b')]:
+            ax.axhline(indexed.loc[name, 'auprc'], color=color, ls=':', lw=1.4, label=label)
     labels = dict(zip(ARMS, ["Incoming\nMLP", "Incoming\nLinear", "Bidirectional\nMLP", "Bidirectional\nLinear"]))
     ax.set(xticks=range(len(arms)), xticklabels=[labels[arm] for arm in arms],
-           ylim=(0, 1), ylabel="Validation AUPRC", title=f"Junction reconstruction: {selected.representation.replace('_', ' ')}")
-    ax.legend(frameon=False, loc="upper left")
-    save_figure(fig, args.out_dir, "junction_validation")
+           ylim=(0, 1), ylabel="Validation AUPRC", title=f"Junction reconstruction: {frame.representation.iloc[0].replace('_', ' ')}")
+    ax.legend(frameon=False, loc="upper left", bbox_to_anchor=(1.01, 1))
+    save_figure(fig, out, "junction_validation")
     plt.close(fig)
 
 

@@ -1,0 +1,169 @@
+{
+  "status": "complete",
+  "checkpoint": {
+    "path": "/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/geometry_pilot/bidirectional_default/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_valonly_maskedq_jrbranching16_geommatch1.25_visdeg_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+    "bytes": 241522,
+    "mtime_ns": 1790541932195935484,
+    "sha256": "6f46ec8ea5f8a6daa6450b1373b6d4af66b07851ec7da1eb0e358f4fdbdf416a"
+  },
+  "manifest": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+    "bytes": 1044864,
+    "mtime_ns": 1786109265393977620,
+    "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+  },
+  "full_segments": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+    "bytes": 870096546,
+    "mtime_ns": 1786041795869081191,
+    "sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347"
+  },
+  "code_commit": "ab2c36bae83457726d810239553cac4a1f280744",
+  "training_drop_edge_rate_override": null,
+  "sequence_inputs": {
+    "1hop": {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/benchmark_nt.npz",
+        "bytes": 906437982,
+        "mtime_ns": 1790546325608455626,
+        "sha256": "9f5015336bd1c0b9c5f81ed98e659e23f498ca28b57e5646d17ce411f93baabe"
+      },
+      "contract": {
+        "model_name": "InstaDeepAI/nucleotide-transformer-v2-50m-multi-species",
+        "resolved_revision": "81b29e5786726d891dbf929404ef20adca5b36f1",
+        "full_segments_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+        "pooling": "mean final hidden state over non-special, non-padding tokens",
+        "maximum_token_length": 1000,
+        "maximum_raw_bases": 6000,
+        "raw_sequence_sampling": "long nodes retain balanced prefix and suffix separated by N before tokenizer truncation",
+        "truncation_policy": "tokenizer truncation at maximum_token_length; complete raw sequences remain in the source table"
+      },
+      "benchmark_scope": {
+        "graph_segments": 751237,
+        "benchmark_segments": 479477,
+        "benchmark_windows": 608,
+        "manifest": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+        "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+        "context": "1hop",
+        "target_selection": "existing-cache union native unmasked benchmark link endpoints; no labels"
+      },
+      "coverage": 1.0,
+      "biological_labels_used": false,
+      "orientation_policy": "same frozen segment sequence vector for both oriented handles"
+    }
+  },
+  "native_args": {
+    "adaptive_window": false,
+    "adaptive_window_base": 32,
+    "adaptive_window_alpha": 4.0,
+    "batch_size": 512,
+    "dropout": 0.1,
+    "dual_stream": false,
+    "expressive_predictor": false,
+    "hidden_dim": 48,
+    "multiscale_rope": true,
+    "n_heads": 4,
+    "n_layers": 2,
+    "n_rope_scales": 3,
+    "no_fusion_gate": false,
+    "no_rope": false,
+    "orientation_rope": true,
+    "pop_cond": false,
+    "pop_embed_dim": 16,
+    "seed": 42,
+    "stream_mode": "full",
+    "graph_message_direction": "bidirectional",
+    "use_edge_features": false,
+    "window_k": null,
+    "manifest": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+    "full_segments": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+    "out_dir": "results/foundation_evidence_20260927/geometry_pilot/bidirectional_default",
+    "canonical_conflict_policy": "error",
+    "primary_dataset_name": "primary",
+    "extra_datasets": [],
+    "closures": [
+      "1hop"
+    ],
+    "pop_table": null,
+    "auto_window": false,
+    "epochs": 10,
+    "lr": 0.0005,
+    "weight_decay": 0.0001,
+    "patience": 3,
+    "recovery_every": 1,
+    "resume_recovery": null,
+    "accum_steps": 4,
+    "warmup_epochs": 1,
+    "focal_loss": false,
+    "focal_gamma": 2.0,
+    "focal_alpha": 0.25,
+    "drop_edge": true,
+    "drop_edge_rate": 0.1,
+    "linear_predictor": false,
+    "split_seed": 20260806,
+    "device": "cuda",
+    "objective": "junction_repair",
+    "junction_scope": "branching",
+    "junction_span_size": 16,
+    "junction_geometry_match": "signed_gap_bins",
+    "junction_geometry_bin_ratio": 1.25,
+    "node_structure_source": "visible",
+    "node_extra_features": "cache",
+    "node_feature_cache": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/benchmark_nt.npz",
+    "node_feature_min_coverage": 1.0,
+    "pair_geometry": true,
+    "lazy_tensorize": true,
+    "save_predictions": true,
+    "validation_only": true,
+    "mask_query_edges": true,
+    "domain_adversarial": false,
+    "domain_loss_weight": 0.1,
+    "domain_grl_lambda": 1.0,
+    "test_chrs": [
+      "chr1",
+      "chr6",
+      "chr11",
+      "chr16",
+      "chr21"
+    ],
+    "val_chrs": [
+      "chr2",
+      "chr7",
+      "chr12",
+      "chr17",
+      "chr22"
+    ],
+    "include_node_controls": true
+  },
+  "split": {
+    "train_chrs": [],
+    "val_chrs": [
+      "chr12",
+      "chr17",
+      "chr2",
+      "chr22",
+      "chr7"
+    ],
+    "test_chrs": [
+      "chr1",
+      "chr11",
+      "chr16",
+      "chr21",
+      "chr6"
+    ]
+  },
+  "checkpoint_weights_used": false,
+  "baseline": "Fixed standardized logistic C=1; optional raw-node interactions and 100-step/7-leaf boosting with early_stopping=False; train only; no test scores or hyperparameter search",
+  "mask": "Native held-out masks; complete packed train groups and one fixed DropEdge draw per slice",
+  "limitations": "Validation diagnostics, not independent biological performance or a proof of no shortcuts",
+  "contexts": [
+    "1hop"
+  ],
+  "n_windows": 608,
+  "n_retained": 603,
+  "missing_chromosomes": {
+    "1hop": []
+  },
+  "endpoint_balance_after_native_filter": "passed",
+  "heldout_chromosome_predictions_produced": false
+}

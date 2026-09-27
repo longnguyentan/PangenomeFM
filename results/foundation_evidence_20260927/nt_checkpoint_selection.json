@@ -1,0 +1,36 @@
+{
+  "status": "complete",
+  "selected_arm": "bidirectional_linear",
+  "criterion": "native window-macro reconstruction validation AUROC",
+  "source_receipts": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_conditioned_trained/status.json",
+      "bytes": 6886,
+      "mtime_ns": 1790547001025318671,
+      "sha256": "3ab795c06a9199c21b21dae29f808d5af368b7aabf528fd6c350758a85428449"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_conditioned_random/status.json",
+      "bytes": 6935,
+      "mtime_ns": 1790546876422612904,
+      "sha256": "252d9254080010a005de6b73554728da7bd14ac58574c85614febd1221dd00ff"
+    }
+  ],
+  "checkpoints": {
+    "nt": {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_conditioned_trained/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_maskedq_jrbranching16_geommatch1.25_visdeg_xcache_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "bytes": 344946,
+      "mtime_ns": 1790546996581364723,
+      "sha256": "15fe0a7466ba1396c9f0fd64408f88e3444915b20c9d96fe1a23b2a5ee7387ea"
+    },
+    "nt_random": {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_conditioned_random/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_frozenR_maskedq_jrbranching16_geommatch1.25_visdeg_xcache_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "bytes": 345458,
+      "mtime_ns": 1790546866614715067,
+      "sha256": "fef50b9319d302c50342131d5c727c8610352161045a03a0c7f94c1cfc029ea0"
+    }
+  },
+  "biological_labels_used_for_selection": false,
+  "heldout_predictions_used": false,
+  "representation": "sequence_conditioned_graph"
+}

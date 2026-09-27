@@ -1,0 +1,6 @@
+context,baseline,n_train,n_val,n_val_slices,positive_prevalence,auprc,auroc,macro_slice_auroc,scope
+1hop,geometry,66170,2050,104,0.5,0.5,0.5,0.5,pretraining validation chromosomes/internal val candidates only
+1hop,visible_degree,66170,2050,104,0.5,0.5070032277312606,0.5045539559785842,0.5105779316225493,pretraining validation chromosomes/internal val candidates only
+1hop,geometry_and_visible_degree,66170,2050,104,0.5,0.50681224064129,0.5043217132659132,0.503619583309536,pretraining validation chromosomes/internal val candidates only
+1hop,node_inputs_linear,66170,2050,104,0.5,0.7096837431596877,0.7436820939916716,0.7361515471731607,pretraining validation chromosomes/internal val candidates only
+1hop,node_inputs_boosting,66170,2050,104,0.5,0.7340078344895635,0.7509472932778108,0.7985757107749936,pretraining validation chromosomes/internal val candidates only
