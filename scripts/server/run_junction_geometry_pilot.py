@@ -75,10 +75,12 @@ def check_context(audit_dir: Path, context: str, direction: str, required: set[s
 
 def commands(root: Path, receipt: dict, context: str, *,
              arms: list[str] | None = None, node_feature_cache: Path | None = None,
-             stream_mode: str = 'full') -> dict[str, list[str]]:
+             stream_mode: str = 'full', seed: int = 42) -> dict[str, list[str]]:
     native = receipt['native_args']
     if native['seed'] != 42 or native['split_seed'] != 20260806:
         raise ValueError('Fixed fold-A pilot requires the predefined seeds')
+    if seed not in {42, 314159, 20260806}:
+        raise ValueError('Use a predefined manuscript model seed')
     common = [sys.executable, '-u', '-m', 'training.pretrain',
         '--manifest', receipt['manifest']['path'], '--full_segments', receipt['full_segments']['path'],
         '--closures', context, '--objective', 'junction_repair', '--junction_scope', 'branching',
@@ -86,7 +88,7 @@ def commands(root: Path, receipt: dict, context: str, *,
         '--junction_geometry_bin_ratio', '1.25', '--node_structure_source', 'visible',
         '--mask_query_edges', '--validation_only', '--save_predictions', '--lazy_tensorize',
         '--hidden_dim', '48', '--n_layers', '2', '--n_heads', '4', '--multiscale_rope',
-        '--orientation_rope', '--seed', '42', '--split_seed', '20260806',
+        '--orientation_rope', '--seed', str(seed), '--split_seed', '20260806',
         '--drop_edge', '--drop_edge_rate', '0.1', '--batch_size', '512', '--accum_steps', '4',
         '--epochs', '10', '--patience', '3', '--warmup_epochs', '1', '--recovery_every', '1',
         '--lr', '0.0005', '--weight_decay', '0.0001', '--device', 'cuda',
@@ -122,6 +124,7 @@ def main() -> None:
     parser.add_argument('--gpus', type=int, nargs='+', default=[0, 1, 2, 3])
     parser.add_argument('--arms', nargs='+', choices=ARMS, default=ARMS)
     parser.add_argument('--stream-mode', choices=['full', 'coordinate'], default='full')
+    parser.add_argument('--seed', type=int, choices=[42, 314159, 20260806], default=42)
     parser.add_argument('--node-feature-cache', type=Path,
                         help='Audited benchmark-complete frozen NT inputs; defines a separate multimodal model')
     parser.add_argument('--execute', action='store_true')
@@ -143,7 +146,7 @@ def main() -> None:
     sequence_inputs = check_sequence_cache(args.node_feature_cache, incoming, args.context) if args.node_feature_cache else None
     args.out_root.mkdir(parents=True, exist_ok=False)
     jobs = commands(args.out_root, incoming, args.context, arms=args.arms,
-                    node_feature_cache=args.node_feature_cache, stream_mode=args.stream_mode)
+                    node_feature_cache=args.node_feature_cache, stream_mode=args.stream_mode, seed=args.seed)
     if args.random_encoder_control:
         for command in jobs.values():
             command.append('--freeze_encoder')
@@ -154,6 +157,7 @@ def main() -> None:
                   biological_labels_used=False, heldout_predictions_requested=False)
     record['sequence_inputs'] = sequence_inputs
     record['stream_mode'] = args.stream_mode
+    record['seed'] = args.seed
     record['representation'] = ('topology_native' if not sequence_inputs else
                                 'sequence_conditioned_coordinate' if args.stream_mode == 'coordinate'
                                 else 'sequence_conditioned_graph')

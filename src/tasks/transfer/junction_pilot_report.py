@@ -63,7 +63,7 @@ def summarize_roots(trained: Path, random: Path) -> tuple[pd.DataFrame, list[dic
             val, digest = validation_predictions(pd.read_csv(paths[0], float_precision="round_trip"))
             checkpoint = torch.load(checkpoints[0], map_location="cpu", weights_only=False)
             cfg = checkpoint["args"]
-            if (not cfg["validation_only"] or cfg["seed"] != 42
+            if (not cfg["validation_only"] or cfg["seed"] != status.get("seed", 42)
                     or cfg["junction_geometry_match"] != "signed_gap_bins"):
                 raise ValueError("Checkpoint configuration differs from declared pilot")
             is_random = mode == "frozen_random"
@@ -86,6 +86,7 @@ def summarize_roots(trained: Path, random: Path) -> tuple[pd.DataFrame, list[dic
             if not np.isclose(macro, checkpoint["best_val_auc"], atol=1e-10, rtol=0):
                 raise ValueError("Prediction replay differs from selected checkpoint score")
             rows.append(dict(arm=arm, encoder=mode, n=len(val), n_windows=val.slice.nunique(),
+                             seed=cfg["seed"],
                              positive_prevalence=val.y_true.mean(), auprc=average_precision_score(val.y_true, val.p_edge),
                              auroc=roc_auc_score(val.y_true, val.p_edge), macro_window_auroc=macro,
                              epochs_run=checkpoint["epochs_run"], candidates_sha256=digest,

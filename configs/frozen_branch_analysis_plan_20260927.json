@@ -56,6 +56,18 @@
     "if_passed": "Freeze this architecture specification, then evaluate an independently specified replication; one fold does not establish superiority",
     "strict_context": "Still ineligible under current geometry matching; do not silently relax the reconstruction protocol"
   },
+  "seed_replication": {
+    "trigger": "Recorded seed-42 development gate is eligible_for_replication",
+    "model_seeds": [314159, 20260806],
+    "fold": "fold_a",
+    "context": "1hop",
+    "partition_seed": 20260806,
+    "branches": "Same selected topology MLP-head and NT-conditioned linear-head architectures, with matched random twins",
+    "selection": "Native reconstruction validation checkpoint selection only; no head, budget or biological hyperparameter search",
+    "biological_outputs": "All four composites and four single branches, both tasks, four primary feature sets",
+    "interpretation": "Seed stability on one already inspected development fold; no independent chromosome replication or confirmatory CI",
+    "unfavorable_results": "Retain every seed and contrast; do not replace failed performance with a different seed"
+  },
   "implementation_requirements": [
     "Reuse native extractor and probes, adding optional companion checkpoint only",
     "Store immutable command/checkpoint/resource receipts and all favorable and unfavorable results",

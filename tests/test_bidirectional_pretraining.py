@@ -247,6 +247,12 @@ def test_sequence_pilot_keeps_fixed_budget_and_requires_complete_inputs():
     assert '--linear_predictor' in command and '--validation_only' in command
     with pytest.raises(ValueError, match='coordinate-stream'):
         commands(Path('out'), receipt, '1hop', stream_mode='invalid')
+    replica = commands(Path('out'), receipt, '1hop', arms=['bidirectional_linear'], seed=314159)
+    cmd = replica['bidirectional_linear']
+    assert cmd[cmd.index('--seed') + 1] == '314159'
+    assert cmd[cmd.index('--split_seed') + 1] == '20260806'
+    with pytest.raises(ValueError, match='manuscript model seed'):
+        commands(Path('out'), receipt, '1hop', seed=17)
 
 
 def test_sequence_pilot_rejects_missing_benchmark_inputs(tmp_path, monkeypatch):

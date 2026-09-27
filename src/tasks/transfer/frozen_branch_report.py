@@ -17,6 +17,30 @@ COMPOSITES = ["T_Q", "T_Rq", "Rt_Q", "Rt_Rq"]
 MODELS = [*COMPOSITES, "T", "Q"]
 
 
+def plot_contrasts(differences: pd.DataFrame, out: Path) -> None:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    labels = ["T+random Q", "random T+Q", "both random", "T only", "Q only"]
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4), layout="constrained", sharey=True)
+    for ax, task in zip(axes, ["sv", "ccre"]):
+        part = differences.loc[differences.task.eq(task) & differences.metric.eq("auprc")
+                               & differences.feature.eq("csht")].set_index("comparison")
+        values = part.loc[["T_Q minus " + m for m in MODELS[1:]], "difference"]
+        low, high = min(0., values.min()), max(0., values.max())
+        padding = max((high - low) * .35, .001)
+        ax.scatter(values, range(5), s=35, color="#245a81")
+        for index, value in enumerate(values):
+            ax.annotate(f"{value:+.6f}", (value, index), xytext=(5, 7), textcoords="offset points", fontsize=9)
+        ax.axvline(0, color=".6", linewidth=.8)
+        ax.set(yticks=range(5), yticklabels=labels, ylim=(4.6, -.6), xlim=(low-padding, high+padding),
+               xlabel="T+Q minus comparator: validation Δ AUPRC",
+               title="SV insertion/deletion" if task == "sv" else "cCRE")
+    fig.suptitle("After C+S+H: one development fold/seed; no confidence interval")
+    save_figure(fig, out, "frozen_branch_gains")
+    plt.close(fig)
+
+
 def compare(frame: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     mapping = dict(zip(COMPOSITES, ["v2", "v1", "v2_random", "random"]))
     validate_development_pairs(frame.loc[frame.model.isin(COMPOSITES)].assign(
@@ -126,6 +150,7 @@ def main() -> None:
     fig.suptitle("Frozen branch preservation: one development fold/seed")
     save_figure(fig, args.out_dir, "frozen_branches")
     plt.close(fig)
+    plot_contrasts(differences, args.out_dir)
 
 
 if __name__ == "__main__":
