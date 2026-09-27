@@ -259,6 +259,26 @@ class LinearLinkPredictor(nn.Module):
         return self.linear(torch.cat(parts, dim=-1)).squeeze(-1)
 
 
+def freeze_random_encoder(model, predictor):
+    """Freeze the randomly initialized backbone, leaving only the pair head trainable."""
+    for parameter in model.parameters():
+        parameter.requires_grad_(False)
+    if predictor is None:
+        for parameter in model.edge_predictor.parameters():
+            parameter.requires_grad_(True)
+
+
+def encoder_parameter_digest(model):
+    """Exact learned-backbone weight identity, excluding the separately trained head."""
+    import hashlib
+    digest = hashlib.sha256()
+    for name, parameter in model.named_parameters():
+        if not name.startswith("edge_predictor."):
+            digest.update(name.encode())
+            digest.update(parameter.detach().cpu().contiguous().numpy().tobytes())
+    return digest.hexdigest()
+
+
 class ExpressiveLinkPredictor(nn.Module):
     """
     More expressive link predictor that uses multiple interaction features:
@@ -749,6 +769,10 @@ def train_one_epoch_shared(
     Step optimizer after every `accum_steps` slices.
     """
     model.train()
+    if getattr(args, "freeze_encoder", False):
+        model.eval()  # A fixed random representation has no encoder dropout.
+        if predictor is None:
+            model.edge_predictor.train()
     if predictor is not None:
         predictor.train()
     if domain_classifier is not None:
@@ -1292,6 +1316,8 @@ def main():
         "--linear_predictor", action="store_true",
         help="Use a linear score of embedding products/differences and optional pair geometry.",
     )
+    ap.add_argument("--freeze_encoder", action="store_true",
+                    help="Random-encoder control: train the pair head only; backbone weights are verified unchanged")
 
     # Other
     ap.add_argument("--seed", type=int, default=42)
@@ -1444,6 +1470,8 @@ def main():
         ap.error("Choose --linear_predictor or --expressive_predictor, not both")
     if args.validation_only and not args.val_chrs:
         ap.error("--validation_only requires explicit --val_chrs")
+    if args.freeze_encoder and args.domain_adversarial:
+        ap.error("Random-encoder controls do not train a domain-adversarial encoder")
     seed_everything(args.seed)
     device = torch.device(args.device)
 
@@ -1475,6 +1503,8 @@ def main():
         _lp.append("linpred")
     if args.validation_only:
         _lp.append("valonly")
+    if args.freeze_encoder:
+        _lp.append("frozenR")
     if args.mask_query_edges:
         _lp.append("maskedq")
     if args.objective != "edge_masking":
@@ -1721,6 +1751,9 @@ def main():
             ).to(device)
 
         domain_classifier = None
+        initial_encoder_sha256 = encoder_parameter_digest(model)
+        if args.freeze_encoder:
+            freeze_random_encoder(model, predictor)
         if args.domain_adversarial:
             domain_classifier = DatasetDiscriminator(
                 hidden_dim=args.hidden_dim,
@@ -1729,7 +1762,7 @@ def main():
             ).to(device)
 
         # Optimizer
-        params = list(model.parameters())
+        params = [p for p in model.parameters() if p.requires_grad]
         if predictor is not None:
             params += list(predictor.parameters())
         if domain_classifier is not None:
@@ -1905,6 +1938,9 @@ def main():
             model.load_state_dict(best_state)
         if predictor is not None and best_pred_state is not None:
             predictor.load_state_dict(best_pred_state)
+        final_encoder_sha256 = encoder_parameter_digest(model)
+        if args.freeze_encoder and initial_encoder_sha256 != final_encoder_sha256:
+            raise RuntimeError("Frozen random encoder weights changed during training")
 
         pred_rows: Optional[List[Dict]] = [] if args.save_predictions else None
 
@@ -2028,6 +2064,7 @@ def main():
         results_df["drop_edge_rate"] = args.drop_edge_rate if args.drop_edge else 0.0
         results_df["expressive_predictor"] = args.expressive_predictor
         results_df["linear_predictor"] = args.linear_predictor
+        results_df["freeze_encoder"] = args.freeze_encoder
         results_df["graph_message_direction"] = args.graph_message_direction
         results_df["junction_geometry_match"] = args.junction_geometry_match
         results_df["junction_geometry_bin_ratio"] = args.junction_geometry_bin_ratio
@@ -2081,6 +2118,8 @@ def main():
                 "stream_mode": args.stream_mode,
                 "best_val_auc": float(best_val_auc),
                 "epochs_run": int(epoch),
+                "initial_encoder_sha256": initial_encoder_sha256,
+                "final_encoder_sha256": final_encoder_sha256,
             },
             ckpt_path,
         )
@@ -2102,7 +2141,8 @@ def main():
                 print(f"\n  Per-chromosome {closure_name} AUC [{tag}]:")
                 for sn, grp in split_df.groupby("target_sn"):
                     chr_name = str(sn).split("#")[-1]
-                    print(f"    {chr_name:6s}: {grp['test_auc'].mean():.4f}")
+                    score_column = "val_auc" if args.validation_only else "test_auc"
+                    print(f"    {chr_name:6s}: {grp[score_column].mean():.4f}")
 
     # Save combined gat_results (both closure types, matches 06 format)
     if all_closure_results:
@@ -2125,13 +2165,14 @@ def main():
                 tag = "train-chr"
             s_sub = split_sub[split_sub["closure"] == "strict"]
             h_sub = split_sub[split_sub["closure"] == "1hop"]
+            score_column = "val_auc" if args.validation_only else "test_auc"
             if len(s_sub) > 0:
                 print(
-                    f"[06b] [{tag}] Strict AUC: {s_sub['test_auc'].mean():.4f} "
-                    f"({(s_sub['test_auc'] > 0.5).sum()}/{len(s_sub)} above chance)"
+                    f"[06b] [{tag}] Strict AUC: {s_sub[score_column].mean():.4f} "
+                    f"({(s_sub[score_column] > 0.5).sum()}/{len(s_sub)} above chance)"
                 )
             if len(h_sub) > 0:
-                print(f"[06b] [{tag}] 1-hop AUC:  {h_sub['test_auc'].mean():.4f}")
+                print(f"[06b] [{tag}] 1-hop AUC:  {h_sub[score_column].mean():.4f}")
 
     print(f"\n[06b] Done. Output dir: {out_dir}")
 

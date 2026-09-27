@@ -73,6 +73,8 @@ def main() -> None:
     parser.add_argument('--out-root', type=Path, required=True)
     parser.add_argument('--gpus', type=int, nargs=4, default=[0, 1, 2, 3])
     parser.add_argument('--execute', action='store_true')
+    parser.add_argument('--random-encoder-control', action='store_true',
+                        help='Repeat the fixed four arms with frozen random backbones and fitted heads')
     args = parser.parse_args()
     if len(set(args.gpus)) != 4:
         raise ValueError('Use a different GPU for each fixed arm')
@@ -88,11 +90,15 @@ def main() -> None:
         raise ValueError('Control audits use different chromosome partitions')
     args.out_root.mkdir(parents=True, exist_ok=False)
     jobs = commands(args.out_root, incoming, args.context)
+    if args.random_encoder_control:
+        for command in jobs.values():
+            command.append('--freeze_encoder')
     record = dict(status='planned', commands=jobs, gpus=args.gpus, context=args.context,
                   incoming_audit=fingerprint(args.incoming_audit / 'audit.json'),
                   bidirectional_audit=fingerprint(args.bidirectional_audit / 'audit.json'),
                   code_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
                   biological_labels_used=False, heldout_predictions_requested=False)
+    record['random_encoder_control'] = args.random_encoder_control
     path = args.out_root / 'status.json'
     path.write_text(json.dumps(record, indent=2) + '\n')
     if not args.execute:

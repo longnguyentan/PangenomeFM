@@ -175,3 +175,41 @@ These fit training chromosomes only; validation labels are only scored. This
 additional diagnostic neither changes the candidate matcher nor tunes pilot
 hyperparameters. Failure means further objective investigation is needed before
 claiming that the reconstruction requires learned graph context.
+
+## Completed model-development comparison
+
+All four runs completed on identical 2,050 validation candidates across 104
+windows, with positive prevalence 0.5 and no held-out chromosome predictions.
+Best checkpoint selection uses the native window-macro validation AUROC.
+
+| Message direction | Pair head | Validation AP | Pooled AUROC | Window-macro AUROC |
+|---|---|---:|---:|---:|
+| incoming | existing MLP | 0.500748 | 0.501066 | 0.508325 |
+| incoming | linear interactions | 0.530415 | 0.546088 | 0.576621 |
+| bidirectional | existing MLP | 0.789716 | 0.786716 | 0.836070 |
+| bidirectional | linear interactions | 0.740027 | 0.745120 | 0.794843 |
+
+The fixed raw-input linear and boosting controls reach AP 0.570080 and 0.677132
+respectively (macro AUROC 0.625505 and 0.752984). Thus geometry/degree balancing
+alone does not make the task entirely attribute-independent. Bidirectional
+message passing materially improves this bounded reconstruction pilot, but its
+biological reuse and advantage over frozen random backbones remain untested.
+These are development scores, not independent performance estimates.
+
+## Frozen-random-backbone controls (fixed before their results)
+
+Repeat the same four configurations and ten-epoch/early-stop budget, fitting
+only the pair head with `--freeze_encoder`. Random backbones use the same initial
+seed and architecture; encoder dropout is disabled to keep the representation
+fixed. Candidate masking and DropEdge are retained. Hashes of every learned
+backbone parameter must match exactly before/after fitting. This tests decoder
+capacity and the architecture's random-feature contribution, while keeping
+biological and held-out chromosome labels out of selection.
+
+```bash
+PYTHONPATH=src:. python scripts/server/run_junction_geometry_pilot.py \
+  --incoming-audit results/foundation_evidence_20260927/junction_geometry_matched \
+  --bidirectional-audit results/foundation_evidence_20260927/junction_geometry_bidirectional \
+  --context 1hop --out-root results/foundation_evidence_20260927/geometry_random_controls \
+  --gpus 0 1 2 3 --random-encoder-control --execute
+```

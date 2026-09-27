@@ -132,8 +132,9 @@ def test_validation_only_final_scoring_never_requests_test(monkeypatch):
     assert {r["evaluation_scope"] for r in rows} == {"validation_only"}
 
 
-@pytest.mark.parametrize("direction,linear", [("incoming", False), ("bidirectional", True)])
-def test_native_training_cli_validation_only_checkpoint(tmp_path, direction, linear):
+@pytest.mark.parametrize("direction,linear,frozen", [("incoming", False, False), ("bidirectional", True, False),
+                                                    ("bidirectional", True, True), ("incoming", False, True)])
+def test_native_training_cli_validation_only_checkpoint(tmp_path, direction, linear, frozen):
     """Exercise loading, masking, training, final scoring and checkpoint reload."""
     segments, manifest = [], []
     for chromosome in [1, 2, 3]:
@@ -163,6 +164,8 @@ def test_native_training_cli_validation_only_checkpoint(tmp_path, direction, lin
            "--validation_only", "--save_predictions", "--graph_message_direction", direction]
     if linear:
         cmd.append("--linear_predictor")
+    if frozen:
+        cmd.append("--freeze_encoder")
     env = dict(os.environ, PYTHONPATH="src:.", OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1", MKL_NUM_THREADS="1")
     result = subprocess.run(cmd, env=env, capture_output=True, text=True, timeout=60)
     assert result.returncode == 0, result.stdout + result.stderr
@@ -171,6 +174,8 @@ def test_native_training_cli_validation_only_checkpoint(tmp_path, direction, lin
     saved = torch.load(next(output.rglob("ckpt_*.pt")), map_location="cpu", weights_only=False)
     assert saved["args"]["validation_only"] and saved["args"]["graph_message_direction"] == direction
     assert saved["args"]["linear_predictor"] == linear
+    assert saved["args"]["freeze_encoder"] == frozen
+    assert (saved["initial_encoder_sha256"] == saved["final_encoder_sha256"]) == frozen
     model, head = _build_model_from_checkpoint(saved, _namespace_from_checkpoint(saved, 42), torch.device("cpu"))
     assert model.graph_message_direction == direction
     assert isinstance(head, LinearLinkPredictor) == linear
