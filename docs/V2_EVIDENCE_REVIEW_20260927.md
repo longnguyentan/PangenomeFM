@@ -34,9 +34,9 @@ not independent meeting minutes or executable instructions.
 | Measurement/donor/tissue follow-ups | observed, complete | 60 prediction runs replayed; all unweighted controls agree within 1e-12 |
 | Biological scaling | observed, complete | 360 evaluations; exact C/K/S/C+S prediction invariance across fractions; task/context-dependent changes |
 | Canonical HPRC masking diagnostic | observed, complete bounded subset | See below; not the full benchmark or full batched training replay |
-| H/R controls | running | Frozen original trained versus random encoders, H features, fold A/42, strict and one-hop, SV and cCRE |
+| H/R controls | observed, complete exploratory matrix | Frozen original trained versus random encoders, H features, fold A/42, strict and one-hop, SV and cCRE; no final multi-fold claim |
 | v2 training | functional smoke only | One epoch on label-blind selected windows; no completed 30-model v2 campaign or frozen v2 biological comparison |
-| Broader model superiority | unknown | Stronger sequence comparators, H/R and locked v2 evaluation still required |
+| Broader model superiority | unknown | Stronger sequence comparators, multi-seed H/R controls and locked v2 evaluation still required |
 
 Completed team results: [EN-TEx brief](ENTEX_LAB_MEETING_20260929.md),
 [scaling and structural report](FOUNDATION_CAMPAIGN_20260924.md).
@@ -93,6 +93,37 @@ Artifacts: `results/v2_review_20260927/{candidate_audit_strict,cycle_audit_stric
 Tests verify balanced marginals, coordinate signatures, tolerance, feasible partial
 cycles, missing coordinates, and storage invariance. Marginal balance does not
 prove absence of pairwise shortcuts or graph-construction bias.
+
+### Exploratory frozen-versus-random controls
+
+The bounded fold-A/seed-42 matrix completed on the authenticated Temple
+checkout. It uses the unchanged chromosome split, frozen encoders and the
+existing probe; only the random checkpoint replaces the trained PangenomeFM
+weights. The table reports average precision and has no confidence interval
+because it is one development fold. `H` is the handcrafted topology control;
+`R` is the random encoder, even where the legacy metric file calls its column
+`T`.
+
+| Task | Context | Model | AP(C+S) | AP(C+S+H) | AP(C+S+T/R) | AP(C+S+H+T/R) | ΔT/R given C+S+H |
+|---|---|---|---:|---:|---:|---:|---:|
+| cCRE | strict | trained | 0.919607 | 0.921372 | 0.924667 | 0.925214 | +0.003842 |
+| cCRE | strict | random R | 0.919607 | 0.921372 | 0.924702 | 0.925289 | +0.003917 |
+| cCRE | one-hop | trained | 0.919610 | 0.921371 | 0.923538 | 0.923984 | +0.002613 |
+| cCRE | one-hop | random R | 0.919610 | 0.921371 | 0.920959 | 0.921466 | +0.000095 |
+| SV | strict | trained | 0.882468 | 0.915534 | 0.915307 | 0.930292 | +0.014758 |
+| SV | strict | random R | 0.882468 | 0.915534 | 0.908063 | 0.928123 | +0.012589 |
+| SV | one-hop | trained | 0.882468 | 0.915534 | 0.921802 | 0.925034 | +0.009500 |
+| SV | one-hop | random R | 0.882468 | 0.915534 | 0.919066 | 0.926540 | +0.011006 |
+
+These results are useful controls, not a new headline benchmark. The trained
+and random encoders are nearly tied for strict cCRE, while the trained encoder
+has a larger one-hop cCRE gain and a larger strict SV gain. The one-hop SV
+trained-versus-random ordering reverses for the H-adjusted contrast. Because
+this is a single fold with a reused development partition, it does not establish
+that PangenomeFM is superior to a random encoder genome-wide. The compact
+inputs and derived paired table are in
+`results/v2_review_20260927/control_summary_complete/`; the exact command plan
+and graph/checkpoint hashes are in its `status.json`.
 
 ## 3. Analysis plan: how to choose a better model defensibly
 

@@ -170,9 +170,14 @@ commands, repository or output artifacts.
   degree-deficit AUROC is 0.503996 on the internal test subset, while distance
   remains predictive (direction-free AP 0.746650). This is a feasibility audit,
   not evidence that the protocol is shortcut-free genome-wide.
-- [ ] Complete fold-A frozen H/R controls on SV and cCRE in both contexts.
-  The authenticated Temple job is running in a separate output root; no result
-  is reported until all strict and one-hop rows are present.
+- [x] Complete the exploratory fold-A frozen H/R controls on SV and cCRE in
+  both contexts. The authenticated Temple job finished all 11 commands; the
+  compact rows and paired trained-versus-random table are under
+  `results/v2_review_20260927/control_summary_complete/`. This is one
+  development fold, so it has no CI and does not establish genome-wide
+  superiority.
+- [ ] Complete a fresh multi-seed H/R control matrix on locked folds before any
+  final v2 promotion or superiority claim.
 - [ ] Run v2 training only after candidate and masking readiness gates pass.
 - [ ] Fix a validation-only selection protocol; no fold used to choose settings
   may be described as an untouched test. Existing explored v1 folds are disclosed.

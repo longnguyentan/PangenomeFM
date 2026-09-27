@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "fold": "fold_a",
+  "seed": 42,
+  "closure": "strict",
+  "checkpoint": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/random_init/strict.pt",
+  "checkpoint_sha256": "603bf984731e6f90df5f6e6f4890c9d6dbc9273876d387915d9e239a47391aae",
+  "manifest": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+  "node_labels": "/home/tuv43532/PangenomeFM/server_workspace/data/downstream/ccre/hprc_r2_screen_v4/node_labels.csv.gz",
+  "feature_cache": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+  "test_chromosomes": [
+    "chr1",
+    "chr11",
+    "chr16",
+    "chr21",
+    "chr6"
+  ],
+  "validation_chromosomes": [
+    "chr12",
+    "chr17",
+    "chr2",
+    "chr22",
+    "chr7"
+  ],
+  "n_labeled_nodes_total": 303425,
+  "n_labeled_nodes_embedded": 303423,
+  "embedding_coverage_fraction": 0.9999934085853176,
+  "feature_sets": {
+    "coordinate": "reference coordinate, node length, and constant orientation",
+    "sequence_kmer": "mono/di/tri-nucleotide composition; no graph adjacency",
+    "frozen_pangenomefm": "frozen topology-pretrained node embedding; current encoder has no nucleotide input",
+    "coordinate_plus_sequence_kmer": "C+S: coordinate and sequence-composition features; no topology embedding",
+    "coordinate_plus_frozen_pangenomefm": "C+T: coordinate and frozen topology embedding; no nucleotide input",
+    "sequence_plus_frozen_pangenomefm": "S+T: sequence composition and frozen topology embedding",
+    "coordinate_plus_sequence_plus_frozen_pangenomefm": "C+S+T: coordinate, sequence composition, and frozen topology embedding",
+    "frozen_sequence_fm": "S-FM: frozen pretrained sequence-model embedding only; no graph adjacency",
+    "coordinate_plus_frozen_sequence_fm": "C+S-FM: coordinate and frozen sequence-model embedding",
+    "frozen_sequence_fm_plus_frozen_pangenomefm": "S-FM+T: frozen sequence-model and topology embeddings",
+    "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm": "C+S-FM+T: coordinate, frozen sequence-model, and topology embeddings",
+    "topology_control": "H: handcrafted label-free local topology statistics only",
+    "coordinate_plus_topology_control": "C+H: coordinate and handcrafted topology statistics",
+    "coordinate_plus_sequence_kmer_plus_topology_control": "C+S+H: coordinate, sequence composition, handcrafted topology",
+    "coordinate_plus_sequence_kmer_plus_topology_control_plus_frozen_pangenomefm": "C+S+H+T: adds frozen PangenomeFM beyond handcrafted topology",
+    "coordinate_plus_frozen_sequence_fm_plus_topology_control": "C+S-FM+H: coordinate, frozen sequence model, handcrafted topology",
+    "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm": "C+S-FM+H+T: adds frozen PangenomeFM beyond handcrafted topology",
+    "graph": "global node degree only",
+    "structural": "coordinate, node length, degree, and orientation; excludes SR and reference identity",
+    "training_prevalence": "constant probability estimated from downstream training chromosomes",
+    "random_uniform": "seeded U(0,1) score independent of all inputs"
+  },
+  "feature_dimensions": {
+    "coordinate": 3,
+    "sequence_kmer": 86,
+    "frozen_pangenomefm": 48,
+    "coordinate_plus_sequence_kmer": 89,
+    "coordinate_plus_frozen_pangenomefm": 51,
+    "sequence_plus_frozen_pangenomefm": 134,
+    "coordinate_plus_sequence_plus_frozen_pangenomefm": 137,
+    "frozen_sequence_fm": 512,
+    "coordinate_plus_frozen_sequence_fm": 515,
+    "frozen_sequence_fm_plus_frozen_pangenomefm": 560,
+    "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm": 563,
+    "topology_control": 14,
+    "coordinate_plus_topology_control": 17,
+    "coordinate_plus_sequence_kmer_plus_topology_control": 103,
+    "coordinate_plus_sequence_kmer_plus_topology_control_plus_frozen_pangenomefm": 151,
+    "coordinate_plus_frozen_sequence_fm_plus_topology_control": 529,
+    "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm": 577,
+    "graph": 1,
+    "structural": 4,
+    "training_prevalence": 0,
+    "random_uniform": 0
+  },
+  "fairness_policy": "all feature sets use the identical embedded-node universe and chromosome split",
+  "upstream_leakage_control": "checkpoint pretraining excluded every downstream test chromosome",
+  "checkpoint_validation": {
+    "checkpoint_test_chromosomes": [
+      "chr1",
+      "chr11",
+      "chr16",
+      "chr21",
+      "chr6"
+    ],
+    "checkpoint_validation_chromosomes": [
+      "chr12",
+      "chr17",
+      "chr2",
+      "chr22",
+      "chr7"
+    ],
+    "checkpoint_closure": "strict",
+    "checkpoint_seed": 42
+  },
+  "canonical_candidate_audit": {
+    "canonical_conflict_policy": "exclude",
+    "slices_with_conflicting_pairs": 8,
+    "orientation_equivalent_conflicting_pairs": 9,
+    "conflicting_candidate_rows_excluded": 18,
+    "same_label_equivalent_rows_collapsed": 3
+  },
+  "canonical_conflict_policy": "exclude",
+  "canonical_conflict_interpretation": "all representations of a conflicting canonical identity are excluded before frozen embedding extraction; remaining same-label equivalents are collapsed",
+  "calibration_policy": "temperature and F1 threshold fit on validation chromosomes only",
+  "sequence_note": "PangenomeFM checkpoint itself has no nucleotide input; sequence is supplied only to explicit downstream baselines",
+  "modality_factorial": {
+    "C": "coordinate",
+    "S": "sequence_kmer",
+    "T": "frozen_pangenomefm",
+    "comparisons": [
+      "C",
+      "S",
+      "T",
+      "C+S",
+      "C+T",
+      "S+T",
+      "C+S+T"
+    ]
+  },
+  "external_sequence_cache": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+  "external_sequence_cache_audit": {
+    "schema_version": 1,
+    "status": "complete",
+    "generated_at": "2026-08-17T01:27:10+0000",
+    "output": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+    "output_sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de",
+    "target_caches": [
+      {
+        "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+        "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68",
+        "segids": 303425,
+        "unique_segids": 303425,
+        "new_union_segids": 303425
+      },
+      {
+        "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_hgsvc3_sv_features_20260809.npz",
+        "sha256": "111a7edb0fbd8bd57623233b24ca7ae4a7bf3f06b1c3b109ea713cc0aca478e9",
+        "segids": 167685,
+        "unique_segids": 167685,
+        "new_union_segids": 0
+      }
+    ],
+    "target_union_nodes": 303425,
+    "embedded_nodes": 303425,
+    "coverage_fraction": 1.0,
+    "embedding_dimension": 512,
+    "model_name": "InstaDeepAI/nucleotide-transformer-v2-50m-multi-species",
+    "resolved_revision": "81b29e5786726d891dbf929404ef20adca5b36f1",
+    "source_shards": [
+      {
+        "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_0.npz",
+        "sha256": "3246879a8548b1122866d73187a17334ac5ef092fbfd905f033e023f31cbbedc",
+        "audit_sha256": "48697d25c353dc38c97f72cf704a88310c0bdb1cfcc21ce4b4efea49110aa314"
+      },
+      {
+        "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_1.npz",
+        "sha256": "23429aeb755c99a27e6ae77dedb35d7f5b63721f2c4ae9152b10e40c315eb8e7",
+        "audit_sha256": "ab77707365a248f679c58e9d1522eb396068311af6017da64777ba2813b52ffe"
+      },
+      {
+        "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_2.npz",
+        "sha256": "ee923f4cdd29fcf45239ea3d62f92a6bb2d27881e8dc5bc74b72ac76ff356349",
+        "audit_sha256": "81b635f7a0a356f9db0a40cd361ac5bea01cb254a81d369a729230343be8694a"
+      },
+      {
+        "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_3.npz",
+        "sha256": "fcf01cf232555869b91a45cd6abdee06f08b1900a38074a43b8da9b107228724",
+        "audit_sha256": "7b8e235d6a7d2641cb8e9e98fcf484cb5f08e5a0686b5cff1ccb53cd7a77ea34"
+      }
+    ],
+    "fine_tuned": false,
+    "model_parameters_frozen": true,
+    "downstream_label_access": "none",
+    "target_selection_note": "target caches contribute segid arrays only; no label or split array is read",
+    "scope": "complete_target_union",
+    "wall_seconds": 41.91581995040178
+  },
+  "minimum_external_coverage": 1.0,
+  "n_embedded_before_external_filter": 303423,
+  "external_coverage_fraction": 1.0,
+  "max_slices": null,
+  "wall_seconds": 211.38716812059283
+}
