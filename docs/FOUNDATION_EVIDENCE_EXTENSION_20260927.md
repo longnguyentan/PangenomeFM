@@ -26,7 +26,7 @@ graph features. More positive benchmarks cannot substitute for this comparison.
 
 - Experimental units: cCRE loci or assembly-derived INS/DEL events. The original
   SV endpoint is insertion versus deletion, not detection or genotypability.
-- Use all original five chromosome folds, seeds 42/123/456, and strict/one-hop
+- Use all original five chromosome folds, seeds 42/314159/20260806, and strict/one-hop
   contexts. Match each random initialization seed to its trained control.
 - Both encoders and the exact NT revision remain frozen. Fit the original
   standardized logistic probes using original train/validation/test partitions.
