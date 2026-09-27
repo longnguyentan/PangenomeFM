@@ -330,3 +330,38 @@ The examined HPRC release summary reports self-genotyping, while the HGSVC3
 workflow describes leave-one-out concordance without a located public table of
 per-variant outcomes. Self-genotyping/FILTER flags are not the requested measured
 leave-one-out labels. No substitute performance result is claimed.
+
+## Sequence-cache coverage correction and repair
+
+A fresh full-file audit found **751,237 canonical graph segments**, versus
+303,425 contiguous IDs in the manuscript NT cache. The previously discussed
+305,070 figure describes benchmark coverage, not the entire processed graph.
+The attempted full-graph completion was deliberately interrupted after this
+audit exposed 447,812 missing entries. Its logs/receipt are retained under
+`whole_graph_nt/`; no completed whole-graph cache is claimed.
+
+The completion tool now supports the exact union of unmasked link endpoints in
+the canonical benchmark manifest, using the existing global-index/link mapper.
+It includes all chromosomes and alternative nodes, retains all existing cache
+entries, and reads no labels. A 10,000-new-segment guard refuses unexpectedly
+broad inference before loading the sequence model. The native frozen NT
+preparation script, pinned revision, pooling, base sampling and token limits are
+reused; cached weights are required, and the original cache is never overwritten.
+
+Cache merging now rejects different graph/preprocessing contracts, and can
+recover those contracts from the original merged cache's checksum-verified
+source-shard receipts. Six cache tests pass locally and the previous five pass
+on the server. The full suite before the scope correction passed 330 tests.
+
+```bash
+PYTHONPATH=src:. python scripts/server/complete_node_sequence_fm_cache.py \
+  --full-segments /home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz \
+  --existing-cache /home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz \
+  --manifest /home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv \
+  --context 1hop --out-dir results/foundation_evidence_20260927/benchmark_nt \
+  --device cuda --execute
+```
+
+This supports a future controlled sequence-conditioned graph experiment. Such
+a model must be described as sequence-conditioned, and compared with matched
+raw-input and random-encoder controls; it is not the existing topology-only T.

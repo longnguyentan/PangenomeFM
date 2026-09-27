@@ -11,28 +11,56 @@ import subprocess
 import sys
 
 import numpy as np
+import pandas as pd
 
+from graph.slicing import build_global_index, map_links_to_segids
 from scripts.server.merge_node_sequence_fm_caches import sequence_contract
 from scripts.server.prepare_node_sequence_fm_cache import iter_segment_rows, segment_id, sha256_file
 
 
-def graph_targets(full_segments: Path, cached_ids: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def graph_targets(full_segments: Path, cached_ids: np.ndarray,
+                  required_ids: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
     if len(np.unique(cached_ids)) != len(cached_ids):
         raise ValueError("Duplicate identifiers in existing sequence cache")
     cached = set(map(int, cached_ids))
+    required = None if required_ids is None else set(map(int, required_ids)) | cached
     ids, missing = [], []
     for index, row in enumerate(iter_segment_rows(full_segments)):
         segid = segment_id(row, index)
         if segid != index:
             raise ValueError("Graph name-derived IDs differ from canonical row indices")
         ids.append(segid)
-        if segid not in cached:
+        if segid not in cached and (required is None or segid in required):
             if not row["seq"] or row["seq"] == "*":
                 raise ValueError(f"Missing-cache segment {segid} has no sequence")
             missing.append(segid)
     if not ids or cached - set(ids):
         raise ValueError("Empty graph or existing cache IDs outside canonical graph")
-    return np.asarray(ids, dtype=np.int64), np.asarray(missing, dtype=np.int64)
+    if required is not None and required - set(ids):
+        raise ValueError("Requested IDs outside canonical graph")
+    return np.asarray(ids if required is None else sorted(required), dtype=np.int64), np.asarray(missing, dtype=np.int64)
+
+
+def benchmark_targets(full_segments: Path, manifest: Path, context: str) -> tuple[np.ndarray, dict]:
+    """Use native unmasked link endpoints, including every chromosome and alternative node."""
+    names = pd.read_csv(full_segments, usecols=["name"], dtype={"name": "string"})
+    seg_index, _ = build_global_index(names)
+    if len(seg_index) != len(names):
+        raise ValueError("Duplicate graph names would change row-derived sequence-cache IDs")
+    rows = pd.read_csv(manifest)
+    rows = rows.loc[rows.closure.eq(context)]
+    if rows.empty:
+        raise ValueError("No benchmark windows for requested context")
+    wanted = set()
+    for row in rows.itertuples(index=False):
+        links = pd.read_csv(row.links_path, usecols=["from_seg", "to_seg"])
+        source, target = map_links_to_segids(links, seg_index)
+        wanted.update(source.tolist())
+        wanted.update(target.tolist())
+    return np.asarray(sorted(wanted), dtype=np.int64), dict(
+        graph_segments=len(seg_index), benchmark_segments=len(wanted), benchmark_windows=len(rows),
+        manifest=str(manifest.resolve()), manifest_sha256=sha256_file(manifest), context=context,
+        target_selection="existing-cache union native unmasked benchmark link endpoints; no labels")
 
 
 def main() -> None:
@@ -42,6 +70,11 @@ def main() -> None:
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--batch-size", type=int, default=16)
+    parser.add_argument("--manifest", type=Path,
+                        help="Complete only the native benchmark-node union, retaining all existing entries")
+    parser.add_argument("--context", choices=["strict", "1hop"], default="1hop")
+    parser.add_argument("--maximum-new-segments", type=int, default=10000,
+                        help="Refuse unexpectedly broad inference before loading the model")
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args()
     if args.out_dir.exists():
@@ -49,12 +82,14 @@ def main() -> None:
     contract = sequence_contract(args.existing_cache)
     if sha256_file(args.full_segments) != contract["full_segments_sha256"]:
         raise ValueError("Sequence-cache source differs from canonical graph")
+    required, scope = benchmark_targets(args.full_segments, args.manifest, args.context) if args.manifest else (None, {})
     with np.load(args.existing_cache, allow_pickle=False) as cache:
-        ids, missing = graph_targets(args.full_segments, cache["segid"])
+        ids, missing = graph_targets(args.full_segments, cache["segid"], required)
     args.out_dir.mkdir(parents=True)
     np.savez(args.out_dir / "all_targets.npz", segid=ids)
     np.savez(args.out_dir / "missing_targets.npz", segid=missing)
-    partial, complete = args.out_dir / "missing_nt.npz", args.out_dir / "whole_graph_nt.npz"
+    partial = args.out_dir / "missing_nt.npz"
+    complete = args.out_dir / ("benchmark_nt.npz" if args.manifest else "whole_graph_nt.npz")
     commands = []
     if len(missing):
         commands.append([sys.executable, "scripts/server/prepare_node_sequence_fm_cache.py",
@@ -66,7 +101,8 @@ def main() -> None:
     commands.append([sys.executable, "scripts/server/merge_node_sequence_fm_caches.py", "--shard",
                      str(args.existing_cache), *([str(partial)] if len(missing) else []),
                      "--target-cache", str(args.out_dir / "all_targets.npz"), "--output", str(complete)])
-    receipt = dict(status="planned", graph_segments=len(ids), missing_segments=len(missing),
+    receipt = dict(status="planned", graph_segments=scope.get("graph_segments", len(ids)),
+                   target_segments=len(ids), missing_segments=len(missing), target_scope=scope,
                    existing_coverage=float((len(ids) - len(missing)) / len(ids)),
                    contract=contract, commands=commands, existing_cache_modified=False,
                    model_downloads_allowed=False, biological_labels_used=False)
@@ -78,6 +114,10 @@ def main() -> None:
         temp.replace(status_path)
 
     save()
+    if len(missing) > args.maximum_new_segments:
+        receipt.update(status="stopped_scope_guard", error=f"{len(missing)} new segments exceeds {args.maximum_new_segments}")
+        save()
+        raise ValueError(receipt["error"])
     if args.execute:
         env = dict(os.environ, PYTHONPATH="src:.", HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
         try:
@@ -87,8 +127,9 @@ def main() -> None:
                 with (args.out_dir / f"command_{index}.log").open("w") as log:
                     subprocess.run(command, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
             receipt.update(status="complete", output=str(complete))
-        except Exception as error:
-            receipt.update(status="failed", error=str(error))
+        except BaseException as error:
+            receipt.update(status="cancelled" if isinstance(error, KeyboardInterrupt) else "failed",
+                           error=f"{type(error).__name__}: {error}")
             raise
         finally:
             save()

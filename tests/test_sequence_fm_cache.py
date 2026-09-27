@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 from scripts.server import merge_node_sequence_fm_caches as merge
-from scripts.server.complete_node_sequence_fm_cache import graph_targets
+from scripts.server.complete_node_sequence_fm_cache import graph_targets, benchmark_targets
 from scripts.server.prepare_node_sequence_fm_cache import (
     balanced_sequence,
     iter_segment_rows,
@@ -128,6 +128,21 @@ def test_completion_preserves_canonical_ids_and_refuses_missing_sequences(tmp_pa
     path.write_text("name,seq\ns2,ACGT\n")
     with pytest.raises(ValueError, match="row indices"):
         graph_targets(path, np.array([]))
+
+
+def test_benchmark_completion_uses_native_link_union_without_unrelated_nodes(tmp_path):
+    graph = tmp_path / "segments.csv"
+    graph.write_text("name,seq\ns1,A\ns2,G\ns3,C\ns4,*\n")
+    links = tmp_path / "links.csv"
+    links.write_text("from_seg,to_seg\ns1,s3\n")
+    manifest = tmp_path / "manifest.csv"
+    manifest.write_text(f"closure,links_path\n1hop,{links}\n")
+    needed, scope = benchmark_targets(graph, manifest, "1hop")
+    np.testing.assert_array_equal(needed, [0, 2])
+    assert scope["graph_segments"] == 4 and scope["benchmark_segments"] == 2
+    ids, missing = graph_targets(graph, np.array([0, 1]), needed)
+    np.testing.assert_array_equal(ids, [0, 1, 2])
+    np.testing.assert_array_equal(missing, [2])
 
 
 def test_merge_rejects_same_model_with_different_preprocessing(tmp_path, monkeypatch):
