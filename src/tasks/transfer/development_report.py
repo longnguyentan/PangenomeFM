@@ -12,6 +12,7 @@ import pandas as pd
 from tasks.entex.prepare import fingerprint
 from tasks.transfer.hr_control_report import audited_run
 from tasks.transfer.report import save_figure
+from scripts.summarize_v2_review_controls import _feature_names
 
 MODELS = ["v1", "random", "v2", "v2_random"]
 FEATURES = ["cs", "csh", "cst", "csht"]
@@ -104,6 +105,33 @@ def difference_figure(differences: pd.DataFrame, out: Path) -> None:
     plt.close(fig)
 
 
+def stratum_contrasts(frame: pd.DataFrame) -> pd.DataFrame:
+    """Retain every inherited bin, including undefined one-class and sparse bins."""
+    rows = []
+    for (family, value), group in frame.groupby(["stratum", "stratum_value"]):
+        if (group.duplicated(["model", "feature"]).any()
+                or set(group[["model", "feature"]].itertuples(index=False, name=None)) != set(product(MODELS, FEATURES))):
+            raise ValueError("Incomplete stratum comparison matrix")
+        if group.n.nunique() != 1 or group.positive_fraction.nunique() != 1:
+            raise ValueError("Stratum counts or prevalence changed")
+        for metric in ["auprc", "auroc"]:
+            indexed = group.set_index(["model", "feature"])[metric]
+            for base in ["cs", "csh"]:
+                if group.loc[group.feature.eq(base), metric].nunique(dropna=False) != 1:
+                    raise ValueError("Stratum non-embedding baseline changed")
+            for feature in ["cst", "csht"]:
+                for control in ["v1", "v2_random"]:
+                    left, right = indexed["v2", feature], indexed[control, feature]
+                    if pd.isna(left) != pd.isna(right):
+                        raise ValueError("Asymmetric undefined stratum comparison")
+                    rows.append(dict(stratum=family, stratum_value=value, n=int(group.n.iloc[0]),
+                                     positive_prevalence=float(group.positive_fraction.iloc[0]),
+                                     feature=feature, metric=metric, comparison="v2_minus_" + control,
+                                     v2=float(left), control=float(right), difference=float(left - right),
+                                     scope="single-fold development validation; no CI"))
+    return pd.DataFrame(rows)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
@@ -132,6 +160,17 @@ def main() -> None:
     args.out_dir.mkdir(parents=True, exist_ok=False)
     frame.to_csv(args.out_dir / "audited_per_run.csv", index=False)
     differences.to_csv(args.out_dir / "paired_differences.csv", index=False)
+    strata = []
+    for model in MODELS:
+        source = reference_root if model in ["v1", "random"] else args.root
+        table = pd.read_csv(source / "probes" / model / "sv/1hop/stratified_metrics.csv", float_precision="round_trip")
+        table = table.loc[table.stratum.isin(["length_bin", "allele_frequency_bin", "chromosome"])].copy()
+        table["feature"] = table.feature_set.map({raw: short for short, raw in _feature_names("sv").items()})
+        table["model"] = model
+        strata.append(table.loc[table.feature.notna()])
+    strata = pd.concat(strata, ignore_index=True)
+    strata.to_csv(args.out_dir / "sv_validation_strata_absolute.csv", index=False)
+    stratum_contrasts(strata).to_csv(args.out_dir / "sv_validation_strata_differences.csv", index=False)
     (args.out_dir / "development_gate.json").write_text(json.dumps(development_gate(frame), indent=2) + "\n")
     difference_figure(differences, args.out_dir)
     (args.out_dir / "audit.json").write_text(json.dumps(dict(

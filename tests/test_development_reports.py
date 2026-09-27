@@ -3,7 +3,7 @@ from itertools import product
 import pandas as pd
 import pytest
 
-from tasks.transfer.development_report import MODELS, FEATURES, contrasts, validate_development_pairs, development_gate
+from tasks.transfer.development_report import MODELS, FEATURES, contrasts, validate_development_pairs, development_gate, stratum_contrasts
 from tasks.transfer.junction_pilot_report import validation_predictions
 
 
@@ -42,6 +42,21 @@ def test_development_gate_requires_both_contexts_and_random_advantage():
     frame.loc[frame.task.eq("ccre") & frame.model.eq("v2") & frame.feature.eq("cst"), "auprc"] = 0.6999
     row = next(row for row in development_gate(frame)["checks"] if row["task"] == "ccre")
     assert row["within_0_005_of_v1"] and not row["beats_random"]
+
+
+def test_strata_reject_prevalence_mismatch_and_retain_undefined_bins():
+    frame = development_frame().query('task == "sv"').copy()
+    frame["stratum"], frame["stratum_value"] = "length_bin", "bp[50,100)"
+    frame["n"], frame["positive_fraction"] = 20, 0.5
+    assert len(stratum_contrasts(frame)) == 8
+    bad = frame.copy()
+    bad.loc[bad.index[0], "positive_fraction"] = 0.4
+    with pytest.raises(ValueError, match="prevalence changed"):
+        stratum_contrasts(bad)
+    frame["positive_fraction"] = 1
+    frame[["auprc", "auroc"]] = float("nan")
+    result = stratum_contrasts(frame)
+    assert len(result) == 8 and result.difference.isna().all()
 
 
 def test_junction_identity_uses_endpoints_and_labels_and_rejects_test_rows():

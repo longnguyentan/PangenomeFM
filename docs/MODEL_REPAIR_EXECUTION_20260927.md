@@ -478,3 +478,20 @@ disjoint shards, and exact target coverage before declaring completion.
 Final local verification after these changes: **335 tests passed**, with existing
 non-fatal library warnings; focused changed-file Ruff and `git diff --check` pass.
 The other LLM's main checkout and historical result directories remain intact.
+
+### Where the SV development improvement occurs
+
+The inherited length/frequency/chromosome bins are retained unchanged in
+`sv_validation_strata_absolute.csv` and `sv_validation_strata_differences.csv`.
+Counts, prevalence, paired availability and non-embedding baselines are checked
+within each bin. The table includes every bin, including undefined one-class
+bins. No confidence intervals are inferred from this one development fold.
+
+For **C+S+H+embedding**, trained v2 minus its random control is +0.008372 for
+50–100 bp variants (n=15,326), +0.004538 for 100–500 bp (n=19,281), +0.000805
+for 500–1,000 bp (n=3,194), and +0.001428 for 1–10 kb (n=4,713). It is negative
+for 10–100 kb (-0.017276; n=662) and 100 kb–1 Mb (-0.043284; n=37).
+The >=1 Mb bin has only four insertions and no meaningful binary ranking metric.
+The three lower-frequency bins show +0.003082 to +0.004681; AF >=0.5 shows
+-0.000389. These observations support a limited, size-dependent development
+improvement, not universal superiority or a claim about rare/large SVs.
