@@ -50,12 +50,36 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out-plan", type=Path, required=True)
     ap.add_argument("--out-root", type=Path, required=True)
-    ap.add_argument("--kind", choices=["hg008", "scaling-probes"], default="hg008")
+    ap.add_argument("--kind", choices=["hg008", "scaling-probes", "hr-controls"], default="hg008")
     ap.add_argument("--checkpoint-root", type=Path)
+    ap.add_argument("--main-checkout", type=Path)
+    ap.add_argument("--topology-control-cache", type=Path)
     args = ap.parse_args()
     config = json.loads(Path("configs/entex_v1.json").read_text())
     manuscript = json.loads(Path(config["manuscript_config"]).read_text())
     jobs = build_jobs(manuscript)
+    if args.kind == "hr-controls":
+        if args.main_checkout is None or args.topology_control_cache is None:
+            ap.error("H/R controls require --main-checkout and --topology-control-cache")
+        pairs = sorted({(job.fold, job.seed) for job in jobs})
+        tasks = [dict(
+            id=f"hr_{fold}_{seed}", stage=f"worker_{index % 2}", resource="gpu", cost="medium",
+            description="Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+            requires_paths=[str(args.main_checkout), str(args.topology_control_cache)],
+            command=["python", "scripts/server/run_v2_review_controls.py",
+                     "--main-checkout", str(args.main_checkout),
+                     "--topology-control-cache", str(args.topology_control_cache),
+                     "--fold", fold, "--seed", str(seed),
+                     "--out-root", str(args.out_root / fold / f"seed_{seed}")],
+        ) for index, (fold, seed) in enumerate(pairs)]
+        args.out_plan.parent.mkdir(parents=True, exist_ok=True)
+        args.out_plan.write_text(json.dumps(dict(
+            schema_version=1, run_name="hr_controls_20260927", tasks=tasks,
+            scope="Exploratory retrospective controls; these chromosome folds were previously inspected",
+            initialization_seeds=sorted({seed for _, seed in pairs}),
+            encoder_policy="Frozen trained and random; no biological label gradients",
+        ), indent=2) + "\n")
+        return
     if args.kind == "scaling-probes":
         if args.checkpoint_root is None:
             ap.error("--checkpoint-root is required for scaling probes")

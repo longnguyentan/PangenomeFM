@@ -1,0 +1,388 @@
+{
+  "schema_version": 1,
+  "run_name": "hr_controls_20260927",
+  "tasks": [
+    {
+      "id": "hr_fold_a_42",
+      "stage": "worker_0",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "42",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_a/seed_42"
+      ]
+    },
+    {
+      "id": "hr_fold_a_314159",
+      "stage": "worker_1",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "314159",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_a/seed_314159"
+      ]
+    },
+    {
+      "id": "hr_fold_a_20260806",
+      "stage": "worker_0",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_a",
+        "--seed",
+        "20260806",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_a/seed_20260806"
+      ]
+    },
+    {
+      "id": "hr_fold_b_42",
+      "stage": "worker_1",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "42",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_b/seed_42"
+      ]
+    },
+    {
+      "id": "hr_fold_b_314159",
+      "stage": "worker_0",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "314159",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_b/seed_314159"
+      ]
+    },
+    {
+      "id": "hr_fold_b_20260806",
+      "stage": "worker_1",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_b",
+        "--seed",
+        "20260806",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_b/seed_20260806"
+      ]
+    },
+    {
+      "id": "hr_fold_c_42",
+      "stage": "worker_0",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "42",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_c/seed_42"
+      ]
+    },
+    {
+      "id": "hr_fold_c_314159",
+      "stage": "worker_1",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "314159",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_c/seed_314159"
+      ]
+    },
+    {
+      "id": "hr_fold_c_20260806",
+      "stage": "worker_0",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_c",
+        "--seed",
+        "20260806",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_c/seed_20260806"
+      ]
+    },
+    {
+      "id": "hr_fold_d_42",
+      "stage": "worker_1",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "42",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_d/seed_42"
+      ]
+    },
+    {
+      "id": "hr_fold_d_314159",
+      "stage": "worker_0",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "314159",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_d/seed_314159"
+      ]
+    },
+    {
+      "id": "hr_fold_d_20260806",
+      "stage": "worker_1",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_d",
+        "--seed",
+        "20260806",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_d/seed_20260806"
+      ]
+    },
+    {
+      "id": "hr_fold_e_42",
+      "stage": "worker_0",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "42",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_e/seed_42"
+      ]
+    },
+    {
+      "id": "hr_fold_e_314159",
+      "stage": "worker_1",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "314159",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_e/seed_314159"
+      ]
+    },
+    {
+      "id": "hr_fold_e_20260806",
+      "stage": "worker_0",
+      "resource": "gpu",
+      "cost": "medium",
+      "description": "Frozen trained/random SV and cCRE controls in both contexts; all original folds retained as exploratory reuse",
+      "requires_paths": [
+        "/home/tuv43532/PangenomeFM",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz"
+      ],
+      "command": [
+        "python",
+        "scripts/server/run_v2_review_controls.py",
+        "--main-checkout",
+        "/home/tuv43532/PangenomeFM",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--fold",
+        "fold_e",
+        "--seed",
+        "20260806",
+        "--out-root",
+        "results/foundation_evidence_20260927/hr_controls/fold_e/seed_20260806"
+      ]
+    }
+  ],
+  "scope": "Exploratory retrospective controls; these chromosome folds were previously inspected",
+  "initialization_seeds": [
+    42,
+    314159,
+    20260806
+  ],
+  "encoder_policy": "Frozen trained and random; no biological label gradients"
+}

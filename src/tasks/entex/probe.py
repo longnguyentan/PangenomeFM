@@ -22,6 +22,7 @@ from tasks.entex.mapping import aggregate_features
 from tasks.entex.prepare import fingerprint
 from tasks.entex.cache import cached_topology
 from tasks.entex.sensitivity import match_exposure
+from tasks.entex.snv import ASSAYS
 
 FEATURES = [
     "coordinate",
@@ -125,7 +126,7 @@ def main() -> None:
     elif args.task == "p2":
         if (
             args.sensitivity != "primary"
-            or args.subtask not in {"ctcf", "h3k27ac", "rna"}
+            or args.subtask not in ASSAYS
             or args.measurements is None
         ):
             raise ValueError("P2 requires assay subtask and measurement cache")

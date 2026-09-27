@@ -465,7 +465,7 @@ def test_tissue_macro_is_paired_before_bootstrap():
         macro_runs(frame.iloc[:3], ["x", "y"])
 
 
-@pytest.mark.parametrize("assay", ["ctcf", "rna"])
+@pytest.mark.parametrize("assay", ["ctcf", "h3k27ac", "rna", "atac", "h3k4me3", "h3k27me3"])
 def test_snv_measurements_keep_donor_tissue_occurrences(assay):
     from tasks.entex.snv import ASSAYS, clean_measurements
 

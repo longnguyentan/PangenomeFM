@@ -25,6 +25,7 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--contexts", nargs="+", choices=["strict", "1hop"], default=["strict", "1hop"])
     ap.add_argument("--device", default="cuda")
+    ap.add_argument("--topology-control-cache", type=Path)
     args = ap.parse_args()
     out = args.out_root.resolve()
     if out.exists():
@@ -40,10 +41,22 @@ def main() -> int:
     fold_config = json.loads(Path("configs/server_full_multicohort_20260806.json").read_text())
     fold = next(f for f in fold_config["rotating_chromosome_folds"] if f["name"] == args.fold)
     nt = sw / "results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz"
-    topology = out / "topology_control.npz"
-    commands = [[sys.executable, "-m", "tasks.transfer.topology_controls",
-                 "--full-segments", str(graph), "--full-links", str(graph.with_name("full_links.csv.gz")),
-                 "--target-cache", str(nt), "--out", str(topology)]]
+    topology = args.topology_control_cache.resolve() if args.topology_control_cache else out / "topology_control.npz"
+    commands = []
+    topology_provenance = None
+    if args.topology_control_cache:
+        topology_provenance = json.loads(Path(str(topology) + ".audit.json").read_text())
+        if (not topology.is_file() or topology_provenance.get("status") != "complete"
+                or topology_provenance.get("processing_version") != 2
+                or topology_provenance.get("full_segments_sha256") != digest
+                or topology_provenance.get("downstream_label_access") != "none"):
+            raise ValueError("Shared H cache provenance does not match the reviewed graph/protocol")
+        with topology.open("rb") as handle:
+            topology_provenance["cache_sha256"] = hashlib.file_digest(handle, "sha256").hexdigest()
+    else:
+        commands.append([sys.executable, "-m", "tasks.transfer.topology_controls",
+                         "--full-segments", str(graph), "--full-links", str(graph.with_name("full_links.csv.gz")),
+                         "--target-cache", str(nt), "--out", str(topology)])
     for context in args.contexts:
         root = sw / f"results/full_multicohort_server_20260806/rotating_folds/hprc_r2/{args.fold}/seed_{args.seed}/{context}"
         matches = sorted(root.glob(f"run_*/ckpt_{context}__*.pt"))
@@ -76,6 +89,7 @@ def main() -> int:
             "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
             "graph_sha256": digest, "fold": fold, "seed": args.seed,
             "random_initialization_seed": args.seed, "encoders_frozen": True,
+            "topology_control_cache": str(topology), "topology_control_provenance": topology_provenance,
             "random_outputs_T_column_means": "R; random encoder, never trained topology",
             "commands": commands, "completed_commands": 0}
     status_path = out / "status.json"

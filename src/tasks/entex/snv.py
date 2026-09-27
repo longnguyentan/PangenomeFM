@@ -17,6 +17,9 @@ ASSAYS = {
     "ctcf": "TF-ChIP-seq_CTCF",
     "h3k27ac": "HM-ChIP-seq_H3K27ac",
     "rna": "RNA-seq",
+    "atac": "ATAC-seq",
+    "h3k4me3": "HM-ChIP-seq_H3K4me3",
+    "h3k27me3": "HM-ChIP-seq_H3K27me3",
 }
 
 
@@ -119,6 +122,10 @@ def main() -> None:
             chromosomes=frame.chrom.value_counts().to_dict(),
             tissues=frame.tissue.value_counts().to_dict(),
             donors=frame.donor.value_counts().to_dict(),
+            chromosome_class_counts=(
+                frame.groupby(["chrom", "label"]).size().unstack(fill_value=0)
+                .rename(columns={0: "negative", 1: "positive"}).to_dict("index")
+            ),
         )
     audit["status"] = "complete"
     (args.out_dir / "audit.json").write_text(json.dumps(audit, indent=2) + "\n")
