@@ -1,6 +1,6 @@
 # PangenomeFM experiment and manuscript checklist
 
-Last verified: 26 September 2026. Owner: this research task. A checked item means
+Last verified: 27 September 2026. Owner: this research task. A checked item means
 its stated scope is complete, not that its scientific hypothesis was supported.
 Server: existing Temple checkout; canonical graph and completed results are preserved.
 
@@ -165,8 +165,14 @@ commands, repository or output artifacts.
   cycle regression added separately). No biological encoder fine-tuning.
 - [x] Run initial canonical HPRC audit: whole-span matching loses too many candidates;
   save the result and replace it with admissible balanced cycles, not looser labels.
-- [ ] Complete and review cycle-sampler audit, retained counts and residual cues.
+- [x] Complete and review cycle-sampler audit, retained counts and residual cues.
+  The bounded 20-slice audit retains 1,782 positive and 1,782 negative cycles;
+  degree-deficit AUROC is 0.503996 on the internal test subset, while distance
+  remains predictive (direction-free AP 0.746650). This is a feasibility audit,
+  not evidence that the protocol is shortcut-free genome-wide.
 - [ ] Complete fold-A frozen H/R controls on SV and cCRE in both contexts.
+  The authenticated Temple job is running in a separate output root; no result
+  is reported until all strict and one-hop rows are present.
 - [ ] Run v2 training only after candidate and masking readiness gates pass.
 - [ ] Fix a validation-only selection protocol; no fold used to choose settings
   may be described as an untouched test. Existing explored v1 folds are disclosed.
