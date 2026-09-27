@@ -1,0 +1,70 @@
+{
+  "artifact_type": "analysis_plan",
+  "version": 1,
+  "objective": "Test whether preserving independently pretrained topology and NT-conditioned latent spaces retains the observed SV and cCRE validation benefits.",
+  "starting_point": {
+    "graph": "Exact manuscript HPRC R2 SV graph; no release replacement",
+    "topology_branch": "Geometry-matched junction repair; bidirectional_default selected by reconstruction validation",
+    "sequence_branch": "Same repaired objective; frozen NT-v2 50M inputs; bidirectional_linear selected by reconstruction validation",
+    "reason_for_new_comparison": "NT-conditioned cCRE AP exceeds topology-only v2, while its SV AP is worse",
+    "previous_biological_validation_seen": true
+  },
+  "units": {
+    "pretraining": "Oriented graph segments and degree-balanced, geometry-matched junction candidates",
+    "ccre": "Canonical labeled graph segment",
+    "sv": "HGSVC3 insertion/deletion example with paired breakend segments",
+    "partition": "Fold A, seed 42, one-hop; existing chromosome split; development validation only"
+  },
+  "representation": {
+    "definition": "Ordered concatenation [48D topology, 48D sequence-conditioned], both frozen",
+    "fusion_training": "none",
+    "arms": ["T_Q", "T_Rq", "Rt_Q", "Rt_Rq"],
+    "controls": "Same 96 dimensions, retained windows, canonical identities and occurrence counts in every arm",
+    "biological_probe": "Existing standardized logistic probe and unchanged hyperparameter/calibration policy",
+    "feature_sets": ["C+S", "C+S+H", "C+S+E", "C+S+H+E"]
+  },
+  "endpoints": {
+    "primary": "Validation AUPRC for SV insertion/deletion and binary cCRE",
+    "comparisons": [
+      "T_Q minus each matched-dimension partial/random arm",
+      "T_Q minus topology-only v2 and NT-conditioned single branches",
+      "Repeat contrasts after C+S+H"
+    ],
+    "secondary": ["AUROC", "balanced accuracy", "F1", "prevalence", "all existing SV strata"],
+    "inference": "One development fold/seed: point estimates only; no confirmatory CI or p-value"
+  },
+  "coordinate_ablation": {
+    "question": "Does NT-conditioned junction prediction benefit from the graph-message stream?",
+    "native_flag": "--stream_mode coordinate",
+    "remaining_inputs": "Same 519 inputs including visible degree; coordinate attention remains. This is not a graph-free representation.",
+    "head": "Same selected linear interaction head",
+    "controls": ["trained coordinate encoder", "matched frozen random coordinate encoder"],
+    "budget": "Same maximum 10 epochs, patience 3, seed 42, candidates and partitions",
+    "selection_metric": "Window-macro validation AUROC; report pooled AUPRC as well"
+  },
+  "validity_gates": [
+    "Both branch checkpoints must match requested held-out and validation chromosomes, context and seed",
+    "Require exact branch segment identities, occurrence counts and extraction policy; reject silent intersections",
+    "Require identical biological example identities, labels and C+S/C+S+H predictions across all models",
+    "NT model and graph encoders remain frozen during every biological probe",
+    "Coordinate ablation must retain exactly the native candidate identities, NT cache and random initial weights",
+    "No test-chromosome scoring, biological-label feature selection, new tissue selection or matching-bin changes"
+  ],
+  "decision_rule": {
+    "retain_candidate": "T_Q improves on Rt_Rq and both partial-random arms on both biological tasks after C+S+H, and remains within 0.005 AP of the better previously observed single branch on each task",
+    "if_failed": "Report the failed contrasts and retain distinct task-specific candidates; do not expand a failing architecture to a full matrix",
+    "if_passed": "Freeze this architecture specification, then evaluate an independently specified replication; one fold does not establish superiority",
+    "strict_context": "Still ineligible under current geometry matching; do not silently relax the reconstruction protocol"
+  },
+  "implementation_requirements": [
+    "Reuse native extractor and probes, adding optional companion checkpoint only",
+    "Store immutable command/checkpoint/resource receipts and all favorable and unfavorable results",
+    "Save exact source paths and machine-readable comparisons"
+  ],
+  "limitations": [
+    "Adaptively motivated development experiment; validation has already informed the design",
+    "Concatenation is a control and candidate representation, not a standalone novelty claim",
+    "No guaranteed performance improvement or journal acceptance",
+    "Measured genotypability outcomes and path correspondence remain external data requirements"
+  ]
+}

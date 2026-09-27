@@ -21,10 +21,13 @@ def test_parallel_probes_wait_for_cache_and_use_distinct_gpus(tmp_path, monkeypa
     old.touch()
     checkpoint = tmp_path / "candidate.pt"
     checkpoint.touch()
+    companion = tmp_path / "companion.pt"
+    companion.touch()
     monkeypatch.setattr("sys.argv", ["runner", "--main-checkout", str(tmp_path / "main"),
         "--out-root", str(tmp_path / "out"), "--contexts", "1hop", "--validation-only",
         "--candidate-checkpoint", f"v2={checkpoint}", "--candidate-checkpoint", f"v2_random={checkpoint}",
         "--models", "v2", "v2_random", "--probe-gpus", "1", "3",
+        "--companion-checkpoint", f"v2={companion}",
         "--extraction-candidate-policy", "manuscript"])
     monkeypatch.setattr(runner.subprocess, "check_output", lambda *a, **kw: "test-commit")
     cache_ready, active, seen = [], set(), []
@@ -36,6 +39,8 @@ def test_parallel_probes_wait_for_cache_and_use_distinct_gpus(tmp_path, monkeypa
             return
         assert cache_ready and "--validation-only" in command
         assert command[command.index("--extraction-candidate-policy") + 1] == "manuscript"
+        if "--companion-checkpoint" in command:
+            assert command[command.index("--companion-checkpoint") + 1] == str(companion)
         gpu = env["CUDA_VISIBLE_DEVICES"]
         with lock:
             assert gpu not in active
@@ -51,5 +56,6 @@ def test_parallel_probes_wait_for_cache_and_use_distinct_gpus(tmp_path, monkeypa
     receipt = json.loads((tmp_path / "out/status.json").read_text())
     assert receipt["status"] == "complete" and receipt["completed_commands"] == 5
     assert receipt["completed_command_indices"] == list(range(5))
+    assert receipt["companion_checkpoints"] == {"v2": str(companion)}
     assert set(seen) == {"1", "3"} and len(seen) == 4
     assert len(list(Path("out").glob("command_*.log"))) == 5

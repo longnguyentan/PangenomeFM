@@ -86,6 +86,31 @@ def _build_labels(
     return y, class_names_for_scheme(scheme), describe_scheme(scheme)
 
 
+def concatenate_frozen_branches(branches: list[tuple], checkpoints: list[Path]):
+    """Preserve both latent spaces; refuse silent intersections of mapped loci."""
+    from tasks.entex.prepare import fingerprint
+
+    if len(branches) != 2 or len(checkpoints) != 2:
+        raise ValueError('The prespecified composite has exactly two branches')
+    primary, counts, audit = branches[0]
+    companion, other_counts, other_audit = branches[1]
+    if not primary or set(primary) != set(companion) or counts != other_counts:
+        raise ValueError('Frozen branches differ in segment universe or occurrence counts')
+    for key in ['retained_slices', 'extraction_candidate_policy', 'canonical_conflict_policy']:
+        if audit[key] != other_audit[key]:
+            raise ValueError(f'Frozen branch extraction policy differs: {key}')
+    dimensions = [len(next(iter(values.values()))) for values, _, _ in branches]
+    for (values, _, _), dim in zip(branches, dimensions):
+        if not dim or any(np.asarray(v).shape != (dim,) or not np.isfinite(v).all() for v in values.values()):
+            raise ValueError('Invalid frozen branch vector')
+    combined = {key: np.concatenate([primary[key], companion[key]]).astype(np.float32) for key in primary}
+    return combined, counts, dict(audit,
+        embedding_representation='frozen_topology_sequence_branches',
+        branches=[dict(checkpoint=fingerprint(path), dimension=dim, input_policy=policy)
+                  for path, dim, (_, _, policy) in zip(checkpoints, dimensions, branches)],
+        exact_branch_preservation=True, fusion='ordered concatenation; no fitted fusion weights')
+
+
 @torch.no_grad()
 def _extract_embeddings(
     *,
@@ -101,9 +126,21 @@ def _extract_embeddings(
     canonical_conflict_policy: str = "error",
     return_canonical_audit: bool = False,
     extraction_candidate_policy: str = "checkpoint",
+    companion_checkpoints: list[Path] | None = None,
 ):
     if not TORCH_AVAILABLE:
         raise ImportError("PyTorch is required for frozen embedding extraction.")
+    if companion_checkpoints:
+        paths = [checkpoint, *companion_checkpoints]
+        if len(paths) != 2 or len({p.resolve() for p in paths}) != len(paths):
+            raise ValueError('Use exactly two distinct frozen branch checkpoints')
+        branches = [_extract_embeddings(
+            checkpoint=path, manifest=manifest, full_segments=full_segments,
+            labeled_segids=labeled_segids, closure=closure, device_name=device_name, seed=seed,
+            max_slices=max_slices, target_chrs=target_chrs, canonical_conflict_policy=canonical_conflict_policy,
+            return_canonical_audit=True, extraction_candidate_policy=extraction_candidate_policy) for path in paths]
+        result = concatenate_frozen_branches(branches, paths)
+        return result if return_canonical_audit else result[:2]
     device = torch.device(device_name)
     ckpt = torch.load(checkpoint, map_location=device)
     eval_args = _namespace_from_checkpoint(ckpt, seed=seed)
@@ -144,6 +181,7 @@ def _extract_embeddings(
         "extraction_candidate_policy": extraction_candidate_policy,
         "checkpoint_objective": checkpoint_objective,
         "embedding_representation": ("topology_native" if getattr(eval_args, "node_extra_features", "none") == "none"
+                                     else "sequence_conditioned_coordinate" if getattr(eval_args, "stream_mode", "full") == "coordinate"
                                      else "sequence_conditioned_graph"),
         "node_extra_features": getattr(eval_args, "node_extra_features", "none"),
         "node_feature_cache": getattr(eval_args, "node_feature_cache", None),

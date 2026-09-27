@@ -74,7 +74,7 @@ def summarize_roots(trained: Path, random: Path) -> tuple[pd.DataFrame, list[dic
                 raise ValueError("Checkpoint node-input attribution mismatch")
             configs[(arm, mode)] = {key: cfg.get(key) for key in [
                 "seed", "split_seed", "val_chrs", "test_chrs", "hidden_dim", "n_layers", "n_heads",
-                "graph_message_direction", "linear_predictor", "junction_geometry_match",
+                "graph_message_direction", "linear_predictor", "junction_geometry_match", "stream_mode",
                 "junction_geometry_bin_ratio", "node_structure_source", "node_extra_features",
                 "node_feature_cache", "node_feature_min_coverage", "epochs", "patience",
                 "lr", "weight_decay", "drop_edge_rate", "mask_query_edges"]}
@@ -92,7 +92,8 @@ def summarize_roots(trained: Path, random: Path) -> tuple[pd.DataFrame, list[dic
                              checkpoint_sha256=fingerprint(checkpoints[0])["sha256"],
                              initial_encoder_sha256=checkpoint.get("initial_encoder_sha256"),
                              prediction_sha256=fingerprint(paths[0])["sha256"],
-                             representation="sequence_conditioned_graph" if sequence_inputs else "topology_native",
+                             representation=("sequence_conditioned_coordinate" if cfg.get('stream_mode') == 'coordinate'
+                                             else "sequence_conditioned_graph") if sequence_inputs else "topology_native",
                              input_cache_sha256=sequence_inputs['cache']['sha256'] if sequence_inputs else None,
                              evaluation_partition="development_validation"))
     frame = pd.DataFrame(rows)

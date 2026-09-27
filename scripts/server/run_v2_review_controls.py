@@ -35,6 +35,8 @@ def main() -> int:
     ap.add_argument("--candidate-checkpoint", action="append", default=[], metavar="NAME=PATH",
                     help="Additional explicitly named checkpoints; requires one context")
     ap.add_argument("--models", nargs="+", help="Explicit subset; default runs every provided model")
+    ap.add_argument('--companion-checkpoint', action='append', default=[], metavar='MODEL=PATH',
+                    help='Append one independently frozen branch to an explicitly provided candidate')
     ap.add_argument("--extraction-candidate-policy", choices=["checkpoint", "manuscript"], default="checkpoint")
     ap.add_argument("--probe-gpus", type=int, nargs="+",
                     help="Run independent probes concurrently, one at a time per listed GPU")
@@ -53,6 +55,15 @@ def main() -> int:
         raise ValueError("Duplicate candidate checkpoint names")
     if candidates and len(args.contexts) != 1:
         raise ValueError("Candidate checkpoints require one explicit context")
+    companions = {}
+    for spec in args.companion_checkpoint:
+        name, path = spec.split('=', 1)
+        path = Path(path).resolve()
+        if name in companions or name not in dict(candidates) or not path.is_file():
+            raise ValueError('Companion must be one existing checkpoint for a declared candidate')
+        if path == dict(candidates)[name]:
+            raise ValueError('Duplicate branch does not add independent information')
+        companions[name] = path
     selected_models = args.models or ["v1", "random", *[name for name, _ in candidates]]
     if len(set(selected_models)) != len(selected_models) or set(selected_models) - {"v1", "random", *[name for name, _ in candidates]}:
         raise ValueError("Unknown or duplicate model selection")
@@ -118,6 +129,8 @@ def main() -> int:
                                 "--feature-cache", str(sw / "data/processed/hprc_r2_ccre_screen_v4_features.npz")]
                 if args.validation_only:
                     command.append("--validation-only")
+                if model in companions:
+                    command += ['--companion-checkpoint', str(companions[model])]
                 if args.primary_features_only:
                     suffix = "_pair" if task == "sv" else ""
                     primary = ["coordinate_plus_frozen_sequence_fm",
@@ -128,6 +141,7 @@ def main() -> int:
                 commands.append(command)
     out.mkdir(parents=True)
     plan = {"status": "planned", "scope": "exploratory development control; no v2 promotion",
+            "companion_checkpoints": {k: str(v) for k, v in companions.items()},
             "models": selected_models, "extraction_candidate_policy": args.extraction_candidate_policy,
             "evaluation_partition": "development_validation" if args.validation_only else "test",
             "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),

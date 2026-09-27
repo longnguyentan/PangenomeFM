@@ -61,6 +61,7 @@ def validate_checkpoint_holdout(
     test_chrs: set[str],
     closure: str,
     seed: int,
+    val_chrs: set[str] | None = None,
 ) -> dict[str, object]:
     """Verify that checkpoint metadata encodes the requested upstream holdout."""
 
@@ -78,6 +79,10 @@ def validate_checkpoint_holdout(
     checkpoint_seed = int(arguments.get("seed", -1))
     if checkpoint_seed != seed:
         raise ValueError(f"Checkpoint seed={checkpoint_seed}, requested {seed}")
+    if val_chrs is not None:
+        checkpoint_val = {_canonical_chrom(value) for value in arguments.get("val_chrs", [])}
+        if checkpoint_val != {_canonical_chrom(value) for value in val_chrs}:
+            raise ValueError("Checkpoint validation chromosomes differ from the probe")
     return {
         "checkpoint_test_chromosomes": sorted(checkpoint_test),
         "checkpoint_validation_chromosomes": sorted(
@@ -261,6 +266,7 @@ def run_probe(
     topology_control_cache: Path | None = None,
     validation_only: bool = False,
     extraction_candidate_policy: str = "checkpoint",
+    companion_checkpoints: list[Path] | None = None,
 ) -> dict[str, object]:
     if (out_dir / "audit.json").exists():
         raise FileExistsError(f"Refusing to overwrite completed output: {out_dir}")
@@ -271,6 +277,11 @@ def run_probe(
         closure=closure,
         seed=seed,
     )
+    companion_validation = [validate_checkpoint_holdout(path, test_chrs=test_chrs, closure=closure, seed=seed)
+                            for path in companion_checkpoints or []]
+    if companion_checkpoints:
+        for path in [checkpoint, *companion_checkpoints]:
+            validate_checkpoint_holdout(path, test_chrs=test_chrs, val_chrs=val_chrs, closure=closure, seed=seed)
     labels_frame = pd.read_csv(node_labels, compression="infer")
     labels_frame["chrom"] = labels_frame["chrom"].astype(str).map(_canonical_chrom)
     labels_frame["binary_label"] = (labels_frame["ccre_label"].astype(int) != 0).astype(np.int8)
@@ -290,6 +301,7 @@ def run_probe(
         canonical_conflict_policy=canonical_conflict_policy,
         return_canonical_audit=True,
         extraction_candidate_policy=extraction_candidate_policy,
+        companion_checkpoints=companion_checkpoints,
     )
     keep = labels_frame["segid"].astype(int).isin(embedding_map)
     labels_frame = labels_frame.loc[keep].sort_values("segid").reset_index(drop=True)
@@ -364,7 +376,7 @@ def run_probe(
         for name in selected_feature_access:
             if 'pangenomefm' in name:
                 selected_feature_access[name] = (
-                    'Frozen sequence-conditioned graph embedding; legacy T column is a multimodal embedding. '
+                    f'Frozen {representation} embedding; legacy T column is a multimodal embedding. '
                     'Sequence-model and graph-encoder parameters are frozen during biological fitting.')
 
     metrics, per_chromosome, predictions = evaluate_feature_sets(
@@ -422,11 +434,13 @@ def run_probe(
         "fairness_policy": "all feature sets use the identical embedded-node universe and chromosome split",
         "upstream_leakage_control": "checkpoint pretraining excluded every downstream test chromosome",
         "checkpoint_validation": checkpoint_validation,
+        "companion_checkpoint_validation": companion_validation,
         "canonical_candidate_audit": canonical_candidate_audit,
         "canonical_conflict_policy": canonical_conflict_policy,
         "canonical_conflict_interpretation": "all representations of a conflicting canonical identity are excluded before frozen embedding extraction; remaining same-label equivalents are collapsed",
         "calibration_policy": "temperature and F1 threshold fit on validation chromosomes only",
-        "sequence_note": "PangenomeFM checkpoint itself has no nucleotide input; sequence is supplied only to explicit downstream baselines",
+        "sequence_note": ("PangenomeFM checkpoint has no nucleotide input" if representation == 'topology_native'
+                          else "This representation includes sequence-conditioned inputs; see branch/input provenance"),
         "modality_factorial": {
             "C": "coordinate",
             "S": "sequence_kmer",
@@ -455,6 +469,7 @@ def run_probe(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path, required=True)
+    parser.add_argument('--companion-checkpoint', type=Path, action='append', default=[])
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--full-segments", type=Path, required=True)
     parser.add_argument("--node-labels", type=Path, required=True)
@@ -485,6 +500,7 @@ def main() -> int:
     args = parser.parse_args()
     run_probe(
         checkpoint=args.checkpoint,
+        companion_checkpoints=args.companion_checkpoint,
         manifest=args.manifest,
         full_segments=args.full_segments,
         node_labels=args.node_labels,

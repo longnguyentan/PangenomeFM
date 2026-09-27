@@ -240,6 +240,13 @@ def test_sequence_pilot_keeps_fixed_budget_and_requires_complete_inputs():
         assert '--validation_only' in cmd and cmd[cmd.index('--epochs') + 1] == '10'
     with pytest.raises(ValueError, match='unique'):
         commands(Path('out'), receipt, '1hop', arms=['bidirectional_default'] * 2)
+    coordinate = commands(Path('out'), receipt, '1hop', arms=['bidirectional_linear'],
+                          node_feature_cache=Path('nt.npz'), stream_mode='coordinate')
+    command = coordinate['bidirectional_linear']
+    assert command[command.index('--stream_mode') + 1] == 'coordinate'
+    assert '--linear_predictor' in command and '--validation_only' in command
+    with pytest.raises(ValueError, match='coordinate-stream'):
+        commands(Path('out'), receipt, '1hop', stream_mode='invalid')
 
 
 def test_sequence_pilot_rejects_missing_benchmark_inputs(tmp_path, monkeypatch):

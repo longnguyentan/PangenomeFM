@@ -170,6 +170,7 @@ def run_probe(
     topology_control_cache: Path | None = None,
     validation_only: bool = False,
     extraction_candidate_policy: str = "checkpoint",
+    companion_checkpoints: list[Path] | None = None,
 ) -> dict[str, object]:
     if out_dir.exists():
         raise FileExistsError(f"Refusing to overwrite output: {out_dir}")
@@ -180,6 +181,11 @@ def run_probe(
         closure=closure,
         seed=seed,
     )
+    companion_validation = [validate_checkpoint_holdout(path, test_chrs=test_chrs, closure=closure, seed=seed)
+                            for path in companion_checkpoints or []]
+    if companion_checkpoints:
+        for path in [checkpoint, *companion_checkpoints]:
+            validate_checkpoint_holdout(path, test_chrs=test_chrs, val_chrs=val_chrs, closure=closure, seed=seed)
     examples = pd.read_csv(examples_path, compression="infer")
     required = {"example_id", "chrom", "start_segid", "end_segid", "binary_svtype_label"}
     missing = required - set(examples)
@@ -199,6 +205,7 @@ def run_probe(
         canonical_conflict_policy=canonical_conflict_policy,
         return_canonical_audit=True,
         extraction_candidate_policy=extraction_candidate_policy,
+        companion_checkpoints=companion_checkpoints,
     )
     external_values: np.ndarray | None = None
     external_positions: dict[int, int] = {}
@@ -281,7 +288,7 @@ def run_probe(
         for name in selected_feature_access:
             if 'pangenomefm' in name:
                 selected_feature_access[name] = (
-                    'Frozen sequence-conditioned graph embedding; legacy T column is a multimodal embedding. '
+                    f'Frozen {representation} embedding; legacy T column is a multimodal embedding. '
                     'Sequence-model and graph-encoder parameters are frozen during biological fitting.')
     metrics, per_chromosome, predictions = evaluate_feature_sets(
         segids=examples["example_id"].to_numpy(np.int64),
@@ -354,6 +361,7 @@ def run_probe(
             else None
         ),
         "checkpoint_validation": checkpoint_validation,
+        "companion_checkpoint_validation": companion_validation,
         "canonical_candidate_audit": canonical_candidate_audit,
         "canonical_conflict_policy": canonical_conflict_policy,
         "canonical_conflict_interpretation": "all representations of a conflicting canonical identity are excluded before frozen embedding extraction; remaining same-label equivalents are collapsed",
@@ -368,6 +376,7 @@ def run_probe(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path, required=True)
+    parser.add_argument('--companion-checkpoint', type=Path, action='append', default=[])
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--full-segments", type=Path, required=True)
     parser.add_argument("--examples", type=Path, required=True)
@@ -398,6 +407,7 @@ def main() -> int:
     args = parser.parse_args()
     run_probe(
         checkpoint=args.checkpoint,
+        companion_checkpoints=args.companion_checkpoint,
         manifest=args.manifest,
         full_segments=args.full_segments,
         examples_path=args.examples,

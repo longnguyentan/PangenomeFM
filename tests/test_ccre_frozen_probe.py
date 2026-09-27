@@ -45,6 +45,9 @@ def test_checkpoint_holdout_is_verified(tmp_path: Path) -> None:
         seed=42,
     )
     assert audit["checkpoint_test_chromosomes"] == ["chr1", "chr6"]
+    with pytest.raises(ValueError, match="validation chromosomes"):
+        MODULE.validate_checkpoint_holdout(checkpoint, test_chrs={"1", "chr6"},
+                                           val_chrs={"chr3"}, closure="strict", seed=42)
 
 
 def test_all_features_use_identical_test_nodes_and_validation_calibration() -> None:
@@ -150,3 +153,35 @@ def test_manuscript_extraction_policy_matches_window_universe_without_changing_f
     for key in common:
         np.testing.assert_array_equal(common[key], native[key])
     assert sha256_file(checkpoint) == before
+    companion = tmp_path / "companion.pt"
+    companion.write_bytes(checkpoint.read_bytes())
+    composite, occurrences, joined_audit = _extract_embeddings(
+        **kwargs, extraction_candidate_policy="manuscript", companion_checkpoints=[companion])
+    assert joined_audit["embedding_representation"] == "frozen_topology_sequence_branches"
+    assert joined_audit["exact_branch_preservation"]
+    assert all(count == 1 for count in occurrences.values())
+    for key in common:
+        np.testing.assert_array_equal(composite[key], np.concatenate([common[key], common[key]]))
+    assert sha256_file(checkpoint) == sha256_file(companion) == before
+
+
+@pytest.mark.parametrize("mismatch", ["universe", "counts", "policy", "nonfinite", "shape"])
+def test_frozen_composition_rejects_incompatible_branches(tmp_path, mismatch):
+    from tasks.ccre.embedding_baseline import concatenate_frozen_branches
+
+    audit = dict(retained_slices=["a"], extraction_candidate_policy="manuscript",
+                 canonical_conflict_policy="exclude")
+    first = ({1: np.array([1., 2.])}, {1: 1}, audit)
+    second = ({1: np.array([3., 4.])}, {1: 1}, dict(audit))
+    if mismatch == "universe":
+        second[0][2] = second[0].pop(1)
+    elif mismatch == "counts":
+        second[1][1] = 2
+    elif mismatch == "policy":
+        second[2]["retained_slices"] = ["b"]
+    elif mismatch == "nonfinite":
+        second[0][1][0] = np.nan
+    else:
+        second[0][1] = np.array([[1., 2.]])
+    with pytest.raises(ValueError):
+        concatenate_frozen_branches([first, second], [tmp_path / "a.pt", tmp_path / "b.pt"])
