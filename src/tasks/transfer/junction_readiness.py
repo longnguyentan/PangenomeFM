@@ -79,6 +79,7 @@ def feature_rows(sd: dict, args: argparse.Namespace, partition: str) -> pd.DataF
             src, dst, edge_attr = mask_positive_query_edges(
                 native["src"], native["dst"], native["edge_attr"], native["q_u"],
                 native["q_v"], native["labels"], hidden, native["node_oids"],
+                mask_reverse_messages=getattr(args, "graph_message_direction", "incoming") == "bidirectional",
             )
             src, dst, _ = drop_edges(src, dst, args.drop_edge_rate if args.drop_edge else 0,
                                      edge_attr, training=partition == "train")
@@ -153,6 +154,9 @@ def run(args: argparse.Namespace) -> None:
             native_args.drop_edge_rate = args.training_drop_edge_rate
             native_args.drop_edge = args.training_drop_edge_rate > 0
         receipt["training_drop_edge_rate_override"] = args.training_drop_edge_rate
+        for field in ["junction_geometry_match", "junction_geometry_bin_ratio", "graph_message_direction"]:
+            if getattr(args, field, None) is not None:
+                setattr(native_args, field, getattr(args, field))
         # Geometry is collected for the control, without changing any encoder.
         native_args.pair_geometry = True
         split = validate_chromosome_split(val_chrs=native_args.val_chrs, test_chrs=native_args.test_chrs)
@@ -192,6 +196,18 @@ def run(args: argparse.Namespace) -> None:
         counts.to_csv(args.out_dir / "per_window.csv", index=False)
         counts.groupby(["context", "chrom", "exclusion"]).size().rename("n_windows").to_csv(
             args.out_dir / "coverage.csv")
+        # Preserve diagnostics even when a scientifically necessary matching
+        # rule leaves too little data to pass the unchanged coverage gate.
+        if frames:
+            frame = pd.concat(frames, ignore_index=True)
+            frame.to_parquet(args.out_dir / "validation_baseline_features.parquet", index=False)
+            eligible = frame.groupby("context").filter(
+                lambda g: all(g.loc[g.partition.eq(p), "label"].nunique() == 2
+                              for p in ["train", "validation"]))
+            if not eligible.empty:
+                scores, predictions = fit_validation_baselines(eligible)
+                scores.to_csv(args.out_dir / "validation_baselines.csv", index=False)
+                predictions.to_parquet(args.out_dir / "validation_predictions.parquet", index=False)
         missing = {context: sorted(set(required) - set(group.loc[group.exclusion.eq("retained"), "chrom"]))
                    for context, group in counts.groupby("context")}
         if set(counts.context) != {"strict", "1hop"} or any(missing.values()):
@@ -202,11 +218,6 @@ def run(args: argparse.Namespace) -> None:
                 absent = set(required) - set(counts.loc[eligible & counts.context.eq(context), "chrom"])
                 if absent:
                     raise ValueError(f"No n>=4 native {internal} window for {context}: {sorted(absent)}")
-        frame = pd.concat(frames, ignore_index=True)
-        frame.to_parquet(args.out_dir / "validation_baseline_features.parquet", index=False)
-        scores, predictions = fit_validation_baselines(frame)
-        scores.to_csv(args.out_dir / "validation_baselines.csv", index=False)
-        predictions.to_parquet(args.out_dir / "validation_predictions.parquet", index=False)
         receipt.update(status="complete", n_windows=len(counts), n_retained=int(counts.exclusion.eq("retained").sum()),
                        missing_chromosomes=missing, endpoint_balance_after_native_filter="passed",
                        heldout_chromosome_predictions_produced=False)
@@ -222,6 +233,9 @@ def main() -> None:
         parser.add_argument("--" + key, type=Path, required=True)
     parser.add_argument("--training-drop-edge-rate", type=float,
                         help="Explicit proposed training rate; omit to use the smoke checkpoint setting")
+    parser.add_argument("--junction-geometry-match", choices=["distance", "signed_gap_bins"])
+    parser.add_argument("--junction-geometry-bin-ratio", type=float)
+    parser.add_argument("--graph-message-direction", choices=["incoming", "bidirectional"])
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     torch.set_num_threads(4)
     run(parser.parse_args())

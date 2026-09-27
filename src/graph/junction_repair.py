@@ -40,7 +40,21 @@ from scipy.optimize import linear_sum_assignment
 from graph.neg_sampling import canonical_oriented_pair
 
 JUNCTION_SCOPES = ("all", "branching")
+GEOMETRY_MATCHES = ("distance", "signed_gap_bins")
 SPLIT_NAMES = ("train", "val", "test")
+
+
+def signed_geometry_bin(value: int, ratio: float = 1.25) -> Tuple[int, int]:
+    """Fixed multiplicative bins with separate signs and an exact-zero category.
+
+    Binning constrains nuisance geometry; it does not establish that residual
+    continuous geometry is uninformative. Audit that separately on validation.
+    """
+    if not np.isfinite(ratio) or ratio <= 1:
+        raise ValueError("geometry bin ratio must be finite and greater than 1")
+    if value == 0:
+        return (0, 0)
+    return (1 if value > 0 else -1, int(np.floor(np.log(abs(value)) / np.log(ratio))))
 
 
 def bidirected_degrees(
@@ -147,6 +161,9 @@ def build_junction_repair_candidates(
     rng_seed: int = 0,
     tol_bp: int = 1_000,
     tol_frac: float = 0.10,
+    geometry_match: str = "distance",
+    geometry_bin_ratio: float = 1.25,
+    oid_to_ln: Mapping[int, int] | None = None,
 ) -> Tuple[pd.DataFrame, JunctionRepairAudit]:
     """Return junction re-pairing candidates for one slice.
 
@@ -175,6 +192,11 @@ def build_junction_repair_candidates(
         raise ValueError("u and v must have equal length")
     if span_size < 2:
         raise ValueError("span_size must be at least 2")
+    if geometry_match not in GEOMETRY_MATCHES:
+        raise ValueError(f"geometry_match must be one of {GEOMETRY_MATCHES}")
+    signed_geometry_bin(0, geometry_bin_ratio)  # Validate even for empty slices.
+    if geometry_match == "signed_gap_bins" and oid_to_ln is None:
+        raise ValueError("signed_gap_bins requires segment lengths")
 
     # Canonical directions and order are invariant to stored reverse rows.
     pos_set = {
@@ -208,6 +230,17 @@ def build_junction_repair_candidates(
     pu, pv = pu[known], pv[known]
     so_u = np.asarray([int(oid_to_so[int(x)]) for x in pu], dtype=np.int64)
     so_v = np.asarray([int(oid_to_so[int(x)]) for x in pv], dtype=np.int64)
+    if geometry_match == "signed_gap_bins":
+        if any(int(a) not in oid_to_ln or oid_to_ln[int(a)] <= 0 for a in pu):
+            raise ValueError("Geometry matching requires positive lengths for every source handle")
+        lengths = np.asarray([int(oid_to_ln[int(a)]) for a in pu], dtype=np.int64)
+        # Match exactly the signed offset and gap used by pair_geometry(), in
+        # the same canonical orientation. Cross-SN offsets are never compared.
+        geometry_keys = [
+            (signed_geometry_bin(int(delta), geometry_bin_ratio),
+             signed_geometry_bin(int(delta - length), geometry_bin_ratio))
+            for delta, length in zip(so_v - so_u, lengths)
+        ]
     signatures = [(oid_to_sn[int(a)], oid_to_sn[int(b)], int(a % 2), int(b % 2))
                   for a, b in zip(pu, pv)]
     split = split_positive_indices(len(pu), split_seed)
@@ -240,6 +273,14 @@ def build_junction_repair_candidates(
                         if i == j or a // 2 == b // 2 or key in pos_set or key in used_negatives:
                             continue
                         if same_system:
+                            if geometry_match == "signed_gap_bins":
+                                delta = int(so_v[j]) - int(so_u[i])
+                                key_geometry = (
+                                    signed_geometry_bin(delta, geometry_bin_ratio),
+                                    signed_geometry_bin(delta - int(lengths[i]), geometry_bin_ratio),
+                                )
+                                if key_geometry != geometry_keys[i]:
+                                    continue
                             distance = abs(int(so_u[i]) - int(so_v[i]))
                             mismatch = abs(abs(int(so_u[i]) - int(so_v[j])) - distance)
                             if mismatch > max(tol_bp, tol_frac * distance):

@@ -23,11 +23,12 @@ def build_global_index(segments: pd.DataFrame) -> Tuple[pd.Index, pd.DataFrame]:
     """
     # Preserve the canonical column name across pandas versions; otherwise
     # reset_index() may silently create an ``index`` column and break slicing.
-    seg_index = pd.Index(
-        segments["name"].astype("string").unique(), name="name"
-    )
+    # CSV readers may infer integer dtype for valid numeric GFA identifiers.
+    # Normalize both sides of the lookup, not only the requested index.
+    normalized = segments.assign(name=segments["name"].astype("string"))
+    seg_index = pd.Index(normalized["name"].unique(), name="name")
     seg_u = (
-        segments.drop_duplicates("name").set_index("name").loc[seg_index].reset_index()
+        normalized.drop_duplicates("name").set_index("name").loc[seg_index].reset_index()
     )
     # seg_u columns now: name, id, seq, LN, SN, SO, SR (order depends on input)
     return seg_index, seg_u

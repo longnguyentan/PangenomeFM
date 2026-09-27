@@ -29,6 +29,7 @@ from graph.slicing import build_global_index
 from models.dual_stream_gat import DualStreamPangenomeGAT
 from training.pretrain import (
     ExpressiveLinkPredictor,
+    LinearLinkPredictor,
     _compute_adaptive_window_k,
     load_slice,
     mask_positive_query_edges,
@@ -66,6 +67,7 @@ def _namespace_from_checkpoint(ckpt: Dict, seed: int) -> argparse.Namespace:
         "pop_embed_dim": 16,
         "seed": seed,
         "stream_mode": "full",
+        "graph_message_direction": "incoming",
         "use_edge_features": False,
         "window_k": None,
     }
@@ -94,17 +96,22 @@ def _build_model_from_checkpoint(ckpt: Dict, args: argparse.Namespace, device):
         use_cross_attn=False,
         pop_embed_dim=args.pop_embed_dim if args.pop_cond else 0,
         stream_mode=getattr(args, "stream_mode", ckpt.get("stream_mode", "full")),
+        graph_message_direction=getattr(args, "graph_message_direction", "incoming"),
     ).to(device)
     model.load_state_dict(ckpt["model_state"])
 
     predictor = None
     if ckpt.get("predictor_state") is not None:
-        predictor = ExpressiveLinkPredictor(
-            hidden_dim=args.hidden_dim,
-            mlp_dim=args.hidden_dim * 2,
-            dropout=args.dropout,
-            geom_dim=PAIR_GEOMETRY_DIM if getattr(args, "pair_geometry", False) else 0,
-        ).to(device)
+        geom_dim = PAIR_GEOMETRY_DIM if getattr(args, "pair_geometry", False) else 0
+        if getattr(args, "linear_predictor", False):
+            predictor = LinearLinkPredictor(args.hidden_dim, geom_dim=geom_dim).to(device)
+        else:
+            predictor = ExpressiveLinkPredictor(
+                hidden_dim=args.hidden_dim,
+                mlp_dim=args.hidden_dim * 2,
+                dropout=args.dropout,
+                geom_dim=geom_dim,
+            ).to(device)
         predictor.load_state_dict(ckpt["predictor_state"])
 
     model.eval()
@@ -197,6 +204,7 @@ def _score_slice(
                 sd["labels"],
                 batch_idx,
                 sd["node_oids"] if junction_mode else None,
+                mask_reverse_messages=getattr(args, "graph_message_direction", "incoming") == "bidirectional",
             )
         x_in = (
             visible_structure_features(sd["X"], src_for_mp, dst_for_mp, sd["deg_norm"])

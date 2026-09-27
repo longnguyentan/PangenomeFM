@@ -69,6 +69,7 @@ def _constructor_kwargs(model, ckpt, ns) -> dict:
         use_cross_attn=False,
         pop_embed_dim=ns.pop_embed_dim if ns.pop_cond else 0,
         stream_mode=getattr(ns, "stream_mode", ckpt.get("stream_mode", "full")),
+        graph_message_direction=getattr(ns, "graph_message_direction", "incoming"),
     )
 
 

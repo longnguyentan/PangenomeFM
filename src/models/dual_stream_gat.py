@@ -59,6 +59,23 @@ from models.positional_encoding import (
 )
 
 
+def bidirectional_messages(src, dst, edge_attr=None):
+    """Add typed reverse messages to an already masked biological edge list.
+
+    Existing edge features (absolute offset/rank difference and orientation
+    agreement) are symmetric under endpoint reversal. Self-edges are kept once.
+    Reciprocal biological links remain separate typed evidence. Visible degree
+    is computed upstream on biological links, not this doubled message list.
+    """
+    reverse = src != dst
+    direction = torch.cat([torch.zeros_like(src), torch.ones_like(src[reverse])])
+    attributes = (
+        torch.cat([edge_attr, edge_attr[reverse]], dim=0)
+        if edge_attr is not None else None
+    )
+    return torch.cat([src, dst[reverse]]), torch.cat([dst, src[reverse]]), attributes, direction
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Tier 2-E: Population conditioning
 # ─────────────────────────────────────────────────────────────────────────────
@@ -391,7 +408,7 @@ if TORCH_AVAILABLE:
     # ─────────────────────────────────────────────────────────────────────────
 
     class GraphStreamGAT(nn.Module):
-        """Branching-aware GAT layer.  Unchanged from previous version."""
+        """Branching-aware GAT with optional typed reverse messages."""
 
         def __init__(
             self,
@@ -400,11 +417,15 @@ if TORCH_AVAILABLE:
             dropout: float = 0.1,
             negative_slope: float = 0.2,
             edge_feat_dim: int = 0,
+            bidirectional: bool = False,
         ) -> None:
             super().__init__()
             self.dim = dim
             self.n_heads = n_heads
             self.dropout_p = dropout
+            self.direction_bias = (
+                nn.Parameter(torch.zeros(2, n_heads)) if bidirectional else None
+            )
             head_dim = dim // n_heads
             self.W = nn.Linear(dim, dim, bias=False)
             self.a = nn.Parameter(torch.zeros(n_heads, 2 * head_dim))
@@ -428,6 +449,7 @@ if TORCH_AVAILABLE:
             dst: "torch.Tensor",
             temps: Optional["torch.Tensor"] = None,
             edge_attr: Optional["torch.Tensor"] = None,
+            edge_direction: Optional["torch.Tensor"] = None,
         ) -> "torch.Tensor":
             N = x.size(0)
             H = self.n_heads
@@ -440,6 +462,10 @@ if TORCH_AVAILABLE:
             )
             if edge_attr is not None and self.W_edge is not None:
                 e = e + self.W_edge(edge_attr)
+            if self.direction_bias is not None:
+                if edge_direction is None:
+                    raise ValueError("Bidirectional graph messages require direction types")
+                e = e + self.direction_bias[edge_direction]
             if temps is not None:
                 e = e / temps[src].unsqueeze(-1).clamp(min=0.1)
             alpha = self._sparse_softmax(e, dst, N)
@@ -649,6 +675,7 @@ if TORCH_AVAILABLE:
             pop_embed_dim: int = 0,
             # -- ablations --
             stream_mode: str = "full",
+            graph_message_direction: str = "incoming",
         ) -> None:
             super().__init__()
             if stream_mode not in {"full", "coordinate", "graph"}:
@@ -662,6 +689,9 @@ if TORCH_AVAILABLE:
             self.use_orientation = use_orientation
             self.pop_embed_dim = pop_embed_dim
             self.stream_mode = stream_mode
+            if graph_message_direction not in {"incoming", "bidirectional"}:
+                raise ValueError("graph_message_direction must be incoming or bidirectional")
+            self.graph_message_direction = graph_message_direction
 
             # Tier 2-E: population embedding (prepended before node encoder)
             effective_in_dim = in_dim
@@ -701,6 +731,7 @@ if TORCH_AVAILABLE:
                         n_heads=n_heads,
                         dropout=dropout,
                         edge_feat_dim=edge_feat_dim,
+                        bidirectional=graph_message_direction == "bidirectional",
                     )
                     for _ in range(n_layers)
                 ]
@@ -758,6 +789,13 @@ if TORCH_AVAILABLE:
 
             h = self.node_encoder(x)
 
+            # Query masking and DropEdge happen on biological edges upstream.
+            # Reverse *messages* are created only from those surviving edges;
+            # they do not create new oriented nodes or biological graph links.
+            edge_direction = None
+            if self.graph_message_direction == "bidirectional" and self.stream_mode != "coordinate":
+                src, dst, edge_attr, edge_direction = bidirectional_messages(src, dst, edge_attr)
+
             # Tier 1-B: only pass orient if the model was built with use_orientation
             eff_orient = orient if self.use_orientation else None
 
@@ -772,11 +810,11 @@ if TORCH_AVAILABLE:
                     # the linear stream.  Skipping its sparse genomic attention
                     # is numerically identical for the active branch.
                     h_fused = self.graph_layers[i](
-                        h, src, dst, temps, edge_attr
+                        h, src, dst, temps, edge_attr, edge_direction
                     )
                 else:
                     h_lin = self.linear_layers[i](h, so, orient=eff_orient)
-                    h_gph = self.graph_layers[i](h, src, dst, temps, edge_attr)
+                    h_gph = self.graph_layers[i](h, src, dst, temps, edge_attr, edge_direction)
                     if self.fusion_modules is not None:
                         h_fused = self.fusion_modules[i](h_lin, h_gph)
                     else:

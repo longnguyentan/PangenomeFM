@@ -180,3 +180,62 @@ def test_missing_oriented_node_discards_entire_group_not_unbalanced_rows():
     assert keep.tolist() == [False] * 4 + [True] * 4
     assert complete_group_node_mask(candidates, nodes | {6}).all()
     assert complete_group_node_mask(candidates.iloc[:0], nodes).empty
+
+
+def test_signed_geometry_matching_preserves_bins_and_endpoint_marginals():
+    from collections import Counter
+    from graph.junction_repair import signed_geometry_bin
+
+    # Multiple long junctions have genuinely plausible re-pairings.
+    u = np.arange(40) * 4
+    v = u + 2
+    so = {int(a): int(i * 10) for i, a in enumerate(u)}
+    so.update({int(b): int(10_000 + i * 10) for i, b in enumerate(v)})
+    ln = {a: 1000 for a in so}
+    c, audit = build_junction_repair_candidates(
+        u, v, so, oid_to_sn={a: 'chrT' for a in so}, oid_to_ln=ln,
+        scope='all', geometry_match='signed_gap_bins')
+    assert audit.n_positive_candidates > 0
+    for _, g in c.groupby('group_id'):
+        for column in ['u_oid', 'v_oid']:
+            assert Counter(g.loc[g.label.eq(1), column]) == Counter(g.loc[g.label.eq(0), column])
+        for _, pair in g.groupby('source_i'):
+            keys = {(signed_geometry_bin(so[b] - so[a]),
+                     signed_geometry_bin(so[b] - so[a] - ln[a]))
+                    for a, b in pair[['u_oid', 'v_oid']].itertuples(index=False)}
+            assert len(keys) == 1
+
+
+def test_geometry_matching_refuses_impossible_chain_negatives():
+    u, v, so = _bubble_chain(80)
+    kw = dict(oid_to_sn={a: 'chrT' for a in so}, oid_to_ln={a: 100 for a in so})
+    default, _ = build_junction_repair_candidates(u, v, so, **kw)
+    strict, audit = build_junction_repair_candidates(u, v, so, **kw, geometry_match='signed_gap_bins')
+    assert len(default) > 0
+    # Nearby regular reference chops cannot yield coordinate-matched nonedges.
+    # Empty output is safer than silently relaxing the scientific constraint.
+    assert strict.empty and audit.n_rejected_groups > 0
+
+
+def test_geometry_matching_validates_configuration():
+    from graph.junction_repair import signed_geometry_bin
+
+    for ratio in [1, 0, float('nan')]:
+        with pytest.raises(ValueError, match='ratio'):
+            signed_geometry_bin(0, ratio)
+    assert signed_geometry_bin(0) == (0, 0)
+    assert signed_geometry_bin(-1) == (-1, 0)
+    u, v, so = _bubble_chain(3)
+    with pytest.raises(ValueError, match='lengths'):
+        build_junction_repair_candidates(u, v, so, oid_to_sn={}, geometry_match='signed_gap_bins')
+
+
+def test_default_geometry_matching_reproduces_distance_protocol():
+    import pandas as pd
+
+    u, v, so = _bubble_chain(50)
+    kw = dict(oid_to_sn={a: 'chrT' for a in so})
+    default, a = build_junction_repair_candidates(u, v, so, **kw)
+    explicit, b = build_junction_repair_candidates(u, v, so, **kw, geometry_match='distance')
+    pd.testing.assert_frame_equal(default, explicit)
+    assert a == b

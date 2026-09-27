@@ -162,6 +162,7 @@ def mask_positive_query_edges(
     labels: "torch.Tensor",
     idx: "torch.Tensor",
     node_oids: Optional["torch.Tensor"] = None,
+    mask_reverse_messages: bool = False,
 ) -> Tuple["torch.Tensor", "torch.Tensor", Optional["torch.Tensor"]]:
     """Remove positive query edges from the message-passing graph.
 
@@ -210,6 +211,15 @@ def mask_positive_query_edges(
         positive_u = q_u[pos_idx].to(torch.int64)
         positive_v = q_v[pos_idx].to(torch.int64)
 
+    if mask_reverse_messages:
+        # A surviving ordinary reciprocal link would recreate a hidden query
+        # when reverse messages are added. Hide both directions and, above,
+        # both reverse-complement traversals before any message augmentation.
+        positive_u, positive_v = (
+            torch.cat([positive_u, positive_v]),
+            torch.cat([positive_v, positive_u]),
+        )
+
     max_node = torch.max(
         torch.cat([structural_u, structural_v, positive_u, positive_v])
     ).to(torch.int64)
@@ -225,6 +235,28 @@ def mask_positive_query_edges(
 # ---------------------------------------------------------------------------
 # Enhanced link predictor (Priority 10)
 # ---------------------------------------------------------------------------
+
+
+class LinearLinkPredictor(nn.Module):
+    """Low-capacity score of fixed pair interactions and optional geometry.
+
+    Product/difference interactions can distinguish re-paired endpoints even
+    when positive and negative endpoint marginals are exactly balanced. A
+    linear score on endpoint concatenation alone cannot model compatibility.
+    """
+
+    def __init__(self, hidden_dim: int, geom_dim: int = 0):
+        super().__init__()
+        self.geom_dim = int(geom_dim)
+        self.linear = nn.Linear(2 * hidden_dim + self.geom_dim, 1)
+
+    def forward(self, h_u, h_v, geom=None):
+        parts = [h_u * h_v, (h_u - h_v).abs()]
+        if self.geom_dim:
+            if geom is None:
+                raise ValueError("this predictor was built with pair geometry inputs")
+            parts.append(geom)
+        return self.linear(torch.cat(parts, dim=-1)).squeeze(-1)
 
 
 class ExpressiveLinkPredictor(nn.Module):
@@ -491,6 +523,9 @@ def load_slice(
             span_size=int(getattr(args, "junction_span_size", 16)),
             split_seed=int(split_seed_jr),
             rng_seed=int(slice_seed),
+            geometry_match=getattr(args, "junction_geometry_match", "distance"),
+            geometry_bin_ratio=float(getattr(args, "junction_geometry_bin_ratio", 1.25)),
+            oid_to_ln=md["oid_to_ln"],
         )
         junction_audit = junction_audit_obj.as_dict()
         if audit_out is not None:
@@ -783,6 +818,7 @@ def train_one_epoch_shared(
                     sd["labels"],
                     mask_idx,
                     sd["node_oids"],
+                    mask_reverse_messages=getattr(args, "graph_message_direction", "incoming") == "bidirectional",
                 )
 
             src_aug, dst_aug, edge_attr_aug = drop_edges(
@@ -947,6 +983,7 @@ def evaluate_shared(
                 sd["labels"],
                 mask_idx,
                 sd["node_oids"],
+                mask_reverse_messages=getattr(args, "graph_message_direction", "incoming") == "bidirectional",
             )
 
         x_in = (
@@ -1072,6 +1109,23 @@ class WarmupCosineScheduler:
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+
+
+def validation_only_results(model, predictor, train_slices, val_slices, args, prediction_rows, epoch):
+    """Final development scores; deliberately has no test/held-out-slice input."""
+    results = []
+    for partition, slices in [("train_chr", train_slices), ("val_chr", val_slices)]:
+        if not slices:
+            continue
+        _, details = evaluate_shared(
+            model, predictor, slices, "val", args, prediction_rows, partition + "_val"
+        )
+        for row in details:
+            row.update(best_val_auc=row["val_auc"], test_auc=float("nan"),
+                       epochs_run=epoch, skipped=False, split=partition,
+                       evaluation_scope="validation_only")
+            results.append(row)
+    return results
 
 
 def main():
@@ -1234,6 +1288,10 @@ def main():
         default=False,
         help="Use [h_u, h_v, h_u*h_v, |h_u-h_v|] MLP predictor",
     )
+    ap.add_argument(
+        "--linear_predictor", action="store_true",
+        help="Use a linear score of embedding products/differences and optional pair geometry.",
+    )
 
     # Other
     ap.add_argument("--seed", type=int, default=42)
@@ -1261,6 +1319,13 @@ def main():
     )
     ap.add_argument("--junction_scope", choices=["branching", "all"], default="branching")
     ap.add_argument("--junction_span_size", type=int, default=16)
+    ap.add_argument("--junction_geometry_match", choices=["distance", "signed_gap_bins"], default="distance",
+                    help="Optional nuisance matching; signed_gap_bins preserves sign and zero categories of offset and contiguity gap")
+    ap.add_argument("--junction_geometry_bin_ratio", type=float, default=1.25)
+    ap.add_argument(
+        "--graph_message_direction", choices=["incoming", "bidirectional"],
+        default="incoming", help="Typed reverse messages after query masking and DropEdge.",
+    )
     ap.add_argument(
         "--node_structure_source",
         choices=["unmasked", "visible"],
@@ -1290,7 +1355,7 @@ def main():
             "Give the connection scorer explicit signed offset, contiguity gap, "
             "orientation agreement and same-coordinate-system flags. Coordinates "
             "are an allowed input; this stops log-scaled node features from "
-            "hiding exact local geometry. Implies the expressive scorer."
+            "hiding exact local geometry. Uses the expressive scorer unless --linear_predictor."
         ),
     )
     ap.add_argument(
@@ -1305,6 +1370,10 @@ def main():
         "--save_predictions",
         action="store_true",
         help="Save pooled edge probabilities from final evaluations for reliability curves.",
+    )
+    ap.add_argument(
+        "--validation_only", action="store_true",
+        help="Development mode: final scoring uses validation candidates only; no test predictions.",
     )
     ap.add_argument(
         "--mask_query_edges",
@@ -1371,6 +1440,10 @@ def main():
         )
     if args.objective == "junction_repair" and not args.mask_query_edges:
         ap.error("junction_repair requires --mask_query_edges")
+    if args.linear_predictor and args.expressive_predictor:
+        ap.error("Choose --linear_predictor or --expressive_predictor, not both")
+    if args.validation_only and not args.val_chrs:
+        ap.error("--validation_only requires explicit --val_chrs")
     seed_everything(args.seed)
     device = torch.device(args.device)
 
@@ -1380,6 +1453,8 @@ def main():
         _lp.append("dual")
     if args.stream_mode != "full":
         _lp.append(args.stream_mode)
+    if args.graph_message_direction != "incoming":
+        _lp.append("bidir")
     if args.no_fusion_gate:
         _lp.append("nogate")
     if args.multiscale_rope:
@@ -1396,10 +1471,16 @@ def main():
         _lp.append("efeat")
     if args.expressive_predictor:
         _lp.append("exppred")
+    if args.linear_predictor:
+        _lp.append("linpred")
+    if args.validation_only:
+        _lp.append("valonly")
     if args.mask_query_edges:
         _lp.append("maskedq")
     if args.objective != "edge_masking":
         _lp.append(f"jr{args.junction_scope}{args.junction_span_size}")
+        if args.junction_geometry_match != "distance":
+            _lp.append(f"geommatch{args.junction_geometry_bin_ratio:g}")
     if args.node_structure_source != "unmasked":
         _lp.append("visdeg")
     if args.node_extra_features != "none":
@@ -1621,11 +1702,17 @@ def main():
             use_cross_attn=False,  # dropped based on experiments
             pop_embed_dim=args.pop_embed_dim if args.pop_cond else 0,
             stream_mode=args.stream_mode,
+            graph_message_direction=args.graph_message_direction,
         ).to(device)
 
         # Optional: expressive predictor replaces default edge_predictor
         predictor = None
-        if args.expressive_predictor or args.pair_geometry:
+        if args.linear_predictor:
+            predictor = LinearLinkPredictor(
+                hidden_dim=args.hidden_dim,
+                geom_dim=PAIR_GEOMETRY_DIM if args.pair_geometry else 0,
+            ).to(device)
+        elif args.expressive_predictor or args.pair_geometry:
             predictor = ExpressiveLinkPredictor(
                 hidden_dim=args.hidden_dim,
                 mlp_dim=args.hidden_dim * 2,
@@ -1667,7 +1754,7 @@ def main():
                 if args.lazy_tensorize
                 else [tensorize_slice(sd, device, args) for sd in heldout_slices_raw]
             )
-            if heldout_slices_raw
+            if heldout_slices_raw and not args.validation_only
             else []
         )
         val_chr_t = (
@@ -1815,92 +1902,97 @@ def main():
 
         pred_rows: Optional[List[Dict]] = [] if args.save_predictions else None
 
-        # Final evaluation on test AND val splits with best model (in-distribution)
-        test_auc, test_details = evaluate_shared(
-            model, predictor, slices_t, "test", args, pred_rows, "train_chr_test"
-        )
-        val_auc_final, val_details = evaluate_shared(
-            model, predictor, slices_t, "val", args, pred_rows, "train_chr_val"
-        )
-        print(
-            f"\n  FINAL {closure_name} (in-dist): test_auc={test_auc:.4f}  best_val={best_val_auc:.4f}"
-        )
-
-        # Merge per-slice val and test AUCs
-        val_by_name = {vd["name"]: vd["val_auc"] for vd in val_details}
-
-        # Build results DataFrame for IN-DISTRIBUTION slices
-        results = []
-        for td in test_details:
-            td["best_val_auc"] = val_by_name.get(td["name"], best_val_auc)
-            td["test_auc"] = td.pop("test_auc")
-            td["epochs_run"] = epoch
-            td["skipped"] = False
-            td["split"] = "train_chr"  # these chromosomes were in the training set
-            results.append(td)
-
-        if val_chr_t:
-            val_chr_test_auc, val_chr_details = evaluate_shared(
-                model, predictor, val_chr_t, "test", args, pred_rows, "val_chr_test"
+        if args.validation_only:
+            results = validation_only_results(
+                model, predictor, slices_t, val_chr_t, args, pred_rows, epoch
             )
-            val_chr_val_auc, val_chr_val_details = evaluate_shared(
-                model, predictor, val_chr_t, "val", args, pred_rows, "val_chr_val"
+        else:
+            # Final evaluation on test AND val splits with best model (in-distribution)
+            test_auc, test_details = evaluate_shared(
+                model, predictor, slices_t, "test", args, pred_rows, "train_chr_test"
             )
-            val_chr_by_name = {
-                vd["name"]: vd["val_auc"] for vd in val_chr_val_details
-            }
+            val_auc_final, val_details = evaluate_shared(
+                model, predictor, slices_t, "val", args, pred_rows, "train_chr_val"
+            )
             print(
-                f"\n  VAL-CHR {closure_name}: test_split_auc={val_chr_test_auc:.4f}  "
-                f"(val_split={val_chr_val_auc:.4f})"
+                f"\n  FINAL {closure_name} (in-dist): test_auc={test_auc:.4f}  best_val={best_val_auc:.4f}"
             )
-            for vd in val_chr_details:
-                vd["best_val_auc"] = val_chr_by_name.get(
-                    vd["name"], val_chr_val_auc
+
+            # Merge per-slice val and test AUCs
+            val_by_name = {vd["name"]: vd["val_auc"] for vd in val_details}
+
+            # Build results DataFrame for IN-DISTRIBUTION slices
+            results = []
+            for td in test_details:
+                td["best_val_auc"] = val_by_name.get(td["name"], best_val_auc)
+                td["test_auc"] = td.pop("test_auc")
+                td["epochs_run"] = epoch
+                td["skipped"] = False
+                td["split"] = "train_chr"  # these chromosomes were in the training set
+                results.append(td)
+
+            if val_chr_t:
+                val_chr_test_auc, val_chr_details = evaluate_shared(
+                    model, predictor, val_chr_t, "test", args, pred_rows, "val_chr_test"
                 )
-                vd["test_auc"] = vd.pop("test_auc")
-                vd["epochs_run"] = epoch
-                vd["skipped"] = False
-                vd["split"] = "val_chr"
-                results.append(vd)
-
-        # ── HELD-OUT CHROMOSOME EVALUATION ───────────────────────────────────
-        if heldout_t:
-            # For held-out slices, we evaluate using ALL their edges as "test"
-            # (not the per-slice train/val/test split, since the model never
-            #  saw any of these slices during training)
-            heldout_test_auc, heldout_details = evaluate_shared(
-                model, predictor, heldout_t, "test", args, pred_rows, "heldout_chr_test"
-            )
-            # Also evaluate on the "train" portion to check consistency
-            heldout_train_auc, _ = evaluate_shared(
-                model, predictor, heldout_t, "train", args, pred_rows, "heldout_chr_train"
-            )
-            heldout_val_auc, heldout_val_details = evaluate_shared(
-                model, predictor, heldout_t, "val", args, pred_rows, "heldout_chr_val"
-            )
-
-            heldout_val_by_name = {
-                vd["name"]: vd["val_auc"] for vd in heldout_val_details
-            }
-
-            print(
-                f"\n  HELD-OUT {closure_name}: test_auc={heldout_test_auc:.4f}  "
-                f"(train_split={heldout_train_auc:.4f}, val_split={heldout_val_auc:.4f})"
-            )
-            print(f"  ^^^ THIS IS THE NUMBER THAT MATTERS FOR THE PAPER ^^^")
-
-            for hd in heldout_details:
-                hd["best_val_auc"] = heldout_val_by_name.get(
-                    hd["name"], heldout_val_auc
+                val_chr_val_auc, val_chr_val_details = evaluate_shared(
+                    model, predictor, val_chr_t, "val", args, pred_rows, "val_chr_val"
                 )
-                hd["test_auc"] = hd.pop("test_auc")
-                hd["epochs_run"] = epoch
-                hd["skipped"] = False
-                hd[
-                    "split"
-                ] = "heldout_chr"  # these chromosomes were NEVER seen during training
-                results.append(hd)
-        # ─────────────────────────────────────────────────────────────────────
+                val_chr_by_name = {
+                    vd["name"]: vd["val_auc"] for vd in val_chr_val_details
+                }
+                print(
+                    f"\n  VAL-CHR {closure_name}: test_split_auc={val_chr_test_auc:.4f}  "
+                    f"(val_split={val_chr_val_auc:.4f})"
+                )
+                for vd in val_chr_details:
+                    vd["best_val_auc"] = val_chr_by_name.get(
+                        vd["name"], val_chr_val_auc
+                    )
+                    vd["test_auc"] = vd.pop("test_auc")
+                    vd["epochs_run"] = epoch
+                    vd["skipped"] = False
+                    vd["split"] = "val_chr"
+                    results.append(vd)
+
+            # ── HELD-OUT CHROMOSOME EVALUATION ───────────────────────────────────
+            if heldout_t:
+                # For held-out slices, we evaluate using ALL their edges as "test"
+                # (not the per-slice train/val/test split, since the model never
+                #  saw any of these slices during training)
+                heldout_test_auc, heldout_details = evaluate_shared(
+                    model, predictor, heldout_t, "test", args, pred_rows, "heldout_chr_test"
+                )
+                # Also evaluate on the "train" portion to check consistency
+                heldout_train_auc, _ = evaluate_shared(
+                    model, predictor, heldout_t, "train", args, pred_rows, "heldout_chr_train"
+                )
+                heldout_val_auc, heldout_val_details = evaluate_shared(
+                    model, predictor, heldout_t, "val", args, pred_rows, "heldout_chr_val"
+                )
+
+                heldout_val_by_name = {
+                    vd["name"]: vd["val_auc"] for vd in heldout_val_details
+                }
+
+                print(
+                    f"\n  HELD-OUT {closure_name}: test_auc={heldout_test_auc:.4f}  "
+                    f"(train_split={heldout_train_auc:.4f}, val_split={heldout_val_auc:.4f})"
+                )
+                print(f"  ^^^ THIS IS THE NUMBER THAT MATTERS FOR THE PAPER ^^^")
+
+                for hd in heldout_details:
+                    hd["best_val_auc"] = heldout_val_by_name.get(
+                        hd["name"], heldout_val_auc
+                    )
+                    hd["test_auc"] = hd.pop("test_auc")
+                    hd["epochs_run"] = epoch
+                    hd["skipped"] = False
+                    hd[
+                        "split"
+                    ] = "heldout_chr"  # these chromosomes were NEVER seen during training
+                    results.append(hd)
+            # ─────────────────────────────────────────────────────────────────────
 
         results_df = pd.DataFrame(results)
         results_df["exp_label"] = exp_label.lstrip("_")

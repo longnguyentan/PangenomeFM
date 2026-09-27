@@ -457,6 +457,7 @@ def _load_frozen_graph_model(
         if args.get("pop_cond")
         else 0,
         stream_mode=str(checkpoint.get("stream_mode", args.get("stream_mode", "full"))),
+        graph_message_direction=str(args.get("graph_message_direction", "incoming")),
     )
     model.load_state_dict(checkpoint["model_state"])
     model.to(device).eval()
