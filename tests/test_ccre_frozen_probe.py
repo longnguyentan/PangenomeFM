@@ -97,3 +97,45 @@ def test_validation_development_never_scores_heldout_features_or_labels() -> Non
     pd.testing.assert_frame_equal(metrics, other)
     with pytest.raises(ValueError, match='overlap'):
         MODULE.evaluate_feature_sets(**dict(kwargs, val_chrs={'chr1'}))
+
+
+def test_manuscript_extraction_policy_matches_window_universe_without_changing_features(tmp_path):
+    from models.dual_stream_gat import DualStreamPangenomeGAT
+    from tasks.ccre.embedding_baseline import _extract_embeddings
+    from scripts.server.prepare_node_sequence_fm_cache import sha256_file
+
+    segments, rows = [], []
+    for window in range(2):
+        ids = np.arange(30) + window * 30
+        seg = pd.DataFrame(dict(name=ids.astype(str), id=ids, seq="ACGTACGTAC", LN=10, SO=ids * 10, SN="GRCh38#0#chr2", SR=0))
+        links = pd.DataFrame(dict(from_seg=ids[:-1], to_seg=ids[1:], from_orient="+", to_orient="+"))
+        edges = pd.DataFrame(dict(u_oid=np.r_[ids[:12] * 2, ids[:12] * 2],
+                                  v_oid=np.r_[ids[1:13] * 2, ids[2:14] * 2], label=[1] * 12 + [0] * 12))
+        if window == 1:
+            edges = edges.iloc[:0]  # Native v2 extraction keeps this; v1 excludes it.
+        paths = [tmp_path / f"{window}_{kind}.csv" for kind in ["segments", "links", "edges"]]
+        for frame, path in zip([seg, links, edges], paths):
+            frame.to_csv(path, index=False)
+        rows.append(dict(name=f"window{window}", closure="1hop", target_sn="GRCh38#0#chr2",
+                         segments_path=str(paths[0]), links_path=str(paths[1]), edge_pred_path=str(paths[2])))
+        segments.append(seg)
+    full, manifest = tmp_path / "full.csv", tmp_path / "manifest.csv"
+    pd.concat(segments).to_csv(full, index=False)
+    pd.DataFrame(rows).to_csv(manifest, index=False)
+    args = dict(hidden_dim=8, n_heads=2, n_layers=1, dropout=0, stream_mode="graph",
+                node_structure_source="visible", objective="junction_repair", seed=42, split_seed=20260806)
+    model = DualStreamPangenomeGAT(in_dim=7, hidden_dim=8, n_heads=2, n_layers=1, dropout=0, stream_mode="graph", edge_mlp_dim=16)
+    checkpoint = tmp_path / "checkpoint.pt"
+    torch.save(dict(model_state=model.state_dict(), args=args, in_dim=7, edge_feat_dim=0), checkpoint)
+    before = sha256_file(checkpoint)
+    kwargs = dict(checkpoint=checkpoint, manifest=manifest, full_segments=full,
+                  labeled_segids=set(range(60)), closure="1hop", device_name="cpu", seed=42,
+                  return_canonical_audit=True)
+    native, _, _ = _extract_embeddings(**kwargs)
+    common, _, audit = _extract_embeddings(**kwargs, extraction_candidate_policy="manuscript")
+    assert set(native) == set(range(60)) and set(common) == set(range(30))
+    assert audit["retained_slices"] == ["window0"]
+    assert audit["checkpoint_objective"] == "junction_repair"
+    for key in common:
+        np.testing.assert_array_equal(common[key], native[key])
+    assert sha256_file(checkpoint) == before

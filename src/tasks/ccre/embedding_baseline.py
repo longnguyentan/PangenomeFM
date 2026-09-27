@@ -103,6 +103,7 @@ def _extract_embeddings(
     target_chrs: set[str] | None = None,
     canonical_conflict_policy: str = "error",
     return_canonical_audit: bool = False,
+    extraction_candidate_policy: str = "checkpoint",
 ):
     if not TORCH_AVAILABLE:
         raise ImportError("PyTorch is required for frozen embedding extraction.")
@@ -120,6 +121,14 @@ def _extract_embeddings(
     md = build_oid_metadata_from_segments(segments, seg_index)
     model, predictor = _build_model_from_checkpoint(ckpt, eval_args, device)
     del predictor
+    if extraction_candidate_policy not in {"checkpoint", "manuscript"}:
+        raise ValueError("Unknown frozen extraction candidate policy")
+    checkpoint_objective = getattr(eval_args, "objective", "edge_masking")
+    if extraction_candidate_policy == "manuscript":
+        # Select the historical eligible windows for every compared encoder.
+        # This changes loader eligibility only; weights, node features and the
+        # unmasked graph passed to encode_nodes retain checkpoint semantics.
+        eval_args.objective = "edge_masking"
 
     manifest_df = pd.read_csv(manifest)
     if closure != "all":
@@ -135,6 +144,9 @@ def _extract_embeddings(
     sums: dict[int, np.ndarray] = {}
     counts: dict[int, int] = defaultdict(int)
     canonical_audit = {
+        "extraction_candidate_policy": extraction_candidate_policy,
+        "checkpoint_objective": checkpoint_objective,
+        "retained_slices": [],
         "canonical_conflict_policy": canonical_conflict_policy,
         "slices_with_conflicting_pairs": 0,
         "orientation_equivalent_conflicting_pairs": 0,
@@ -145,6 +157,7 @@ def _extract_embeddings(
         sd_raw = load_slice(row, seg_index, md, segments, eval_args)
         if sd_raw is None:
             continue
+        canonical_audit["retained_slices"].append(str(row["name"]))
         slice_audit = sd_raw.get("canonical_candidate_audit", {})
         conflicts = int(
             slice_audit.get("orientation_equivalent_conflicting_pairs", 0)

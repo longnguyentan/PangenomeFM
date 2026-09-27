@@ -9,12 +9,15 @@ joins, chromosome partitions, calibration, metrics and output validation.
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import os
 from pathlib import Path
+from queue import Queue
 import subprocess
 import sys
+from threading import Lock
 
 
 def main() -> int:
@@ -31,7 +34,13 @@ def main() -> int:
                     help="Use C+S, C+S+T, C+S+H, C+S+H+T for the bounded development comparison")
     ap.add_argument("--candidate-checkpoint", action="append", default=[], metavar="NAME=PATH",
                     help="Additional explicitly named checkpoints; requires one context")
+    ap.add_argument("--models", nargs="+", help="Explicit subset; default runs every provided model")
+    ap.add_argument("--extraction-candidate-policy", choices=["checkpoint", "manuscript"], default="checkpoint")
+    ap.add_argument("--probe-gpus", type=int, nargs="+",
+                    help="Run independent probes concurrently, one at a time per listed GPU")
     args = ap.parse_args()
+    if args.probe_gpus and (len(set(args.probe_gpus)) != len(args.probe_gpus) or args.device != "cuda"):
+        raise ValueError("Parallel probe GPUs must be unique and use --device cuda")
     candidates = []
     for specification in args.candidate_checkpoint:
         name, path = specification.split("=", 1)
@@ -44,6 +53,9 @@ def main() -> int:
         raise ValueError("Duplicate candidate checkpoint names")
     if candidates and len(args.contexts) != 1:
         raise ValueError("Candidate checkpoints require one explicit context")
+    selected_models = args.models or ["v1", "random", *[name for name, _ in candidates]]
+    if len(set(selected_models)) != len(selected_models) or set(selected_models) - {"v1", "random", *[name for name, _ in candidates]}:
+        raise ValueError("Unknown or duplicate model selection")
     out = args.out_root.resolve()
     if out.exists():
         raise FileExistsError(f"Use a new output root: {out}")
@@ -81,9 +93,12 @@ def main() -> int:
             raise ValueError(f"Expected one canonical checkpoint in {root}; found {len(matches)}")
         trained = matches[0]
         random = out / f"random_init/{context}.pt"
-        commands.append([sys.executable, "scripts/make_random_init_checkpoint.py", "--checkpoint",
-                         str(trained), "--out", str(random), "--seed", str(args.seed)])
+        if "random" in selected_models:
+            commands.append([sys.executable, "scripts/make_random_init_checkpoint.py", "--checkpoint",
+                             str(trained), "--out", str(random), "--seed", str(args.seed)])
         for model, checkpoint in [("v1", trained), ("random", random), *candidates]:
+            if model not in selected_models:
+                continue
             for task in ("sv", "ccre"):
                 command = [sys.executable, f"scripts/server/run_{task}_frozen_probe_fold.py",
                            "--checkpoint", str(checkpoint), "--manifest",
@@ -92,6 +107,7 @@ def main() -> int:
                            "--seed", str(args.seed), "--closure", context, "--device", args.device,
                            "--external-sequence-cache", str(nt), "--minimum-external-coverage", "1.0",
                            "--topology-control-cache", str(topology),
+                           "--extraction-candidate-policy", args.extraction_candidate_policy,
                            "--out-dir", str(out / "probes" / model / task / context),
                            "--test-chrs", *fold["test"], "--val-chrs", *fold["validation"]]
                 if task == "sv":
@@ -112,6 +128,7 @@ def main() -> int:
                 commands.append(command)
     out.mkdir(parents=True)
     plan = {"status": "planned", "scope": "exploratory development control; no v2 promotion",
+            "models": selected_models, "extraction_candidate_policy": args.extraction_candidate_policy,
             "evaluation_partition": "development_validation" if args.validation_only else "test",
             "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
             "graph_sha256": digest, "fold": fold, "seed": args.seed,
@@ -128,14 +145,45 @@ def main() -> int:
 
     save()
     env = dict(os.environ, PYTHONPATH="src:.", OMP_NUM_THREADS="4", OPENBLAS_NUM_THREADS="4", MKL_NUM_THREADS="4")
-    try:
-        for index, command in enumerate(commands):
+    lock = Lock()
+    completed = set()
+    available = Queue()
+    for gpu in args.probe_gpus or []:
+        available.put(gpu)
+
+    def execute(index: int, command: list[str], parallel: bool = False) -> None:
+        gpu = available.get() if parallel else None
+        child_env = dict(env, CUDA_VISIBLE_DEVICES=str(gpu)) if parallel else env
+        with lock:
             plan.update(status="running", active_command=index)
+            plan.setdefault("gpu_assignments", {})[str(index)] = gpu
             save()
+        try:
             with (out / f"command_{index:02d}.log").open("w") as handle:
-                subprocess.run(command, env=env, stdout=handle, stderr=subprocess.STDOUT, check=True)
-            plan["completed_commands"] = index + 1
-            save()
+                subprocess.run(command, env=child_env, stdout=handle, stderr=subprocess.STDOUT, check=True)
+            with lock:
+                completed.add(index)
+                plan.update(completed_commands=len(completed), completed_command_indices=sorted(completed))
+                save()
+        finally:
+            if parallel:
+                available.put(gpu)
+
+    try:
+        if args.probe_gpus:
+            probes = []
+            for index, command in enumerate(commands):
+                if command[1] in {"scripts/server/run_ccre_frozen_probe_fold.py", "scripts/server/run_sv_frozen_probe_fold.py"}:
+                    probes.append((index, command))
+                else:
+                    execute(index, command)
+            with ThreadPoolExecutor(max_workers=len(args.probe_gpus)) as pool:
+                futures = [pool.submit(execute, index, command, True) for index, command in probes]
+                for future in futures:
+                    future.result()
+        else:
+            for index, command in enumerate(commands):
+                execute(index, command)
     except Exception as error:
         plan.update(status="failed", error=str(error))
         save()

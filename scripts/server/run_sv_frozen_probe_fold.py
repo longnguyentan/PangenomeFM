@@ -169,6 +169,7 @@ def run_probe(
     canonical_conflict_policy: str = "exclude",
     topology_control_cache: Path | None = None,
     validation_only: bool = False,
+    extraction_candidate_policy: str = "checkpoint",
 ) -> dict[str, object]:
     if out_dir.exists():
         raise FileExistsError(f"Refusing to overwrite output: {out_dir}")
@@ -197,6 +198,7 @@ def run_probe(
         max_slices=max_slices,
         canonical_conflict_policy=canonical_conflict_policy,
         return_canonical_audit=True,
+        extraction_candidate_policy=extraction_candidate_policy,
     )
     external_values: np.ndarray | None = None
     external_positions: dict[int, int] = {}
@@ -371,6 +373,7 @@ def main() -> int:
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--max-slices", type=int)
     parser.add_argument("--validation-only", action="store_true")
+    parser.add_argument("--extraction-candidate-policy", choices=["checkpoint", "manuscript"], default="checkpoint")
     parser.add_argument("--external-sequence-cache", type=Path)
     parser.add_argument("--minimum-external-coverage", type=float, default=0.95)
     parser.add_argument("--feature-sets", nargs="+")
@@ -405,6 +408,7 @@ def main() -> int:
         canonical_conflict_policy=args.canonical_conflict_policy,
         topology_control_cache=args.topology_control_cache,
         validation_only=args.validation_only,
+        extraction_candidate_policy=args.extraction_candidate_policy,
     )
     return 0
 

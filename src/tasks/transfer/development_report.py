@@ -62,6 +62,8 @@ def contrasts(frame: pd.DataFrame) -> pd.DataFrame:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--reference-root", type=Path,
+                        help="Reuse completed v1/random probes; other models in this source are ignored")
     parser.add_argument("--out-dir", type=Path, required=True)
     args = parser.parse_args()
     receipt = json.loads((args.root / "status.json").read_text())
@@ -70,8 +72,14 @@ def main() -> None:
             or receipt.get("evaluation_partition") != "development_validation"
             or not receipt.get("encoders_frozen")):
         raise ValueError("Incomplete or incorrectly scoped development receipt")
+    reference_root = args.reference_root or args.root
+    reference = json.loads((reference_root / "status.json").read_text())
+    if (reference.get("evaluation_partition") != "development_validation"
+            or not reference.get("encoders_frozen") or reference["fold"] != receipt["fold"]
+            or reference["seed"] != receipt["seed"] or reference["graph_sha256"] != receipt["graph_sha256"]):
+        raise ValueError("Reference development source differs in scope, folds or graph")
     frame = pd.concat([
-        audited_run(args.root / "probes" / model / task / "1hop", model, task,
+        audited_run((reference_root if model in ["v1", "random"] else args.root) / "probes" / model / task / "1hop", model, task,
                     receipt["fold"]["name"], receipt["seed"], "1hop", validation_only=True)
         for model, task in product(MODELS, ["sv", "ccre"])
     ], ignore_index=True)
@@ -81,6 +89,8 @@ def main() -> None:
     differences.to_csv(args.out_dir / "paired_differences.csv", index=False)
     (args.out_dir / "audit.json").write_text(json.dumps(dict(
         status="complete", source=fingerprint(args.root / "status.json"),
+        reference_source=fingerprint(reference_root / "status.json"),
+        reference_source_scope="only completed v1/random probes audited; unused candidate probes are excluded",
         n_runs=8, n_folds=1, prediction_identity_and_baseline_invariance="passed",
         scope="development validation; calibration/threshold use these labels; no independent test estimate",
         confidence_intervals="not estimated from a single selected development fold/seed",

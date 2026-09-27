@@ -335,7 +335,8 @@ leave-one-out labels. No substitute performance result is claimed.
 
 A fresh full-file audit found **751,237 canonical graph segments**, versus
 303,425 contiguous IDs in the manuscript NT cache. The previously discussed
-305,070 figure describes benchmark coverage, not the entire processed graph.
+305,070 figure cannot describe the entire processed graph; the exact one-hop
+benchmark union audit below also supersedes it for cache planning.
 The attempted full-graph completion was deliberately interrupted after this
 audit exposed 447,812 missing entries. Its logs/receipt are retained under
 `whole_graph_nt/`; no completed whole-graph cache is claimed.
@@ -365,3 +366,35 @@ PYTHONPATH=src:. python scripts/server/complete_node_sequence_fm_cache.py \
 This supports a future controlled sequence-conditioned graph experiment. Such
 a model must be described as sequence-conditioned, and compared with matched
 raw-input and random-encoder controls; it is not the existing topology-only T.
+
+The exact union audit found **479,477 one-hop benchmark segments across 608
+windows**, with **176,052 missing NT entries** (existing coverage 63.2825%). The
+10,000-entry guard correctly stopped inference. Disk free space was 684 GB;
+the missing float32 matrix is approximately 0.36 GB before compression. Original
+75,857-node shards took 1,730 seconds at batch size 32, providing a rough runtime
+reference before scheduling this now-quantified completion on spare GPUs.
+
+## Biological comparison: universe mismatch caught and corrected
+
+The initial v2 SV extraction has 91,996 training examples versus v1's 91,932;
+both have 43,217 validation examples. Its C+S/H baseline predictions consequently
+change. These initial outputs are retained for diagnosis and are **ineligible
+for a v2-versus-v1 improvement claim**.
+
+Cause: native junction extraction keeps every structural window, whereas the
+historical loader drops windows without enough valid reconstruction candidates.
+The optional `--extraction-candidate-policy manuscript` now applies exactly that
+historical window eligibility to every compared checkpoint, while retaining each
+checkpoint's weights, structure-input policy, and unmasked encoder graph.
+The default extraction path is unchanged. A native fixture with an empty-query
+window verifies the eligible node set, unchanged embeddings on retained nodes,
+and unchanged checkpoint checksum. Retained window names are recorded.
+
+The corrected v2 and v2-random probes run under a fresh
+`biological_validation_common/` directory with this shared policy. The completed
+v1/random reference probes can be reused from the initial root. The report's
+`--reference-root` explicitly records that provenance and ignores the initial
+candidate-model probes. It still refuses any unequal training counts, validation
+identities, or non-embedding predictions. Independent probes can run concurrently
+on explicit distinct GPUs; a concurrency test checks prerequisite order, exclusive
+GPU allocation and complete receipts.
