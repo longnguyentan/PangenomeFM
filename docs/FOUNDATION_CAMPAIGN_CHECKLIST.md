@@ -20,6 +20,23 @@ Evidence: `docs/ENTEX_EXPERIMENTS.md`, `results/entex/v1/final_report/`,
 `configs/completed_entex_regression_20260922.json`.
 P0/P1 are inconclusive; P2 effects are modest and task/context dependent.
 
+## EN-TEx lab meeting — Tuesday 29 September
+
+- [x] Define exploratory follow-ups before computing their scores; preserve the
+  original completed programme and explicitly identify this as post-primary work.
+- [x] Implement equal-locus-weight evaluation and count-selected donor/tissue
+  strata with fixed macro groups, exact prediction pairing and original-metric controls.
+- [x] Complete both 30-run CTCF/H3K27ac follow-up summaries and all-group figures.
+  The first diagnostic pass exposed the manuscript's probability-clipping convention;
+  the corrected runs reproduced original unweighted metrics within 1e-12.
+- [x] Prepare RNA ASE SNVs: 1,640,580 measurements, 466,867 loci, 23,546 positives.
+- [x] Map all RNA loci to exactly one canonical segment; C/K/S/T coverage is 100%.
+- [x] Finish RNA fold-A/42/strict smoke fit, seven feature sets; no full-matrix CI.
+- [x] Finish the 30-run RNA matrix and complexity analysis. Both global ΔT
+  intervals cross zero; the smoke result is not representative of all folds.
+- [x] Create the separate team brief, `docs/ENTEX_LAB_MEETING_20260929.md`.
+- [x] Add verified completed follow-up results and figures to the team brief.
+
 ## Structural interpretation and external transfer
 
 - [x] Audit original SV target: **insertion versus deletion**, not SV detection.
@@ -55,15 +72,20 @@ groups but smaller in high than low complexity. Retain this result.
 - [x] Evaluate four pilot checkpoints on SV, cCRE and CTCF (12 completed tasks).
 - [x] Complete all 120 full-duration pretraining runs (4 fractions × 5 folds ×
   3 seeds × 2 contexts).
-- [ ] Complete frozen biological scaling evaluation: 360 task evaluations.
-  Last successful server snapshot: 52 complete, 8 planned, with eight CPU
-  workers active and verified pilot outputs reused. Recheck when server usage
-  access is available; no full biological scaling result is claimed.
+- [x] Complete frozen biological scaling evaluation: all 360 task evaluations.
+  Exact baseline-score invariance passed; biological scaling is task/context dependent.
 - [x] Summarize intrinsic scaling after auditing identical held-out targets:
   120 runs; monotonic mean reconstruction gain across four fractions.
-- [ ] Evaluate high-complexity SV across fractions and produce paired figures.
-- [x] Implement the gated 360-task biological scaling aggregator; it requires
-  all seven feature sets and identical paired task universes before summarizing.
+- [x] Evaluate all three native SV complexity strata across fractions and produce paired figures.
+- [x] Implement and test native SV-complexity scaling reports and paired fraction
+  contrasts, reusing the original strata and without selecting bins using outcomes.
+- [x] Correct the scaling aggregator: true balanced accuracy, exact Cartesian
+  task/fraction/fold/seed/context completeness, saved prediction identity/label
+  digests, metric replay, checkpoint provenance and baseline-invariance reports.
+  Actual-prediction smoke checks passed for 21 feature/run rows across all three tasks.
+- [x] Launch bounded dependent finalization for the running scaling workflow.
+  It summarizes only after all 360 run audits are complete; upstream failures or
+  a 24-hour timeout stop it. Status: `scaling_finalization_status.json` in the campaign root.
 - [x] Audit parameter counts, training budgets, checkpoint selection and
   comparability to the newly trained 100% control (52,033 parameters; report
   variable epochs/window counts, not compute-matched scaling).
@@ -108,20 +130,49 @@ Window scaling is not haplotype-diversity scaling or a scaling law.
 - [x] Compile and visually verify revised PDF, figures, tables and citations.
 - [ ] Final funding/author contributions/acknowledgements: awaiting author details.
 - [x] Run scoped tests, cached regression, lint, compile and provenance checks.
-- [x] Commit/push this increment. GitHub branch and server checkout are synced
-  at `eb4f0f2`.
+- [x] Commit/push implementation increments and fast-forward the server checkout.
+  The exact current commit is obtained with `git rev-parse HEAD`; do not confuse
+  code synchronization with completion of the long-running experiments.
 
 ## Current access and next action
 
 - [x] SSH reauthenticated; server status was successfully checked and the
   checkout was fast-forwarded. No passwords are stored in the project.
-- [ ] Diagnose six HG008 reconstruction failures. A label-free subset test found
-  repeated GPU extraction differences up to 2.7e-6. The fixed-feature diagnostic
-  is running on the server; its first exact-matrix C+S refit differs from the
-  archived score by +0.000438 AUPRC, while repeated/C+S+T fits remain pending.
-  This is evidence for a numerical/probe-reconstruction issue, not permission
-  to relax the 1e-4 gate.
+- [x] Complete label-free embedding and fixed-feature numerical diagnostics.
+  Repeated GPU extraction differs by at most 2.7e-6 on the fixed subset; CPU/GPU
+  differences are larger. Identical one-thread C+S+T fits repeat exactly, but four
+  threads change AP by −0.000285 relative to one thread. The one-thread C+S refit
+  differs from the historical score by +0.000438 AP. These identify numerical
+  sensitivity without proving exact historical feature/fit reconstruction.
+- [ ] Resolve historical HG008 replay before claiming a complete external result.
+  The original fitted probes and historical embedding matrices were not retained;
+  do not select a passing numerical setting or relax the 1e-4 gate. Compact
+  diagnostics are under `results/downstream_v2/v1/qc/numerical_diagnostics/`.
   Detached biological jobs do not depend on the SSH window remaining connected.
 
 Unrelated user edits are left intact. No passwords are stored in this checklist,
 commands, repository or output artifacts.
+
+## Independent v2 review — 27 September UTC / 26 September EDT
+
+- [x] Preserve the other LLM's branch and uncommitted changes; work on
+  `codex/v2-evidence-review-20260927` in an isolated worktree.
+- [x] Verify prior results and read the professor-goal summary as supplied evidence.
+- [x] Fix capped-eight branch-distance computation and missing-coordinate geometry.
+- [x] Balance junction endpoint counts; preserve coordinate systems/orientations;
+  enforce declared tolerances, stable canonical storage, and mandatory masking.
+- [x] Test v1 compatibility and reviewed modules (64 scoped tests before cycle fix;
+  cycle regression added separately). No biological encoder fine-tuning.
+- [x] Run initial canonical HPRC audit: whole-span matching loses too many candidates;
+  save the result and replace it with admissible balanced cycles, not looser labels.
+- [ ] Complete and review cycle-sampler audit, retained counts and residual cues.
+- [ ] Complete fold-A frozen H/R controls on SV and cCRE in both contexts.
+- [ ] Run v2 training only after candidate and masking readiness gates pass.
+- [ ] Fix a validation-only selection protocol; no fold used to choose settings
+  may be described as an untouched test. Existing explored v1 folds are disclosed.
+- [ ] Stronger sequence-model and allele-aware/genotypability benchmarks require
+  versioned inputs and a shared evaluation universe; see the v2 review plan.
+
+The review report and executable control command are in
+`docs/V2_EVIDENCE_REVIEW_20260927.md`. Completion of this checklist does not imply
+superiority or venue readiness; those depend on observed comparative evidence.

@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import pytest
+import json
+from itertools import product
 
 from tasks.entex.measurement_followups import (
     eligibility,
@@ -82,3 +84,97 @@ def test_metadata_pairing_detects_donor_changes_and_not_row_order():
     )
     assert identity_digest(frame) == identity_digest(frame.iloc[::-1])
     assert identity_digest(frame) != identity_digest(frame.assign(donor="d1"))
+
+
+def test_full_followup_workflow_pairs_all_runs_and_rejects_missing_run(
+    tmp_path, monkeypatch
+):
+    from tasks.entex.analyze import BASE, FULL
+    from tasks.entex.measurement_followups import run
+    from scripts.server.run_ccre_frozen_probe_fold import binary_metrics
+
+    monkeypatch.chdir(tmp_path)
+    configs = tmp_path / "configs"
+    configs.mkdir()
+    folds = [dict(name=f"fold_{i}", test=[f"chr{i}"]) for i in range(1, 6)]
+    (configs / "entex_v1.json").write_text(
+        json.dumps(dict(manuscript_config="configs/folds.json"))
+    )
+    (configs / "folds.json").write_text(
+        json.dumps(
+            dict(
+                rotating_chromosome_folds=folds,
+                training=dict(
+                    seeds=[42, 314159, 20260806], contexts=["strict", "1hop"]
+                ),
+            )
+        )
+    )
+    protocol = configs / "followups.json"
+    protocol.write_text(
+        json.dumps(
+            dict(
+                prediction_followups=dict(
+                    assays=["ctcf"],
+                    strata=["donor", "tissue"],
+                    minimum_measurements_per_test_fold=4,
+                    minimum_positive_per_test_fold=1,
+                    minimum_negative_per_test_fold=1,
+                    n_bootstrap=20,
+                    bootstrap_seed=7,
+                    limitations="synthetic test",
+                )
+            )
+        )
+    )
+    root = tmp_path / "predictions"
+    for fold, seed, context in product(
+        folds, [42, 314159, 20260806], ["strict", "1hop"]
+    ):
+        directory = root / fold["name"] / f"seed_{seed}" / context
+        directory.mkdir(parents=True)
+        frames, metrics = [], []
+        for feature, probability in [
+            (BASE, [0.1, 0.6, 0.8, 0.7]),
+            (FULL, [0.1, 0.2, 0.8, 0.7]),
+        ]:
+            f = pd.DataFrame(
+                dict(
+                    measurement_id=[fold["name"] + str(i) for i in range(4)],
+                    locus_id=[fold["name"] + str(i) for i in range(4)],
+                    chrom=fold["test"] * 4,
+                    donor=["d"] * 4,
+                    tissue=["t"] * 4,
+                    y_true=[0, 0, 1, 1],
+                    feature_set=feature,
+                    p_calibrated=probability,
+                )
+            )
+            frames.append(f)
+            metrics.append(
+                dict(
+                    feature_set=feature,
+                    positive_prevalence=0.5,
+                    **binary_metrics(
+                        f.y_true.to_numpy(), f.p_calibrated.to_numpy(), 0.5
+                    ),
+                )
+            )
+        pd.concat(frames).to_parquet(directory / "predictions.parquet", index=False)
+        pd.DataFrame(metrics).to_csv(directory / "metrics.csv", index=False)
+    run(root, tmp_path / "analysis", protocol, "ctcf")
+    audit = json.loads((tmp_path / "analysis/audit.json").read_text())
+    assert audit["n_prediction_runs"] == 30 and audit["n_loci"] == 20
+    gains = pd.read_csv(tmp_path / "analysis/paired_gains.csv")
+    assert gains.n_runs.eq(15).all() and gains.n_folds.eq(5).all()
+    assert set(gains.analysis) == {
+        "measurement_weight",
+        "equal_locus_weight",
+        "donor",
+        "tissue",
+        "donor_macro",
+        "tissue_macro",
+    }
+    next(root.rglob("predictions.parquet")).unlink()
+    with pytest.raises(ValueError, match="Incomplete"):
+        run(root, tmp_path / "bad", protocol, "ctcf")

@@ -1,7 +1,7 @@
 # EN-TEx biological transfer — team brief for Tuesday, 29 September 2026
 
 Prepared 26 September 2026. This document separates completed biological
-results, exploratory follow-ups, and experiments still running. The maintained
+results, completed exploratory follow-ups, and remaining limitations. The maintained
 project-wide checklist is [here](FOUNDATION_CAMPAIGN_CHECKLIST.md).
 
 ## 1. What we can currently say
@@ -10,7 +10,8 @@ The original EN-TEx programme is complete: **330 fold/seed/context fits** coveri
 AS-prone cCREs, three predefined cCRE sensitivities, five active/repressed enhancer
 tissues, and CTCF/H3K27ac SNVs. Global cCRE and enhancer gains are inconclusive.
 The strongest current regulatory evidence is a **small, task-dependent gain in
-SNV allelic-imbalance prediction**, especially for the one-hop context.
+SNV allelic-imbalance prediction**, especially for the one-hop context. Equal-locus weighting narrows that claim:
+H3K27ac retains a small positive gain; CTCF becomes inconclusive.
 
 This supports investigating reusable topology information; it does not establish
 universal regulatory improvement, personalized allelic prediction, or a general
@@ -112,8 +113,31 @@ These are donor/tissue-stratified evaluations of the existing pooled model.
 They are **not unseen-donor or unseen-tissue validation**. A donor may have
 measurements in both training and test chromosomes.
 
-Results for A/B are being computed from all 60 original SNV prediction runs.
-Completed values and figure links will be added after both assay audits finish.
+All 60 original SNV runs were re-evaluated, and the unweighted control AP/AUROC
+reproduced the original metrics within 1e-12. The original clipping of probabilities
+to [1e-7, 1−1e-7] is retained, including tied extreme scores.
+
+| Assay | Analysis | Strict ΔAP [95% CI] | One-hop ΔAP [95% CI] |
+|---|---|---:|---:|
+| CTCF | equal locus weight | +0.000183 [-0.000542, +0.000955] | +0.000493 [-0.000343, +0.001323] |
+| CTCF | donor macro | +0.001038 [-0.000041, +0.002338] | +0.002172 [+0.000854, +0.003423] |
+| CTCF | tissue macro | +0.001915 [+0.000417, +0.003968] | +0.003299 [+0.001279, +0.005534] |
+| H3K27AC | equal locus weight | +0.001990 [+0.001105, +0.002731] | +0.002206 [+0.000653, +0.004192] |
+| H3K27AC | donor macro | +0.000766 [-0.000656, +0.002163] | +0.003696 [+0.000425, +0.008464] |
+| H3K27AC | tissue macro | +0.000149 [-0.001244, +0.001542] | +0.003563 [-0.000183, +0.008526] |
+
+Equal-locus CTCF intervals cross zero. H3K27ac retains a small positive effect
+under both contexts, with corresponding positive AUROC gains. These estimates
+refer to a different weighting of the same measured population; they neither
+prove nor rule out measurement ascertainment as the explanation of the original
+effect. Donor/tissue macros are exploratory, correlated, and not multiplicity
+adjusted. All eligible groups, not just favorable ones, are plotted.
+
+[Exact comparison table](../results/entex/meeting_20260929/report/main_comparisons.csv)
+· [Weighting figure](../results/entex/meeting_20260929/report/weighting_auprc.pdf)
+· [Donor figure](../results/entex/meeting_20260929/report/donor_gains.pdf)
+· [Tissue figure](../results/entex/meeting_20260929/report/tissue_gains.pdf).
+
 
 ### C. RNA allele-specific-expression SNV task
 
@@ -138,20 +162,42 @@ The input SHA256 is
 The original calls define positives and measured negatives. All seven feature
 sets use the same locus universe. No model or graph resource was replaced.
 
-Status: preparation/mapping/feature checks passed; the fold-A/42/strict smoke
-fit is running. Full 30-run results are not yet claimed. The task predicts
+**Complete: 30/30 runs, five chromosome folds × three seeds × two contexts.**
+All seven feature sets and within-complexity results are retained.
+
+| RNA context | AP C+S | AP C+S+T | ΔAP [95% CI] |
+|---|---:|---:|---:|
+| Strict | 0.025530 | 0.027099 | +0.001568 [-0.000075, +0.004401] |
+| One-hop | 0.025530 | 0.026996 | +0.001465 [-0.000218, +0.004303] |
+
+Both intervals cross zero: **RNA transfer is inconclusive**. The strong fold-A
+smoke gain (+0.007594) did not generalize uniformly across folds. C+T has the
+highest mean AP in strict context (0.028255); retain that simpler comparator.
+The full matrix supersedes the smoke example for inference.
+[All seven features](../results/entex/meeting_20260929/rna_analysis/summary.csv)
+· [Paired gains](../results/entex/meeting_20260929/rna_analysis/paired_gains.csv)
+· [Strict figure](../results/entex/meeting_20260929/rna_analysis/auprc_strict.svg).
+
+The task predicts
 per-measurement imbalance from a static locus representation, not its direction,
 the causal allele, or a donor-specific sequence effect. The high-confidence
 catalogue selection also differs from the full accessible ChIP-seq source.
 
 ## 5. What belongs in the manuscript
 
+A new masking audit identifies an important intrinsic-benchmark shortcut.
+Frozen downstream scores remain measured results, but superiority to handcrafted
+H features, a random encoder R, and stronger sequence comparators is still being
+tested. Do not equate the pretraining score with learned biological mechanism.
+See [the independent v2 review](V2_EVIDENCE_REVIEW_20260927.md).
+
+
 - **Main text:** concise complete EN-TEx comparison, including inconclusive P0/P1;
   modest SNV gains and their limits. Prefer “topology-native self-supervised
   learning on human pangenome graph connectivity” with frozen biological reuse.
 - **Supplement:** all seven features, exposure/assay sensitivities, complexity
-  strata, donor/tissue and equal-locus analyses, QC and per-run tables. RNA is an
-  exploratory extension until the full matrix has completed and been audited.
+  strata, donor/tissue and equal-locus analyses, QC and per-run tables. RNA is a completed
+  exploratory extension with an inconclusive multi-fold result.
 - **Keep separate:** intrinsic reconstruction scaling versus biological scaling;
   donor-stratified versus donor-held-out testing; insertion/deletion classification
   versus detecting SV breakpoints. Current complexity prevalence gradients alone
@@ -163,7 +209,7 @@ catalogue selection also differs from the full accessible ChIP-seq source.
 
 | Item | Current evidence / next step |
 |---|---|
-| Biological pretraining scaling | 120 pretraining runs complete; 360 frozen task evaluations running. Audit exact prediction identities/labels and then summarize, including native SV complexity. |
+| Biological pretraining scaling | 120 pretraining and all 360 frozen biological evaluations complete, including native SV complexity. Identical baseline predictions across fractions. Gains are task/context dependent; see the campaign report. |
 | HG008 historical-probe replay | 24/30 passed; six fail the unchanged 1e-4 AP gate. Numerical diagnostics are complete: identical one-thread fits repeat exactly; four-thread fits differ. Original fitted probes were not saved, so exact historical replay remains unresolved. No gate relaxation or selected-run full summary. |
 | Path auxiliary objective and controls | Canonical SV graph has no paths; full-resolution path node IDs do not match its segments. Requires an explicit compatible experimental representation before training; no silent graph substitution. |
 | Strict unseen-donor / population transfer | Requires donor-excluded graph construction and audited donor/ancestry metadata. Hiding path labels does not remove donor-contributed topology. |
@@ -201,7 +247,7 @@ bash scripts/server/run_entex_meeting_20260929.sh followups
   `per_run.csv`, `summary.csv`, `paired_gains.csv`, eligibility and prediction audits.
 - Meeting figures: `results/entex/meeting_20260929/report/` (PDF/SVG/300-dpi PNG).
 - RNA server fits: `results/entex/meeting_20260929/{rna_smoke,rna}/`;
-  full analysis, once complete: `results/entex/meeting_20260929/rna_analysis/`.
+  completed full analysis: `results/entex/meeting_20260929/rna_analysis/`.
 - RNA preparation/mapping: `data/entex/meeting_20260929/rna/` (large data stay out of Git).
 - Existing manuscript working source: `manuscript/revision_20260924/`.
 
@@ -209,7 +255,7 @@ bash scripts/server/run_entex_meeting_20260929.sh followups
 
 1. **5 min:** agree on the task definitions, prevalence and frozen-reuse question.
 2. **10 min:** examine the complete primary/sensitivity table, including null results.
-3. **10 min:** review equal-locus weighting, all donor/tissue strata, and RNA status.
+3. **10 min:** review equal-locus weighting, all donor/tissue strata, and the completed, inconclusive RNA result.
    Check whether the effect survives a change in the evaluation population.
 4. **5 min:** decide what belongs in the main text and which distinct path/donor
    experiments justify additional data/model work. Do not select assays or bins

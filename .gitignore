@@ -389,3 +389,21 @@ docs/PSB_EXPERIMENT_PLAN.md
 !/results/entex/meeting_20260929/rna_analysis/
 !/results/entex/meeting_20260929/rna_analysis/**
 /server_reports
+
+# Independent v2 review: compact evidence only.
+!/docs/V2_EVIDENCE_REVIEW_20260927.md
+!/results/foundation_campaign/20260924/scaling_bio_summary/
+!/results/foundation_campaign/20260924/scaling_bio_summary/**
+!/results/v2_review_20260927/
+/results/v2_review_20260927/*
+!/results/v2_review_20260927/candidate_audit_strict/
+!/results/v2_review_20260927/candidate_audit_strict/**
+!/results/v2_review_20260927/cycle_audit_strict/
+!/results/v2_review_20260927/cycle_audit_strict/**
+!/results/v2_review_20260927/sequence_review/
+!/results/v2_review_20260927/sequence_review/**
+!/results/v2_review_20260927/sv_label_feasibility.json
+!/results/v2_review_20260927/smoke_evidence/
+!/results/v2_review_20260927/smoke_evidence/**
+!/results/v2_review_20260927/control_summary/
+!/results/v2_review_20260927/control_summary/**

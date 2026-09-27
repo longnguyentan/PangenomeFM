@@ -62,7 +62,8 @@ Outputs: `results/foundation_campaign/20260924/donor_sv/` and
 ## HG008 regression stop
 
 24/30 jobs passed the fixed original-probe AP tolerance; six stopped before
-external completion. The C+S original scores reproduce to numerical precision.
+external completion. In that four-thread replay, the C+S original scores
+reproduced to numerical precision; this is not true for every numerical setting.
 C+S+T AP differences in failed runs range in absolute value from approximately
 0.00010 to 0.00045. A fresh execution of the original SV pipeline on
 fold D/42/strict also differed from the archived topology-probe scores
@@ -135,7 +136,7 @@ and the same 52,033 trainable parameters. No large pretrained encoder was change
 
 Paired 100%-minus-12.5% gains are 0.023602 [0.021548, 0.025747] strict and
 0.026464 [0.025285, 0.027924] one-hop. This is an **intrinsic reconstruction**
-result, not yet downstream scaling evidence. Window counts are rounded upward
+result, distinct from the completed downstream scaling analysis below. Window counts are rounded upward
 within chromosomes and unusable slices retain the trainer's exclusions. Actual
 counts and epochs are in `scaling_intrinsic/per_run.csv`. Its
 `training_candidate_count` counts available positive+negative candidates in
@@ -151,7 +152,7 @@ PYTHONPATH=src:. python -m tasks.transfer.scaling_intrinsic \
 # An existing completed output directory is never overwritten.
 ```
 
-Frozen biological evaluation is running: four fractions × 30 checkpoint runs ×
+Frozen biological evaluation is complete: four fractions × 30 checkpoint runs ×
 three tasks (SV, cCRE, EN-TEx CTCF) = **360 task evaluations**. The 12 completed
 pilot evaluations are reused only after checkpoint/audit verification. Eight
 CPU batches use the same device as the pilots; no biological labels update the
@@ -185,4 +186,67 @@ window counts retained. All ten headline means remain identical within 1e-12;
 a synthetic unequal-window-count test guards the distinction. This correction
 does not change original downstream probes or the four cached regression anchors.
 The working LaTeX includes completed EN-TEx, structural and intrinsic scaling
-findings while explicitly withholding unfinished biological scaling/HG008 claims.
+findings while with the completed biological scaling addendum below; HG008 remains incomplete.
+
+### Numerical diagnostics and finalization update
+
+The fixed-feature diagnostic is complete. Two one-thread topology-probe fits
+produced identical probabilities; changing to four threads changed the maximum
+probability by 0.01668 and AP by approximately −0.000285. The one-thread C+S
+control shifted +0.000438 AP from the archive. Repeated GPU extraction on 5,632
+segments differed by at most 2.68e-6, whereas CPU-versus-GPU maximum error was
+0.03315 (relative L2 0.000312). These tests implicate numerical sensitivity but do
+not isolate the complete historical replay discrepancy. Original probes and
+historical embedding matrices were not saved. The HG008 gate remains unchanged.
+
+The biological summary now checks the full task/fraction/fold/seed/context
+Cartesian product, recomputes AP and balanced accuracy from saved predictions,
+and hashes actual test identities/labels. It also reports baseline-score
+invariance across fractions, native SV-complexity results, paired fraction
+contrasts and PDF/SVG/PNG figures. Ordinary accuracy is no longer mislabeled as
+balanced accuracy. The saved probabilities are clipped according to the original
+`binary_metrics` convention before metric replay. A three-task smoke audit
+verified all seven features in one completed run per task.
+
+The completed workflow used this bounded dependent finalizer:
+
+```bash
+PYTHONPATH=src:. OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+python scripts/server/finalize_scaling_biology.py \
+  --probe-root results/foundation_campaign/20260924/scaling_probes \
+  --out-dir results/foundation_campaign/20260924/scaling_bio_summary \
+  --status-file results/foundation_campaign/20260924/scaling_finalization_status.json
+```
+
+It waits for the exact 360 completed audit files, stops on upstream failure or
+timeout, then runs the full summary. It does not retry failures or promote partial
+results. EN-TEx meeting follow-ups are described separately in
+[ENTEX_LAB_MEETING_20260929.md](ENTEX_LAB_MEETING_20260929.md).
+
+## Completed biological scaling — verified 27 September UTC
+
+All 360 task runs and the dependent report completed. Saved predictions verify
+unchanged test identifiers/labels, metric replay, checkpoint provenance, and
+**exact baseline score invariance** across fractions (maximum baseline AP range
+0). The primary comparison below is C+S+T at 100% versus 12.5% training windows,
+paired within fold/seed; it is not a comparison to archived manuscript weights.
+
+| Task | Strict AP change [95% CI] | One-hop AP change [95% CI] |
+|---|---:|---:|
+| sv | +0.003482 [+0.003088, +0.003854] | -0.001510 [-0.002831, -0.000656] |
+| ccre | -0.000315 [-0.000656, +0.000032] | +0.000900 [+0.000372, +0.001457] |
+| ctcf | -0.000234 [-0.001885, +0.001038] | -0.001301 [-0.004046, +0.001231] |
+| sv_complexity_low | +0.003757 [+0.002610, +0.005002] | -0.002078 [-0.006291, -0.000011] |
+| sv_complexity_medium | +0.004443 [+0.003287, +0.005739] | -0.001581 [-0.002491, -0.000484] |
+| sv_complexity_high | +0.002619 [+0.001838, +0.003447] | -0.001366 [-0.002053, -0.000579] |
+
+Strict SV improves, whereas one-hop SV declines slightly. One-hop cCRE improves;
+strict cCRE and CTCF do not show a clear improvement. Therefore reconstruction
+scaling does **not** imply universally improving biological transfer. The v1
+masking shortcut further limits a mechanistic interpretation of intrinsic AP.
+No fractions, strata or contexts were dropped because of unfavorable results.
+
+[Full paired contrasts](../results/foundation_campaign/20260924/scaling_bio_summary/paired_vs_full.csv)
+· [SV figure](../results/foundation_campaign/20260924/scaling_bio_summary/scaling_sv.pdf)
+· [cCRE figure](../results/foundation_campaign/20260924/scaling_bio_summary/scaling_ccre.pdf)
+· [CTCF figure](../results/foundation_campaign/20260924/scaling_bio_summary/scaling_ctcf.pdf).

@@ -245,6 +245,11 @@ def main() -> None:
                 encoders_frozen=True,
                 primary_comparison="AUPRC(C+S+T)-AUPRC(C+S)",
                 paired_comparisons_use_same_fold_seed_test_universe=True,
+                baseline_predictions_exactly_invariant=bool(
+                    baseline_audit.exact_score_invariance.all()
+                ),
+                maximum_baseline_auprc_range=float(baseline_audit.ap_range.max()),
+                baseline_caution="Inspect baseline_invariance.csv before interpreting small biological scaling effects; fixed-input numerical probe variation is not a pretraining effect",
                 uncertainty="Hierarchical fold/seed bootstrap; overlapping training folds limit independence",
                 n_bootstrap=args.n_bootstrap,
                 seed=20260924,
