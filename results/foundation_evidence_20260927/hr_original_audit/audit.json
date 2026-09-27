@@ -1,0 +1,20 @@
+{
+  "status": "complete",
+  "n_runs": 8,
+  "n_folds": 1,
+  "seeds": [
+    42
+  ],
+  "source_receipts": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/status.json",
+      "bytes": 16224,
+      "mtime_ns": 1790473909810145995,
+      "sha256": "f0fc68d3b648bf4e72f9054604435a78ac4a5d058c51c656cc7b846b33a8d0a3"
+    }
+  ],
+  "prediction_identity_and_baseline_invariance": "passed",
+  "scope": "exploratory previously inspected chromosomes; no v2 or external confirmation",
+  "n_bootstrap": 10000,
+  "bootstrap_seed": 20260927
+}

@@ -1,0 +1,11 @@
+{
+  "status": "complete",
+  "scope": "source and partition class support; mapping and feature gates remain in their existing runners",
+  "config": "configs/entex_extension_20260927.json",
+  "assays": [
+    "atac",
+    "h3k4me3",
+    "h3k27me3"
+  ],
+  "source_sha256": "e59a83a1595cbe12ba56714af79c297ac9f31b593e13ee44966c732d30d4daa8"
+}

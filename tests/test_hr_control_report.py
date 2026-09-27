@@ -1,4 +1,6 @@
 from itertools import product
+import json
+import sys
 
 import numpy as np
 import pandas as pd
@@ -47,3 +49,39 @@ def test_random_control_gain_pairs_identical_fold_and_seed():
     frame = comparison_frame().query('fold == "fold_a"')
     _, single = summarize(frame, 50)
     assert single.ci95_low.isna().all()
+
+
+@pytest.mark.parametrize("upstream_complete", [True, False])
+def test_report_cli_writes_final_status_and_preserves_validation_error(
+    tmp_path, monkeypatch, upstream_complete
+):
+    from tasks.transfer import hr_control_report as report
+
+    root = tmp_path / "controls"
+    root.mkdir()
+    (root / "status.json").write_text(json.dumps(dict(
+        status="complete" if upstream_complete else "running", completed_commands=10,
+        commands=list(range(10)), fold=dict(name="fold_a"), seed=42,
+        random_initialization_seed=42, encoders_frozen=True,
+    )))
+    out = tmp_path / "report"
+    monkeypatch.setattr(sys, "argv", ["report", "--single-root", str(root),
+                                      "--out-dir", str(out), "--n-bootstrap", "20"])
+    frame = comparison_frame()
+
+    def synthetic_run(directory, model, task, fold, seed, context):
+        return frame.loc[(frame.model == model) & (frame.task == task)
+                         & (frame.fold == fold) & (frame.seed == seed)
+                         & (frame.context == context)].copy()
+
+    monkeypatch.setattr(report, "audited_run", synthetic_run)
+    if upstream_complete:
+        report.main()
+        assert json.loads((out / "audit.json").read_text())["n_runs"] == 8
+        assert json.loads((tmp_path / "report_status.json").read_text())["status"] == "complete"
+    else:
+        with pytest.raises(ValueError, match="Incomplete or mismatched control receipt"):
+            report.main()
+        assert not out.exists()
+        receipt = json.loads((tmp_path / "report_status.json").read_text())
+        assert receipt["status"] == "failed" and receipt["error"].startswith("ValueError:")

@@ -4,15 +4,65 @@
   "scope": "Exploratory extension specified after primary EN-TEx results and before any scores for these three assays",
   "base_config": "configs/entex_v1.json",
   "source_sha256": "e59a83a1595cbe12ba56714af79c297ac9f31b593e13ee44966c732d30d4daa8",
-  "assays": ["atac", "h3k4me3", "h3k27me3"],
+  "assays": [
+    "atac",
+    "h3k4me3",
+    "h3k27me3"
+  ],
   "selection": "Complementary accessibility, active promoter-associated mark and repressive mark; selected from available source assays before fitting; no score-based selection",
   "label": "Supplied imbalance_significance per informative heterozygous SNV/experiment; not binding presence, tissue differential activity or causal variant effect",
   "minimum_per_class_per_partition": 100,
   "folds_seeds_contexts": "Existing 5 chromosome folds x 3 seeds x strict/1hop; all locus repeats stay on their chromosome",
-  "features": ["C", "K", "S", "T", "C+S", "C+T", "C+S+T"],
+  "features": [
+    "C",
+    "K",
+    "S",
+    "T",
+    "C+S",
+    "C+T",
+    "C+S+T"
+  ],
   "encoder_policy": "Canonical graph/checkpoints/NT revision frozen; only original logistic probe trained",
   "primary_comparison": "AUPRC(C+S+T) - AUPRC(C+S)",
-  "secondary": ["AUROC", "normalized AP", "balanced accuracy", "F1", "precision", "recall"],
+  "secondary": [
+    "AUROC",
+    "normalized AP",
+    "balanced accuracy",
+    "F1",
+    "precision",
+    "recall"
+  ],
   "report": "All assays and contexts, including nulls; paired hierarchical fold/seed bootstrap; six exploratory contrasts with fold sign-flip/BH as a sensitivity; no independent biological replicates inferred from seeds",
-  "limitations": "Static segment features predict per-measurement imbalance; no donor-specific allele direction; graph donor membership remains transductive"
+  "limitations": "Static segment features predict per-measurement imbalance; no donor-specific allele direction; graph donor membership remains transductive",
+  "prediction_followups": {
+    "assays": [
+      "atac",
+      "h3k4me3",
+      "h3k27me3"
+    ],
+    "feature_sets": [
+      "C+S",
+      "C+S+T"
+    ],
+    "equal_locus_weight": "Each test measurement has weight 1 / number of test measurements at its locus within the assay and run; labels remain per measurement",
+    "strata": [
+      "donor",
+      "tissue"
+    ],
+    "minimum_measurements_per_test_fold": 200,
+    "minimum_positive_per_test_fold": 10,
+    "minimum_negative_per_test_fold": 10,
+    "eligibility": "Every fold must meet count thresholds; eligibility based only on labels/counts, shared across seeds, contexts and feature sets",
+    "macro": "Equal weight over the same eligible tissues (or donors) within each fold/seed; then paired hierarchical fold/seed bootstrap",
+    "metrics": [
+      "auprc",
+      "auroc",
+      "normalized_ap"
+    ],
+    "normalized_ap": "(AP - weighted positive prevalence) / (1 - weighted positive prevalence)",
+    "n_bootstrap": 10000,
+    "bootstrap_seed": 20260927,
+    "limitations": "Pointwise exploratory intervals; overlapping training folds and multiple analyses. Donor/tissue stratification is not donor/tissue-held-out fitting. Reweighting changes evaluation, not the original training objective."
+  },
+  "followups_definition": "Added during this implementation, before any new-assay smoke scores were inspected; thresholds reused unchanged from the completed primary-assay follow-ups"
 }

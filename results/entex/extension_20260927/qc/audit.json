@@ -1,0 +1,501 @@
+{
+  "version": 2,
+  "source": {
+    "path": "/home/tuv43532/PangenomeFM/data/entex/sources/hetSNVs_default_AS.tsv",
+    "bytes": 2675757003,
+    "mtime_ns": 1789499277287684000,
+    "sha256": "e59a83a1595cbe12ba56714af79c297ac9f31b593e13ee44966c732d30d4daa8"
+  },
+  "raw_rows": 22310439,
+  "definition": "Per accessible SNV/experiment supplied imbalance_significance; no absence-derived negatives",
+  "coordinates": "GRCh38 zero-based half-open",
+  "requested_assays": {
+    "atac": "ATAC-seq",
+    "h3k4me3": "HM-ChIP-seq_H3K4me3",
+    "h3k27me3": "HM-ChIP-seq_H3K27me3"
+  },
+  "assay_counts": {
+    "HM-ChIP-seq_H3K27ac": 3168525,
+    "HM-ChIP-seq_H3K27me3": 1291316,
+    "HM-ChIP-seq_H3K36me3": 2078383,
+    "HM-ChIP-seq_H3K4me1": 2233598,
+    "HM-ChIP-seq_H3K4me3": 1659748,
+    "HM-ChIP-seq_H3K9me3": 1769603,
+    "TF-ChIP-seq_CTCF": 2391015,
+    "TF-ChIP-seq_EP300": 220043,
+    "TF-ChIP-seq_POLR2A": 857954,
+    "TF-ChIP-seq_POLR2AphosphoS5": 843827,
+    "ATAC-seq": 3265155,
+    "RNA-seq": 2531272
+  },
+  "tasks": {
+    "atac": {
+      "rows": 3265155,
+      "unique_loci": 1498771,
+      "positive": 133227,
+      "negative": 3131928,
+      "prevalence": 0.04080265714797613,
+      "identical_duplicates_excluded": 0,
+      "chromosomes": {
+        "chr1": 264736,
+        "chr2": 257071,
+        "chr6": 205132,
+        "chr3": 204425,
+        "chr7": 198040,
+        "chr4": 185321,
+        "chr9": 173411,
+        "chr5": 172170,
+        "chr10": 168307,
+        "chr11": 162888,
+        "chr8": 159859,
+        "chr12": 150227,
+        "chr17": 137767,
+        "chr19": 118037,
+        "chr16": 116979,
+        "chr14": 102157,
+        "chr15": 96572,
+        "chr20": 90930,
+        "chr13": 90733,
+        "chr18": 79913,
+        "chr22": 76941,
+        "chr21": 53539
+      },
+      "tissues": {
+        "sigmoid_colon": 490923,
+        "transverse_colon": 409037,
+        "breast_epithelium": 375823,
+        "gastroesophageal_sphincter": 272052,
+        "gastrocnemius_medialis": 238698,
+        "stomach": 200367,
+        "thyroid_gland": 179214,
+        "adrenal_gland": 179007,
+        "body_of_pancreas": 164080,
+        "tibial_artery": 111993,
+        "omental_fat_pad": 107142,
+        "spleen": 101107,
+        "ovary": 86170,
+        "Peyers_patch": 85099,
+        "right_lobe_of_liver": 57975,
+        "testis": 37361,
+        "coronary_artery": 36442,
+        "tibial_nerve": 34701,
+        "heart_left_ventricle": 28723,
+        "right_atrium_auricular_region": 18111,
+        "esophagus_muscularis_mucosa": 16566,
+        "esophagus_squamous_epithelium": 13509,
+        "thoracic_aorta": 10997,
+        "prostate_gland": 10058
+      },
+      "donors": {
+        "ENC-003": 996352,
+        "ENC-002": 937931,
+        "ENC-004": 869300,
+        "ENC-001": 461572
+      },
+      "chromosome_class_counts": {
+        "chr1": {
+          "negative": 254620,
+          "positive": 10116
+        },
+        "chr10": {
+          "negative": 161737,
+          "positive": 6570
+        },
+        "chr11": {
+          "negative": 156588,
+          "positive": 6300
+        },
+        "chr12": {
+          "negative": 143953,
+          "positive": 6274
+        },
+        "chr13": {
+          "negative": 86872,
+          "positive": 3861
+        },
+        "chr14": {
+          "negative": 98389,
+          "positive": 3768
+        },
+        "chr15": {
+          "negative": 92938,
+          "positive": 3634
+        },
+        "chr16": {
+          "negative": 112157,
+          "positive": 4822
+        },
+        "chr17": {
+          "negative": 130990,
+          "positive": 6777
+        },
+        "chr18": {
+          "negative": 76647,
+          "positive": 3266
+        },
+        "chr19": {
+          "negative": 112321,
+          "positive": 5716
+        },
+        "chr2": {
+          "negative": 247530,
+          "positive": 9541
+        },
+        "chr20": {
+          "negative": 86924,
+          "positive": 4006
+        },
+        "chr21": {
+          "negative": 51091,
+          "positive": 2448
+        },
+        "chr22": {
+          "negative": 73620,
+          "positive": 3321
+        },
+        "chr3": {
+          "negative": 196411,
+          "positive": 8014
+        },
+        "chr4": {
+          "negative": 178747,
+          "positive": 6574
+        },
+        "chr5": {
+          "negative": 166039,
+          "positive": 6131
+        },
+        "chr6": {
+          "negative": 196000,
+          "positive": 9132
+        },
+        "chr7": {
+          "negative": 188982,
+          "positive": 9058
+        },
+        "chr8": {
+          "negative": 154177,
+          "positive": 5682
+        },
+        "chr9": {
+          "negative": 165195,
+          "positive": 8216
+        }
+      }
+    },
+    "h3k4me3": {
+      "rows": 1659748,
+      "unique_loci": 265099,
+      "positive": 74771,
+      "negative": 1584977,
+      "prevalence": 0.04504960994078619,
+      "identical_duplicates_excluded": 0,
+      "chromosomes": {
+        "chr1": 150712,
+        "chr6": 132788,
+        "chr2": 111734,
+        "chr19": 108635,
+        "chr7": 89290,
+        "chr12": 88040,
+        "chr3": 87669,
+        "chr17": 85397,
+        "chr9": 83970,
+        "chr11": 83450,
+        "chr5": 79459,
+        "chr10": 76104,
+        "chr4": 70409,
+        "chr8": 64098,
+        "chr16": 63199,
+        "chr15": 54104,
+        "chr14": 52559,
+        "chr20": 46408,
+        "chr22": 38782,
+        "chr13": 35129,
+        "chr18": 31708,
+        "chr21": 26104
+      },
+      "tissues": {
+        "spleen": 145083,
+        "gastrocnemius_medialis": 109062,
+        "esophagus_muscularis_mucosa": 106067,
+        "esophagus_squamous_epithelium": 97402,
+        "thoracic_aorta": 80623,
+        "upper_lobe_of_left_lung": 80614,
+        "transverse_colon": 78595,
+        "stomach": 78313,
+        "Peyers_patch": 78041,
+        "breast_epithelium": 74279,
+        "gastroesophageal_sphincter": 69679,
+        "heart_left_ventricle": 59040,
+        "tibial_nerve": 57764,
+        "sigmoid_colon": 56542,
+        "thyroid_gland": 43809,
+        "tibial_artery": 43435,
+        "prostate_gland": 43181,
+        "uterus": 39114,
+        "ascending_aorta": 38909,
+        "right_atrium_auricular_region": 38453,
+        "vagina": 35096,
+        "testis": 33952,
+        "coronary_artery": 33877,
+        "right_lobe_of_liver": 27263,
+        "adrenal_gland": 27243,
+        "lower_leg_skin": 23752,
+        "body_of_pancreas": 21372,
+        "suprapubic_skin": 21194,
+        "ovary": 17994
+      },
+      "donors": {
+        "ENC-003": 488318,
+        "ENC-001": 434909,
+        "ENC-004": 375944,
+        "ENC-002": 360577
+      },
+      "chromosome_class_counts": {
+        "chr1": {
+          "negative": 145749,
+          "positive": 4963
+        },
+        "chr10": {
+          "negative": 72942,
+          "positive": 3162
+        },
+        "chr11": {
+          "negative": 80119,
+          "positive": 3331
+        },
+        "chr12": {
+          "negative": 83278,
+          "positive": 4762
+        },
+        "chr13": {
+          "negative": 33479,
+          "positive": 1650
+        },
+        "chr14": {
+          "negative": 50878,
+          "positive": 1681
+        },
+        "chr15": {
+          "negative": 51922,
+          "positive": 2182
+        },
+        "chr16": {
+          "negative": 60542,
+          "positive": 2657
+        },
+        "chr17": {
+          "negative": 79714,
+          "positive": 5683
+        },
+        "chr18": {
+          "negative": 30585,
+          "positive": 1123
+        },
+        "chr19": {
+          "negative": 103943,
+          "positive": 4692
+        },
+        "chr2": {
+          "negative": 107853,
+          "positive": 3881
+        },
+        "chr20": {
+          "negative": 42833,
+          "positive": 3575
+        },
+        "chr21": {
+          "negative": 25185,
+          "positive": 919
+        },
+        "chr22": {
+          "negative": 37001,
+          "positive": 1781
+        },
+        "chr3": {
+          "negative": 83537,
+          "positive": 4132
+        },
+        "chr4": {
+          "negative": 68142,
+          "positive": 2267
+        },
+        "chr5": {
+          "negative": 76908,
+          "positive": 2551
+        },
+        "chr6": {
+          "negative": 125289,
+          "positive": 7499
+        },
+        "chr7": {
+          "negative": 85712,
+          "positive": 3578
+        },
+        "chr8": {
+          "negative": 62092,
+          "positive": 2006
+        },
+        "chr9": {
+          "negative": 77274,
+          "positive": 6696
+        }
+      }
+    },
+    "h3k27me3": {
+      "rows": 1291316,
+      "unique_loci": 702509,
+      "positive": 25667,
+      "negative": 1265649,
+      "prevalence": 0.019876621988730876,
+      "identical_duplicates_excluded": 0,
+      "chromosomes": {
+        "chr1": 110786,
+        "chr2": 90772,
+        "chr7": 79470,
+        "chr6": 78366,
+        "chr9": 76255,
+        "chr10": 66749,
+        "chr17": 64078,
+        "chr5": 61036,
+        "chr19": 59246,
+        "chr12": 58073,
+        "chr11": 57760,
+        "chr4": 56715,
+        "chr8": 55851,
+        "chr3": 53762,
+        "chr20": 53229,
+        "chr16": 51289,
+        "chr22": 44585,
+        "chr15": 41713,
+        "chr14": 39165,
+        "chr13": 34564,
+        "chr21": 33039,
+        "chr18": 24813
+      },
+      "tissues": {
+        "spleen": 441928,
+        "gastrocnemius_medialis": 160536,
+        "transverse_colon": 117970,
+        "esophagus_squamous_epithelium": 75445,
+        "upper_lobe_of_left_lung": 74977,
+        "stomach": 67864,
+        "sigmoid_colon": 52342,
+        "tibial_artery": 45941,
+        "gastroesophageal_sphincter": 37426,
+        "suprapubic_skin": 31052,
+        "breast_epithelium": 30652,
+        "esophagus_muscularis_mucosa": 30378,
+        "tibial_nerve": 21504,
+        "thyroid_gland": 16850,
+        "uterus": 16841,
+        "testis": 16067,
+        "Peyers_patch": 11918,
+        "body_of_pancreas": 9351,
+        "prostate_gland": 9107,
+        "heart_left_ventricle": 8119,
+        "right_atrium_auricular_region": 7092,
+        "ascending_aorta": 4367,
+        "vagina": 2567,
+        "thoracic_aorta": 1022
+      },
+      "donors": {
+        "ENC-001": 541128,
+        "ENC-002": 392691,
+        "ENC-004": 202841,
+        "ENC-003": 154656
+      },
+      "chromosome_class_counts": {
+        "chr1": {
+          "negative": 109519,
+          "positive": 1267
+        },
+        "chr10": {
+          "negative": 65334,
+          "positive": 1415
+        },
+        "chr11": {
+          "negative": 56910,
+          "positive": 850
+        },
+        "chr12": {
+          "negative": 56922,
+          "positive": 1151
+        },
+        "chr13": {
+          "negative": 33927,
+          "positive": 637
+        },
+        "chr14": {
+          "negative": 38702,
+          "positive": 463
+        },
+        "chr15": {
+          "negative": 41024,
+          "positive": 689
+        },
+        "chr16": {
+          "negative": 50345,
+          "positive": 944
+        },
+        "chr17": {
+          "negative": 61960,
+          "positive": 2118
+        },
+        "chr18": {
+          "negative": 24400,
+          "positive": 413
+        },
+        "chr19": {
+          "negative": 58231,
+          "positive": 1015
+        },
+        "chr2": {
+          "negative": 89125,
+          "positive": 1647
+        },
+        "chr20": {
+          "negative": 50599,
+          "positive": 2630
+        },
+        "chr21": {
+          "negative": 32253,
+          "positive": 786
+        },
+        "chr22": {
+          "negative": 43448,
+          "positive": 1137
+        },
+        "chr3": {
+          "negative": 52737,
+          "positive": 1025
+        },
+        "chr4": {
+          "negative": 55714,
+          "positive": 1001
+        },
+        "chr5": {
+          "negative": 60214,
+          "positive": 822
+        },
+        "chr6": {
+          "negative": 77113,
+          "positive": 1253
+        },
+        "chr7": {
+          "negative": 77569,
+          "positive": 1901
+        },
+        "chr8": {
+          "negative": 54957,
+          "positive": 894
+        },
+        "chr9": {
+          "negative": 74646,
+          "positive": 1609
+        }
+      }
+    }
+  },
+  "status": "complete"
+}

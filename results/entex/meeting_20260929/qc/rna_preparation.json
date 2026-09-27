@@ -1,0 +1,90 @@
+{
+  "version": 2,
+  "source": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/data/hetSNVs_high-confidence_AS.tsv",
+    "bytes": 186460228,
+    "mtime_ns": 1789494689734166986,
+    "sha256": "01b6b7d27446010e214a8cdf1569312cb253c6bedc064a942554b9e28f0927e1"
+  },
+  "raw_rows": 1640580,
+  "definition": "Per accessible SNV/experiment supplied imbalance_significance; no absence-derived negatives",
+  "coordinates": "GRCh38 zero-based half-open",
+  "requested_assays": {
+    "rna": "RNA-seq"
+  },
+  "assay_counts": {
+    "RNA-seq": 1640580
+  },
+  "tasks": {
+    "rna": {
+      "rows": 1640580,
+      "unique_loci": 466867,
+      "positive": 23546,
+      "negative": 1617034,
+      "prevalence": 0.014352241280522742,
+      "identical_duplicates_excluded": 0,
+      "chromosomes": {
+        "chr1": 142316,
+        "chr2": 130689,
+        "chr3": 130648,
+        "chr6": 109356,
+        "chr7": 97893,
+        "chr12": 91520,
+        "chr5": 91179,
+        "chr10": 91019,
+        "chr4": 82768,
+        "chr11": 81241,
+        "chr9": 72027,
+        "chr17": 68921,
+        "chr8": 67601,
+        "chr15": 60531,
+        "chr16": 58481,
+        "chr19": 56250,
+        "chr14": 47699,
+        "chr13": 41095,
+        "chr20": 32724,
+        "chr22": 32378,
+        "chr18": 31612,
+        "chr21": 22632
+      },
+      "tissues": {
+        "testis": 197574,
+        "thyroid_gland": 168507,
+        "breast_epithelium": 125268,
+        "omental_fat_pad": 99159,
+        "spleen": 84237,
+        "transverse_colon": 80080,
+        "adrenal_gland": 73994,
+        "esophagus_squamous_epithelium": 73697,
+        "subcutaneous_adipose_tissue": 70132,
+        "esophagus_muscularis_mucosa": 59630,
+        "thoracic_aorta": 59617,
+        "upper_lobe_of_left_lung": 58975,
+        "sigmoid_colon": 57538,
+        "suprapubic_skin": 55079,
+        "gastrocnemius_medialis": 52650,
+        "Peyers_patch": 50724,
+        "lower_leg_skin": 44833,
+        "gastroesophageal_sphincter": 38878,
+        "ovary": 37148,
+        "tibial_nerve": 33149,
+        "right_lobe_of_liver": 27394,
+        "right_atrium_auricular_region": 24396,
+        "prostate_gland": 22444,
+        "heart_left_ventricle": 19972,
+        "body_of_pancreas": 13929,
+        "vagina": 5070,
+        "stomach": 3096,
+        "uterus": 2387,
+        "ascending_aorta": 1023
+      },
+      "donors": {
+        "ENC-001": 605779,
+        "ENC-003": 400810,
+        "ENC-002": 323658,
+        "ENC-004": 310333
+      }
+    }
+  },
+  "status": "complete"
+}

@@ -5,8 +5,8 @@ export PYTHONPATH=src:.
 export PYTHONUNBUFFERED=1
 export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 MKL_NUM_THREADS=4
 main_root=${PANGENOMEFM_MAIN_CHECKOUT:-/home/tuv43532/PangenomeFM}
-panel_data=data/entex/extension_20260927
-panel_out=results/entex/extension_20260927
+panel_data=${PANGENOMEFM_PANEL_DATA:-data/entex/extension_20260927}
+panel_out=${PANGENOMEFM_PANEL_OUT:-results/entex/extension_20260927}
 graph="$main_root/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz"
 common=(
   --config configs/entex_v1.json --task p2
@@ -43,8 +43,15 @@ case "${1:-}" in
         python -m tasks.entex.analyze --probe-root "$panel_out/matrix/$assay" \
           --complexity "$main_root/server_workspace/results/complexity_context_v2_20260815/native_complexity_v2/complexity_features.tsv" \
           --out-dir "$panel_out/analysis/$assay"
+        python -m tasks.entex.measurement_followups --assay "$assay" \
+          --protocol configs/entex_extension_20260927.json \
+          --probe-root "$panel_out/matrix/$assay" --out-dir "$panel_out/followups/$assay"
       fi
     done
+    if [[ "$1" == matrix ]]; then
+      python -m tasks.entex.followup_report --assays atac h3k4me3 h3k27me3 \
+        --root "$panel_out/followups" --out-dir "$panel_out/report"
+    fi
     ;;
   *) printf '%s\n' 'Usage: bash scripts/server/run_entex_extension_20260927.sh {prepare|smoke|matrix}' >&2; exit 2 ;;
 esac

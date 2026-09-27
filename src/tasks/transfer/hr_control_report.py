@@ -7,6 +7,7 @@ import hashlib
 from itertools import product
 import json
 from pathlib import Path
+import time
 
 import numpy as np
 import pandas as pd
@@ -123,35 +124,79 @@ def main() -> None:
     group.add_argument("--single-root", type=Path, help="Original fold-A/42 controls root; audit only this declared scope")
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument("--n-bootstrap", type=int, default=10000)
+    parser.add_argument("--wait-hours", type=float, default=0,
+                        help="Bounded dependency wait for the already launched campaign; never retries or fits probes")
     args = parser.parse_args()
     config = json.loads(Path("configs/server_full_multicohort_20260806.json").read_text())
     folds = ["fold_a"] if args.single_root else [fold["name"] for fold in config["rotating_chromosome_folds"]]
     seeds = [42] if args.single_root else config["training"]["seeds"]
-    frames, receipts = [], []
-    for fold, seed in product(folds, seeds):
-        root = args.single_root or args.campaign_root / fold / f"seed_{seed}"
-        status = json.loads((root / "status.json").read_text())
-        if (status.get("status") != "complete" or status["completed_commands"] != len(status["commands"])
-                or status["fold"]["name"] != fold or status["seed"] != seed
-                or status["random_initialization_seed"] != seed or not status["encoders_frozen"]):
-            raise ValueError(f"Incomplete or mismatched control receipt: {root}")
-        receipts.append(fingerprint(root / "status.json"))
-        for model, task, context in product(["v1", "random"], ["sv", "ccre"], ["strict", "1hop"]):
-            frames.append(audited_run(root / "probes" / model / task / context,
-                                      model, task, fold, seed, context))
-    frame = pd.concat(frames, ignore_index=True)
-    validate_pairs(frame, folds, seeds)
-    absolute, paired = summarize(frame, args.n_bootstrap)
-    args.out_dir.mkdir(parents=True, exist_ok=False)
-    frame.to_csv(args.out_dir / "audited_per_run.csv", index=False)
-    absolute.to_csv(args.out_dir / "summary.csv", index=False)
-    paired.to_csv(args.out_dir / "paired_gains.csv", index=False)
-    (args.out_dir / "audit.json").write_text(json.dumps(dict(
-        status="complete", n_runs=len(frame) // 4, n_folds=len(folds), seeds=seeds,
-        source_receipts=receipts, prediction_identity_and_baseline_invariance="passed",
-        scope="exploratory previously inspected chromosomes; no v2 or external confirmation",
-        n_bootstrap=args.n_bootstrap, bootstrap_seed=20260927,
-    ), indent=2) + "\n")
+    status_path = args.out_dir.parent / (args.out_dir.name + "_status.json")
+
+    def write_status(state: str, **extra) -> None:
+        status_path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = status_path.with_suffix(".tmp")
+        temporary.write_text(json.dumps(dict(status=state, **extra), indent=2) + "\n")
+        temporary.replace(status_path)
+
+    if args.wait_hours:
+        if not args.campaign_root or args.wait_hours < 0:
+            parser.error("A positive wait requires --campaign-root")
+        started = time.monotonic()
+        expected = [args.campaign_root / fold / f"seed_{seed}" / "status.json"
+                    for fold, seed in product(folds, seeds)]
+        while True:
+            states = []
+            for path in expected:
+                if path.exists():
+                    try:
+                        states.append(json.loads(path.read_text()))
+                    except json.JSONDecodeError:
+                        # The running legacy writer may be replacing its receipt.
+                        # A partial write is never treated as completion.
+                        states.append({})
+            if any(s.get("status") == "failed" for s in states):
+                write_status("failed", error="An upstream control run failed")
+                raise RuntimeError("An upstream control run failed; no summary created")
+            complete = sum(s.get("status") == "complete" for s in states)
+            if complete == len(expected):
+                break
+            if time.monotonic() - started > args.wait_hours * 3600:
+                write_status("failed", error="Timed out waiting for the fixed control matrix", completed=complete)
+                raise TimeoutError("Incomplete H/R campaign; no summary created")
+            write_status("waiting_for_campaign", completed_fold_seed_jobs=complete, expected_fold_seed_jobs=len(expected))
+            time.sleep(30)
+    write_status("auditing_predictions")
+    try:
+        frames, receipts = [], []
+        for fold, seed in product(folds, seeds):
+            root = args.single_root or args.campaign_root / fold / f"seed_{seed}"
+            status = json.loads((root / "status.json").read_text())
+            if (status.get("status") != "complete" or status["completed_commands"] != len(status["commands"])
+                    or status["fold"]["name"] != fold or status["seed"] != seed
+                    or status["random_initialization_seed"] != seed or not status["encoders_frozen"]):
+                raise ValueError(f"Incomplete or mismatched control receipt: {root}")
+            receipts.append(fingerprint(root / "status.json"))
+            for model, task, context in product(["v1", "random"], ["sv", "ccre"], ["strict", "1hop"]):
+                frames.append(audited_run(root / "probes" / model / task / context,
+                                          model, task, fold, seed, context))
+        frame = pd.concat(frames, ignore_index=True)
+        validate_pairs(frame, folds, seeds)
+        absolute, paired = summarize(frame, args.n_bootstrap)
+        args.out_dir.mkdir(parents=True, exist_ok=False)
+        frame.to_csv(args.out_dir / "audited_per_run.csv", index=False)
+        absolute.to_csv(args.out_dir / "summary.csv", index=False)
+        paired.to_csv(args.out_dir / "paired_gains.csv", index=False)
+        (args.out_dir / "audit.json").write_text(json.dumps(dict(
+            status="complete", n_runs=len(frame) // 4, n_folds=len(folds), seeds=seeds,
+            source_receipts=receipts, prediction_identity_and_baseline_invariance="passed",
+            scope="exploratory previously inspected chromosomes; no v2 or external confirmation",
+            n_bootstrap=args.n_bootstrap, bootstrap_seed=20260927,
+        ), indent=2) + "\n")
+        write_status("complete", summary=str(args.out_dir), n_runs=len(frame) // 4)
+    except Exception as exc:
+        write_status("failed", error=f"{type(exc).__name__}: {exc}")
+        raise
+
 
 
 if __name__ == "__main__":

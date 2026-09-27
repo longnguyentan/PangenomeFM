@@ -69,6 +69,10 @@ biological coverage, not observed performance. Other assays remain untested.
   Summaries use existing paired hierarchical bootstrap, raw and normalized AP,
   AUROC, class prevalence and fixed graph-complexity strata. Fold sign-flip and
   BH adjustment over the six assay/context contrasts are exploratory sensitivities.
+- Reuse equal-locus weighting and all count-eligible donor/tissue summaries from
+  the original follow-up protocol. These evaluate repeated-measurement sensitivity,
+  not donor-held-out fitting. Their rules were fixed before inspecting new smoke
+  scores; thresholds match the earlier follow-up analysis.
 - These tests predict per-measurement imbalance from static locus features;
   they do not identify the causal allele or predict an individual's haplotype.
 
@@ -84,8 +88,10 @@ once into assay-specific Parquet caches. No source download is needed.
 - [x] Fix and test H branch-distance and balanced junction-candidate processing.
 - [x] Implement the three-assay extension using existing preparation/probe code.
 - [x] Fix assay panel, chromosome partitions and class-support gates before scores.
-- [ ] Prepare/map/inspect all three additional assay datasets on the exact graph.
-- [ ] Complete all three seven-feature smoke runs and verify feature coverage.
+- [x] Prepare/map/inspect all three additional assay datasets on the exact graph.
+  All source partition-support gates passed and every locus maps to one segment.
+- [x] Complete all three seven-feature smoke runs and verify feature coverage.
+  All have 100% joint C/K/S/T and measurement coverage; frozen encoders confirmed.
 - [ ] Complete and summarize the 90-run additional EN-TEx matrix.
 - [ ] Complete and audit the 120-evaluation H/R matrix.
 - [ ] Establish full-genome v2 candidate coverage and geometry/visible-degree
@@ -126,3 +132,41 @@ Full source/feature matrices and individual predictions remain on the server.
 Compact QC, summaries, figures and run provenance are versioned. The maintained
 [project checklist](FOUNDATION_CAMPAIGN_CHECKLIST.md) and team brief must distinguish
 completed results from running jobs and resource-dependent proposals.
+
+## Observed preparation and launch receipt
+
+The server execution worktree is `/home/tuv43532/PangenomeFM_evidence_20260927`
+at `d2c0497`. It reuses exact source paths from the main checkout without modifying
+the main or other LLM's branch. Two control workers use GPUs 0/1; smoke fits use
+the CPU, and the planned full EN-TEx matrix reserves GPUs 2/3. About 647 GB of
+disk space and 243 GiB of memory were available before launch.
+
+| Assay | Measurements | Unique loci | Positive measurements | Prevalence | Mapping |
+|---|---:|---:|---:|---:|---:|
+| ATAC | 3,265,155 | 1,498,771 | 133,227 | 4.0803% | 100% |
+| H3K4me3 | 1,659,748 | 265,099 | 74,771 | 4.5050% | 100% |
+| H3K27me3 | 1,291,316 | 702,509 | 25,667 | 1.9877% | 100% |
+
+Mapping success is data QC, not model performance. All three have zero unmapped
+or multi-segment loci. Full-matrix results remain pending until their completed
+audits, feature coverage and paired predictions have been checked.
+
+The earlier eight-run fold-A/42 H/R matrix has now passed actual prediction
+replay, matched example/label hashes and exact C+S/C+S+H score invariance. The
+new auditor checks completeness before writing any inference. Reproduce it with:
+
+```bash
+python -m tasks.transfer.hr_control_report \
+  --campaign-root /home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls \
+  --out-dir results/foundation_evidence_20260927/hr_analysis
+```
+
+## Single-fold smoke checks (27 September, 07:12 UTC)
+
+All three completed with seven feature sets, unchanged input hashes, 100% feature
+and measurement coverage, and `encoder_training=false`. On fold A / seed 42 /
+strict, Δ AUPRC was −0.000231 (ATAC), −0.000451 (H3K4me3), and −0.002823
+(H3K27me3). These are execution checks with no multi-fold intervals. Every
+predefined assay proceeds to the full matrix regardless of its smoke score.
+The compact metrics and audit receipts are in
+`results/entex/extension_20260927/smoke_qc/`.

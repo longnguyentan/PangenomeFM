@@ -1,0 +1,273 @@
+{
+  "status": "complete",
+  "assay": "h3k27ac",
+  "protocol": {
+    "path": "/home/tuv43532/PangenomeFM/configs/entex_meeting_20260929.json",
+    "bytes": 1869,
+    "mtime_ns": 1790452303304279066,
+    "sha256": "8d630f4676aabed8ede36c4dc6fb0cb2dbf921692283f1737d8a3345380f5633"
+  },
+  "n_prediction_runs": 30,
+  "n_loci": 713418,
+  "encoders_refitted": false,
+  "probes_refitted": false,
+  "eligible_groups": [
+    {
+      "stratum": "donor",
+      "group": "ENC-001",
+      "min_fold_n": 126744,
+      "min_fold_positive": 2604,
+      "min_fold_negative": 123625,
+      "eligible": true
+    },
+    {
+      "stratum": "donor",
+      "group": "ENC-002",
+      "min_fold_n": 102950,
+      "min_fold_positive": 1966,
+      "min_fold_negative": 100984,
+      "eligible": true
+    },
+    {
+      "stratum": "donor",
+      "group": "ENC-003",
+      "min_fold_n": 104271,
+      "min_fold_positive": 1842,
+      "min_fold_negative": 102382,
+      "eligible": true
+    },
+    {
+      "stratum": "donor",
+      "group": "ENC-004",
+      "min_fold_n": 114825,
+      "min_fold_positive": 2415,
+      "min_fold_negative": 112410,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "Peyers_patch",
+      "min_fold_n": 12193,
+      "min_fold_positive": 323,
+      "min_fold_negative": 11870,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "adrenal_gland",
+      "min_fold_n": 7442,
+      "min_fold_positive": 145,
+      "min_fold_negative": 7297,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "ascending_aorta",
+      "min_fold_n": 8457,
+      "min_fold_positive": 156,
+      "min_fold_negative": 8296,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "body_of_pancreas",
+      "min_fold_n": 16164,
+      "min_fold_positive": 364,
+      "min_fold_negative": 15759,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "breast_epithelium",
+      "min_fold_n": 13969,
+      "min_fold_positive": 271,
+      "min_fold_negative": 13694,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "coronary_artery",
+      "min_fold_n": 7582,
+      "min_fold_positive": 137,
+      "min_fold_negative": 7445,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "esophagus_muscularis_mucosa",
+      "min_fold_n": 25057,
+      "min_fold_positive": 542,
+      "min_fold_negative": 24474,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "esophagus_squamous_epithelium",
+      "min_fold_n": 22785,
+      "min_fold_positive": 453,
+      "min_fold_negative": 22145,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "gastrocnemius_medialis",
+      "min_fold_n": 47518,
+      "min_fold_positive": 1009,
+      "min_fold_negative": 46340,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "gastroesophageal_sphincter",
+      "min_fold_n": 26117,
+      "min_fold_positive": 602,
+      "min_fold_negative": 25515,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "heart_left_ventricle",
+      "min_fold_n": 6834,
+      "min_fold_positive": 135,
+      "min_fold_negative": 6699,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "ovary",
+      "min_fold_n": 648,
+      "min_fold_positive": 26,
+      "min_fold_negative": 622,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "prostate_gland",
+      "min_fold_n": 10622,
+      "min_fold_positive": 214,
+      "min_fold_negative": 10408,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "right_atrium_auricular_region",
+      "min_fold_n": 8709,
+      "min_fold_positive": 138,
+      "min_fold_negative": 8571,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "right_lobe_of_liver",
+      "min_fold_n": 9610,
+      "min_fold_positive": 162,
+      "min_fold_negative": 9448,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "sigmoid_colon",
+      "min_fold_n": 28828,
+      "min_fold_positive": 550,
+      "min_fold_negative": 28278,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "spleen",
+      "min_fold_n": 49596,
+      "min_fold_positive": 1110,
+      "min_fold_negative": 48486,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "stomach",
+      "min_fold_n": 16610,
+      "min_fold_positive": 282,
+      "min_fold_negative": 16328,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "suprapubic_skin",
+      "min_fold_n": 3413,
+      "min_fold_positive": 55,
+      "min_fold_negative": 3335,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "testis",
+      "min_fold_n": 5017,
+      "min_fold_positive": 77,
+      "min_fold_negative": 4921,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "thoracic_aorta",
+      "min_fold_n": 8799,
+      "min_fold_positive": 83,
+      "min_fold_negative": 8592,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "thyroid_gland",
+      "min_fold_n": 17190,
+      "min_fold_positive": 257,
+      "min_fold_negative": 16933,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "tibial_artery",
+      "min_fold_n": 14810,
+      "min_fold_positive": 237,
+      "min_fold_negative": 14515,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "tibial_nerve",
+      "min_fold_n": 13759,
+      "min_fold_positive": 238,
+      "min_fold_negative": 13449,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "transverse_colon",
+      "min_fold_n": 36226,
+      "min_fold_positive": 615,
+      "min_fold_negative": 35611,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "upper_lobe_of_left_lung",
+      "min_fold_n": 11035,
+      "min_fold_positive": 274,
+      "min_fold_negative": 10761,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "uterus",
+      "min_fold_n": 12882,
+      "min_fold_positive": 188,
+      "min_fold_negative": 12694,
+      "eligible": true
+    },
+    {
+      "stratum": "tissue",
+      "group": "vagina",
+      "min_fold_n": 6354,
+      "min_fold_positive": 124,
+      "min_fold_negative": 6222,
+      "eligible": true
+    }
+  ],
+  "limitations": "Pointwise exploratory intervals; overlapping training folds and multiple analyses. Donor/tissue stratification is not donor/tissue-held-out fitting. Reweighting changes evaluation, not the original training objective."
+}

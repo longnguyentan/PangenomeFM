@@ -19,6 +19,7 @@ from evaluation.calibration import EPSILON
 
 from tasks.entex.analyze import BASE, FULL, estimate, paired, validate_comparator_loci
 from tasks.entex.prepare import fingerprint
+from tasks.entex.snv import ASSAYS
 
 
 def locus_weights(frame: pd.DataFrame) -> np.ndarray:
@@ -278,7 +279,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--probe-root", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, required=True)
-    ap.add_argument("--assay", choices=["ctcf", "h3k27ac"], required=True)
+    ap.add_argument("--assay", choices=list(ASSAYS), required=True)
     ap.add_argument(
         "--protocol", type=Path, default=Path("configs/entex_meeting_20260929.json")
     )

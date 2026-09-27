@@ -1,0 +1,12 @@
+{
+  "slices": 20,
+  "slices_scored": 20,
+  "seed": 20260806,
+  "span_size": 16,
+  "scope": "branching",
+  "processing_version": 2,
+  "v1_mask": "single query; not a full batched training replay",
+  "v2_mask": "all held-out positives plus current training group; no drop-edge",
+  "direction_free_scores": "evaluation-label-selected optimistic diagnostic upper envelope",
+  "note": "Fraction row: auroc_raw = share of positive candidates whose endpoints have a visible-degree deficit; auprc_direction_free = same share for negatives."
+}

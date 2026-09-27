@@ -1,0 +1,9 @@
+{
+  "status": "complete",
+  "assays": [
+    "ctcf",
+    "h3k27ac"
+  ],
+  "selection": "All count-eligible groups, alphabetic order; no selection by performance",
+  "intervals": "Pointwise exploratory hierarchical fold/seed bootstrap, not multiplicity-adjusted"
+}

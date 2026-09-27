@@ -1,0 +1,4 @@
+assay,fold,seed,context,n_test,positive_prevalence,auprc_cs,auprc_cst,delta_t,scope
+atac,fold_a,42,strict,803274,0.0408552996860349,0.045084668331715,0.0448535698017876,-0.0002310985299273996,single-fold smoke; no confidence interval or model selection
+h3k4me3,fold_a,42,strict,456253,0.0424523236011598,0.0538569345646461,0.053406313618356,-0.00045062094629010063,single-fold smoke; no confidence interval or model selection
+h3k27me3,fold_a,42,strict,331240,0.015396691220867,0.0651635801942706,0.0623401940529354,-0.0028233861413351977,single-fold smoke; no confidence interval or model selection

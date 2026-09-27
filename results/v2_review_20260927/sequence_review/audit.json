@@ -1,0 +1,54 @@
+{
+  "producer": "Codex using the existing balanced_sequence preprocessing; not a plugin-generated receipt",
+  "source": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+  "source_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+  "selection": "first two cached target segments below/equal and above 6000 bases in source order; label blind, illustrative only",
+  "records": [
+    {
+      "name": "s1",
+      "segid": 0,
+      "source_length": 10616,
+      "output_length": 6000,
+      "balanced_end_sampling": true,
+      "source_sequence_sha256": "8c59c8e9aaabbed3e55f076588fae99167709deca45fc6b00dd7430f4f3ebc0f",
+      "output_sequence_sha256": "7af1eaf816599b03244e1ccec2ff708d087afa7ef0b9df86f8c3863e55dba10d",
+      "SN": "GRCh38#0#chr1",
+      "SO": "0"
+    },
+    {
+      "name": "s2",
+      "segid": 1,
+      "source_length": 5,
+      "output_length": 5,
+      "balanced_end_sampling": false,
+      "source_sequence_sha256": "b467627aa2564a5b8b803ede1423d6139cd88ac08aeb56d92bfc91e58f289aa4",
+      "output_sequence_sha256": "b467627aa2564a5b8b803ede1423d6139cd88ac08aeb56d92bfc91e58f289aa4",
+      "SN": "GRCh38#0#chr1",
+      "SO": "10616"
+    },
+    {
+      "name": "s3",
+      "segid": 2,
+      "source_length": 6,
+      "output_length": 6,
+      "balanced_end_sampling": false,
+      "source_sequence_sha256": "f0f45f38bf32347d012481b5bc5a65956d318746b36396233db92dcbbd933b5e",
+      "output_sequence_sha256": "f0f45f38bf32347d012481b5bc5a65956d318746b36396233db92dcbbd933b5e",
+      "SN": "GRCh38#0#chr1",
+      "SO": "10621"
+    },
+    {
+      "name": "s8",
+      "segid": 7,
+      "source_length": 8474,
+      "output_length": 6000,
+      "balanced_end_sampling": true,
+      "source_sequence_sha256": "2d632e0de364e68df315216ccd52a1dcbf7ba9769cb21151e83c5e6b7699e9f3",
+      "output_sequence_sha256": "9377dc9bce6a9ab7d454c1c9ce8c090aabd7e5db1be262d6317aeebbb9b5f3c2",
+      "SN": "GRCh38#0#chr1",
+      "SO": "10863"
+    }
+  ],
+  "output_sha256": "e6d5d7be022661ab7193f605af0ab99499c006f02b2d485c9034fda970777af1",
+  "limitations": "Before tokenizer truncation; end sampling omits internal sequence and is not a contiguous reference interval. Not population QC or an MSA."
+}

@@ -1,0 +1,21 @@
+{
+  "source_loci": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_20260927/data/entex/extension_20260927/h3k27me3_loci.parquet",
+    "bytes": 12278267,
+    "mtime_ns": 1790478167444772187,
+    "sha256": "7e0991366ee05197ae23d2ac8c429586672b1cc4fe28a59108f305df78db0a92"
+  },
+  "source_graph": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+    "bytes": 870096546,
+    "mtime_ns": 1786041795869081191,
+    "sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347"
+  },
+  "total_loci": 702509,
+  "mapped_loci": 702509,
+  "unmapped_loci": 0,
+  "fraction_mapped": 1.0,
+  "one_segment": 702509,
+  "multi_segment": 0,
+  "multi_segment_fraction": 0.0
+}

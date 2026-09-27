@@ -1,0 +1,21 @@
+{
+  "status": "complete",
+  "expected_tasks": [
+    "sv",
+    "ccre",
+    "ctcf"
+  ],
+  "expected_fractions": [
+    0.125,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "expected_runs_per_task_fraction": 30,
+  "encoders_frozen": true,
+  "primary_comparison": "AUPRC(C+S+T)-AUPRC(C+S)",
+  "paired_comparisons_use_same_fold_seed_test_universe": true,
+  "uncertainty": "Hierarchical fold/seed bootstrap; overlapping training folds limit independence",
+  "n_bootstrap": 10000,
+  "seed": 20260924
+}

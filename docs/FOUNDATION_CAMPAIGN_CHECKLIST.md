@@ -187,3 +187,31 @@ commands, repository or output artifacts.
 The review report and executable control command are in
 `docs/V2_EVIDENCE_REVIEW_20260927.md`. Completion of this checklist does not imply
 superiority or venue readiness; those depend on observed comparative evidence.
+
+## Further downstream evidence — 27 September 2026 UTC
+
+- [x] Fix an additional EN-TEx panel before new assay scores: ATAC-seq,
+  H3K4me3 and H3K27me3, retaining all eligible assays and outcomes.
+- [x] Reuse preparation/mapping/probes; validate both classes in every original
+  partition; all three sources prepared and 100% of loci mapped to one segment.
+- [ ] Finish and inspect all three seven-feature smoke fits.
+- [ ] Finish the 90-run full panel with complexity and equal-locus/donor/tissue
+  follow-ups, paired intervals and multiplicity sensitivity.
+- [x] Audit original eight-run H/R predictions: identical labels/IDs and exact
+  C+S/C+S+H baseline invariance; metric replay passed.
+- [ ] Finish 120 full H/R probe evaluations using original five folds and three
+  independent initialization seeds. Two bounded server workers are running.
+- [ ] Audit and summarize the complete H/R matrix before v2 promotion.
+
+Source QC, the fixed scientific questions, commands and outstanding foundation
+model requirements are in `docs/FOUNDATION_EVIDENCE_EXTENSION_20260927.md`.
+
+### 27 September, 07:12 UTC — smoke gate verified
+
+- [x] All three additional assay smoke fits completed; C/K/S/T and measurement
+  coverage are 100%, with encoders frozen.
+- [x] Inspect and archive all seven-feature smoke metrics, including negative
+  topology gains on this one fold; no assay was selected by performance.
+- [x] Repair report final-status handling and test both success and validation
+  failure; full H/R inference still requires all 120 evaluations.
+- [ ] Finish the predefined 90-run EN-TEx extension and replay its predictions.

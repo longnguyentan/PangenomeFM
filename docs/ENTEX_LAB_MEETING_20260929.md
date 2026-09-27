@@ -207,6 +207,13 @@ See [the independent v2 review](V2_EVIDENCE_REVIEW_20260927.md).
 
 ## 6. Remaining programme and blockers
 
+An additional three-assay SNV panel was specified on 27 September UTC:
+ATAC-seq (3.27M measurements), H3K4me3 (1.66M), and H3K27me3 (1.29M).
+All loci mapped to the exact graph and every original partition has sufficient
+class support. Smoke/full fits and learned-versus-random controls are being
+tracked separately; these QC counts are not new performance results. See the
+[fixed extension plan and progress](FOUNDATION_EVIDENCE_EXTENSION_20260927.md).
+
 | Item | Current evidence / next step |
 |---|---|
 | Biological pretraining scaling | 120 pretraining and all 360 frozen biological evaluations complete, including native SV complexity. Identical baseline predictions across fractions. Gains are task/context dependent; see the campaign report. |

@@ -1,0 +1,16 @@
+{
+  "examples": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hgsvc3_sv_breakpoint_examples_20260809/sv_breakpoint_examples.csv.gz",
+    "bytes": 6009997,
+    "mtime_ns": 1786425872241159017,
+    "sha256": "f36727704d4e4dbd0eb55e3550832d6d83e89c035c06b6829dc8a683aadf54b6"
+  },
+  "complexity": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/results/complexity_context_v2_20260815/native_complexity_v2/complexity_features.tsv",
+    "bytes": 329100,
+    "mtime_ns": 1786814661426263525,
+    "sha256": "7485d2c4d1cb8a047969fa1f92de6cfea3945f0de9f229f41d2382081d516d24"
+  },
+  "definition": "Unmodified native SV strata: maximum complexity at the two legacy endpoint coordinates",
+  "caution": "Pointwise exploratory intervals; no new bins selected using outcomes"
+}
