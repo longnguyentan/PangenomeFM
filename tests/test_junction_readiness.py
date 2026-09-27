@@ -142,3 +142,22 @@ def test_raw_node_controls_use_visible_features_and_no_validation_label_fit():
     data.loc[data.partition.eq('validation'), 'label'] ^= 1
     _, changed = fit_validation_baselines(data)
     np.testing.assert_array_equal(predictions.probability, changed.probability)
+
+
+def test_raw_nt_control_preserves_all_endpoint_interactions_without_fragmentation():
+    import warnings
+    sd = native_fixture()
+    extra = np.arange(16 * 512, dtype=np.float32).reshape(16, 512) / 1000
+    sd['node_feats'] = np.column_stack([sd['node_feats'], extra])
+    args = Namespace(seed=42, batch_size=4, orientation_rope=False, pop_cond=False,
+                     drop_edge=False, drop_edge_rate=.1, include_node_controls=True)
+    with warnings.catch_warnings():
+        warnings.simplefilter('error', pd.errors.PerformanceWarning)
+        rows = feature_rows(sd, args, 'train')
+    idx = sd['train_idx']
+    u, v = sd['query_u'][idx], sd['query_v'][idx]
+    assert len([c for c in rows if c.startswith('node_')]) == 4 * 519
+    np.testing.assert_allclose(rows.node_518_u, extra[u, -1])
+    np.testing.assert_allclose(rows.node_518_v, extra[v, -1])
+    np.testing.assert_allclose(rows.node_518_product, extra[u, -1] * extra[v, -1])
+    np.testing.assert_allclose(rows.node_518_absdiff, abs(extra[u, -1] - extra[v, -1]))

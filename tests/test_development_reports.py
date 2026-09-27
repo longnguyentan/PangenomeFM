@@ -87,7 +87,7 @@ def test_junction_pilot_report_pairs_input_contract_and_initialization(tmp_path)
         directory = root / arm / 'run_001'
         directory.mkdir(parents=True)
         (root / 'status.json').write_text(json.dumps(dict(status='complete', heldout_predictions_requested=False,
-            biological_labels_used=False, commands={arm: []}, returncodes={arm: 0}, sequence_inputs={'sha': 'cache'})))
+            biological_labels_used=False, commands={arm: []}, returncodes={arm: 0}, sequence_inputs={'cache': {'sha256': 'cache'}})))
         pd.DataFrame(dict(slice=['a'] * 2, target_sn=['chr2'] * 2, closure=['1hop'] * 2,
                           u_local=[1, 1], v_local=[2, 3], y_true=[1, 0], p_edge=[.8, .2],
                           split=['val_chr_val'] * 2)).to_csv(directory / 'pooled_predictions.csv.gz', index=False)
@@ -103,6 +103,29 @@ def test_junction_pilot_report_pairs_input_contract_and_initialization(tmp_path)
     torch.save(saved, checkpoint)
     with pytest.raises(ValueError, match='initialization'):
         summarize_roots(*roots)
+
+
+def test_raw_input_control_replay_rejects_changed_endpoints_or_sequence(tmp_path):
+    import json
+    from tasks.transfer.junction_pilot_report import summarize_input_controls
+    frame = pd.DataFrame(dict(slice=['a'] * 2, target_sn=['chr2'] * 2, closure=['1hop'] * 2,
+                              u_local=[1, 1], v_local=[2, 3], y_true=[1, 0], p_edge=[.8, .2],
+                              split=['val_chr_val'] * 2))
+    _, digest = validation_predictions(frame)
+    predictions = pd.concat([frame.assign(baseline=name) for name in ['node_inputs_linear', 'node_inputs_boosting']])
+    predictions = predictions.rename(columns=dict(closure='context', y_true='label', p_edge='probability'))
+    predictions.to_parquet(tmp_path / 'validation_predictions.parquet', index=False)
+    pd.DataFrame([dict(baseline=name, auprc=1., auroc=1.) for name in predictions.baseline.unique()]).to_csv(
+        tmp_path / 'validation_baselines.csv', index=False)
+    (tmp_path / 'audit.json').write_text(json.dumps(dict(status='complete', checkpoint_weights_used=False,
+        heldout_chromosome_predictions_produced=False, sequence_inputs={'1hop': {'cache': {'sha256': 'cache'}}})))
+    assert len(summarize_input_controls(tmp_path, digest, 'cache')[0]) == 2
+    with pytest.raises(ValueError, match='sequence caches differ'):
+        summarize_input_controls(tmp_path, digest, 'other cache')
+    predictions.loc[predictions.v_local.eq(3), 'v_local'] = 4
+    predictions.to_parquet(tmp_path / 'validation_predictions.parquet', index=False)
+    with pytest.raises(ValueError, match='candidates differ'):
+        summarize_input_controls(tmp_path, digest, 'cache')
 
 
 def test_audited_development_run_replays_metrics_and_refuses_test_scope(tmp_path):

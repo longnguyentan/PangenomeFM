@@ -552,3 +552,27 @@ initial-weight hashes (the random controls do contain them), so that specific
 paired-initialization check is marked unavailable for those historical runs;
 all new sequence-conditioned runs require the hashes on both sides. This does
 not weaken the frozen-random weight-invariance check.
+
+### Raw NT input controls, fixed before model results
+
+Reuse `tasks.transfer.junction_readiness` with `--contexts 1hop
+--include-node-controls --node-feature-cache <benchmark_nt.npz>`. The controls
+fit the existing fixed C=1 logistic and 100-iteration/7-leaf gradient-boosting
+models on endpoint inputs, products and absolute differences. Their 2,076
+features use all seven structural/coordinate inputs plus 512 frozen NT values.
+No graph encoder is fitted. The three existing geometry/degree controls are
+retained. Training uses training chromosomes only, with no tuning or label-based
+feature selection. Restricting the diagnostic to one-hop does not relax any
+per-context coverage criterion and does not make strict eligible.
+
+Raw-control predictions now retain native endpoint identities. The pilot report
+can accept `--input-control-root <audit directory>` and refuses different
+candidate pairs, labels or sequence-cache checksums; it recomputes metrics
+from the stored predictions before comparing them with model outputs. Wide
+input tables are constructed in one block to avoid repeated DataFrame copying.
+
+The four model fits launched successfully in the readiness worktree at commit
+`4baedcf`, with separate `nt_conditioned_trained` and `nt_conditioned_random`
+tmux sessions. Resource checks found all four GPUs free and >230 GB available
+host memory. The existing native loader is preparing benchmark windows; results
+remain pending until checkpoints, predictions and pairing audits complete.

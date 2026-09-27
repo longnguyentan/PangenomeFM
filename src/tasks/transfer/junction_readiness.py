@@ -97,13 +97,20 @@ def feature_rows(sd: dict, args: argparse.Namespace, partition: str) -> pd.DataF
                 # controls test raw attribute compatibility without an encoder.
                 xu = x[native["q_u"][idx]].numpy()
                 xv = x[native["q_v"][idx]].numpy()
+                node_values = {}
                 for i in range(xu.shape[1]):
                     for suffix, values in [("u", xu[:, i]), ("v", xv[:, i]),
                                            ("product", xu[:, i] * xv[:, i]),
                                            ("absdiff", abs(xu[:, i] - xv[:, i]))]:
-                        frame[f"node_{i}_{suffix}"] = values
+                        node_values[f"node_{i}_{suffix}"] = values
+                # One block avoids quadratic DataFrame fragmentation for NT's
+                # 512 additional input dimensions; feature meanings are unchanged.
+                frame = pd.concat([frame, pd.DataFrame(node_values)], axis=1)
             frame["label"] = sd["labels"][batch].astype(int)
             frame["slice"] = sd["name"]
+            frame["target_sn"] = sd["target_sn"]
+            frame["u_local"] = sd["query_u"][batch]
+            frame["v_local"] = sd["query_v"][batch]
             frame["chrom"] = normalize_chrom(sd["target_sn"])
             frame["context"] = sd["closure"]
             frame["partition"] = partition
@@ -147,7 +154,9 @@ def fit_validation_baselines(frame: pd.DataFrame) -> tuple[pd.DataFrame, pd.Data
                 p = model.predict_proba(val[columns])[:, 1]
             if not name.endswith("boosting") and model[-1].n_iter_.max() >= model[-1].max_iter:
                 raise RuntimeError("Nuisance baseline did not converge")
-            pred = val[["slice", "chrom", "context", "candidate_index", "label"]].copy()
+            identity = ["slice", "chrom", "context", "candidate_index", "label"]
+            identity += [c for c in ['target_sn', 'u_local', 'v_local'] if c in val]
+            pred = val[identity].copy()
             pred["baseline"], pred["probability"] = name, p
             predictions.append(pred)
             per_slice = [roc_auc_score(g.label, g.probability) for _, g in pred.groupby("slice")
@@ -183,6 +192,17 @@ def run(args: argparse.Namespace) -> None:
             native_args.drop_edge = args.training_drop_edge_rate > 0
         receipt["training_drop_edge_rate_override"] = args.training_drop_edge_rate
         native_args.include_node_controls = getattr(args, "include_node_controls", False)
+        contexts = getattr(args, "contexts", ["strict", "1hop"])
+        if not contexts or len(set(contexts)) != len(contexts):
+            raise ValueError("Select unique audit contexts")
+        if getattr(args, "node_feature_cache", None):
+            from scripts.server.run_junction_geometry_pilot import check_sequence_cache
+            receipt['sequence_inputs'] = {
+                context: check_sequence_cache(args.node_feature_cache, receipt, context)
+                for context in contexts}
+            native_args.node_extra_features = 'cache'
+            native_args.node_feature_cache = str(args.node_feature_cache.resolve())
+            native_args.node_feature_min_coverage = 1.0
         for field in ["junction_geometry_match", "junction_geometry_bin_ratio", "graph_message_direction"]:
             if getattr(args, field, None) is not None:
                 setattr(native_args, field, getattr(args, field))
@@ -201,6 +221,10 @@ def run(args: argparse.Namespace) -> None:
             raise ValueError("Duplicate source segment IDs break native metadata alignment")
         md = build_oid_metadata_from_segments(segments, seg_index)
         manifest = pd.read_csv(args.manifest)
+        manifest = manifest.loc[manifest.closure.isin(contexts)]
+        if set(manifest.closure) != set(contexts):
+            raise ValueError('Requested audit context absent from manifest')
+        receipt['contexts'] = contexts
         required = json.loads(Path("configs/server_full_multicohort_20260806.json").read_text())["primary_chromosomes"]
         counts, frames = [], []
         for _, row in manifest.iterrows():
@@ -241,11 +265,11 @@ def run(args: argparse.Namespace) -> None:
                 predictions.to_parquet(args.out_dir / "validation_predictions.parquet", index=False)
         missing = {context: sorted(set(required) - set(group.loc[group.exclusion.eq("retained"), "chrom"]))
                    for context, group in counts.groupby("context")}
-        if set(counts.context) != {"strict", "1hop"} or any(missing.values()):
+        if set(counts.context) != set(contexts) or any(missing.values()):
             raise ValueError(f"Full canonical coverage gate failed: {missing}")
         for internal in ["val", "test"]:
             eligible = counts.exclusion.eq("retained") & counts[f"n_{internal}_candidates"].ge(4)
-            for context in ["strict", "1hop"]:
+            for context in contexts:
                 absent = set(required) - set(counts.loc[eligible & counts.context.eq(context), "chrom"])
                 if absent:
                     raise ValueError(f"No n>=4 native {internal} window for {context}: {sorted(absent)}")
@@ -269,6 +293,10 @@ def main() -> None:
     parser.add_argument("--graph-message-direction", choices=["incoming", "bidirectional"])
     parser.add_argument("--include-node-controls", action="store_true",
                         help="Also fit fixed linear-interaction and boosting controls on visible raw node inputs")
+    parser.add_argument('--contexts', choices=['strict', '1hop'], nargs='+', default=['strict', '1hop'],
+                        help='Audit only declared contexts, retaining their unchanged chromosome-coverage gates')
+    parser.add_argument('--node-feature-cache', type=Path,
+                        help='Audit the complete frozen NT raw inputs without fitting a graph encoder')
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     torch.set_num_threads(4)
     run(parser.parse_args())

@@ -86,6 +86,7 @@ def summarize_roots(trained: Path, random: Path) -> tuple[pd.DataFrame, list[dic
                              initial_encoder_sha256=checkpoint.get("initial_encoder_sha256"),
                              prediction_sha256=fingerprint(paths[0])["sha256"],
                              representation="sequence_conditioned_graph" if sequence_inputs else "topology_native",
+                             input_cache_sha256=sequence_inputs['cache']['sha256'] if sequence_inputs else None,
                              evaluation_partition="development_validation"))
     frame = pd.DataFrame(rows)
     if frame.candidates_sha256.nunique() != 1:
@@ -102,13 +103,50 @@ def summarize_roots(trained: Path, random: Path) -> tuple[pd.DataFrame, list[dic
     return frame, sources
 
 
+def summarize_input_controls(root: Path, expected_digest: str,
+                             expected_sequence_sha: str | None = None) -> tuple[pd.DataFrame, dict]:
+    """Replay raw-input controls on exactly the model's validation candidates."""
+    audit = json.loads((root / 'audit.json').read_text())
+    if (audit.get('status') != 'complete' or audit.get('checkpoint_weights_used') is not False
+            or audit.get('heldout_chromosome_predictions_produced') is not False):
+        raise ValueError('Raw-input diagnostic is incomplete or used held-out predictions')
+    if expected_sequence_sha is not None:
+        contracts = audit.get('sequence_inputs', {})
+        if not contracts or any(c['cache']['sha256'] != expected_sequence_sha for c in contracts.values()):
+            raise ValueError('Raw-input and graph-model sequence caches differ')
+    predictions = pd.read_parquet(root / 'validation_predictions.parquet')
+    scores = pd.read_csv(root / 'validation_baselines.csv')
+    rows = []
+    for baseline, group in predictions.groupby('baseline'):
+        frame = group.rename(columns=dict(context='closure', label='y_true', probability='p_edge')).copy()
+        frame['split'] = 'val_chr_val'
+        val, digest = validation_predictions(frame)
+        if digest != expected_digest:
+            raise ValueError('Raw-input and graph-model validation candidates differ')
+        ap, auc = average_precision_score(val.y_true, val.p_edge), roc_auc_score(val.y_true, val.p_edge)
+        reported = scores.loc[scores.baseline.eq(baseline)]
+        if len(reported) != 1 or not np.allclose(reported[['auprc', 'auroc']].iloc[0], [ap, auc], atol=1e-10, rtol=0):
+            raise ValueError('Raw-input prediction metrics do not replay')
+        macro = np.mean([roc_auc_score(g.y_true, g.p_edge) for _, g in val.groupby('slice') if g.y_true.nunique() == 2])
+        rows.append(dict(baseline=baseline, n=len(val), auprc=ap, auroc=auc, macro_window_auroc=macro,
+                         candidates_sha256=digest, evaluation_partition='development_validation'))
+    if not {'node_inputs_linear', 'node_inputs_boosting'} <= set(predictions.baseline):
+        raise ValueError('Raw node-input controls missing')
+    return pd.DataFrame(rows), fingerprint(root / 'audit.json')
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trained-root", type=Path, required=True)
     parser.add_argument("--random-root", type=Path, required=True)
     parser.add_argument("--out-dir", type=Path, required=True)
+    parser.add_argument('--input-control-root', type=Path)
     args = parser.parse_args()
     frame, sources = summarize_roots(args.trained_root, args.random_root)
+    controls, control_source = (None, None)
+    if args.input_control_root:
+        controls, control_source = summarize_input_controls(
+            args.input_control_root, frame.candidates_sha256.iloc[0], frame.input_cache_sha256.iloc[0])
     contrasts = []
     for arm, group in frame.groupby("arm", sort=False):
         indexed = group.set_index("encoder")
@@ -118,9 +156,12 @@ def main() -> None:
     args.out_dir.mkdir(parents=True, exist_ok=False)
     frame.to_csv(args.out_dir / "validation_metrics.csv", index=False)
     pd.DataFrame(contrasts).to_csv(args.out_dir / "paired_differences.csv", index=False)
+    if controls is not None:
+        controls.to_csv(args.out_dir / 'raw_input_controls.csv', index=False)
     selected = frame.loc[frame.encoder.eq("trained")].sort_values("macro_window_auroc", ascending=False).iloc[0]
     (args.out_dir / "audit.json").write_text(json.dumps(dict(
         status="complete", source_receipts=sources, candidate_identity="passed",
+        raw_input_control_source=control_source,
         frozen_random_parameter_identity="passed", checkpoint_metric_replay="passed",
         matched_initialization=sorted(frame.initialization_check.unique()),
         matched_configuration="passed", representation=selected.representation,
