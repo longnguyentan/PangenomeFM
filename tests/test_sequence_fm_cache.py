@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 from scripts.server import merge_node_sequence_fm_caches as merge
-from scripts.server.complete_node_sequence_fm_cache import graph_targets, benchmark_targets
+from scripts.server.complete_node_sequence_fm_cache import graph_targets, benchmark_targets, completion_commands
 from scripts.server.prepare_node_sequence_fm_cache import (
     balanced_sequence,
     iter_segment_rows,
@@ -143,6 +143,24 @@ def test_benchmark_completion_uses_native_link_union_without_unrelated_nodes(tmp
     ids, missing = graph_targets(graph, np.array([0, 1]), needed)
     np.testing.assert_array_equal(ids, [0, 1, 2])
     np.testing.assert_array_equal(missing, [2])
+
+
+def test_completion_shards_preserve_native_policy_and_merge_exact_targets(tmp_path):
+    from argparse import Namespace
+    args = Namespace(out_dir=tmp_path, manifest=tmp_path / "manifest.csv", shard_gpus=[0, 2, 3],
+                     full_segments=tmp_path / "segments.csv", existing_cache=tmp_path / "original.npz",
+                     batch_size=32, device="cuda")
+    contract = dict(model_name="original-model", resolved_revision="pinned-revision",
+                    maximum_token_length=1000, maximum_raw_bases=6000)
+    commands, output = completion_commands(args, contract, 176052)
+    assert len(commands) == 4 and output.name == "benchmark_nt.npz"
+    for index, command in enumerate(commands[:-1]):
+        for key, value in [("--shard-index", str(index)), ("--num-shards", "3"),
+                           ("--revision", "pinned-revision"), ("--max-length", "1000"), ("--max-bases", "6000")]:
+            assert command[command.index(key) + 1] == value
+        assert str(tmp_path / f"missing_nt_{index}.npz") in commands[-1]
+    assert str(args.existing_cache) in commands[-1]
+    assert str(tmp_path / "all_targets.npz") in commands[-1]
 
 
 def test_merge_rejects_same_model_with_different_preprocessing(tmp_path, monkeypatch):

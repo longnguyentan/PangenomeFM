@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 from pathlib import Path
@@ -63,6 +64,27 @@ def benchmark_targets(full_segments: Path, manifest: Path, context: str) -> tupl
         target_selection="existing-cache union native unmasked benchmark link endpoints; no labels")
 
 
+def completion_commands(args, contract: dict, n_missing: int) -> tuple[list[list[str]], Path]:
+    complete = args.out_dir / ("benchmark_nt.npz" if args.manifest else "whole_graph_nt.npz")
+    n_shards = len(args.shard_gpus) if args.shard_gpus else 1
+    commands, partials = [], []
+    if n_missing:
+        for index in range(n_shards):
+            partial = args.out_dir / (f"missing_nt_{index}.npz" if n_shards > 1 else "missing_nt.npz")
+            partials.append(str(partial))
+            commands.append([sys.executable, "scripts/server/prepare_node_sequence_fm_cache.py",
+                             "--full-segments", str(args.full_segments), "--target-cache", str(args.out_dir / "missing_targets.npz"),
+                             "--output", str(partial), "--model-name", contract["model_name"],
+                             "--revision", contract["resolved_revision"], "--max-length", str(contract["maximum_token_length"]),
+                             "--max-bases", str(contract["maximum_raw_bases"]), "--batch-size", str(args.batch_size),
+                             "--device", args.device, "--trust-remote-code", "--num-shards", str(n_shards),
+                             "--shard-index", str(index)])
+    commands.append([sys.executable, "scripts/server/merge_node_sequence_fm_caches.py", "--shard",
+                     str(args.existing_cache), *partials,
+                     "--target-cache", str(args.out_dir / "all_targets.npz"), "--output", str(complete)])
+    return commands, complete
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--full-segments", type=Path, required=True)
@@ -75,8 +97,12 @@ def main() -> None:
     parser.add_argument("--context", choices=["strict", "1hop"], default="1hop")
     parser.add_argument("--maximum-new-segments", type=int, default=10000,
                         help="Refuse unexpectedly broad inference before loading the model")
+    parser.add_argument("--shard-gpus", type=int, nargs="+",
+                        help="Explicit distinct GPUs for concurrent native cache shards")
     parser.add_argument("--execute", action="store_true")
     args = parser.parse_args()
+    if args.shard_gpus and (len(set(args.shard_gpus)) != len(args.shard_gpus) or args.device != "cuda"):
+        raise ValueError("Sharding requires distinct GPUs and --device cuda")
     if args.out_dir.exists():
         raise FileExistsError("Use a new cache-completion directory")
     contract = sequence_contract(args.existing_cache)
@@ -88,24 +114,12 @@ def main() -> None:
     args.out_dir.mkdir(parents=True)
     np.savez(args.out_dir / "all_targets.npz", segid=ids)
     np.savez(args.out_dir / "missing_targets.npz", segid=missing)
-    partial = args.out_dir / "missing_nt.npz"
-    complete = args.out_dir / ("benchmark_nt.npz" if args.manifest else "whole_graph_nt.npz")
-    commands = []
-    if len(missing):
-        commands.append([sys.executable, "scripts/server/prepare_node_sequence_fm_cache.py",
-                         "--full-segments", str(args.full_segments), "--target-cache", str(args.out_dir / "missing_targets.npz"),
-                         "--output", str(partial), "--model-name", contract["model_name"],
-                         "--revision", contract["resolved_revision"], "--max-length", str(contract["maximum_token_length"]),
-                         "--max-bases", str(contract["maximum_raw_bases"]), "--batch-size", str(args.batch_size),
-                         "--device", args.device, "--trust-remote-code"])
-    commands.append([sys.executable, "scripts/server/merge_node_sequence_fm_caches.py", "--shard",
-                     str(args.existing_cache), *([str(partial)] if len(missing) else []),
-                     "--target-cache", str(args.out_dir / "all_targets.npz"), "--output", str(complete)])
+    commands, complete = completion_commands(args, contract, len(missing))
     receipt = dict(status="planned", graph_segments=scope.get("graph_segments", len(ids)),
                    target_segments=len(ids), missing_segments=len(missing), target_scope=scope,
                    existing_coverage=float((len(ids) - len(missing)) / len(ids)),
                    contract=contract, commands=commands, existing_cache_modified=False,
-                   model_downloads_allowed=False, biological_labels_used=False)
+                   model_downloads_allowed=False, biological_labels_used=False, shard_gpus=args.shard_gpus)
     status_path = args.out_dir / "status.json"
 
     def save() -> None:
@@ -119,13 +133,31 @@ def main() -> None:
         save()
         raise ValueError(receipt["error"])
     if args.execute:
-        env = dict(os.environ, PYTHONPATH="src:.", HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
+        env = dict(os.environ, PYTHONPATH="src:.", HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1",
+                   OMP_NUM_THREADS="4", OPENBLAS_NUM_THREADS="4", MKL_NUM_THREADS="4")
+
+        def execute(index: int, command: list[str], gpu: int | None = None) -> None:
+            child_env = dict(env, CUDA_VISIBLE_DEVICES=str(gpu)) if gpu is not None else env
+            with (args.out_dir / f"command_{index}.log").open("w") as log:
+                subprocess.run(command, env=child_env, stdout=log, stderr=subprocess.STDOUT, check=True)
+
         try:
-            for index, command in enumerate(commands):
-                receipt.update(status="running", active_command=index)
+            if args.shard_gpus and len(missing):
+                receipt.update(status="running", active_commands=list(range(len(commands) - 1)), phase="embedding_shards")
                 save()
-                with (args.out_dir / f"command_{index}.log").open("w") as log:
-                    subprocess.run(command, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
+                with ThreadPoolExecutor(max_workers=len(args.shard_gpus)) as pool:
+                    futures = [pool.submit(execute, index, command, gpu)
+                               for index, (command, gpu) in enumerate(zip(commands[:-1], args.shard_gpus))]
+                    for future in futures:
+                        future.result()
+                receipt.update(phase="merging", active_commands=[len(commands) - 1])
+                save()
+                execute(len(commands) - 1, commands[-1])
+            else:
+                for index, command in enumerate(commands):
+                    receipt.update(status="running", active_command=index)
+                    save()
+                    execute(index, command)
             receipt.update(status="complete", output=str(complete))
         except BaseException as error:
             receipt.update(status="cancelled" if isinstance(error, KeyboardInterrupt) else "failed",
