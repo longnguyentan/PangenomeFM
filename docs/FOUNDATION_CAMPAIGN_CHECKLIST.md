@@ -9,6 +9,10 @@ Server: existing Temple checkout; canonical graph and completed results are pres
 For a consolidated recent-work summary and decision roadmap, see
 [PROJECT_STATUS_AND_ROADMAP_20260927.md](PROJECT_STATUS_AND_ROADMAP_20260927.md).
 
+- [x] Review the 27 September model-roadmap suggestion against code, archived
+  controls and primary resource documentation; record corrections and proposed
+  decision criteria in [the review](MODEL_ROADMAP_SUGGESTION_REVIEW_20260927.md).
+
 | Workstream | Status | Evidence / next step |
 |---|---|---|
 | Core EN-TEx + RNA | Complete | 330 primary fits + 30 RNA fits; paired results and team figures available |

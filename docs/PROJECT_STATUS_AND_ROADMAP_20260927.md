@@ -14,6 +14,11 @@ before SSH expired. Detached jobs were launched successfully, but their current
 completion state is unverified. Counts below are the last observed counts,
 not an estimate of how far the server has progressed since then.
 
+The [review of the new model-roadmap suggestion](MODEL_ROADMAP_SUGGESTION_REVIEW_20260927.md)
+checks the random-encoder interpretation, resource counts, model ablations and
+downstream priorities against code and primary sources. It adds no new training
+results and keeps full controls/native v2 readiness as the immediate decision.
+
 ## 1. What changed over the last few days
 
 | Period | Work accomplished |
