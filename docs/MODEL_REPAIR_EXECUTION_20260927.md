@@ -22,7 +22,13 @@ results, and the other implementation worktree are preserved.
 - [x] Implement optional signed-offset/contiguity-gap nuisance matching.
 - [x] Audit coverage and nuisance baselines under new matching: one-hop passes the stated gate; strict fails and remains excluded.
 - [x] Complete the bounded validation-only comparison and matched frozen-random controls.
-- [ ] Evaluate a selected model with frozen biological probes and matched random twins.
+- [x] Evaluate the selected model with frozen biological probes and matched random twins;
+  repair and audit identical window/example universes before comparing results.
+- [ ] Promote a full v2 matrix: current gate fails cCRE trained-versus-random and
+  lacks an eligible strict reconstruction context. SV development improves.
+- [x] Audit exact one-hop sequence-cache coverage and implement compatible completion.
+- [ ] Finish the 176,052 missing benchmark NT embeddings (running on GPUs 1 and 3),
+  then evaluate a separately identified sequence-conditioned candidate.
 - [x] Resolve historical HG008 replay failures or run a separately identified,
   prospective deterministic probe-refit protocol; never relabel a refit as replay.
 - [ ] Measured genotypability labels and verified path-to-segment correspondence
@@ -398,3 +404,77 @@ candidate-model probes. It still refuses any unequal training counts, validation
 identities, or non-embedding predictions. Independent probes can run concurrently
 on explicit distinct GPUs; a concurrency test checks prerequisite order, exclusive
 GPU allocation and complete receipts.
+
+## Completed, aligned biological development result (17:39 EDT)
+
+All eight model/task comparisons now pass exact validation identity and
+non-embedding prediction checks, including identical training counts. SV uses
+91,932 training / 43,217 validation examples; cCRE uses 164,435 / 73,988.
+Encoders and NT remain frozen during all biological fitting.
+
+| Task, one-hop fold A / seed 42 | v1 C+S+T | v2 C+S+T | v2 random C+S+R | v2 − v1 | v2 − random |
+|---|---:|---:|---:|---:|---:|
+| SV insertion/deletion | 0.904426 | 0.911535 | 0.908487 | +0.007109 | +0.003048 |
+| cCRE | 0.916578 | 0.916260 | 0.916335 | -0.000318 | -0.000074 |
+
+After adding H, SV v2 C+S+H+T reaches 0.916828, versus 0.908877 for v1 and
+0.912354 for matched random: gains +0.007951 over v1 and +0.004474 over random.
+cCRE v2 C+S+H+T is 0.916574 versus random 0.916625 (difference -0.000052).
+Thus the repaired objective and bidirectional model improve this **SV development
+comparison**, while cCRE remains essentially tied with random. This is not a
+completed independent chromosome-fold matrix or a broad best-model claim.
+
+The predeclared promotion criteria are saved in `development_gate.json`:
+SV passes the available-context point-estimate checks; cCRE does not beat its
+random control; strict remains missing. Status is `not_promoted`. Thresholds
+have not been loosened after seeing the results. The next model direction is
+richer label-free inputs and replication, rather than more EN-TEx assays.
+
+All outputs are under
+`results/foundation_evidence_20260927/biological_validation_analysis/`:
+
+- `audited_per_run.csv`: recomputed metrics, sample counts, checkpoint hashes,
+  exact target and baseline-score hashes.
+- `paired_differences.csv`: same fold/seed/model-universe comparisons.
+- `audit.json`, `development_gate.json`: validity and advancement decisions.
+- `biological_validation.{pdf,svg,png}`: absolute AP on a 0–1 axis.
+- `biological_validation_differences.{pdf,svg,png}`: paired differences with
+  explicit single-development-fold labeling; no post-selection CI.
+
+Reproduce the accepted report using the corrected candidate root and the
+completed historical-model reference root:
+
+```bash
+PYTHONPATH=src:. python -m tasks.transfer.development_report \
+  --root results/foundation_evidence_20260927/biological_validation_common \
+  --reference-root /home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/biological_validation \
+  --out-dir results/foundation_evidence_20260927/biological_validation_analysis
+```
+
+The report invoked directly on the initial unmatched root was also tested: it
+refuses with `Paired locus/label universe changed: ccre/n_train` before writing
+an analysis directory. This is an expected validity rejection, not an unresolved
+runtime error. The corrected run passed automatically on the server.
+
+### NT completion now executing
+
+The revised estimate was checked before execution: 176,052 new 512-dimensional
+vectors, approximately 0.36 GB uncompressed, with 684 GB disk free. The job
+reuses the existing model weights offline and original batch size 32, pooling,
+sampling and token limits. Two free GPUs (1 and 3) run disjoint native shards
+of 88,018 and 88,034 nodes. Both have produced embedding progress logs.
+
+Server worktree: `/home/tuv43532/PangenomeFM_evidence_report_20260927`, code
+`8ed15d4`, tmux socket `evidence-20260927`, session `nt-complete`. Output:
+`results/foundation_evidence_20260927/benchmark_nt_completion/`. The exact
+commands and frozen model contract are in `status.json`. Use the completion
+command above with `--out-dir .../benchmark_nt_completion --batch-size 32
+--maximum-new-segments 200000 --shard-gpus 1 3`. The guard override follows
+the measured scope, resource and runtime audit; it does not change model inputs
+or preprocessing. This job is **running**, not a completed sequence-conditioned
+model experiment. The final merge verifies graph/model/preprocessing identities,
+disjoint shards, and exact target coverage before declaring completion.
+
+Final local verification after these changes: **335 tests passed**, with existing
+non-fatal library warnings; focused changed-file Ruff and `git diff --check` pass.
+The other LLM's main checkout and historical result directories remain intact.

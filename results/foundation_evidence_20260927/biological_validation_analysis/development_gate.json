@@ -1,0 +1,31 @@
+{
+  "status": "not_promoted",
+  "checks": [
+    {
+      "task": "ccre",
+      "context": "1hop",
+      "v2_minus_v1": -0.0003176431818627812,
+      "v2_minus_random": -7.43785298575883e-05,
+      "v2_given_handcrafted": 0.0019209870171800203,
+      "within_0_005_of_v1": true,
+      "beats_random": false,
+      "adds_beyond_handcrafted": true,
+      "passes_context_task_gate": false
+    },
+    {
+      "task": "sv",
+      "context": "1hop",
+      "v2_minus_v1": 0.007109456054568808,
+      "v2_minus_random": 0.0030478239172008204,
+      "v2_given_handcrafted": 0.02056680574586911,
+      "within_0_005_of_v1": true,
+      "beats_random": true,
+      "adds_beyond_handcrafted": true,
+      "passes_context_task_gate": true
+    }
+  ],
+  "missing_required_contexts": [
+    "strict"
+  ],
+  "limitation": "single-fold development point estimates; no independent performance claim"
+}

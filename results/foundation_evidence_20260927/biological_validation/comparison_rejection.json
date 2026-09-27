@@ -1,0 +1,7 @@
+{
+  "status": "rejected_unmatched_example_universe",
+  "source_status_sha256": "32c45093a4720f02cf6794f6bd5dedf566100415c88381a94ac602d6dacf8595",
+  "observed_error": "Paired locus/label universe changed: ccre/n_train",
+  "analysis_output_created": false,
+  "remedy": "shared manuscript extraction candidate policy; corrected candidate root biological_validation_common"
+}

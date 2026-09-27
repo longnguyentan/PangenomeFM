@@ -1,0 +1,22 @@
+{
+  "status": "complete",
+  "source": {
+    "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/biological_validation_common/status.json",
+    "bytes": 11136,
+    "mtime_ns": 1790545011273322064,
+    "sha256": "746db7cb9c9796bee833a8390dc4074a8d224e90b54bb5703578615d25934ab4"
+  },
+  "reference_source": {
+    "path": "/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/biological_validation/status.json",
+    "bytes": 19592,
+    "mtime_ns": 1790544543593251964,
+    "sha256": "32c45093a4720f02cf6794f6bd5dedf566100415c88381a94ac602d6dacf8595"
+  },
+  "reference_source_scope": "only completed v1/random probes audited; unused candidate probes are excluded",
+  "n_runs": 8,
+  "n_folds": 1,
+  "prediction_identity_and_baseline_invariance": "passed",
+  "scope": "development validation; calibration/threshold use these labels; no independent test estimate",
+  "confidence_intervals": "not estimated from a single selected development fold/seed",
+  "heldout_predictions_produced": false
+}

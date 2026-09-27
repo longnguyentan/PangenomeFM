@@ -59,6 +59,51 @@ def contrasts(frame: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def development_gate(frame: pd.DataFrame) -> dict:
+    """Record the previously specified point-estimate gate; never infer replication."""
+    validate_development_pairs(frame)
+    checks = []
+    for task, group in frame.groupby("task"):
+        ap = group.set_index(["model", "feature"]).auprc
+        checks.append(dict(task=task, context=group.context.iloc[0],
+                           v2_minus_v1=float(ap["v2", "cst"] - ap["v1", "cst"]),
+                           v2_minus_random=float(ap["v2", "cst"] - ap["v2_random", "cst"]),
+                           v2_given_handcrafted=float(ap["v2", "csht"] - ap["v2", "csh"])))
+    for row in checks:
+        row["within_0_005_of_v1"] = row["v2_minus_v1"] >= -0.005
+        row["beats_random"] = row["v2_minus_random"] > 0
+        row["adds_beyond_handcrafted"] = row["v2_given_handcrafted"] > 0
+        row["passes_context_task_gate"] = all(row[k] for k in
+            ["within_0_005_of_v1", "beats_random", "adds_beyond_handcrafted"])
+    missing = sorted({"strict", "1hop"} - set(frame.context))
+    return dict(status="not_promoted" if missing or not all(row["passes_context_task_gate"] for row in checks) else "eligible_for_replication",
+                checks=checks, missing_required_contexts=missing,
+                limitation="single-fold development point estimates; no independent performance claim")
+
+
+def difference_figure(differences: pd.DataFrame, out: Path) -> None:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    plt.rcParams.update({"font.size": 10, "svg.fonttype": "none", "pdf.fonttype": 42,
+                         "axes.spines.top": False, "axes.spines.right": False})
+    names = ["v2_minus_v1_cst", "v2_minus_random_cst", "v2_minus_v1_csht", "v2_minus_random_csht"]
+    labels = ["v2 − v1, C+S+T", "v2 − random, C+S+T/R", "v2 − v1, C+S+H+T", "v2 − random, C+S+H+T/R"]
+    fig, axes = plt.subplots(1, 2, figsize=(11, 3.8), layout="constrained", sharex=True, sharey=True)
+    for ax, task in zip(axes, ["sv", "ccre"]):
+        part = differences.loc[differences.task.eq(task) & differences.metric.eq("auprc")].set_index("contrast")
+        values = part.loc[names, "difference"]
+        ax.scatter(values, range(4), color="#245a81", s=30)
+        for y, value in enumerate(values):
+            ax.annotate(f"{value:+.6f}", (value, y), xytext=(5, 7), textcoords="offset points", fontsize=9)
+        ax.axvline(0, color="0.5", lw=0.8)
+        ax.set(yticks=range(4), yticklabels=labels, ylim=(3.5, -0.5), xlim=(-0.002, 0.0115),
+               xlabel="Paired validation Δ AUPRC", title="SV insertion/deletion" if task == "sv" else "cCRE")
+    fig.suptitle("Repaired-model comparison: one development fold/seed; no uncertainty interval")
+    save_figure(fig, out, "biological_validation_differences")
+    plt.close(fig)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
@@ -87,6 +132,8 @@ def main() -> None:
     args.out_dir.mkdir(parents=True, exist_ok=False)
     frame.to_csv(args.out_dir / "audited_per_run.csv", index=False)
     differences.to_csv(args.out_dir / "paired_differences.csv", index=False)
+    (args.out_dir / "development_gate.json").write_text(json.dumps(development_gate(frame), indent=2) + "\n")
+    difference_figure(differences, args.out_dir)
     (args.out_dir / "audit.json").write_text(json.dumps(dict(
         status="complete", source=fingerprint(args.root / "status.json"),
         reference_source=fingerprint(reference_root / "status.json"),

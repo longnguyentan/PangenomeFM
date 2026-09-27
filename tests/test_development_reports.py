@@ -3,7 +3,7 @@ from itertools import product
 import pandas as pd
 import pytest
 
-from tasks.transfer.development_report import MODELS, FEATURES, contrasts, validate_development_pairs
+from tasks.transfer.development_report import MODELS, FEATURES, contrasts, validate_development_pairs, development_gate
 from tasks.transfer.junction_pilot_report import validation_predictions
 
 
@@ -32,6 +32,16 @@ def test_development_comparisons_fail_on_mismatched_loci_or_baselines():
         validate_development_pairs(frame.iloc[:-1])
     delta = contrasts(frame).query('metric == "auprc" and contrast == "v2_minus_random_csht"')
     assert delta.difference.tolist() == pytest.approx([0.05, 0.05])
+
+
+def test_development_gate_requires_both_contexts_and_random_advantage():
+    frame = development_frame()
+    result = development_gate(frame)
+    assert result["status"] == "not_promoted" and result["missing_required_contexts"] == ["strict"]
+    assert all(row["passes_context_task_gate"] for row in result["checks"])
+    frame.loc[frame.task.eq("ccre") & frame.model.eq("v2") & frame.feature.eq("cst"), "auprc"] = 0.6999
+    row = next(row for row in development_gate(frame)["checks"] if row["task"] == "ccre")
+    assert row["within_0_005_of_v1"] and not row["beats_random"]
 
 
 def test_junction_identity_uses_endpoints_and_labels_and_rejects_test_rows():
