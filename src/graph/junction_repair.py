@@ -1,4 +1,4 @@
-"""Shortcut-free masked-junction pretraining candidates.
+"""Endpoint-balanced masked-junction pretraining candidates.
 
 Background
 ----------
@@ -18,12 +18,12 @@ operation.  Observed connections (junctions) are grouped into short
 genomic spans.  All junctions in a span are hidden together, and negatives are
 cross-pairings ``(u_i, v_j)`` of an out-end from one hidden junction with an
 in-end from another hidden junction in the same span, chosen to match the
-genomic separation of ``(u_i, v_i)`` as closely as possible.  Positive and
-negative endpoints thus carry an identical one-connection deficit, and the
-model has to decide *which* dangling ends were joined, which is the
-pangenome analogue of resolving breakpoint junctions at a bubble.
+genomic separation of ``(u_i, v_i)`` as closely as possible.  Positive and negative candidates have identical endpoint marginals within
+each retained group. This removes marginal endpoint reuse as a label cue;
+shared endpoints and pairwise structure still require empirical shortcut audits.
+Groups without a complete admissible cross-pairing are excluded and counted.
 
-Everything in this module is NumPy-only so that the candidate construction can
+Candidate construction uses NumPy, pandas and SciPy assignment so that the candidate construction can
 be audited without PyTorch and reused by heuristic baselines.
 """
 
@@ -34,6 +34,7 @@ from typing import Dict, Iterable, List, Mapping, Sequence, Set, Tuple
 
 import numpy as np
 import pandas as pd
+from scipy.optimize import linear_sum_assignment
 
 from graph.neg_sampling import canonical_oriented_pair
 
@@ -123,6 +124,9 @@ class JunctionRepairAudit:
     n_positive_candidates: int
     n_negative_candidates: int
     n_groups: int
+    n_missing_coordinate_connections: int
+    n_rejected_groups: int
+    n_cross_coordinate_groups: int
     median_abs_distance_mismatch_bp: float
     fraction_distance_within_tolerance: float
 
@@ -135,6 +139,7 @@ def build_junction_repair_candidates(
     v: np.ndarray,
     oid_to_so: Mapping[int, int],
     *,
+    oid_to_sn: Mapping[int, str],
     scope: str = "branching",
     span_size: int = 16,
     split_seed: int = 20260806,
@@ -170,19 +175,13 @@ def build_junction_repair_candidates(
     if span_size < 2:
         raise ValueError("span_size must be at least 2")
 
-    # One representative stored direction per biological junction.
-    seen: Dict[Tuple[int, int], int] = {}
-    keep_rows: List[int] = []
-    for row, (a, b) in enumerate(zip(u.tolist(), v.tolist())):
-        if a // 2 == b // 2:
-            continue  # self-loops/inversions of one segment are not re-paired
-        key = canonical_oriented_pair(a, b)
-        if key in seen:
-            continue
-        seen[key] = row
-        keep_rows.append(row)
-    pos_set: Set[Tuple[int, int]] = set(seen)
-    pu, pv = u[keep_rows], v[keep_rows]
+    # Canonical directions and order are invariant to stored reverse rows.
+    pos_set = {
+        canonical_oriented_pair(int(a), int(b))
+        for a, b in zip(u, v) if a // 2 != b // 2
+    }
+    pairs = np.asarray(sorted(pos_set), dtype=np.int64).reshape(-1, 2)
+    pu, pv = pairs[:, 0], pairs[:, 1]
 
     out_deg, in_deg = bidirected_degrees(u, v)
     in_scope = junction_mask(pu, pv, out_deg, in_deg, scope)
@@ -193,59 +192,83 @@ def build_junction_repair_candidates(
         "u_oid", "v_oid", "label", "split", "group_id",
         "source_i", "source_j", "distance_mismatch_bp",
     ]
-    if n_pos < 2:
-        empty = pd.DataFrame(columns=columns)
-        return empty, JunctionRepairAudit(len(pos_set), n_pos, 0, 0, 0, float("nan"), float("nan"))
-
-    so_u = np.asarray([int(oid_to_so.get(int(x), 0)) for x in pu], dtype=np.int64)
-    so_v = np.asarray([int(oid_to_so.get(int(x), 0)) for x in pv], dtype=np.int64)
-    distance = np.abs(so_u - so_v)
-    anchor = np.minimum(so_u, so_v)
-    split = split_positive_indices(n_pos, split_seed)
+    # Never interpret offsets from distinct SN coordinate systems as a distance.
+    # Cross-system links remain eligible, but are grouped by the ordered SN pair
+    # and matched on offsets within each corresponding system separately.
+    known = np.array([
+        a in oid_to_so and b in oid_to_so
+        and isinstance(oid_to_sn.get(int(a)), str)
+        and isinstance(oid_to_sn.get(int(b)), str)
+        and oid_to_sn[int(a)] not in ("", "*", "nan")
+        and oid_to_sn[int(b)] not in ("", "*", "nan")
+        for a, b in zip(pu, pv)
+    ], dtype=bool)
+    missing = int((~known).sum())
+    pu, pv = pu[known], pv[known]
+    so_u = np.asarray([int(oid_to_so[int(x)]) for x in pu], dtype=np.int64)
+    so_v = np.asarray([int(oid_to_so[int(x)]) for x in pv], dtype=np.int64)
+    signatures = [(oid_to_sn[int(a)], oid_to_sn[int(b)], int(a % 2), int(b % 2))
+                  for a, b in zip(pu, pv)]
+    split = split_positive_indices(len(pu), split_seed)
     rng = np.random.default_rng(rng_seed)
-
     rows: List[Tuple] = []
     used_negatives: Set[Tuple[int, int]] = set()
     group_id = 0
+    rejected = 0
+    cross_coordinate_groups = 0
     mismatches: List[float] = []
     within_tol: List[bool] = []
     for split_name in SPLIT_NAMES:
-        members = np.flatnonzero(split == split_name)
-        if len(members) < 2:
-            continue
-        # Stable genomic order; random jitter breaks exact ties reproducibly.
-        order = members[np.lexsort((rng.random(len(members)), anchor[members]))]
-        for group in _spans(order, span_size):
-            used_in_end: Dict[int, int] = {}
-            group_rows: List[Tuple] = []
-            for i in group.tolist():
-                best = None
-                for j in group.tolist():
-                    if j == i:
-                        continue
-                    a, b = int(pu[i]), int(pv[j])
-                    key_ab = canonical_oriented_pair(a, b)
-                    if a // 2 == b // 2 or key_ab in pos_set or key_ab in used_negatives:
-                        continue
-                    mismatch = abs(abs(int(so_u[i]) - int(so_v[j])) - int(distance[i]))
-                    key = (mismatch, used_in_end.get(j, 0), float(rng.random()))
-                    if best is None or key < best[0]:
-                        best = (key, j)
-                # Every junction of the span is emitted as a positive row so it
-                # is hidden whenever the span is scored, including junctions
-                # whose own out-end found no admissible partner.
-                group_rows.append((int(pu[i]), int(pv[i]), 1, split_name, group_id, i, i, 0.0))
-                if best is None:
+        by_signature: Dict[Tuple, List[int]] = {}
+        for i in np.flatnonzero(split == split_name):
+            by_signature.setdefault(signatures[i], []).append(int(i))
+        for signature, indices in sorted(by_signature.items()):
+            members = np.asarray(indices, dtype=np.int64)
+            if len(members) < 2:
+                rejected += 1
+                continue
+            order = members[np.lexsort((rng.random(len(members)), so_u[members]))]
+            same_system = signature[0] == signature[1]
+            for group in _spans(order, span_size):
+                cost = np.full((len(group), len(group)), np.inf)
+                mismatch_matrix = np.full_like(cost, np.nan)
+                for ii, i in enumerate(group):
+                    for jj, j in enumerate(group):
+                        a, b = int(pu[i]), int(pv[j])
+                        key = canonical_oriented_pair(a, b)
+                        if i == j or a // 2 == b // 2 or key in pos_set or key in used_negatives:
+                            continue
+                        if same_system:
+                            distance = abs(int(so_u[i]) - int(so_v[i]))
+                            mismatch = abs(abs(int(so_u[i]) - int(so_v[j])) - distance)
+                            if mismatch > max(tol_bp, tol_frac * distance):
+                                continue
+                            mismatch_matrix[ii, jj] = mismatch
+                            cost[ii, jj] = mismatch
+                        else:
+                            # Both differences below stay inside a single SN.
+                            cost[ii, jj] = abs(int(so_u[i]) - int(so_u[j])) + abs(int(so_v[i]) - int(so_v[j]))
+                try:
+                    ri, ci = linear_sum_assignment(cost)
+                except ValueError:  # no complete admissible permutation
+                    rejected += 1
                     continue
-                (mismatch, _, _), j = best
-                used_in_end[j] = used_in_end.get(j, 0) + 1
-                used_negatives.add(canonical_oriented_pair(int(pu[i]), int(pv[j])))
-                tolerance = max(int(tol_bp), int(tol_frac * int(distance[i])))
-                mismatches.append(float(mismatch))
-                within_tol.append(mismatch <= tolerance)
-                group_rows.append((int(pu[i]), int(pv[j]), 0, split_name, group_id, i, j, float(mismatch)))
-            if group_rows:
-                rows.extend(group_rows)
+                keys = [canonical_oriented_pair(int(pu[group[ii]]), int(pv[group[jj]]))
+                        for ii, jj in zip(ri, ci)]
+                if len(set(keys)) != len(keys):
+                    rejected += 1
+                    continue
+                # Emit only complete groups, preserving each endpoint's count.
+                for ii, jj in zip(ri, ci):
+                    i, j = int(group[ii]), int(group[jj])
+                    mismatch = float(mismatch_matrix[ii, jj])
+                    rows.append((int(pu[i]), int(pv[i]), 1, split_name, group_id, i, i, 0.0))
+                    rows.append((int(pu[i]), int(pv[j]), 0, split_name, group_id, i, j, mismatch))
+                    if same_system:
+                        mismatches.append(mismatch)
+                        within_tol.append(True)
+                used_negatives.update(keys)
+                cross_coordinate_groups += int(not same_system)
                 group_id += 1
 
     frame = pd.DataFrame(rows, columns=columns)
@@ -255,6 +278,9 @@ def build_junction_repair_candidates(
         n_positive_candidates=int((frame["label"] == 1).sum()) if len(frame) else 0,
         n_negative_candidates=int((frame["label"] == 0).sum()) if len(frame) else 0,
         n_groups=group_id,
+        n_missing_coordinate_connections=missing,
+        n_rejected_groups=rejected,
+        n_cross_coordinate_groups=cross_coordinate_groups,
         median_abs_distance_mismatch_bp=float(np.median(mismatches)) if mismatches else float("nan"),
         fraction_distance_within_tolerance=float(np.mean(within_tol)) if within_tol else float("nan"),
     )
@@ -266,7 +292,7 @@ def group_batches(
 ) -> List[np.ndarray]:
     """Pack whole span groups into batches of roughly ``batch_size`` candidates.
 
-    Groups are never split: a negative is only shortcut-free when both source
+    Groups are never split: balanced masking requires that both source
     junctions are hidden in the same forward pass.
     """
 

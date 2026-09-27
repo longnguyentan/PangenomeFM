@@ -412,7 +412,9 @@ def load_slice(
     """Load one manifest row into tensors."""
     seg_sub = pd.read_csv(row["segments_path"], compression="infer")
     links_sub = pd.read_csv(row["links_path"], compression="infer")
-    edge_df = pd.read_csv(row["edge_pred_path"], compression="infer")
+    edge_df = (pd.read_csv(row["edge_pred_path"], compression="infer")
+               if objective_of(args) == "edge_masking" else
+               pd.DataFrame(columns=["u_oid", "v_oid", "label"]))
     edge_df = deduplicate_candidate_edges(
         edge_df,
         conflict_policy=getattr(args, "canonical_conflict_policy", "error"),
@@ -421,7 +423,7 @@ def load_slice(
         edge_df.attrs.get("canonical_candidate_audit", {})
     )
 
-    if len(links_sub) == 0 or len(edge_df) == 0:
+    if len(links_sub) == 0 or (objective_of(args) == "edge_masking" and len(edge_df) == 0):
         return None
 
     u_struct, v_struct = oriented_ids_from_links(links_sub, seg_index)
@@ -479,6 +481,7 @@ def load_slice(
             u_struct,
             v_struct,
             md["oid_to_so"],
+            oid_to_sn=md["oid_to_sn"],
             scope=getattr(args, "junction_scope", "branching"),
             span_size=int(getattr(args, "junction_span_size", 16)),
             split_seed=int(split_seed_jr),
@@ -1337,6 +1340,8 @@ def main():
         raise ValueError(
             "--resume_recovery requires exactly one value in --closures."
         )
+    if args.objective == "junction_repair" and not args.mask_query_edges:
+        ap.error("junction_repair requires --mask_query_edges")
     seed_everything(args.seed)
     device = torch.device(args.device)
 

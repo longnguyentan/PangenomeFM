@@ -53,8 +53,8 @@ def test_branching_scope_keeps_only_bubble_junctions():
 
 def test_candidates_are_balanced_unique_and_cross_paired():
     u, v, so = _bubble_chain(40)
-    cand, audit = build_junction_repair_candidates(u, v, so, scope="branching", span_size=8)
-    assert audit.n_positive_candidates >= audit.n_negative_candidates > 0.9 * audit.n_positive_candidates
+    cand, audit = build_junction_repair_candidates(u, v, so, oid_to_sn={x: "chrT" for x in so}, scope="branching", span_size=8)
+    assert audit.n_positive_candidates == audit.n_negative_candidates > 0
     observed = {canonical_oriented_pair(a, b) for a, b in zip(u, v)}
     keys = [canonical_oriented_pair(a, b) for a, b in cand[["u_oid", "v_oid"]].itertuples(index=False)]
     assert len(keys) == len(set(keys)), "candidates must be unique"
@@ -69,11 +69,15 @@ def test_candidates_are_balanced_unique_and_cross_paired():
     assert cand.groupby("group_id")["split"].nunique().max() == 1
 
 
-def test_every_candidate_endpoint_carries_the_same_deficit():
+def test_every_candidate_endpoint_is_masked_and_marginals_are_balanced():
     u, v, so = _bubble_chain(40)
-    cand, _ = build_junction_repair_candidates(u, v, so, scope="branching", span_size=8)
+    cand, _ = build_junction_repair_candidates(u, v, so, oid_to_sn={x: "chrT" for x in so}, scope="branching", span_size=8)
     full = compute_oriented_degrees(u, v, slice_oriented_node_set(u, v))
     for _, sub in cand.groupby("group_id"):
+        from collections import Counter
+
+        for column in ("u_oid", "v_oid"):
+            assert Counter(sub.loc[sub.label == 1, column]) == Counter(sub.loc[sub.label == 0, column])
         hidden = sub.loc[sub.label == 1, ["u_oid", "v_oid"]].itertuples(index=False)
         visible = visible_degree_after_masking(u, v, list(hidden))
         for a, b in sub[["u_oid", "v_oid"]].itertuples(index=False):
@@ -128,3 +132,25 @@ def test_visible_structure_features_matches_unmasked_definition():
     masked = visible_structure_features(X, src[:3], dst[:3], norm)  # hide 0->2
     assert masked[0, 4] < X[0, 4] and masked[2, 4] < X[2, 4]
     assert torch.isclose(masked[1, 4], X[1, 4])
+
+
+def test_coordinate_systems_orientation_and_distance_tolerance_are_preserved():
+    u, v, so = _bubble_chain(80)
+    sn = {x: ("chr1" if x // 2 < 120 else "chr2") for x in so}
+    cand, audit = build_junction_repair_candidates(u, v, so, oid_to_sn=sn, span_size=8)
+    assert len(cand) and audit.fraction_distance_within_tolerance == 1
+    for _, group in cand.groupby("group_id"):
+        signatures = {(sn[a], sn[b], a % 2, b % 2)
+                      for a, b in group[["u_oid", "v_oid"]].itertuples(index=False)}
+        assert len(signatures) == 1
+    missing, audit = build_junction_repair_candidates(u, v, so, oid_to_sn={})
+    assert missing.empty and audit.n_missing_coordinate_connections > 0
+
+
+def test_candidate_construction_is_invariant_to_reverse_equivalent_storage():
+    u, v, so = _bubble_chain(80)
+    kw = dict(oid_to_sn={x: "chrT" for x in so}, span_size=8)
+    forward, _ = build_junction_repair_candidates(u, v, so, **kw)
+    reverse, _ = build_junction_repair_candidates(v[::-1] ^ 1, u[::-1] ^ 1, so, **kw)
+    import pandas as pd
+    pd.testing.assert_frame_equal(forward, reverse)

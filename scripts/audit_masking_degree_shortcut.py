@@ -3,21 +3,25 @@
 
 For each benchmark slice (``*_segments.csv.gz`` with sibling ``_links``), this
 script rebuilds candidates in two ways and scores them with label-free
-heuristics computed on the graph that the encoder would actually see:
+heuristics under explicit masking protocols:
 
 * ``v1_degree_matched``: the manuscript construction.  Negatives are matched
   on genomic separation and on unmasked endpoint degree
   (``neg_distance_matched_paired``); each positive query is hidden alone.
 * ``v1_distance_only``: the same without degree matching.
 * ``junction_repair``: span-grouped junction re-pairing
-  (``graph.junction_repair``); all junctions of a split are hidden together and
-  negatives are cross-pairings of the resulting dangling ends.
+  (``graph.junction_repair``); all validation/test junctions are hidden, plus the current training group
+  for training candidates. This matches native evaluation and the minimum
+  training group mask, excluding stochastic drop-edge and multi-group packing.
 
-Heuristic direction is not known a priori (Platt scaling in the manuscript
+This is a diagnostic, not a trained downstream baseline. v1 single-query
+masking is not a replay of batched encoder training. Heuristic direction is not known a priori (Platt scaling in the manuscript
 baselines can flip it), so the report gives both the raw AUROC and the
 direction-free AUPRC ``max(AP(s), AP(-s))``.  A shortcut-free benchmark should
 show heuristic AUROC near 0.5 for degree-based scores and for the degree
-deficit.  No labels are used to construct any score.
+deficit.  Labels define which positive edges are masked. The direction-free maximum
+uses evaluation labels and is an optimistic diagnostic upper envelope, never
+a validated predictor score. Raw positive and negative directions are saved.
 
 Example::
 
@@ -147,27 +151,37 @@ def audit_slice(path: str, seed: int, span_size: int, scope: str) -> List[dict]:
         for label, pairs in ((1, pos[pidx]), (0, np.asarray(neg, dtype=np.int64).reshape(-1, 2))):
             for a, b in pairs.tolist():
                 if label == 1:  # single-query masking, as in the v1 heuristic baselines
-                    na = set(full_adj.get(a, set())); na.discard(b)
-                    nb = set(full_adj.get(b, set())); nb.discard(a)
-                    local = dict(full_adj); local[a] = na; local[b] = nb
+                    na = set(full_adj.get(a, set()))
+                    na.discard(b)
+                    nb = set(full_adj.get(b, set()))
+                    nb.discard(a)
+                    local = dict(full_adj)
+                    local[a] = na
+                    local[b] = nb
                 else:
                     local = full_adj
                 rows.append({"slice": path, "construction": construction, "label": label,
                              **_score(local, full_deg, so, a, b)})
 
     cand, _audit = build_junction_repair_candidates(
-        u, v, so, scope=scope, span_size=span_size, split_seed=seed, rng_seed=seed
+        u, v, so, oid_to_sn=sn, scope=scope, span_size=span_size, split_seed=seed, rng_seed=seed
     )
-    for split_name, sub in cand.groupby("split"):
-        hidden = {
-            canonical_oriented_pair(a, b)
-            for a, b in sub.loc[sub["label"] == 1, ["u_oid", "v_oid"]].itertuples(index=False)
-        }
+    heldout = cand[(cand["label"] == 1) & cand["split"].isin(["val", "test"])]
+    heldout_hidden = {canonical_oriented_pair(a, b)
+                      for a, b in heldout[["u_oid", "v_oid"]].itertuples(index=False)}
+    for (split_name, _group_id), sub in cand.groupby(["split", "group_id"]):
+        hidden = heldout_hidden.copy()
+        if split_name == "train":
+            hidden.update(canonical_oriented_pair(a, b)
+                          for a, b in sub.loc[sub["label"] == 1, ["u_oid", "v_oid"]].itertuples(index=False))
         visible = [(a, b) for a, b in all_pairs if canonical_oriented_pair(a, b) not in hidden]
         adj = _adjacency(visible)
         for a, b, label in sub[["u_oid", "v_oid", "label"]].itertuples(index=False):
-            rows.append({"slice": path, "construction": f"junction_repair_{scope}", "label": int(label),
+            rows.append({"slice": path, "construction": f"junction_repair_{scope}",
+                         "split": split_name, "label": int(label),
                          **_score(adj, full_deg, so, int(a), int(b))})
+    # Candidate quality is retained separately from prediction performance.
+    rows.append({"slice": path, "construction": "candidate_audit", **_audit.as_dict()})
     return rows
 
 
@@ -184,6 +198,8 @@ def summarize(frame: pd.DataFrame) -> pd.DataFrame:
                 "prevalence": float(y.mean()), "auroc_raw": float(auroc),
                 "auroc_direction_free": float(max(auroc, 1 - auroc)),
                 "auprc_direction_free": float(ap),
+                "auprc_raw": float(average_precision_score(y, s)),
+                "auprc_reversed": float(average_precision_score(y, -s)),
             })
         deficit = group["degree_deficit"].to_numpy(float) > 0
         out.append({
@@ -214,13 +230,27 @@ def main() -> int:
     for path in files:
         rows.extend(audit_slice(path, args.seed, args.span_size, args.scope))
     frame = pd.DataFrame(rows)
+    candidate_audit = frame[frame["construction"] == "candidate_audit"].dropna(axis=1, how="all")
+    frame = frame[frame["construction"] != "candidate_audit"]
+    if frame.empty:
+        raise ValueError("No candidates scored")
     summary = summarize(frame)
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
+    if (out / "audit.json").exists():
+        raise FileExistsError(f"Refusing to overwrite completed audit {out}")
     summary.to_csv(out / "summary.csv", index=False)
+    candidate_audit.to_csv(out / "candidate_audit.csv", index=False)
+    by_split = [summarize(g).assign(split=name) for name, g in frame.groupby("split")]
+    if by_split:
+        pd.concat(by_split).to_csv(out / "by_split.csv", index=False)
     (out / "audit.json").write_text(json.dumps({
         "slices": len(files), "slices_scored": int(frame["slice"].nunique()),
         "seed": args.seed, "span_size": args.span_size, "scope": args.scope,
+        "processing_version": 2,
+        "v1_mask": "single query; not a full batched training replay",
+        "v2_mask": "all held-out positives plus current training group; no drop-edge",
+        "direction_free_scores": "evaluation-label-selected optimistic diagnostic upper envelope",
         "note": ("Fraction row: auroc_raw = share of positive candidates whose endpoints "
                  "have a visible-degree deficit; auprc_direction_free = same share for negatives."),
     }, indent=2))

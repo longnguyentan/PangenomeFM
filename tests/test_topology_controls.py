@@ -35,6 +35,16 @@ def test_topology_controls_restrict_to_targets():
     assert segids.tolist() == [1, 3] and feats.shape[0] == 2
 
 
+def test_branch_distance_includes_four_to_seven_hops_and_disconnected_nodes():
+    # Branch at 0: a chain to 10 and a second outgoing edge to 11; 12 isolated.
+    f = np.array(list(range(10)) + [0])
+    t = np.array(list(range(1, 11)) + [11])
+    rev = np.zeros(len(f), dtype=bool)
+    ids, features = compute_topology_features(13, np.ones(13), f, rev, t, rev)
+    distance = features[:, FEATURE_NAMES.index("hops_to_branching_capped8")]
+    assert distance.tolist() == [0, 1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 1, 8]
+
+
 def test_factorial_adds_topology_control_sets_with_access_text():
     n = 5
     comps = {name: np.random.default_rng(0).normal(size=(n, 3)) for name in
@@ -54,3 +64,9 @@ def test_pair_geometry_contiguity_gap_is_zero_for_adjacent_segments():
     assert g.shape == (2, PAIR_GEOMETRY_DIM)
     assert g[0, 1] == 0.0 and g[0, 3] == 1.0
     assert g[1, 3] == 0.0 and g[1, 0] == 0.0  # different coordinate systems are gated
+
+
+def test_pair_geometry_does_not_treat_missing_coordinates_as_shared():
+    md = {"oid_to_so": {0: 100, 2: 150}, "oid_to_ln": {0: 50}}
+    g = pair_geometry(np.array([0]), np.array([2]), md)
+    assert g[0, 3] == 0 and g[0, 0] == 0 and g[0, 1] == 0

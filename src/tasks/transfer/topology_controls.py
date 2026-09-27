@@ -90,6 +90,21 @@ def compute_topology_features(
     seg_in = np.maximum(in_deg[0::2], in_deg[1::2])
     branching = (seg_out > 1) | (seg_in > 1)
 
+    # A multi-source traversal computes the declared capped distance for all
+    # segments. The separate three-hop neighborhood below cannot supply it.
+    branch_distance = np.full(n_segments, 8, dtype=np.int8)
+    branch_distance[branching] = 0
+    queue = deque(np.flatnonzero(branching).tolist())
+    while queue:
+        x = queue.popleft()
+        distance = int(branch_distance[x]) + 1
+        if distance >= 8:
+            continue
+        for y in neighbors(x):
+            if branch_distance[y] > distance:
+                branch_distance[y] = distance
+                queue.append(int(y))
+
     # Directed successor sets per forward handle for the bypass test.
     succ: Dict[int, set] = {}
     for x, y in zip(u.tolist(), v.tolist()):
@@ -112,13 +127,7 @@ def compute_topology_features(
                     queue.append(y)
         by_hop = [sum(1 for d in seen.values() if 0 < d <= k) for k in (1, 2, 3)]
         within2 = [x for x, d in seen.items() if 0 < d <= 2]
-        hops_branch = 8.0
-        if branching[s]:
-            hops_branch = 0.0
-        else:
-            near = [d for x, d in seen.items() if d > 0 and branching[x]]
-            if near:
-                hops_branch = float(min(near))
+        hops_branch = float(branch_distance[s])
         n1 = neighbors(s)
         if len(n1) > 1:
             n1set = set(n1.tolist())
@@ -173,6 +182,7 @@ def build_cache(
         "status": "complete",
         "downstream_label_access": "none",
         "kind": "handcrafted_topology_control",
+        "processing_version": 2,
         "feature_names": FEATURE_NAMES,
         "n_segments": int(len(segids)),
         "full_segments_sha256": _sha256(full_segments),

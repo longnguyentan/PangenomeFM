@@ -7,7 +7,6 @@ absent, so archived checkpoints and their namespaces keep working unchanged.
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 from typing import Dict, Optional, Tuple
 
@@ -134,7 +133,8 @@ def pair_geometry(u: np.ndarray, v: np.ndarray, md: dict) -> np.ndarray:
     so, ln, sn = md["oid_to_so"], md["oid_to_ln"], md.get("oid_to_sn", {})
     out = np.zeros((len(u), PAIR_GEOMETRY_DIM), dtype=np.float32)
     for row, (a, b) in enumerate(zip(np.asarray(u).tolist(), np.asarray(v).tolist())):
-        same = sn.get(a) == sn.get(b) if sn else True
+        same = (a in so and b in so and a in sn and b in sn
+                and sn[a] not in (None, "", "*", "nan") and sn[a] == sn[b])
         d = float(so.get(b, 0)) - float(so.get(a, 0))
         gap = d - float(ln.get(a, 0))
         out[row, 0] = np.sign(d) * np.log1p(abs(d)) / 16.0 if same else 0.0
