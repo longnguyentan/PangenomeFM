@@ -59,12 +59,41 @@ def audit(frame: pd.DataFrame, nodes: pd.DataFrame, caches: dict[str, set[int]])
     return frame, overlaps, pd.DataFrame(rows)
 
 
+def verify_reference(examples: pd.DataFrame, sequence_chunks) -> tuple[pd.DataFrame, list]:
+    """Check every mapped REF against the actual graph sequence, in bounded chunks."""
+    rows, samples = [], []
+    needed = set(examples.segid.astype(int))
+    for chunk in sequence_chunks:
+        for segment in chunk.loc[chunk.id.isin(needed)].itertuples(index=False):
+            seq = str(segment.seq).upper()
+            if len(seq) != int(segment.LN):
+                raise ValueError("Graph sequence length differs from LN")
+            group = examples.loc[examples.segid.eq(segment.id)]
+            for row in group.itertuples(index=False):
+                offset = int(row.start - segment.SO)
+                if not 0 <= offset < len(seq):
+                    raise ValueError("Mapped coordinate is outside its sequence")
+                rows.append(dict(dataset=row.dataset, variant_id=row.variant_id,
+                                 segid=int(segment.id), ref=row.ref, observed_ref=seq[offset],
+                                 matches=row.ref == seq[offset]))
+                if row.dataset not in {s["dataset"] for s in samples}:
+                    left, right = max(0, offset - 100), min(len(seq), offset + 101)
+                    samples.append(dict(dataset=row.dataset, variant_id=row.variant_id,
+                        segid=int(segment.id), start0=int(segment.SO + left), end0=int(segment.SO + right),
+                        variant_position_in_record=offset-left+1, sequence=seq[left:right]))
+    result = pd.DataFrame(rows)
+    if len(result) != len(examples):
+        raise ValueError("Some mapped examples lack a verifiable sequence")
+    return result, samples
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--dataset", action="append", required=True, help="NAME=official parquet")
     ap.add_argument("--feature-cache", action="append", default=[], help="NAME=NPZ containing segid")
     ap.add_argument("--full-segments", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, required=True)
+    ap.add_argument("--verify-reference", action="store_true")
     args = ap.parse_args()
     graph = fingerprint(args.full_segments)
     expected = json.loads(Path("configs/entex_v1.json").read_text())["full_segments_sha256"]
@@ -81,7 +110,7 @@ def main() -> None:
             caches[name] = set(ids.astype(int))
         cache_sources[name] = fingerprint(Path(path))
     args.out_dir.mkdir(parents=True, exist_ok=False)
-    receipts = []
+    receipts, reference_examples = [], []
     for spec in args.dataset:
         name, path = spec.split("=", 1)
         if not name.replace("_", "").isalnum():
@@ -90,15 +119,28 @@ def main() -> None:
         frame.to_parquet(args.out_dir / (name + "_examples.parquet"), index=False)
         overlaps.to_parquet(args.out_dir / (name + "_overlaps.parquet"), index=False)
         coverage.to_csv(args.out_dir / (name + "_coverage.csv"), index=False)
+        reference_examples.append(frame.merge(overlaps, on="locus_id").assign(dataset=name))
         receipts.append(dict(dataset=name, source=fingerprint(Path(path)), n=len(frame),
                              unique_loci=frame.locus_id.nunique(), multi_segment_rows=int((frame.n_segments > 1).sum()),
                              mixed_label_loci=int((frame.groupby("locus_id").label.nunique() > 1).sum()),
                              graph_coverage=float(frame.graph_mapped.mean()),
                              official_match_groups=frame.match_group.nunique()))
+    reference = None
+    if args.verify_reference:
+        sequence_chunks = pd.read_csv(args.full_segments, usecols=["id", "seq", "SO", "LN"], chunksize=10000)
+        checked, samples = verify_reference(pd.concat(reference_examples, ignore_index=True), sequence_chunks)
+        checked.to_parquet(args.out_dir / "reference_checks.parquet", index=False)
+        checked.groupby("dataset").agg(n=("matches", "size"), matches=("matches", "sum")).to_csv(
+            args.out_dir / "reference_summary.csv")
+        fasta = "".join(f">{s['dataset']} {s['variant_id']} segid={s['segid']} start0={s['start0']} end0={s['end0']} variant_position_1based={s['variant_position_in_record']}\n{s['sequence']}\n" for s in samples)
+        (args.out_dir / "reference_spot_checks.fasta").write_text(fasta)
+        reference = dict(checked=len(checked), mismatches=int((~checked.matches).sum()),
+                         sampling="First encountered mapped example per dataset, independent of label/model scores",
+                         sample_records=[{k: v for k, v in s.items() if k != "sequence"} for s in samples])
     (args.out_dir / "audit.json").write_text(json.dumps(dict(
         status="coverage_audit_complete", graph=graph, caches=cache_sources, datasets=receipts,
         coordinate_contract="Official TraitGym pos is 1-based; map [pos-1,pos) without nearest fallback",
-        no_model_fitted=True, original_rows_retained=True,
+        no_model_fitted=True, original_rows_retained=True, reference_verification=reference,
         interpretation="Cache membership is potential input coverage, not proof of complete checkpoint/window embedding coverage",
         next_gate="Preserve official matched controls and chromosome protocol; audit class-dependent loss before fitting",
         representation_limit="Static segment T is a locus prior and does not distinguish ref versus alt alleles"
