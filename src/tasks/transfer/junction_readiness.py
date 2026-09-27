@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from contextlib import nullcontext
 import json
 import logging
 from pathlib import Path
@@ -24,6 +25,7 @@ from sklearn.metrics import average_precision_score, roc_auc_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 import torch
+from threadpoolctl import threadpool_limits
 
 from evaluation.external import _namespace_from_checkpoint
 from evaluation.splits import normalize_chrom, validate_chromosome_split
@@ -138,10 +140,13 @@ def fit_validation_baselines(frame: pd.DataFrame) -> tuple[pd.DataFrame, pd.Data
             else:
                 model = make_pipeline(StandardScaler(), LogisticRegression(
                     C=1.0, class_weight="balanced", solver="lbfgs", max_iter=2000, random_state=42))
-            model.fit(train[columns], train.label)
+            # PyTorch and sklearn can load separate OpenMP runtimes on macOS.
+            # Bound this small diagnostic's native parallelism for stability.
+            with threadpool_limits(limits=1, user_api="openmp") if name.endswith("boosting") else nullcontext():
+                model.fit(train[columns], train.label)
+                p = model.predict_proba(val[columns])[:, 1]
             if not name.endswith("boosting") and model[-1].n_iter_.max() >= model[-1].max_iter:
                 raise RuntimeError("Nuisance baseline did not converge")
-            p = model.predict_proba(val[columns])[:, 1]
             pred = val[["slice", "chrom", "context", "candidate_index", "label"]].copy()
             pred["baseline"], pred["probability"] = name, p
             predictions.append(pred)

@@ -26,7 +26,24 @@ def main() -> int:
     ap.add_argument("--contexts", nargs="+", choices=["strict", "1hop"], default=["strict", "1hop"])
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--topology-control-cache", type=Path)
+    ap.add_argument("--validation-only", action="store_true")
+    ap.add_argument("--primary-features-only", action="store_true",
+                    help="Use C+S, C+S+T, C+S+H, C+S+H+T for the bounded development comparison")
+    ap.add_argument("--candidate-checkpoint", action="append", default=[], metavar="NAME=PATH",
+                    help="Additional explicitly named checkpoints; requires one context")
     args = ap.parse_args()
+    candidates = []
+    for specification in args.candidate_checkpoint:
+        name, path = specification.split("=", 1)
+        if not name.replace('_', '').replace('-', '').isalnum() or name in {'v1', 'random'}:
+            raise ValueError("Use a unique simple candidate name distinct from v1/random")
+        candidates.append((name, Path(path).resolve()))
+        if not candidates[-1][1].is_file():
+            raise FileNotFoundError(candidates[-1][1])
+    if len({name for name, _ in candidates}) != len(candidates):
+        raise ValueError("Duplicate candidate checkpoint names")
+    if candidates and len(args.contexts) != 1:
+        raise ValueError("Candidate checkpoints require one explicit context")
     out = args.out_root.resolve()
     if out.exists():
         raise FileExistsError(f"Use a new output root: {out}")
@@ -66,7 +83,7 @@ def main() -> int:
         random = out / f"random_init/{context}.pt"
         commands.append([sys.executable, "scripts/make_random_init_checkpoint.py", "--checkpoint",
                          str(trained), "--out", str(random), "--seed", str(args.seed)])
-        for model, checkpoint in (("v1", trained), ("random", random)):
+        for model, checkpoint in [("v1", trained), ("random", random), *candidates]:
             for task in ("sv", "ccre"):
                 command = [sys.executable, f"scripts/server/run_{task}_frozen_probe_fold.py",
                            "--checkpoint", str(checkpoint), "--manifest",
@@ -83,9 +100,19 @@ def main() -> int:
                 else:
                     command += ["--node-labels", str(sw / "data/downstream/ccre/hprc_r2_screen_v4/node_labels.csv.gz"),
                                 "--feature-cache", str(sw / "data/processed/hprc_r2_ccre_screen_v4_features.npz")]
+                if args.validation_only:
+                    command.append("--validation-only")
+                if args.primary_features_only:
+                    suffix = "_pair" if task == "sv" else ""
+                    primary = ["coordinate_plus_frozen_sequence_fm",
+                               "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+                               "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+                               "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm"]
+                    command += ["--feature-sets", *[name + suffix for name in primary]]
                 commands.append(command)
     out.mkdir(parents=True)
     plan = {"status": "planned", "scope": "exploratory development control; no v2 promotion",
+            "evaluation_partition": "development_validation" if args.validation_only else "test",
             "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
             "graph_sha256": digest, "fold": fold, "seed": args.seed,
             "random_initialization_seed": args.seed, "encoders_frozen": True,

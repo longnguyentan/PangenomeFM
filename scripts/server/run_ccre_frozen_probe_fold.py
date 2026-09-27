@@ -146,11 +146,14 @@ def evaluate_feature_sets(
     val_chrs: set[str],
     seed: int,
     feature_access: dict[str, str] | None = None,
+    validation_only: bool = False,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Fit/calibrate on train/validation chromosomes and score test only."""
+    """Fit on train, calibrate on validation, and score the explicit partition."""
 
     test_chrs = {_canonical_chrom(chrom) for chrom in test_chrs}
     val_chrs = {_canonical_chrom(chrom) for chrom in val_chrs}
+    if test_chrs & val_chrs:
+        raise ValueError("Downstream test and validation chromosomes overlap")
     chromosome_norm = np.asarray([_canonical_chrom(chrom) for chrom in chromosomes])
     is_test = np.isin(chromosome_norm, sorted(test_chrs))
     is_val = np.isin(chromosome_norm, sorted(val_chrs))
@@ -161,6 +164,7 @@ def evaluate_feature_sets(
         )
     if any(len(np.unique(labels[mask])) < 2 for mask in (is_train, is_val)):
         raise ValueError("Training and validation splits must each contain both classes.")
+    is_evaluation = is_val if validation_only else is_test
 
     access = FEATURE_ACCESS if feature_access is None else feature_access
     metrics_rows: list[dict[str, object]] = []
@@ -171,17 +175,17 @@ def evaluate_feature_sets(
             raise ValueError(f"Feature length mismatch for {feature_name}")
         if feature_name == "training_prevalence":
             raw_val = np.full(is_val.sum(), labels[is_train].mean(), dtype=float)
-            raw_test = np.full(is_test.sum(), labels[is_train].mean(), dtype=float)
+            raw_test = np.full(is_evaluation.sum(), labels[is_train].mean(), dtype=float)
         elif feature_name == "random_uniform":
             rng = np.random.default_rng(seed + feature_index * 1_000_003)
             scores = rng.random(len(labels))
             raw_val = scores[is_val]
-            raw_test = scores[is_test]
+            raw_test = scores[is_evaluation]
         else:
             model = _fit_model("logistic", seed)
             model.fit(matrix[is_train], labels[is_train])
             raw_val = model.predict_proba(matrix[is_val])[:, 1]
-            raw_test = model.predict_proba(matrix[is_test])[:, 1]
+            raw_test = model.predict_proba(matrix[is_evaluation])[:, 1]
 
         temperature = fit_temperature(labels[is_val], raw_val)
         calibrated_val = apply_temperature(raw_val, temperature)
@@ -194,32 +198,32 @@ def evaluate_feature_sets(
             "validation_f1_threshold": float(threshold),
             "n_train": int(is_train.sum()),
             "n_validation": int(is_val.sum()),
-            "n_test": int(is_test.sum()),
+            "n_test": 0 if validation_only else int(is_test.sum()),
         }
         metrics_rows.append(
             {
                 **common,
-                "scope": "all_test_chromosomes",
+                "scope": "development_validation" if validation_only else "all_test_chromosomes",
                 "chromosome": "all",
-                **binary_metrics(labels[is_test], calibrated_test, threshold),
+                **binary_metrics(labels[is_evaluation], calibrated_test, threshold),
             }
         )
-        for chrom in sorted(set(chromosome_norm[is_test])):
-            selected = chromosome_norm[is_test] == chrom
+        for chrom in sorted(set(chromosome_norm[is_evaluation])):
+            selected = chromosome_norm[is_evaluation] == chrom
             per_chromosome_rows.append(
                 {
                     **common,
-                    "scope": "test_chromosome",
+                    "scope": "validation_chromosome" if validation_only else "test_chromosome",
                     "chromosome": chrom,
-                    **binary_metrics(labels[is_test][selected], calibrated_test[selected], threshold),
+                    **binary_metrics(labels[is_evaluation][selected], calibrated_test[selected], threshold),
                 }
             )
         prediction_frames.append(
             pd.DataFrame(
                 {
-                    "segid": segids[is_test],
-                    "chromosome": chromosome_norm[is_test],
-                    "y_true": labels[is_test],
+                    "segid": segids[is_evaluation],
+                    "chromosome": chromosome_norm[is_evaluation],
+                    "y_true": labels[is_evaluation],
                     "feature_set": feature_name,
                     "p_raw": raw_test,
                     "p_calibrated": calibrated_test,
@@ -255,6 +259,7 @@ def run_probe(
     feature_sets: list[str] | None = None,
     canonical_conflict_policy: str = "exclude",
     topology_control_cache: Path | None = None,
+    validation_only: bool = False,
 ) -> dict[str, object]:
     if (out_dir / "audit.json").exists():
         raise FileExistsError(f"Refusing to overwrite completed output: {out_dir}")
@@ -362,6 +367,7 @@ def run_probe(
         val_chrs=val_chrs,
         seed=seed,
         feature_access=selected_feature_access,
+        validation_only=validation_only,
     )
     for frame in (metrics, per_chromosome, predictions):
         frame.insert(0, "fold", fold)
@@ -371,7 +377,8 @@ def run_probe(
     out_dir.mkdir(parents=True, exist_ok=False)
     metrics.to_csv(out_dir / "metrics.csv", index=False)
     per_chromosome.to_csv(out_dir / "per_chromosome_metrics.csv", index=False)
-    predictions.to_csv(out_dir / "test_predictions.csv.gz", index=False, compression="gzip")
+    prediction_name = "validation_predictions.csv.gz" if validation_only else "test_predictions.csv.gz"
+    predictions.to_csv(out_dir / prediction_name, index=False, compression="gzip")
     pd.DataFrame(
         {
             "segid": labels_frame["segid"].to_numpy(np.int64),
@@ -382,6 +389,9 @@ def run_probe(
     audit = {
         "schema_version": 1,
         "status": "complete",
+        "evaluation_partition": "development_validation" if validation_only else "test",
+        "heldout_predictions_produced": not validation_only,
+        "validation_metrics_note": "Calibration and threshold also use validation; these development scores are not independent performance estimates" if validation_only else None,
         "fold": fold,
         "seed": seed,
         "closure": closure,
@@ -447,6 +457,7 @@ def main() -> int:
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--max-slices", type=int)
+    parser.add_argument("--validation-only", action="store_true")
     parser.add_argument("--external-sequence-cache", type=Path)
     parser.add_argument("--minimum-external-coverage", type=float, default=0.95)
     parser.add_argument("--feature-sets", nargs="+")
@@ -480,6 +491,7 @@ def main() -> int:
         feature_sets=args.feature_sets,
         canonical_conflict_policy=args.canonical_conflict_policy,
         topology_control_cache=args.topology_control_cache,
+        validation_only=args.validation_only,
     )
     return 0
 

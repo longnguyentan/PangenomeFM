@@ -168,6 +168,7 @@ def run_probe(
     feature_sets: list[str] | None = None,
     canonical_conflict_policy: str = "exclude",
     topology_control_cache: Path | None = None,
+    validation_only: bool = False,
 ) -> dict[str, object]:
     if out_dir.exists():
         raise FileExistsError(f"Refusing to overwrite output: {out_dir}")
@@ -282,6 +283,7 @@ def run_probe(
         val_chrs=val_chrs,
         seed=seed,
         feature_access=selected_feature_access,
+        validation_only=validation_only,
     )
     predictions = predictions.rename(columns={"segid": "example_id"})
     strata = stratified_metrics(predictions, examples)
@@ -293,11 +295,15 @@ def run_probe(
     metrics.to_csv(out_dir / "metrics.csv", index=False)
     per_chromosome.to_csv(out_dir / "per_chromosome_metrics.csv", index=False)
     strata.to_csv(out_dir / "stratified_metrics.csv", index=False)
-    predictions.to_csv(out_dir / "test_predictions.csv.gz", index=False, compression="gzip")
+    prediction_name = "validation_predictions.csv.gz" if validation_only else "test_predictions.csv.gz"
+    predictions.to_csv(out_dir / prediction_name, index=False, compression="gzip")
     embedded_nodes = set(examples["start_segid"].astype(int)) | set(examples["end_segid"].astype(int))
     audit = {
         "schema_version": 1,
         "status": "complete",
+        "evaluation_partition": "development_validation" if validation_only else "test",
+        "heldout_predictions_produced": not validation_only,
+        "validation_metrics_note": "Calibration and threshold also use validation; these development scores are not independent performance estimates" if validation_only else None,
         "fold": fold,
         "seed": seed,
         "closure": closure,
@@ -364,6 +370,7 @@ def main() -> int:
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--max-slices", type=int)
+    parser.add_argument("--validation-only", action="store_true")
     parser.add_argument("--external-sequence-cache", type=Path)
     parser.add_argument("--minimum-external-coverage", type=float, default=0.95)
     parser.add_argument("--feature-sets", nargs="+")
@@ -397,6 +404,7 @@ def main() -> int:
         feature_sets=args.feature_sets,
         canonical_conflict_policy=args.canonical_conflict_policy,
         topology_control_cache=args.topology_control_cache,
+        validation_only=args.validation_only,
     )
     return 0
 

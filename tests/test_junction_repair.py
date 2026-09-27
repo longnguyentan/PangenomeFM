@@ -1,4 +1,4 @@
-"""Tests for the shortcut-free junction re-pairing objective (v2)."""
+"""Tests for endpoint-balanced junction re-pairing candidates (v2)."""
 
 from __future__ import annotations
 

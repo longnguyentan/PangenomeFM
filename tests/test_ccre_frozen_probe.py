@@ -75,3 +75,25 @@ def test_all_features_use_identical_test_nodes_and_validation_calibration() -> N
     counts = predictions.groupby("feature_set")["segid"].apply(set)
     assert all(value == set(range(8)) for value in counts)
     assert set(per_chromosome["chromosome"]) == {"chr1"}
+
+
+def test_validation_development_never_scores_heldout_features_or_labels() -> None:
+    import pytest
+    chromosomes = np.repeat(['chr1', 'chr2', 'chr3'], 20)
+    labels = np.tile([0, 1], 30).astype(np.int8)
+    signal = labels[:, None].astype(np.float32)
+    signal[:20] = np.nan  # Any attempted held-out predict_proba would fail.
+    kwargs = dict(segids=np.arange(60), chromosomes=chromosomes, labels=labels,
+                  features={'coordinate': signal}, test_chrs={'chr1'}, val_chrs={'chr2'},
+                  seed=42, validation_only=True)
+    metrics, chrom_metrics, predictions = MODULE.evaluate_feature_sets(**kwargs)
+    assert metrics.n_test.eq(0).all()
+    assert set(metrics.scope) == {'development_validation'}
+    assert set(predictions.chromosome) == set(chrom_metrics.chromosome) == {'chr2'}
+    changed = labels.copy()
+    changed[:20] ^= 1
+    other, _, other_predictions = MODULE.evaluate_feature_sets(**dict(kwargs, labels=changed))
+    pd.testing.assert_frame_equal(predictions, other_predictions)
+    pd.testing.assert_frame_equal(metrics, other)
+    with pytest.raises(ValueError, match='overlap'):
+        MODULE.evaluate_feature_sets(**dict(kwargs, val_chrs={'chr1'}))

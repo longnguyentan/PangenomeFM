@@ -1340,7 +1340,8 @@ def main():
         help=(
             "edge_masking reproduces the v1 benchmark candidates. junction_repair "
             "hides span groups of junctions and uses cross-pairings of their "
-            "dangling ends as negatives, removing the visible-degree shortcut."
+            "dangling ends as negatives with balanced endpoint marginals. "
+            "Audit remaining degree, geometry and node-attribute cues separately."
         ),
     )
     ap.add_argument("--junction_scope", choices=["branching", "all"], default="branching")

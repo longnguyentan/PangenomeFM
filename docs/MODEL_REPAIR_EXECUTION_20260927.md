@@ -20,8 +20,8 @@ results, and the other implementation worktree are preserved.
 - [x] Implement validation-only development mode, with no final test predictions.
 - [x] Fix numeric GFA-name CSV round trips without changing segment order.
 - [x] Implement optional signed-offset/contiguity-gap nuisance matching.
-- [ ] Verify full canonical coverage and nuisance baselines under the new matching.
-- [ ] Run bounded validation-only model comparison after candidate validity passes.
+- [x] Audit coverage and nuisance baselines under new matching: one-hop passes the stated gate; strict fails and remains excluded.
+- [x] Complete the bounded validation-only comparison and matched frozen-random controls.
 - [ ] Evaluate a selected model with frozen biological probes and matched random twins.
 - [ ] Resolve historical HG008 replay failures or run a separately identified,
   prospective deterministic probe-refit protocol; never relabel a refit as replay.
@@ -193,7 +193,7 @@ The fixed raw-input linear and boosting controls reach AP 0.570080 and 0.677132
 respectively (macro AUROC 0.625505 and 0.752984). Thus geometry/degree balancing
 alone does not make the task entirely attribute-independent. Bidirectional
 message passing materially improves this bounded reconstruction pilot, but its
-biological reuse and advantage over frozen random backbones remain untested.
+biological reuse remains untested; the subsequent frozen-random comparison is below.
 These are development scores, not independent performance estimates.
 
 ## Frozen-random-backbone controls (fixed before their results)
@@ -213,3 +213,47 @@ PYTHONPATH=src:. python scripts/server/run_junction_geometry_pilot.py \
   --context 1hop --out-root results/foundation_evidence_20260927/geometry_random_controls \
   --gpus 0 1 2 3 --random-encoder-control --execute
 ```
+
+## Completed frozen-random reconstruction controls
+
+| Message direction | Pair head | Frozen-random AP | Trained AP | Trained minus random |
+|---|---|---:|---:|---:|
+| incoming | existing MLP | 0.502783 | 0.500748 | -0.002036 |
+| incoming | linear interactions | 0.512805 | 0.530415 | +0.017610 |
+| bidirectional | existing MLP | 0.625729 | 0.789716 | +0.163986 |
+| bidirectional | linear interactions | 0.544846 | 0.740027 | +0.195181 |
+
+All comparisons use the same fold-A reconstruction validation candidates. The
+bidirectional existing-head model is selected by the previously declared native
+validation macro-AUROC criterion (0.836070). This selection uses no biological
+labels. Next, frozen cCRE/SV probes compare this checkpoint and its matched
+random backbone with v1 and v1-random on **biological validation chromosomes**,
+using C+S, C+S+T, C+S+H and C+S+H+T. No full biological test matrix is promoted
+from reconstruction scores alone. The random control's T column means R.
+
+The existing biological probe implementations now have an optional
+`--validation-only` development mode. Training/chromosome exclusions and logistic
+hyperparameters stay unchanged; no held-out features are scored. Predictions
+are named `validation_predictions.csv.gz`, `n_test=0`, and scope is explicit.
+Threshold/calibration also use validation, so validation F1/calibration are
+optimistic development diagnostics; these are not independent test estimates.
+The default historical test-scoring path remains the same. A unit test places
+NaNs only in held-out features and permutes held-out labels: validation output
+must remain unchanged and no held-out prediction may be attempted.
+
+The cached manuscript regression still passes: cCRE gains +0.004008/+0.003406;
+SV gains +0.034246/+0.040090. These are cached-result checks, not retraining.
+The first regression invocation used the isolated worktree's absent import path;
+rerunning with the original checkout's existing import directory passed.
+
+A full local test run exposed a native OpenMP crash in sklearn histogram
+binning after PyTorch tests. The small optional boosting diagnostic now scopes
+OpenMP to one thread for fitting and prediction; its focused tests pass without
+global environment overrides. This is a runtime correction, not a change to
+model hyperparameters or selection criteria.
+
+After the threading correction, the full local suite passes: **325 tests**.
+Server access remains available. All 30 prospective HG008 refits have completed;
+strict AP gain is +0.032525 (95% CI -0.053371 to +0.110254), and one-hop is
++0.064863 (-0.066739 to +0.212115). This 69-variant, one-genome result is
+inconclusive. It does not repair or replace the historical replay receipts.
