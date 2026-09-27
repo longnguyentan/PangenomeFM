@@ -99,3 +99,45 @@ successor gradients, checkpoint/random-twin compatibility, native CLI training,
 validation-only scoring, geometry-bin matching, endpoint balance, and refusal
 of impossible coordinate-matched negatives. Synthetic runs are execution tests,
 not model performance evidence.
+
+## Matching audit outcome (16:22 EDT)
+
+The fixed matching completed all 1,216 windows. One-hop retains 603 windows
+with chromosome coverage and >=4 native validation/test candidates per canonical
+chromosome; fold-A controls have 66,170 training and 2,050 validation candidates.
+Geometry AP/AUROC are exactly 0.5; geometry+degree AP is 0.506812 and AUROC
+0.504322. It passes the declared operational gate. A second native audit with
+bidirectional masking will check the corresponding changed visible graph before
+launching that arm.
+
+Strict retains only 12 windows across all chromosomes and only 138 training /
+4 validation candidates in the fold-A control partitions. It fails the unchanged
+coverage gate. The signed-geometry constraint has **not** been weakened. These
+reference-only windows cannot currently support the proposed strict reconstruction
+task. Only the eligible one-hop context proceeds to development; strict frozen
+extraction can be studied subsequently with clear training-context attribution.
+This does not replace any historical strict result.
+
+## Separate prospective HG008 refit
+
+Historical exact-probe replay remains unresolved because original fitted probes
+were not saved and numerical reproduction fails the 1e-4 AP gate in six runs.
+The new explicit `prospective_refit` protocol creates **new HGSVC-trained probes**,
+with the same examples, chromosome folds, frozen encoders, features and fixed
+logistic hyperparameters. Native BLAS is limited to one thread. Training and
+calibration use HGSVC training/validation chromosomes only. Every fitted model is
+saved, reloaded and checked for bit-exact predictions before external scoring;
+its feature-matrix hash, input/checkpoint hashes and environment are recorded.
+All 30 combinations run regardless of their historical replay differences.
+Those differences stay in the outputs. The unchanged default historical protocol
+still refuses scores outside 1e-4. Reports prohibit mixing the two protocols.
+
+HG008 supplies no training, calibration, model-selection or stopping labels.
+This remains one-genome, zero-shot **insertion-versus-deletion classification**;
+it is not a cancer breakpoint-localization benchmark or replay of lost models.
+Run in a fresh directory:
+
+```bash
+PYTHONPATH=src:. python scripts/server/run_hg008_refit_campaign.py \
+  --out-root results/foundation_evidence_20260927/hg008_prospective_refit --execute
+```

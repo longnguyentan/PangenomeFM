@@ -156,3 +156,40 @@ def test_summary_rejects_missing_paired_runs():
     frame.loc[0, "n_test"] = 9
     with pytest.raises(ValueError, match="different test"):
         validate_matrix(frame, expected)
+
+
+def test_refit_does_not_relax_or_relabel_historical_replay():
+    from tasks.transfer.external_sv import enforce_replay
+
+    assert enforce_replay(0.00005, 0.0001, 'historical_replay')
+    with pytest.raises(ValueError, match='fails manuscript regression'):
+        enforce_replay(0.0002, 0.0001, 'historical_replay')
+    assert not enforce_replay(0.0002, 0.0001, 'prospective_refit')
+    with pytest.raises(ValueError):
+        enforce_replay(float('nan'), 0.0001, 'prospective_refit')
+
+
+def test_saved_refit_exactly_reloads_before_external_use(tmp_path):
+    from tasks.transfer.external_sv import persist_probe
+    rng = np.random.default_rng(6)
+    x = rng.normal(size=(120, 4))
+    y = np.tile([0, 1], 60)
+    train, val, test = masks(np.repeat(['chr1', 'chr2', 'chr3'], 40), {'chr3'}, {'chr2'})
+    model, temperature, threshold = fit_original(x, y, train, val, 42)
+    restored = persist_probe(model, temperature, threshold, x, test, tmp_path / 'probe.joblib',
+                             dict(protocol='prospective_refit', hg008_label_access='none'))
+    np.testing.assert_array_equal(model.predict_proba(x), restored['model'].predict_proba(x))
+    assert restored['protocol'] == 'prospective_refit' and restored['hg008_label_access'] == 'none'
+
+
+def test_prospective_refit_plan_preserves_all_folds_and_old_plan():
+    from scripts.server.run_hg008_refit_campaign import refit_plan
+    base = json.loads(Path('configs/hg008_transfer_jobs_v1.json').read_text())
+    original = json.dumps(base, sort_keys=True)
+    new = refit_plan(base, Path('results/new_refit'))
+    assert len(new['tasks']) == 30 and json.dumps(base, sort_keys=True) == original
+    for old, task in zip(base['tasks'], new['tasks']):
+        for key in ['--fold', '--seed', '--context', '--external-examples']:
+            assert old['command'][old['command'].index(key) + 1] == task['command'][task['command'].index(key) + 1]
+        assert task['command'][-2:] == ['--protocol', 'prospective_refit']
+        assert 'results/new_refit/probes' in task['command']

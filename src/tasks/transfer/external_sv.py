@@ -1,14 +1,19 @@
-"""Reconstruct original HGSVC probes, verify them, then score HG008 held-out chromosomes."""
+"""Replay historical or explicitly refit HGSVC probes, then evaluate frozen HG008 transfer."""
 
 from __future__ import annotations
 
 import argparse
+from contextlib import nullcontext
+import hashlib
 import json
 from pathlib import Path
+import platform
+import subprocess
 
 import numpy as np
 import pandas as pd
 from sklearn.metrics import balanced_accuracy_score
+from threadpoolctl import threadpool_info, threadpool_limits
 
 from evaluation.calibration import apply_temperature, fit_temperature
 from evaluation.modality_factorial import load_frozen_node_embedding_cache
@@ -53,6 +58,30 @@ def fit_original(
     return model, temperature, threshold
 
 
+def enforce_replay(error: float, tolerance: float, protocol: str) -> bool:
+    """Historical tolerance is unchanged; a new refit is never called a replay."""
+    if protocol not in {"historical_replay", "prospective_refit"}:
+        raise ValueError("Unknown probe protocol")
+    passed = bool(np.isfinite(error) and abs(error) <= tolerance)
+    if not np.isfinite(error) or (protocol == "historical_replay" and not passed):
+        raise ValueError("Reconstructed original probe fails manuscript regression; external evaluation stopped")
+    return passed
+
+
+def persist_probe(model, temperature, threshold, matrix, test, path, metadata):
+    """Persist and reload the fitted artifact before it can score external data."""
+    import joblib
+
+    bundle = dict(model=model, temperature=temperature, threshold=threshold, **metadata)
+    joblib.dump(bundle, path)
+    restored = joblib.load(path)
+    expected = model.predict_proba(matrix[test])[:, 1]
+    observed = restored["model"].predict_proba(matrix[test])[:, 1]
+    if not np.array_equal(expected, observed):
+        raise ValueError("Persisted probe does not reproduce pre-save predictions exactly")
+    return restored
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument(
@@ -63,7 +92,16 @@ def main() -> None:
     ap.add_argument("--fold", required=True)
     ap.add_argument("--seed", type=int, required=True)
     ap.add_argument("--context", choices=["strict", "1hop"], required=True)
+    ap.add_argument("--protocol", choices=["historical_replay", "prospective_refit"],
+                    default="historical_replay",
+                    help="Prospective refit creates new saved HGSVC-only probes; it is not historical replay")
     args = ap.parse_args()
+    # Pin native BLAS threads for the new protocol, leaving legacy replay as-is.
+    with threadpool_limits(limits=1) if args.protocol == "prospective_refit" else nullcontext():
+        run(args)
+
+
+def run(args) -> None:
     config = json.loads(args.config.read_text())
     resource = json.loads(Path(config["resource_config"]).read_text())
     task = config["hg008"]
@@ -149,6 +187,9 @@ def main() -> None:
     keep = complete_feature_mask(
         original, embedded_segids=available, cached_segids=available
     )
+    original_coverage = float(keep.mean())
+    if args.protocol == "prospective_refit" and original_coverage < resource["minimum_feature_coverage"]:
+        raise ValueError("HGSVC feature coverage below gate")
     original = original.loc[keep].sort_values("example_id").reset_index(drop=True)
     complete = complete_feature_mask(
         external, embedded_segids=available, cached_segids=available
@@ -184,12 +225,14 @@ def main() -> None:
     )
     prior = pd.read_csv(original_dir / "test_predictions.csv.gz")
     result, predictions, regressions = [], [], []
-    for index, name in enumerate(task["primary_feature_sets"]):
+    for name in task["primary_feature_sets"]:
         print(
             f"Fitting original HGSVC: {job.fold} seed={job.seed} {job.closure} {name}",
             flush=True,
         )
-        count = 2 if index == 0 else 3
+        # Explicit feature identities must not depend on configuration order.
+        count = {"coordinate_plus_frozen_sequence_fm_pair": 2,
+                 "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm_pair": 3}[name]
         matrix = np.concatenate(old_pairs[:count], axis=1)
         model, temperature, threshold = fit_original(
             matrix, labels, train, val, job.seed
@@ -218,6 +261,8 @@ def main() -> None:
             reconstructed_auprc=old_metric["auprc"],
             cached_auprc=expected_metric["auprc"],
             auprc_difference=error,
+            protocol=args.protocol,
+            historical_replay_passed=bool(abs(error) <= task["regression_auprc_tolerance"]),
             max_score_error=float(
                 np.max(
                     np.abs(old_scores - expected_predictions.p_calibrated.to_numpy())
@@ -228,23 +273,22 @@ def main() -> None:
         pd.DataFrame(regressions).to_csv(
             out / "original_probe_regression.csv", index=False
         )
-        if abs(error) > task["regression_auprc_tolerance"]:
-            raise ValueError(
-                "Reconstructed original probe fails manuscript regression; external evaluation stopped"
-            )
-        import joblib
-
-        joblib.dump(
+        enforce_replay(error, task["regression_auprc_tolerance"], args.protocol)
+        bundle = persist_probe(
+            model, temperature, threshold, matrix, test, out / f"{name}.joblib",
             dict(
-                model=model,
-                temperature=temperature,
-                threshold=threshold,
                 training_data_sha256=task["training_examples_sha256"],
                 checkpoint=identity,
                 hg008_label_access="none",
+                protocol=args.protocol,
+                fitted_feature_matrix_sha256=hashlib.sha256(memoryview(matrix).cast("B")).hexdigest(),
+                code_commit=subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
             ),
-            out / f"{name}.joblib",
         )
+        model = bundle["model"]
+        pd.DataFrame(dict(example_id=original.loc[test, "example_id"],
+                          y_true=labels[test], p_calibrated=old_scores)).to_csv(
+            out / f"hgsvc_test_{name}.csv.gz", index=False)
         raw = model.predict_proba(np.concatenate(new_pairs[:count], axis=1))[:, 1]
         scores = apply_temperature(raw, temperature)
         for scope, mask in [
@@ -296,6 +340,7 @@ def main() -> None:
             seed=job.seed,
             context=job.closure,
             closure=job.closure,
+            protocol=args.protocol,
         ).items():
             frame[k] = v
     metrics.to_csv(out / "metrics.csv", index=False)
@@ -310,9 +355,16 @@ def main() -> None:
         external_feature_coverage=coverage,
         n_external=len(external),
         original_training_source=str(train_path),
+        original_feature_coverage=original_coverage,
         encoder_training=False,
         hg008_training_or_calibration=False,
-        probe="reconstructed original HGSVC logistic probe",
+        probe=("reconstructed original HGSVC logistic probe" if args.protocol == "historical_replay"
+               else "new deterministic HGSVC-only logistic probe; NOT historical replay"),
+        protocol=args.protocol,
+        historical_replay_claim=args.protocol == "historical_replay",
+        artifacts_verified_before_external_scoring=True,
+        python_version=platform.python_version(),
+        threadpools=threadpool_info(),
         original_probe_regression=regressions,
     )
     (out / "audit.json").write_text(json.dumps(audit, indent=2) + "\n")

@@ -46,10 +46,18 @@ def main() -> None:
     metrics = pd.concat([pd.read_csv(p) for p in paths], ignore_index=True)
     validate_matrix(metrics, {(j.fold, j.seed, j.closure) for j in jobs})
     predictions, regression, coverages = [], [], []
+    protocols = set()
     for path in paths:
         audit = json.loads((path.parent / "audit.json").read_text())
         if audit["status"] != "complete" or audit["hg008_training_or_calibration"]:
             raise ValueError("Incomplete or non-zero-shot run")
+        protocol = audit.get("protocol", "historical_replay")
+        protocols.add(protocol)
+        if protocol == "prospective_refit" and (
+            audit.get("historical_replay_claim", True)
+            or not audit.get("artifacts_verified_before_external_scoring", False)
+        ):
+            raise ValueError("Refitted probes must be persisted and explicitly distinguished from replay")
         predictions.append(pd.read_parquet(path.parent / "predictions.parquet"))
         r = pd.read_csv(path.parent / "original_probe_regression.csv")
         r["fold"], r["seed"], r["context"] = (
@@ -59,6 +67,9 @@ def main() -> None:
         )
         regression.append(r)
         coverages.append(audit["external_feature_coverage"])
+    if len(protocols) != 1:
+        raise ValueError("Cannot combine historical replays and prospective refits")
+    protocol = next(iter(protocols))
     p = pd.concat(predictions, ignore_index=True)
     if p.duplicated(["variant_id", "seed", "context", "feature_set"]).any():
         raise ValueError("HG008 variant occurs in multiple test folds")
@@ -156,7 +167,7 @@ def main() -> None:
     )
     axes[1].set(xticks=[0, 1], xticklabels=["strict", "1-hop"], ylabel="Paired Δ AUPRC")
     axes[1].axhline(0, color="0.5", linewidth=0.8)
-    fig.suptitle("HG008 clonal insertion vs deletion — one external genome")
+    fig.suptitle("HG008 clonal insertion vs deletion — one external genome\n" + protocol.replace("_", " "))
     for extension in ["png", "svg"]:
         fig.savefig(args.out_dir / f"hg008_transfer.{extension}", dpi=300)
     plt.close(fig)
@@ -164,6 +175,8 @@ def main() -> None:
         json.dumps(
             dict(
                 status="complete",
+                protocol=protocol,
+                historical_replay_claim=protocol == "historical_replay",
                 n_runs=len(paths),
                 external_variants=int(p.variant_id.nunique()),
                 minimum_feature_coverage=min(coverages),
