@@ -141,3 +141,24 @@ Run in a fresh directory:
 PYTHONPATH=src:. python scripts/server/run_hg008_refit_campaign.py \
   --out-root results/foundation_evidence_20260927/hg008_prospective_refit --execute
 ```
+
+Bidirectional masking produced the same one-hop nuisance-control scores and
+passed the same context-specific coverage gates. The combined audit receipts
+remain `failed` because strict is ineligible; the pilot launcher checks the
+predeclared one-hop gates explicitly and never changes those receipts.
+
+Reproduce the fixed four-arm development run:
+
+```bash
+PYTHONPATH=src:. python scripts/server/run_junction_geometry_pilot.py \
+  --incoming-audit results/foundation_evidence_20260927/junction_geometry_matched \
+  --bidirectional-audit results/foundation_evidence_20260927/junction_geometry_bidirectional \
+  --context 1hop --out-root results/foundation_evidence_20260927/geometry_pilot \
+  --gpus 0 1 2 3 --execute
+```
+
+The launcher refuses overwritten outputs, mismatched graph/manifest hashes,
+inadequate coverage, wrong masking configuration, or nuisance scores above the
+fixed gate. Without `--execute` it writes the exact commands and gate receipts.
+Training writes per-epoch loss and validation AUROC, atomic recovery checkpoints,
+and final validation-only predictions. No test predictions are requested.

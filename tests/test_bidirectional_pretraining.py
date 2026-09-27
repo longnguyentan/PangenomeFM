@@ -174,3 +174,41 @@ def test_native_training_cli_validation_only_checkpoint(tmp_path, direction, lin
     model, head = _build_model_from_checkpoint(saved, _namespace_from_checkpoint(saved, 42), torch.device("cpu"))
     assert model.graph_message_direction == direction
     assert isinstance(head, LinearLinkPredictor) == linear
+
+
+def test_pilot_gate_is_context_specific_without_relaxing_coverage(tmp_path):
+    import json
+    from scripts.server.run_junction_geometry_pilot import check_context
+
+    # The aggregate audit can fail strict while the one-hop protocol passes.
+    native = dict(junction_geometry_match='signed_gap_bins', junction_geometry_bin_ratio=1.25,
+                  node_structure_source='visible', objective='junction_repair', drop_edge_rate=.1)
+    (tmp_path / 'audit.json').write_text(json.dumps(dict(status='failed', native_args=native)))
+    pd.DataFrame([dict(context='1hop', chrom='chr1', exclusion='retained',
+                       n_val_candidates=10, n_test_candidates=10)]).to_csv(tmp_path / 'per_window.csv', index=False)
+    scores = pd.DataFrame([dict(context='1hop', baseline=b, n_val=300, auprc=.51, auroc=.52)
+                           for b in ['geometry', 'geometry_and_visible_degree']])
+    scores.to_csv(tmp_path / 'validation_baselines.csv', index=False)
+    check_context(tmp_path, '1hop', 'incoming', {'chr1'})
+    with pytest.raises(ValueError, match='coverage'):
+        check_context(tmp_path, 'strict', 'incoming', {'chr1'})
+    with pytest.raises(ValueError, match='coverage'):
+        check_context(tmp_path, '1hop', 'incoming', {'chr1', 'chr2'})
+    scores.loc[0, 'auprc'] = .70
+    scores.to_csv(tmp_path / 'validation_baselines.csv', index=False)
+    with pytest.raises(ValueError, match='gate'):
+        check_context(tmp_path, '1hop', 'incoming', {'chr1'})
+
+
+def test_pilot_commands_keep_validation_scope_and_fixed_budget():
+    from scripts.server.run_junction_geometry_pilot import commands
+    receipt = dict(manifest=dict(path='manifest.csv'), full_segments=dict(path='segments.csv'),
+                   native_args=dict(seed=42, split_seed=20260806, test_chrs=['chr1'], val_chrs=['chr2']))
+    jobs = commands(Path('results/pilot'), receipt, '1hop')
+    assert len(jobs) == 4
+    for name, cmd in jobs.items():
+        assert '--validation_only' in cmd and '--save_predictions' in cmd
+        assert '--pair_geometry' not in cmd
+        assert cmd[cmd.index('--epochs') + 1] == '10'
+        assert ('--linear_predictor' in cmd) == name.endswith('_linear')
+        assert cmd[cmd.index('--graph_message_direction') + 1] == name.split('_')[0]

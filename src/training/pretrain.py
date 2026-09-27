@@ -1837,6 +1837,12 @@ def main():
             val_auc, val_details = evaluate_shared(
                 model, predictor, val_eval_slices, "val", args
             )
+            history_path = out_dir / f"epoch_metrics_{closure_name}{exp_label}.csv"
+            pd.DataFrame([dict(
+                epoch=epoch, train_loss=train_loss, validation_macro_auroc=val_auc,
+                learning_rate=optimizer.param_groups[0]["lr"], context=closure_name,
+                evaluation_scope="validation_only" if args.validation_only else "validation_selection",
+            )]).to_csv(history_path, mode="a", header=not history_path.exists(), index=False)
 
             if epoch % 5 == 0 or epoch == 1:
                 current_lr = optimizer.param_groups[0]["lr"]
@@ -2021,6 +2027,11 @@ def main():
         results_df["drop_edge"] = args.drop_edge
         results_df["drop_edge_rate"] = args.drop_edge_rate if args.drop_edge else 0.0
         results_df["expressive_predictor"] = args.expressive_predictor
+        results_df["linear_predictor"] = args.linear_predictor
+        results_df["graph_message_direction"] = args.graph_message_direction
+        results_df["junction_geometry_match"] = args.junction_geometry_match
+        results_df["junction_geometry_bin_ratio"] = args.junction_geometry_bin_ratio
+        results_df["validation_only"] = args.validation_only
         results_df["min_branching_frac"] = 0.0
         results_df["hidden_dim"] = args.hidden_dim
         results_df["n_heads"] = args.n_heads
