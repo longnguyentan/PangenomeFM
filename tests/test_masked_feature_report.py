@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 
 from tasks.transfer.masked_feature_report import compare
+from tasks.transfer.masked_junction_reference import compare as compare_junction
 
 
 def test_paired_development_matrix_and_baseline_identity():
@@ -31,3 +32,12 @@ def test_paired_development_matrix_and_baseline_identity():
     broken.loc[0,'targets_sha256']='changed'
     with pytest.raises(ValueError,match='examples'):
         compare(broken,plan,[42,314159,20260806])
+    old=frame.loc[frame.model.eq('full_trained')].assign(model='Q',auprc=.65)
+    reference_plan=dict(reference_model='Q',features=['cst','csht'],metrics=['auprc'])
+    paired=compare_junction(frame,old,reference_plan)
+    assert paired.loc[paired.model.eq('full_trained'),'difference'].to_numpy()==pytest.approx(.05)
+    assert paired.loc[paired.model.eq('full_random'),'difference'].to_numpy()==pytest.approx(-.05)
+    broken=old.copy()
+    broken.loc[broken.feature.eq('cs'),'scores_sha256']='changed'
+    with pytest.raises(ValueError,match='baseline'):
+        compare_junction(frame,broken,reference_plan)
