@@ -1,6 +1,6 @@
 # Model and downstream continuation — 28 September 2026
 
-Verified at 02:46 EDT; live jobs may have progressed beyond this snapshot. This is an execution record, not a manuscript revision.
+Verified at 03:27 EDT; live jobs may have progressed beyond this snapshot. This is an execution record, not a manuscript revision.
 The [central checklist](MODEL_AND_DOWNSTREAM_STATUS_20260927.md) retains the
 complete historical task inventory and all failed scientific gates.
 
@@ -15,7 +15,7 @@ complete historical task inventory and all failed scientific gates.
 | Natural-cohort full matrix | Complete: 30/30 runs, 1,170 converged and replayed evaluations, zero exclusions | [Full audit](../results/foundation_evidence_20260928/sv_type_natural_full_analysis/audit.json) |
 | New masked-feature pretraining objective | Complete: 12 pretraining runs, 24 frozen probes / 96 feature evaluations; three-seed gate passes | [Protocol](../configs/masked_nt_objective_20260928.json) |
 | Whole-graph NT coverage | Complete: all 751,237 graph segments, original 479,477 rows byte-identical | [Protocol](../configs/whole_graph_nt_completion_20260928.json) |
-| Chromosome replication | Running: 10/120 probes complete; fold A / seed 314159 active | [Protocol](../configs/masked_nt_chromosome_replication_20260928.json) |
+| Chromosome replication | Running: 32/120 probes complete; fold B / seed 314159 pretraining active | [Protocol](../configs/masked_nt_chromosome_replication_20260928.json) |
 | Alternative-component context | Complete: 14,786 components partly covered by benchmark-union cache | [Coverage](../results/foundation_evidence_20260928/reference_component_context_20260928/coverage.csv) |
 | DART-Eval accessibility task | Official schema/reference/split located; table download requires authentication | [Source audit](../results/foundation_evidence_20260928/dart_feasibility/source_audit.json), [403 receipt](../results/foundation_evidence_20260928/dart_feasibility/download.json) |
 
@@ -381,7 +381,7 @@ server resources remain prerequisites; launchers do not download replacements.
 
 ## Tests and remaining checklist
 
-- [x] Full local suite: **438 passed**, including cached manuscript checks, replication gates and exact saved-probe replay; 14 known warnings. Targeted Ruff passes.
+- [x] Full local suite: **456 passed**, including cached manuscript checks, replication gates and exact saved-probe replay; 14 known warnings. Targeted Ruff passes.
 - [x] Server: latest 19 probe/persistence/replication tests pass, in addition to earlier cache/context checks; Ruff and compile checks pass.
 - [x] Real natural-SV smoke independently replayed: all 39 evaluations.
 - [x] Existing manuscript regression checks remain in the passing suite.
@@ -467,4 +467,49 @@ PYTHONPATH=src:. python scripts/server/run_masked_v1_reference.py \
 Use a fresh output root for reproduction. The dependency is the complete current
 chromosome replication; no new reference performance is available yet.
 
-[Execution snapshot at 02:46 EDT](../results/foundation_evidence_20260928/execution_state.json): 10/120 chromosome probes complete, no active biological failures; 30-probe v1 supplement queued. Server access is working.
+[Execution snapshot at 03:27 EDT](../results/foundation_evidence_20260928/execution_state.json): 32/120 chromosome probes complete, no active biological failures; 30-probe v1 supplement queued. Server access is working.
+
+
+## Complete alternative contexts and repaired attention
+
+- [x] Prepare all 608 intervals on the original HPRC R2 graph and complete frozen NT cache.
+- [x] Independently replay every materialized segment row and induced oriented edge against the original tables; 608/608 pass. Store per-file hashes.
+- [x] Verify actual canonical context IDs are disjoint across all training/validation/test partition pairs in all five folds.
+- [x] Add explicit exact-global and corrected-local query-chunked attention. Historical defaults retain bitwise-identical outputs and gradients.
+- [x] Complete real largest-context CPU forward/backward checks, with no optimization, labels or weight updates.
+- [ ] Complete queued CUDA checks after the current experiments; no wider-context biological score yet.
+
+The contexts cover **742,607 segments**, including **439,182 alternatives**.
+605 original one-hop windows cut alternative components. The largest context has
+28,287 native handles; one dense score tensor alone costs 12.80 GB before other
+activations/backward. Exact chunks pass a full CPU forward/backward step in
+212.89 s with 4.94 GiB whole-process peak RSS; corrected local chunks pass in
+9.79 s with 8.18 GiB. These are two-thread single-step resource observations,
+not GPU benchmarks or biological performance comparisons.
+
+The shared model/evaluation changes are opt-in. Full local suite **456 passed**
+(14 known warnings); 25 relevant server tests passed. Targeted new-module Ruff
+and compile/diff checks pass. An expanded Ruff scan of the historical pretrainer
+also surfaced eight pre-existing unused-variable/import/f-string findings;
+those are unrelated to these changes and are not represented as a clean full-file lint result.
+
+[Full technical report and commands](COMPLETE_CONTEXT_AND_ATTENTION_20260928.md)
+· [Materialization replay and hashes](../results/foundation_evidence_20260928/component_contexts/materialization_replay.json)
+· [Exact CPU audit](../results/foundation_evidence_20260928/component_attention_exact_cpu/audit.json)
+· [Local CPU audit](../results/foundation_evidence_20260928/component_attention_window_cpu/audit.json).
+
+GPU check sequence runs detached in tmux namespace `evidence-20260927`, session
+`component_gpu_profile`. It waits for `masked_v1_reference/status.json` to become
+complete and GPU 0 to have less than 256 MiB allocated. It fails on a failed
+dependency or a twelve-hour readiness timeout. Each profile writes a new output
+root and performs no optimizer step:
+
+```bash
+PYTHONPATH=src:. python scripts/server/profile_component_attention.py \
+  --contexts results/foundation_evidence_20260927/component_contexts_20260928 \
+  --checkpoint results/foundation_evidence_20260927/masked_feature_full/seed_42/full_trained/checkpoint.pt \
+  --mode chunked_exact --device cuda:0 \
+  --after-status results/foundation_evidence_20260927/masked_v1_reference/status.json \
+  --out-dir results/foundation_evidence_20260927/component_attention_exact_gpu
+# Then repeat with --mode chunked_window and a new output root.
+```

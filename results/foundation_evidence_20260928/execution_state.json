@@ -1,7 +1,7 @@
 {
-  "observed_at_utc": "2026-09-28T06:46:40.133385+00:00",
-  "native_commit": "533b4f1d795beb4c6c05ddb366159f88df07ef38",
-  "free_disk_bytes": 675193806848,
+  "observed_at_utc": "2026-09-28T07:27:33.379012+00:00",
+  "native_commit": "4ed46cbb9f8d74d9965ab0800fa33f9998f2fb11",
+  "free_disk_bytes": 675054665728,
   "studies": {
     "sv_type_natural_recovery2_driver": {
       "status": "complete",
@@ -27,16 +27,45 @@
     },
     "masked_chromosome_replication": {
       "status": "running",
-      "stage": "fold_a/314159/test_probes",
-      "completed_fold_seed_groups": 1
+      "stage": "fold_b/314159/pretraining",
+      "completed_fold_seed_groups": 4
     },
     "masked_v1_reference": {
       "status": "waiting",
       "stage": "replication_dependency",
       "completed_fold_seed_groups": 0
+    },
+    "component_contexts_20260928": {
+      "status": "complete",
+      "n_windows": 608,
+      "n_unique_context_segments": 742607,
+      "n_dense_score_over_gpu": 0
+    },
+    "component_attention_exact_cpu": {
+      "status": "complete",
+      "forward_backward_seconds": 212.8878812789917,
+      "cuda_peak_allocated_bytes": null
+    },
+    "component_attention_window_cpu": {
+      "status": "complete",
+      "forward_backward_seconds": 9.786099672317505,
+      "cuda_peak_allocated_bytes": null
+    },
+    "component_attention_exact_gpu": {
+      "status": "waiting",
+      "stage": "dependencies_and_device"
+    },
+    "component_attention_window_gpu": {
+      "status": "queued_not_started"
+    },
+    "component_materialization_replay": {
+      "status": "complete",
+      "n_verified_windows": 608,
+      "exact_segment_metadata": true,
+      "exact_oriented_induced_edges": true
     }
   },
-  "completed_chromosome_probe_runs": 10,
+  "completed_chromosome_probe_runs": 32,
   "planned_chromosome_probe_runs": 120,
   "active_biological_failures": []
 }

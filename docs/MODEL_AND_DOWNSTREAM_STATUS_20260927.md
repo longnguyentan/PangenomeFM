@@ -1,6 +1,6 @@
 # PangenomeFM: model and downstream evidence status
 
-Last verified 28 September 2026, 02:46 EDT. Technical work only; no manuscript edits.
+Last verified 28 September 2026, 03:27 EDT. Technical work only; no manuscript edits.
 Branch: `codex/v2-evidence-review-20260927`.
 
 ## Active continuation, 28 September
@@ -17,12 +17,20 @@ Branch: `codex/v2-evidence-review-20260927`.
 - [x] Audit graph-wide reference-contig separation: no direct cross-contig reference link or multi-contig alternative component.
 - [x] Inspect the actual 1,218-genome SV release header/inventory: INS/DEL plus genotypes/frequencies, not the missing measured genotyping-concordance or DUP/complex labels.
 - [x] Identify DART-Eval task 3's official GRCh38 coordinates, five cell labels, original split and processed-table version. Anonymous data download returns **HTTP 403**; actual-table QC/fitting awaits an authorized copy.
-- [x] Full local suite **438 passed**; targeted Ruff/diff checks pass. Existing manuscript checks remain included.
+- [x] Full local suite **456 passed**; targeted Ruff/diff checks pass. Existing manuscript checks remain included.
 - [x] Repair fitted-probe persistence: opt-in saved scaler/classifier/calibration with exact reload replay; frozen chromosome replication will retain its classifiers.
 - [x] Implement/test the gated, fixed chromosome-replication runner/reporter; review the completed gate and launch the detached job. All controls retained; fold B reported separately due to development exposure.
-- [ ] Complete **120 chromosome-test probe runs / 480 evaluations**. **10/120 probes complete** at 02:46 EDT; fold A / seed 314159 active after NT completion. Full-matrix inference remains pending.
+- [ ] Complete **120 chromosome-test probe runs / 480 evaluations**. **32/120 probes complete** at 03:27 EDT; fold B / seed 314159 pretraining active. Full-matrix inference remains pending.
 - [x] Correct graph-scope denominator: 751,237 total segments, 303,425 downstream cache rows, 479,477 benchmark NT rows. Audit 14,786 partly covered alternative components; no new graph release.
 - [x] Complete the **271,760-segment frozen NT extension**: all 751,237 graph segments covered; all original 479,477 rows byte-identical, all values finite. Separate output; replication retains the original cache.
+
+- [x] Build and independently replay **608 complete alternative-component contexts**, preserving every original one-hop node/edge and link orientation. Cover 742,607 segments / 439,182 alternatives; all five fold-ID overlap checks are zero. Original one-hop contexts cut components in 605 windows.
+- [x] Repair coordinate-attention semantics through explicit opt-in modes; verify new outputs/gradients against dense equations and checkpoint reload. Historical default outputs and gradients remain bitwise identical to the previous Git module.
+- [x] Complete largest-context CPU forward/backward checks for exact global chunks and corrected local chunks: 28,287 handles, finite gradients, unchanged weights.
+- [ ] Complete the queued two-mode CUDA resource check after the primary matrix and v1 reference finish.
+- [ ] Fix a separate wider-context training protocol and complete its biological comparison. Context preparation and resource checks alone do not establish improvement.
+
+[Context/attention implementation, real-data checks and commands](COMPLETE_CONTEXT_AND_ATTENTION_20260928.md).
 
 [Current runbook, evidence and remaining gates](EXECUTION_20260928.md). The prior junction candidate
 remains failed; the new masked-feature candidate passes its own declared development gate. New pretraining

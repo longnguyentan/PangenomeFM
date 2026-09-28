@@ -19,7 +19,7 @@ unchanged; no replacement graph or biological fine-tuning is used.
 |---|---|---|
 | Natural-frequency SV type | 30 runs / 1,170 feature-class evaluations | One-versus-rest AP; 110,623 INS, 63,346 DEL, 298 INV, all retained |
 | Masked-feature development | 12 pretraining runs / 24 probes / 96 evaluations | Fold-A biological validation; four arms, three seeds, one-hop |
-| Fixed chromosome replication | 10/120 probes complete at 02:46 EDT | 480 evaluations planned; full-matrix result pending |
+| Fixed chromosome replication | 32/120 probes complete at 03:27 EDT | 480 evaluations planned; full-matrix result pending |
 | Whole-graph NT completion | Complete and verified | All 751,237 segments; 271,760 added, original vectors unchanged |
 
 These are native repository/tmux experiments, not registered Workbench runs.
@@ -91,9 +91,13 @@ receipts directly, avoiding this live-status provenance ambiguity.
    A/C/D/E; fold B is separately reported because its test chromosomes were used
    for fold-A development validation. Historical v1 label exposure remains a
    limitation even for the four-fold summary. Save and verify all fitted probes.
-2. The whole-graph NT cache is complete with exact preservation of original
-   values. Broader contexts still require a separate orientation/size/fold-safe
-   design; a complete cache creates no paths or verified directed bubbles.
+2. Broader graph inputs are now prepared and independently replayed: 608 complete
+   alternative-component contexts, 742,607 segments, preserved orientation and
+   no shared IDs across chromosome partitions. The largest-context CPU forward/
+   backward check passes for both new attention implementations. CUDA profiling
+   is queued; wider-context training and biological comparisons remain pending.
+   These components are not verified directed bubbles or haplotype paths. See
+   [the implementation and resource report](COMPLETE_CONTEXT_AND_ATTENTION_20260928.md).
 3. DART-Eval still requires an authorized copy of the official processed table;
    anonymous Synapse access returned 403. No task rows or labels were invented.
 4. DUP/complex SV classes, per-variant genotyping concordance with an all-callable

@@ -128,9 +128,17 @@ PY=/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python
 
 Native completed graph tables and membership NPZ stay on the server under
 `results/foundation_evidence_20260927/component_contexts_20260928/`.
-Only compact audits/tables are versioned. A replay verifies every materialized
+Only compact audits/tables are versioned. The completed [608-window replay](../results/foundation_evidence_20260928/component_contexts/materialization_replay.json) verifies every materialized
 segment row and every induced oriented edge against the original graph before
 future training; changing an orientation is covered by a rejection test.
+
+## Verification status
+
+Full local suite: **456 passed**, 14 known warnings. Server targeted tests:
+**25 passed**. New-module Ruff, compilation and diff checks pass. All 608 saved
+contexts independently match original segment metadata and oriented induced
+edges. An intentional changed-orientation test is rejected. Neither synthetic
+tests nor resource-profile losses are reported as biological performance.
 
 ## Next scientific decision
 
