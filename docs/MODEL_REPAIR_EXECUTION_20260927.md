@@ -39,6 +39,12 @@ results, and the other implementation worktree are preserved.
   benefits, and perform a coordinate-stream/message ablation before graph-specific claims.
 - [ ] Replicate the resulting prespecified candidate across chromosome folds
   and seeds; current improvements are development evidence only.
+- [x] Complete the first additional seed (314159): SV gains persist; the cCRE
+  trained-topology versus random-topology contrast is -0.000096 after C+S+H.
+  That failed contrast is retained; seed 20260806 continues unchanged.
+- [ ] Finish a fixed 4,000-iteration probe sensitivity after detecting SV
+  logistic convergence warnings at the manuscript's 800-iteration cap.
+  Defaults are preserved; per-feature convergence/iteration receipts added.
 - [x] Resolve historical HG008 replay failures or run a separately identified,
   prospective deterministic probe-refit protocol; never relabel a refit as replay.
 - [ ] Measured genotypability labels and verified path-to-segment correspondence
@@ -762,3 +768,10 @@ contains the fixed architecture, exact new tables/figures, the complete 52-row
 historical scorecard, new-task feasibility, unresolved data requirements,
 and reproduction commands. Full local suite: 354 tests passed before adding
 the separate seed-report validation tests. No manuscript edits were made.
+
+The subsequent full local suite passes **372 tests**, including unchanged
+default predictions, explicit solver-warning detection, and rejection of INV
+or inconsistent labels in the historical binary SV pipeline. Nine targeted
+tests also pass on the server; all 173,969 historical INS/DEL labels satisfy
+the new guard. The latest team report retains both completed replication
+evidence and the active solver/remaining-seed jobs.

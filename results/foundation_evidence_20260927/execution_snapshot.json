@@ -1,0 +1,49 @@
+{
+  "observed_at_utc": "2026-09-28T00:30:33.784864+00:00",
+  "ssh_access": "working",
+  "jobs": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/status.json",
+      "status": "running",
+      "completed_stages": [
+        "seed_314159/pretraining",
+        "seed_314159/biological_and_report",
+        "seed_20260806/pretraining"
+      ],
+      "commit": "3193055da8093da2ac9a8372cb76b8c9765bd6ad"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000/status.json",
+      "status": "running",
+      "completed_commands": 7,
+      "commit": "c86d447176ef64b385854c48df0164c36b46c66e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_replication_finalizer_status.json",
+      "status": "waiting_for_existing_experiment",
+      "implementation_commit": "c86d447176ef64b385854c48df0164c36b46c66e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/biological/status.json",
+      "status": "running",
+      "completed_commands": 0,
+      "commit": "3193055da8093da2ac9a8372cb76b8c9765bd6ad"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/sequence_random/status.json",
+      "status": "complete"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/sequence_trained/status.json",
+      "status": "complete"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/topology_random/status.json",
+      "status": "complete"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/topology_trained/status.json",
+      "status": "complete"
+    }
+  ]
+}

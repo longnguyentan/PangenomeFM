@@ -5,11 +5,12 @@ Branch: `codex/v2-evidence-review-20260927`.
 
 ## What changed in this execution
 
-The frozen two-branch candidate passes the prespecified **single-fold
-development gate**. It preserves the SV strength of topology-only v2 and the
-cCRE strength of the NT-conditioned encoder. It beats all three same-dimension
-partial/random branch controls after C+S+H on both tasks. This is a candidate
-worth replicating, not an established best model or an acceptance guarantee.
+The frozen two-branch candidate passed the prespecified **seed-42 development
+gate**. The first additional seed reproduces its SV advantage, but the cCRE
+comparison against a random topology branch is slightly negative. Therefore
+the trained-topology benefit for cCRE is not consistently replicated. The
+remaining seed and fixed solver-convergence sensitivity are running. The
+candidate specification is fixed; a final superiority claim is not supported.
 
 - [x] Complete eight new frozen biological probes: four branch combinations ×
   SV/cCRE; replay metrics and verify identical examples, labels and baselines.
@@ -24,7 +25,9 @@ worth replicating, not an established best model or an acceptance guarantee.
   298 mapped primary-chromosome events; preserve the two unmapped contig events.
 - [x] Freeze the candidate and remaining-seed replication protocol before
   observing the new seeds.
-- [ ] Finish seeds 314159 and 20260806: launched in a durable server session.
+- [x] Finish seed 314159: 4 pretraining fits and 16 biological probes; all
+  native audits completed, including the unfavorable cCRE contrast.
+- [ ] Finish seed 20260806: running in the same durable server session.
 - [ ] Complete the fixed 4,000-iteration probe sensitivity: log review found
   some SV logistic fits reached the manuscript's 800-iteration cap. The original
   runs remain unchanged; candidate promotion also requires this numerical check.
@@ -42,6 +45,9 @@ include C+S AP, C+S+T AP, paired gain, 95% interval, run count and source path.
 Every gain is checked against the difference of the corresponding means.
 This is source-table consolidation, not retraining or a fresh replay of every
 historical prediction. No favorable-result selection is applied.
+The [complete gain overview](../results/foundation_evidence_20260927/task_scorecard/downstream_topology_gains.pdf)
+shows every context row and interval; external HG008 is displayed separately
+because its interval is much wider. Panel scales are explicitly marked.
 
 | Family | Completed scope | What the evidence supports |
 |---|---|---|
@@ -60,6 +66,32 @@ The complete EN-TEx primary/sensitivity/tissue/RNA/extension matrix contains
 450 runs. Completed does not mean a positive hypothesis test. Five-fold
 hierarchical bootstrap intervals are also not equivalent to five-cluster
 exact sign-flip significance; the latter has limited resolution.
+
+### Corrections to the supplied external summaries
+
+The attached suggestions contain useful directions and several stale or
+incorrect details. Actual code/data/results take precedence:
+
+- The original server resources are accessible and the EN-TEx matrix is
+  complete; this is no longer a missing-graph/data-preparation-only project.
+- The historical SV endpoint is INS versus DEL, not breakpoint detection.
+  An inversion row cannot be added by changing its binary label to DEL.
+- Strict/one-hop describes graph context, not a TSS classification rule.
+- CTCF/H3K27ac SNV experiments use the full accessible EN-TEx call set;
+  the downloaded high-confidence file contains RNA-seq measurements.
+- Window-count scaling has completed; it is not donor/haplotype-count scaling.
+- HG008 prospective probe refits completed, while exact historical replay is
+  a different claim. Positive point estimates with wide intervals crossing
+  zero are inconclusive, not an automatic scientific pass.
+- A shared segment vector is a locus representation, not an allele-specific
+  embedding. No arbitrary haplotype ID or mismatched GBZ node frequency was
+  added to make an allele-aware claim.
+- The repository uses audited NPZ caches and exact SHA-256 resource identities;
+  illustrative CSV filenames or commands in the suggestions are not real
+  replacements for the repository's pipeline.
+
+No supplied document instruction to change the graph, fine-tune NT with labels,
+or substitute a success threshold overrides the frozen, controlled evaluation.
 
 ## Frozen architecture candidate
 
@@ -116,7 +148,10 @@ The historical logs did not identify which feature fit issued each warning.
 The apparent development-gate pass is therefore provisional pending a fixed
 4,000-iteration sensitivity with per-feature iteration/convergence receipts.
 Only the optimizer's iteration ceiling changes; estimator, class weighting,
-regularization, features, checkpoints and examples remain fixed. This is not
+regularization, feature definitions, checkpoints and examples remain fixed.
+The probes re-extract frozen features on GPU, which can introduce small
+floating-point differences; every score change cannot be attributed solely
+to the larger iteration budget. This is not
 a search for a better biological score.
 
 [Audited per-run table](../results/foundation_evidence_20260927/composite_biological_analysis/audited_per_run.csv)
@@ -125,6 +160,32 @@ a search for a better biological score.
 · [Gain figure](../results/foundation_evidence_20260927/composite_biological_analysis/frozen_branch_gains.pdf).
 All existing SV strata, including sparse/undefined bins, remain in
 `all_sv_strata.csv`.
+
+### First additional initialization seed: 314159
+
+All sixteen biological probes completed using the fixed protocol, with the
+same validation examples and invariant C+S/C+S+H predictions across models.
+These remain development-validation scores, not independent chromosome tests.
+
+| Task, after C+S+H | T+Q AP | Both-random AP | Gain over both-random | Gain over random T+Q | Gain over T+random Q |
+|---|---:|---:|---:|---:|---:|
+| SV INS/DEL | 0.917347 | 0.914144 | +0.003203 | +0.002027 | +0.000754 |
+| cCRE | 0.920702 | 0.919643 | +0.001059 | **-0.000096** | +0.001212 |
+
+The inherited per-seed gate reports **not_promoted** because cCRE fails the
+trained-topology-versus-random-topology comparison. This result is retained;
+no replacement seed, head, feature choice or threshold was selected. The final
+seed continues unchanged. The numerical solver sensitivity is separate.
+
+Reconstruction gains replicate qualitatively: topology trained/random AP is
+0.731156/0.596269; NT-conditioned trained/random AP is 0.863401/0.626892.
+All use the same 2,050 candidates, exact initialization controls and fixed
+sequence cache. Better reconstruction still does not guarantee every
+biological contrast is positive.
+
+[Seed 314159 biological table](../results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/audited_per_run.csv)
+· [All paired contrasts](../results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/paired_differences.csv)
+· [Recorded failed gate](../results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/development_gate.json).
 
 ## Graph-message ablation
 
@@ -215,9 +276,19 @@ to these approaches, not a new model name.
 [GraphMAE](https://arxiv.org/abs/2205.10803),
 [MGAE](https://arxiv.org/abs/2201.02534).
 
+A further relevant baseline is **Topology Only Pre-Training (ToP)**, published
+in May 2026. It removes node/edge attributes during contrastive pretraining and
+studies transfer across graph domains. Thus topology-only pretraining and
+multi-domain graph transfer are already established directions. Its reported
+fine-tuning protocol differs from our frozen probes; an adapted comparison
+would need to state that difference. It strengthens the case for evaluating
+our junction objective against established graph self-supervision, rather than
+claiming novelty from topology inputs alone.
+[Davies et al., 2026](https://link.springer.com/article/10.1007/s10618-026-01210-1).
+
 | Priority | Remaining work | Present status / concrete next action |
 |---|---|---|
-| 1 | Seed replication of fixed T+Q | Running seeds 314159/20260806 with matched random twins; every result retained |
+| 1 | Seed replication and numerical convergence | Seed 314159 complete, mixed cCRE evidence; seed 20260806 biological probes and fixed solver sensitivity running |
 | 2 | Chromosome replication and v2 task transfer | Not run; freeze protocol before additional label-informed choices |
 | 3 | Stronger sequence / nonlinear probe comparisons | Not completed; use identical examples and input budgets, including sequence truncation controls |
 | 4 | TraitGym | Data, mapping and all REF checks pass; official-protocol classifier still needed |
@@ -242,6 +313,15 @@ ground truth or substitutes for the frozen NT baseline.
 NGS Analysis Workbench's design skill guided the unit/contrast/validity-gate
 plan. Biological Sequence & Alignment Viewer opens the actual reference
 windows; its display is not a substitute for the complete programmatic REF check.
+
+An additional public genotypability search inspected all **22,627 entries** in
+the HGSVC3 publication working-data manifest. No filenames matched leave-one-out,
+PanGenie, concordance or genotyping terms; the official README describes assembly
+QC/annotation products. This bounds the search, not proof that outcomes do not
+exist elsewhere or inside differently named files. The required per-variant
+outcomes remain unresolved.
+[Inventory audit](../results/foundation_evidence_20260927/genotypability_public_inventory.json)
+· [Official archive README](https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/HGSVC3/working/20241218_phase3-main-pub_data/20241218_phase3-main-pub_data.README.txt).
 
 ## Reproduction and server continuation
 
@@ -298,3 +378,31 @@ Tmux socket `evidence-20260927`, session `frozen_branch_seed_replication`.
 `status.json` records stage completion and failures; each child retains commands,
 native checkpoints, predictions and logs. A launched stage is not a completed
 result. Historical and other-LLM worktrees are preserved.
+The `frozen_branch_seed_report` tmux session waits for that existing experiment
+and automatically creates the complete three-seed report at
+`<readiness-results>/frozen_branch_seed_replication_analysis`. It records an
+explicit failure if a source job fails or an eight-hour wait expires, and does
+not treat a failed scientific gate as a missing result.
+[Exact finalizer](../results/foundation_evidence_20260927/finalize_seed_replication.py).
+
+The separate convergence experiment runs in
+`/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000`,
+tmux session `probe_convergence_4000` on the same socket. Its
+[exact command receipt](../results/foundation_evidence_20260927/probe_convergence_4000_launch.json)
+and [launcher](../results/foundation_evidence_20260927/run_probe_convergence_4000.sh)
+retain commit `c86d447`, all original checkpoint paths, and the fixed optimizer
+budget. The same sensitivity is being extended to seeds 314159 and 20260806
+because the first replication also has SV convergence warnings. All eight
+model arms are included for both tasks, irrespective of performance.
+The bounded continuation reuses the original recorded commands and changes
+only the output root and uniform iteration ceiling; original results remain
+intact. A convergence-aware three-seed report retains numerical failures as
+well as failed performance gates.
+[Continuation code](../scripts/server/run_frozen_branch_convergence.py). The native report will mark `optimization_incomplete` if any compared
+probe remains unconverged. Use a fresh output root to reproduce it.
+
+Validation: **372 local tests passed**, including bitwise default-probe
+prediction equivalence; the nine targeted label/convergence tests also pass
+in the server environment. The label-integrity check accepts all 173,969
+historical INS/DEL examples (110,623 INS; 63,346 DEL). Cached manuscript AP
+regression checks pass; they are not retraining.

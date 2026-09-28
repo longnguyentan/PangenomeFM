@@ -18,10 +18,20 @@
   "representation": {
     "definition": "Ordered concatenation [48D topology, 48D sequence-conditioned], both frozen",
     "fusion_training": "none",
-    "arms": ["T_Q", "T_Rq", "Rt_Q", "Rt_Rq"],
+    "arms": [
+      "T_Q",
+      "T_Rq",
+      "Rt_Q",
+      "Rt_Rq"
+    ],
     "controls": "Same 96 dimensions, retained windows, canonical identities and occurrence counts in every arm",
     "biological_probe": "Existing standardized logistic probe and unchanged hyperparameter/calibration policy",
-    "feature_sets": ["C+S", "C+S+H", "C+S+E", "C+S+H+E"]
+    "feature_sets": [
+      "C+S",
+      "C+S+H",
+      "C+S+E",
+      "C+S+H+E"
+    ]
   },
   "endpoints": {
     "primary": "Validation AUPRC for SV insertion/deletion and binary cCRE",
@@ -30,7 +40,13 @@
       "T_Q minus topology-only v2 and NT-conditioned single branches",
       "Repeat contrasts after C+S+H"
     ],
-    "secondary": ["AUROC", "balanced accuracy", "F1", "prevalence", "all existing SV strata"],
+    "secondary": [
+      "AUROC",
+      "balanced accuracy",
+      "F1",
+      "prevalence",
+      "all existing SV strata"
+    ],
     "inference": "One development fold/seed: point estimates only; no confirmatory CI or p-value"
   },
   "coordinate_ablation": {
@@ -38,7 +54,10 @@
     "native_flag": "--stream_mode coordinate",
     "remaining_inputs": "Same 519 inputs including visible degree; coordinate attention remains. This is not a graph-free representation.",
     "head": "Same selected linear interaction head",
-    "controls": ["trained coordinate encoder", "matched frozen random coordinate encoder"],
+    "controls": [
+      "trained coordinate encoder",
+      "matched frozen random coordinate encoder"
+    ],
     "budget": "Same maximum 10 epochs, patience 3, seed 42, candidates and partitions",
     "selection_metric": "Window-macro validation AUROC; report pooled AUPRC as well"
   },
@@ -58,7 +77,10 @@
   },
   "seed_replication": {
     "trigger": "Recorded seed-42 development gate is eligible_for_replication",
-    "model_seeds": [314159, 20260806],
+    "model_seeds": [
+      314159,
+      20260806
+    ],
     "fold": "fold_a",
     "context": "1hop",
     "partition_seed": 20260806,
@@ -76,7 +98,19 @@
     "context": "1hop",
     "scope": "Same checkpoints, features, examples and classifier objective; change only the maximum optimizer iterations for all arms",
     "selection": "One fixed numerical sensitivity; no regularization, solver, tolerance, model or biological hyperparameter search",
-    "reporting": "Record actual n_iter and convergence warnings per feature, retain every result, compare to original 800-iteration predictions, and withhold promotion if probes remain unconverged"
+    "reporting": "Record actual n_iter and convergence warnings per feature, retain every result, compare to original 800-iteration predictions, and withhold promotion if probes remain unconverged",
+    "extension": {
+      "reason": "Seed-314159 log audit also found SV iteration-limit warnings; repeat the same budget for every replication seed, irrespective of scores",
+      "seeds": [
+        42,
+        314159,
+        20260806
+      ],
+      "recorded_before_remaining_refits": true,
+      "scope": "All eight trained/random/composite arms, both tasks, four feature sets; original 800-iteration runs retained",
+      "comparison_caveat": "Feature definitions/checkpoints are fixed, but GPU feature re-extraction may introduce small floating-point differences; do not attribute every score difference solely to optimizer iterations",
+      "reporting": "Only combine uniform optimizer budgets; retain failed numerical and scientific gates; no chromosome confidence interval for initialization seeds"
+    }
   },
   "implementation_requirements": [
     "Reuse native extractor and probes, adding optional companion checkpoint only",

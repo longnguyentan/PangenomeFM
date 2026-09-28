@@ -1,0 +1,19 @@
+{
+  "status": "additional_public_inventory_checked",
+  "date": "2026-09-27",
+  "source": "https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/HGSVC3/working/20241218_phase3-main-pub_data/20241218_phase3-main-pub_data.MANIFEST.tsv",
+  "bytes": 3964732,
+  "sha256": "5045ea77dd3db7133dea97e3c445e386072e9f007ac6010a9f2e053126cdee12",
+  "n_manifest_entries": 22627,
+  "has_header": false,
+  "search_pattern": "leave[-_]one[-_]out|pangenie|concordance|genotyp",
+  "matching_filenames": [],
+  "README_source": "https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/HGSVC3/working/20241218_phase3-main-pub_data/20241218_phase3-main-pub_data.README.txt",
+  "README_scope": "Assembly QC, annotations, alignments, MHC alleles and segmental duplications; intermediate working products",
+  "interpretation": "No target-named leave-one-out outcome files identified in this archive; filename inspection does not establish absence inside every data file",
+  "unresolved": [
+    "Per-variant sample-excluded truth/prediction outcomes and callable denominators",
+    "Verified coordinate correspondence for CHM13-based labels"
+  ],
+  "large_variant_downloads": false
+}

@@ -9,11 +9,38 @@ import numpy as np
 import pandas as pd
 
 from tasks.entex.prepare import fingerprint
-from tasks.transfer.frozen_branch_report import compare
+from tasks.transfer.frozen_branch_report import MODELS, compare
 from tasks.transfer.report import save_figure
 
 SEEDS = {42, 314159, 20260806}
 METRICS = ["auprc", "auroc", "normalized_ap", "balanced_accuracy", "f1"]
+
+
+def replay_solver_gate(performance: dict, saved: dict, optimizer: pd.DataFrame | None) -> dict:
+    """Retain an unsuccessful numerical gate instead of mistaking it for bad arithmetic."""
+    gate = dict(performance)
+    if optimizer is None:
+        if saved.get("probe_optimization_fully_recorded") or saved.get("all_probes_converged") is not None:
+            raise ValueError("Missing optimizer evidence for the saved gate")
+        gate.update(probe_optimization_fully_recorded=False, all_probes_converged=None,
+                    probe_max_iter=None)
+    else:
+        if (len(optimizer) != 48 or optimizer.duplicated(["model", "task", "feature_set"]).any()
+                or optimizer.groupby(["model", "task"]).size().ne(4).any()
+                or set(optimizer.model) != set(MODELS) or set(optimizer.task) != {"sv", "ccre"}
+                or optimizer.probe_max_iter.nunique() != 1 or optimizer.probe_solver.nunique() != 1
+                or not optimizer.probe_converged.isin([True, False]).all()):
+            raise ValueError("Incomplete or inconsistent optimizer evidence")
+        converged = bool(optimizer.probe_converged.eq(True).all())
+        if saved.get("all_probes_converged") is not converged or not saved.get("probe_optimization_fully_recorded"):
+            raise ValueError("Saved numerical gate disagrees with optimizer evidence")
+        gate.update(probe_optimization_fully_recorded=True, all_probes_converged=converged,
+                    probe_max_iter=int(optimizer.probe_max_iter.iloc[0]))
+        if not converged:
+            gate.update(performance_gate_before_solver_check=gate["status"], status="optimization_incomplete")
+    if gate["status"] != saved["status"]:
+        raise ValueError("Stored gate differs from recomputed metrics/optimizer")
+    return gate
 
 
 def summarize(frames: list[pd.DataFrame]) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict]:
@@ -85,7 +112,7 @@ def plot(per_seed: pd.DataFrame, out: Path) -> None:
 
 
 def build(roots: list[Path], out: Path) -> None:
-    sources, frames = [], []
+    sources, frames, numerical_gates = [], [], []
     for root in roots:
         audit = json.loads((root / "audit.json").read_text())
         if audit.get("status") != "complete":
@@ -99,10 +126,20 @@ def build(roots: list[Path], out: Path) -> None:
         pd.testing.assert_frame_equal(expected.sort_values(keys).reset_index(drop=True),
             saved.sort_values(keys).reset_index(drop=True), check_exact=False, atol=1e-12, rtol=0)
         previous = json.loads((root / "development_gate.json").read_text())
-        if gate["status"] != previous["status"]:
-            raise ValueError("Stored gate differs from recomputed metrics")
+        optimizer_path = root / "probe_optimization.csv"
+        optimizer = pd.read_csv(optimizer_path) if optimizer_path.is_file() else None
+        if optimizer is not None:
+            sources.append(fingerprint(optimizer_path))
+        numerical_gates.append(dict(seed=int(frame.seed.iloc[0]), **replay_solver_gate(gate, previous, optimizer)))
         frames.append(frame)
+    if len({g["probe_max_iter"] for g in numerical_gates}) != 1:
+        raise ValueError("Cannot combine different or incompletely recorded optimizer budgets")
     runs, per_seed, summary, audit = summarize(frames)
+    audit.update(source_gates=numerical_gates, all_seed_development_gates_pass=all(
+        g["status"] == "eligible_for_replication" for g in numerical_gates),
+        probe_max_iter=numerical_gates[0]["probe_max_iter"],
+        all_probes_converged=(all(g["all_probes_converged"] for g in numerical_gates)
+                             if numerical_gates[0]["probe_max_iter"] is not None else None))
     out.mkdir(parents=True, exist_ok=False)
     runs.to_csv(out / "audited_per_run.csv", index=False)
     per_seed.to_csv(out / "paired_per_seed.csv", index=False)

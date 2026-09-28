@@ -9,9 +9,47 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from tasks.entex.prepare import fingerprint
+from tasks.transfer.report import save_figure
 
 CS = "coordinate_plus_frozen_sequence_fm"
 CST = CS + "_plus_frozen_pangenomefm"
+
+
+def plot_scorecard(frame: pd.DataFrame, out: Path) -> None:
+    """Show every recorded context, keeping the small external dataset separate."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    plt.rcParams.update({"font.size": 9, "pdf.fonttype": 42, "svg.fonttype": "none",
+                         "axes.spines.top": False, "axes.spines.right": False})
+    entex = frame.task.str.startswith(("P0", "P1", "P2", "RNA"))
+    external = frame.task.str.startswith("HG008")
+    groups = [frame.loc[entex], frame.loc[~entex & ~external], frame.loc[external]]
+    titles = ["EN-TEx: all prespecified tasks, sensitivities and tissues",
+              "ENCODE and HGSVC3: binary tasks and recorded cCRE strata",
+              "HG008: prospective refits; 69 variants in one genome"]
+    fig, axes = plt.subplots(3, 1, figsize=(11, 13), layout="constrained",
+        gridspec_kw={"height_ratios": [16, 9, 2]})
+    for ax, data, title in zip(axes, groups, titles):
+        names = list(data.task.unique())
+        for context, offset, color in [("strict", -.15, "#245a81"), ("1hop", .15, "#b86b35")]:
+            part = data.loc[data.context.eq(context)].set_index("task").loc[names]
+            y = np.arange(len(names)) + offset
+            # Intervals need not contain the point estimate: draw endpoints
+            # directly instead of passing potentially negative xerr values.
+            ax.hlines(y, part.ci95_low, part.ci95_high, color=color, linewidth=1.1)
+            ax.scatter(part.delta_t, y, s=23, color=color, label=context, zorder=3)
+        ax.axvline(0, color=".45", linewidth=.8)
+        ax.set(yticks=range(len(names)), yticklabels=names, ylim=(len(names)-.4, -.7),
+               title=title, xlabel="Paired Δ AUPRC with source bootstrap 95% interval")
+        ax.grid(axis="x", color=".92", linewidth=.6)
+        ax.set_axisbelow(True)
+    axes[0].legend(frameon=False, loc="best", ncols=2)
+    fig.suptitle("Historical frozen v1 downstream evidence — all 52 context rows\n"
+                 "Horizontal scales differ between panels; overlapping subgroups are not independent benchmarks",
+                 fontsize=11)
+    save_figure(fig, out, "downstream_topology_gains")
+    plt.close(fig)
 
 
 def paired_row(task, context, baseline, augmented, gain, low, high, n_runs, source, **extra):
@@ -107,6 +145,7 @@ def build(root: Path, out: Path) -> None:
     (out / "audit.json").write_text(json.dumps(dict(status="complete", rows=len(frame),
         sources=[fingerprint(p) for p in sorted(sources)], arithmetic="C+S+T minus C+S checked to 1e-10",
         best_result_selection=False, scope="source-table consolidation; not re-training or fresh prediction replay"), indent=2) + "\n")
+    plot_scorecard(frame, out)
 
 
 if __name__ == "__main__":
