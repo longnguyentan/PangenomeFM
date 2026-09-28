@@ -1,0 +1,15 @@
+{
+  "status": "complete",
+  "direct_reference_crosscontig_links": 0,
+  "alternative_components_with_multiple_reference_contigs": 0,
+  "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+  "links_sha256": "7435ac55187d7bca464b961621aada6f8d46e0f7ef900ff7d59d0daee89e2f3b",
+  "source_component_audit": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_component_context_20260928/audit.json",
+    "bytes": 1722,
+    "mtime_ns": 1790573742780356597,
+    "sha256": "b49219a261b489f973a18c5cba5beb0425a59ea841f1073aed5271c1d6b23c25"
+  },
+  "script_sha256": "34083346aebf903e643287543283f33dda138ed1718d74d5fc1f61f09d2c8819",
+  "interpretation": "Absence of both classes implies that no graph path connects two distinct GRCh38 reference contigs. Graph-derived one-hop context cannot cross between those contigs in this exact graph. This does not address donor overlap or biological label ascertainment."
+}

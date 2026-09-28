@@ -1,0 +1,63 @@
+{
+  "status": "not_promoted",
+  "scope": "Exploratory fold-A validation; seeds are not independent chromosome replicates; no CI",
+  "all_declared_seeds_complete": false,
+  "checks": [
+    {
+      "seed": 42,
+      "task": "ccre",
+      "feature": "csht",
+      "metric": "auprc",
+      "comparison": "full_trained minus full_random",
+      "candidate": 0.920763460315386,
+      "control": 0.9193529292869289,
+      "difference": 0.0014105310284571182
+    },
+    {
+      "seed": 42,
+      "task": "sv",
+      "feature": "csht",
+      "metric": "auprc",
+      "comparison": "full_trained minus full_random",
+      "candidate": 0.9064369839915267,
+      "control": 0.9009337757865443,
+      "difference": 0.005503208204982402
+    },
+    {
+      "seed": 314159,
+      "task": "ccre",
+      "feature": "csht",
+      "metric": "auprc",
+      "comparison": "full_trained minus full_random",
+      "candidate": 0.9206578399973461,
+      "control": 0.9184798221888479,
+      "difference": 0.002178017808498134
+    },
+    {
+      "seed": 314159,
+      "task": "sv",
+      "feature": "csht",
+      "metric": "auprc",
+      "comparison": "full_trained minus full_random",
+      "candidate": 0.9071640663929432,
+      "control": 0.900696544863018,
+      "difference": 0.006467521529925246
+    }
+  ],
+  "source": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/masked_feature_full/status.json",
+    "bytes": 26273,
+    "mtime_ns": 1790574879400593075,
+    "sha256": "3c4cb92a99842d1d7ff5deb3380428b637b9751db4160fcdde3237cb37ec9f33"
+  },
+  "all_metrics_replayed": true,
+  "all_probes_converged": true,
+  "graph_contribution_requires_separate_full_vs_coordinate_comparison": true,
+  "representation": "E is sequence-conditioned; native cst/csht keys are retained solely for pipeline compatibility",
+  "report_implementation": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/masked_feature_report.py",
+    "bytes": 8247,
+    "mtime_ns": 1790573840295347473,
+    "sha256": "a04b6bb954a6f3d01d415ac200a12b6865453232f45acbe34f29ed48936867e7"
+  }
+}

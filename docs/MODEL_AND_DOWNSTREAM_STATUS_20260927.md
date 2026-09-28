@@ -1,6 +1,6 @@
 # PangenomeFM: model and downstream evidence status
 
-Last verified 28 September 2026, 01:37 EDT. Technical work only; no manuscript edits.
+Last verified 28 September 2026, 02:15 EDT. Technical work only; no manuscript edits.
 Branch: `codex/v2-evidence-review-20260927`.
 
 ## Active continuation, 28 September
@@ -9,11 +9,15 @@ Branch: `codex/v2-evidence-review-20260927`.
 - [x] Trace the coverage failure to a small terminal chrY window rejected by the historical reconstruction-candidate filter: 64 events shared one missing T segment. C/K/S/H were complete.
 - [x] Complete all **30 frozen topology caches** in a separate output root using the original windows/checkpoints. Existing vectors are verified bitwise unchanged; only missing reference targets are appended. Preserve the initial coverage failure and a repaired JSON-provenance serialization error.
 - [x] Complete the natural-cohort fold-A/42/strict smoke: **39 converged evaluations**, all events retained. All saved predictions and metrics replay independently on the laptop. No one-fold confidence intervals.
-- [ ] Complete and replay the **30-run natural-cohort matrix**. **15/30 runs complete** across five active chromosome shards; results cannot yet be described as a complete experiment.
+- [x] Complete and replay the **30-run natural-cohort matrix: 1,170 converged evaluations, no exclusions**. Macro ΔT after C+S is +0.067057 strict / +0.051653 one-hop; after C+S+L+H, +0.047664 / +0.014988. INV-specific intervals after length/structure cross zero; no random-encoder superiority claim.
 - [x] Prespecify, implement and test **segment-grouped masked NT reconstruction** on the existing encoder. This is a GraphMAE-style objective adaptation, with paired random encoders and coordinate-only controls, not an official GraphMAE reproduction or a novel masked-autoencoder claim.
-- [ ] Complete **12 pretraining runs and 24 frozen validation probes** across three seeds. **8/12 pretraining runs complete**, seed 314159 probes running. First-seed validation gains over random after C+S+H are +0.005503 SV / +0.001411 cCRE; this is preliminary, not chromosome replication.
+- [ ] Complete **12 pretraining runs and 24 frozen validation probes** across three seeds. **12/12 pretraining runs complete**; two complete seeds replayed, final-seed probes running. Both completed seeds have positive trained-minus-random after C+S+H on both tasks; no chromosome replication result yet.
+- [x] Audit graph-wide reference-contig separation: no direct cross-contig reference link or multi-contig alternative component.
+- [x] Inspect the actual 1,218-genome SV release header/inventory: INS/DEL plus genotypes/frequencies, not the missing measured genotyping-concordance or DUP/complex labels.
 - [x] Identify DART-Eval task 3's official GRCh38 coordinates, five cell labels, original split and processed-table version. Anonymous data download returns **HTTP 403**; actual-table QC/fitting awaits an authorized copy.
-- [x] Full local suite **428 passed**, plus two subsequent context tests (430 unique tests); initial 11 server tests, then 9 cache/report and 2 context tests pass. Targeted Ruff/compile checks pass.
+- [x] Full local suite **435 passed**; targeted Ruff/diff checks pass. Existing manuscript checks remain included.
+- [x] Repair fitted-probe persistence: opt-in saved scaler/classifier/calibration with exact reload replay; frozen chromosome replication will retain its classifiers.
+- [x] Implement/test the gated, fixed chromosome-replication runner and reporter. All controls retained; fold B is reported separately because its test chromosomes were used in fold-A development validation. Not launched before the complete gate.
 - [x] Correct graph-scope denominator: 751,237 total segments, 303,425 downstream cache rows, 479,477 benchmark NT rows. Audit 14,786 partly covered alternative components; no new graph release.
 - [ ] Complete the separate, queued **271,760-segment frozen NT extension** after the model campaign. Existing cache values must be byte-identical; no label-driven retraining.
 
@@ -128,6 +132,7 @@ because its interval is much wider. Panel scales are explicitly marked.
 | TraitGym locus priors | Complex and Mendelian traits; 60 runs, 540 converged fits | No positive topology interval; original segment NT sampling drops most tested bases. Five-fold adaptation, not the official leaderboard. |
 | TraitGym allele-score sensitivity | 60 runs, 480 converged fits | Published NT-2.5B scores are informative alone, but concatenation with C+S underperforms. The complete nonlinear/regularization/fusion follow-up improves some Mendelian predictions but does not establish a topology gain. |
 | HGSVC3 three-class matched SVs | 30 runs, 1,170 converged evaluations; 223 INS, DEL, INV each | Macro ΔT +0.023644 / +0.026716 versus C+S. H is stronger; T after H inconclusive. Equal-class common support, not natural prevalence. |
+| HGSVC3 natural-frequency INS/DEL/INV | 30 runs, 1,170 converged/replayed evaluations; all 174,267 events | Macro ΔT +0.067057 / +0.051653; after length and H +0.047664 / +0.014988. INV-specific adjusted intervals cross zero. No random arm; not model-weight improvement. |
 | COSIGT measured locus quality | 30 runs, 900 evaluations; 265 loci | All original topology MAE intervals cross zero; primary-outcome constant reference beats the fitted feature models. |
 | TraitGym probe repair | 60 runs, 1,500 evaluations, 3,600 classifier fits | Mendelian C+S+V boosting: 0.102110 → 0.171056 AP, paired +0.068946 [0.017423, 0.145067]. No topology contrast has a wholly positive interval. |
 | COSIGT validation-only fallback | 840 derived evaluations; no new fits | Mean error decreases; main comparisons remain inconclusive and the constant reference stays stronger. |
@@ -521,7 +526,7 @@ removing queried links can support a standalone novelty claim.
 | 2 | Chromosome replication and v2 task transfer | Not run; freeze protocol before additional label-informed choices |
 | 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | TraitGym probe matrix complete. Native-backbone GraphMAE-style objective with random/coordinate controls is running; official GraphMAE and stronger full sequence-embedding comparisons remain unrun |
 | 4 | TraitGym | All three 60-run studies complete; all fixed-C outputs replay exactly and every topology contrast is retained. Official LOCO/full sequence-embedding comparison remains separate |
-| 5 | INV-containing SV type task | Matched study complete. Full natural-frequency cohort smoke passes after append-only chrY cache completion; 30-run matrix running. DUP and complex classes remain unresolved |
+| 5 | INV-containing SV type task | Matched study complete. Full natural-frequency cohort complete: 30 runs / 1,170 evaluations, all events retained after append-only chrY cache completion. DUP and complex classes remain unresolved |
 | 6 | DART-Eval | Task-3 source/coordinate/split audit complete; official processed-table download requires authenticated Synapse permission (403). No fabricated labels or task performance |
 | 7 | Measured SV genotypability | COSIGT regression and validation-only fallback complete; reduced mean error still falls short of the constant reference on the primary endpoint. Per-variant PanGenie concordance and independently callable denominator remain unresolved |
 | 8 | GTEx / SV-expression / trait links | Compact positive sets insufficient; obtain all-tested/callable universes before defining negatives |

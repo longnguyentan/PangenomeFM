@@ -1,6 +1,6 @@
 # Model and downstream continuation — 28 September 2026
 
-Verified at 01:37 EDT; live jobs may have progressed beyond this snapshot. This is an execution record, not a manuscript revision.
+Verified at 02:15 EDT; live jobs may have progressed beyond this snapshot. This is an execution record, not a manuscript revision.
 The [central checklist](MODEL_AND_DOWNSTREAM_STATUS_20260927.md) retains the
 complete historical task inventory and all failed scientific gates.
 
@@ -12,8 +12,8 @@ complete historical task inventory and all failed scientific gates.
 | Exact-graph mapping | Complete: 100%; one containing segment per anchor | [Mapping QC](../results/foundation_evidence_20260928/natural_sv_smoke/mapping_qc.json) |
 | Missing chrY topology vectors | Fixed in all 30 caches; original values bitwise unchanged | [Completion receipt](../results/foundation_evidence_20260928/natural_sv_smoke/cache_completion.json), [all cache audits](../results/foundation_evidence_20260928/natural_sv_smoke/cache_extension_audits.json) |
 | Natural-cohort smoke | Complete: 39/39 converged evaluations, independent prediction replay | [Metrics](../results/foundation_evidence_20260928/natural_sv_smoke/per_run.csv), [local replay](../results/foundation_evidence_20260928/natural_sv_smoke/local_replay.json) |
-| Natural-cohort full matrix | Running: 15/30 runs complete, five chromosome shards; 1,170 evaluations planned | Server `sv_type_natural_shards/`, detailed commands below |
-| New masked-feature pretraining objective | 8/12 pretraining runs complete; first-seed biological controls independently replayed; second-seed probing running | [Protocol](../configs/masked_nt_objective_20260928.json) |
+| Natural-cohort full matrix | Complete: 30/30 runs, 1,170 converged and replayed evaluations, zero exclusions | [Full audit](../results/foundation_evidence_20260928/sv_type_natural_full_analysis/audit.json) |
+| New masked-feature pretraining objective | 12/12 pretraining runs complete; two complete seeds replayed, final-seed probing running | [Protocol](../configs/masked_nt_objective_20260928.json) |
 | Whole-graph NT coverage | Missing 271,760 segments audited; completion queued after the model campaign | [Protocol](../configs/whole_graph_nt_completion_20260928.json) |
 | Alternative-component context | Complete: 14,786 components partly covered by benchmark-union cache | [Coverage](../results/foundation_evidence_20260928/reference_component_context_20260928/coverage.csv) |
 | DART-Eval accessibility task | Official schema/reference/split located; table download requires authentication | [Source audit](../results/foundation_evidence_20260928/dart_feasibility/source_audit.json), [403 receipt](../results/foundation_evidence_20260928/dart_feasibility/download.json) |
@@ -24,7 +24,7 @@ remain separate from this evidence checkout.
 
 ## 1. Natural-frequency SV type: preserve the whole denominator
 
-The completed matched experiment used 223 events per class. Its newly running
+The completed matched experiment used 223 events per class. Its completed
 counterpart retains **110,623 INS, 63,346 DEL and 298 INV** without length/class
 subsampling. Both use the same first-affected-base anchor, original folds,
 frozen v1 graph/NT representations and 13 feature sets. Event log length is the
@@ -65,6 +65,48 @@ their rare-class prevalence. The full reporter also saves AUROC, normalized AP,
 balanced accuracy, F1, precision/recall, per-class and macro paired intervals,
 fold sign-flip tests and BH adjustment. This study does not contain a random
 encoder arm and cannot isolate learned weights from architectural projection.
+
+### Completed natural-frequency matrix
+
+**Five original chromosome folds × three seeds × two contexts; all 174,267 events
+retained.** Independent server prediction replay verifies all 1,170 evaluations;
+every fit converged. This resolves the missing-chrY-feature blocker without
+changing the denominator. Prevalence in the complete callset is 63.48% INS,
+36.35% DEL and 0.171% INV; these are callset frequencies, not population frequencies.
+
+| Macro AUPRC or paired gain | Strict | One-hop |
+|---|---:|---:|
+| C+S | 0.406955 | 0.406955 |
+| C+S+T | 0.474012 | 0.458608 |
+| ΔT given C+S, 95% CI | +0.067057 [0.062310, 0.070836] | +0.051653 [0.047341, 0.055334] |
+| C+S+H | 0.455130 | 0.455130 |
+| C+S+H+T | 0.499834 | 0.472585 |
+| ΔT given C+S+H, 95% CI | +0.044704 [0.040045, 0.049689] | +0.017455 [0.014850, 0.020240] |
+| C+S+L+H | 0.508173 | 0.508173 |
+| C+S+L+H+T | 0.555836 | 0.523160 |
+| ΔT given C+S+L+H, 95% CI | +0.047664 [0.039885, 0.055252] | +0.014988 [0.007719, 0.021421] |
+
+L is measured event log length; H is the existing label-free graph-statistic
+cache. The INS/DEL improvements persist after both controls. INV is different:
+C+S AP is 0.006907, C+S+H is 0.020660, and adding event length raises C+S+L+H
+to 0.174329. Its incremental T after all controls is +0.015190 strict
+(CI -0.004323 to +0.036473) and -0.001538 one-hop
+(CI -0.019657 to +0.011729). Thus the data **do not establish improved inversion
+prediction beyond length and cheap structure**, despite the positive macro result.
+
+The matched and natural-frequency experiments answer different conditional
+questions and both remain reported. The larger natural-cohort gains must not be
+presented as an improvement to model weights: both use the existing frozen v1
+encoder. There is no random-encoder arm in this extension. The exact two-sided
+fold sign-flip minimum is 0.0625 with only five independent folds; these macro
+contrasts have BH q=0.0741. Positive pointwise bootstrap intervals are not
+multiplicity-controlled confirmation. The task classifies already ascertained
+SV events and does not demonstrate discovery or genotyping accuracy.
+
+[Per-run results](../results/foundation_evidence_20260928/sv_type_natural_full_analysis/per_run.csv),
+[all absolute metrics](../results/foundation_evidence_20260928/sv_type_natural_full_analysis/absolute.csv),
+[paired intervals and multiplicity](../results/foundation_evidence_20260928/sv_type_natural_full_analysis/contrasts.csv),
+[figure](../results/foundation_evidence_20260928/sv_type_natural_full_analysis/sv_type_topology_gains.pdf).
 
 ## 2. Test an alternative self-supervised signal
 
@@ -143,6 +185,28 @@ hash checks remain. No labels, predictions or metric values were changed.
 This is promising development evidence; the prespecified gate still requires
 both tasks at all three seeds. The partial report explicitly says not promoted.
 
+### Fixed chromosome-replication follow-up, not launched yet
+
+The [replication protocol](../configs/masked_nt_chromosome_replication_20260928.json)
+and its runner/reporter are implemented and tested. Launch requires manual review
+of the completed three-seed development audit, including a supplied SHA-256 of
+that reviewed report; a partial, nonfinite or failed gate is rejected.
+
+The planned matrix retains all four arms across five original folds and three
+seeds: 60 encoder instances (12 existing fold-A encoders reused, 48 trained from
+scratch), 120 frozen biological probe runs and 480 feature evaluations. Model
+width, objectives, optimizer, input cache, feature sets and convergence budget
+remain fixed. Other folds receive architecture metadata without transferred
+weights. Current whole-graph cache completion is separate from this experiment.
+
+Fold-A development validation used the chromosomes that form **fold B's test
+set**. The primary follow-up summary therefore excludes fold B and uses the other
+four folds; fold B and the full five-fold matrix remain separate, fully reported
+sensitivity scopes. This does not erase exposure to historical v1 results on
+these chromosomes, so no untouched-external-validation claim is justified.
+The same paired hierarchical bootstrap, fold sign-flip and BH routines are reused.
+No additional chromosome test results have been generated by this implementation.
+
 ## 3. Correct the graph denominator and enable broader contexts
 
 The exact existing processed graph has **751,237 segments and 1,097,658 links**,
@@ -160,6 +224,12 @@ components. It finds 445,665 alternative segments in 135,902 components:
 | Multiple anchors on one primary chromosome / complete | 120,257 | 129,125 | 129,125 |
 | Multiple anchors on one primary chromosome / partial | 14,786 | 310,057 | 46,927 |
 | Nonprimary reference contig / absent | 859 | 6,483 | 0 |
+
+A separate graph-wide check finds **zero direct links between distinct reference
+contigs**, and zero alternative components attached to multiple reference contigs.
+Together these rule out graph paths crossing GRCh38 contigs in this exact graph.
+The audit does not establish donor independence.
+[Separation receipt](../results/foundation_evidence_20260928/reference_contig_separation_20260928.json).
 
 No unanchored, single-anchor or multiple-reference-contig components were found
 in this graph. That is observed QC, not an assumption enforced by the code.
@@ -207,6 +277,32 @@ returns HTTP 403 for an anonymous client. The actual rows, counts, label
 distribution and graph coverage are therefore **not yet verified**. No synthetic
 performance or substitute labels have been created. An authorized local/server
 copy is the next dependency; credentials should not be sent in chat.
+
+## 5. Check the proposed larger SV resource before defining new labels
+
+The public 1,218-genome release supplies **587,779 GRCh38 INS/DEL** calls;
+614,522 is its CHM13 count. It therefore does not directly resolve the missing
+DUP/complex type labels. [UCSC release documentation](https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/lrSv1kLin.html).
+
+I inspected the actual compressed GRCh38 VCF header, the pinned author repository
+and its Zenodo inventory. The header contains 1,218 genotype sample columns and
+GT/allele-length/breakpoint-position fields, plus allele frequency/count and HWE
+annotations. It does not declare per-variant measured genotyping F1/concordance.
+The repository describes a short-read F1 selection criterion, but its public
+file inventory contains scripts rather than those outcomes or an all-tested
+phenotype denominator. AF, NS and HWE must not substitute for measured accuracy.
+[Author repository](https://github.com/jiadong324/1KG_LongRead_SV/tree/400552c4980277f580d123ab5b6bf9d41874de07).
+
+The release mixes HPRC/HGSVC and other long-read genomes. A future external
+INS/DEL evaluation must explicitly remove training-call/donor overlap before
+claiming independence. Neither released associations alone nor untested SVs can
+define an association-negative class. These are task-design requirements inferred
+from the verified release structure, not measured model performance.
+
+The candidate compressed VCF is 306,045,265 bytes; only its header and first-row
+metadata were read. No full callset download, full QC or fitting was performed.
+[Zenodo release](https://zenodo.org/records/22000872),
+[actual header/inventory audit](../results/foundation_evidence_20260928/lin1218_feasibility/source_audit.json).
 
 ## Reproducible execution
 
@@ -260,18 +356,18 @@ server resources remain prerequisites; launchers do not download replacements.
 
 ## Tests and remaining checklist
 
-- [x] Full local suite: 428 tests; two subsequent component tests also pass (430 unique tests). The report metadata-only follow-up passes its targeted test.
+- [x] Full local suite: **435 passed**, including cached manuscript checks, replication gates and exact saved-probe replay; 14 known warnings. Targeted Ruff passes.
 - [x] Initial eleven server tests, then nine cache/report tests and two context tests pass; Ruff and compile checks pass.
 - [x] Real natural-SV smoke independently replayed: all 39 evaluations.
 - [x] Existing manuscript regression checks remain in the passing suite.
-- [ ] Complete natural-SV fitting, full replay, paired uncertainty and plots.
+- [x] Complete natural-SV fitting, full replay, paired uncertainty and plots: 30 runs, 1,170 evaluations, zero exclusions.
 - [x] Complete and independently replay the first seed of masked-feature biological controls and the supplemental junction-Q comparison.
 - [x] Audit whole-graph scope, alternative-component coverage and NT completion cost.
 - [ ] Complete the queued full-graph frozen NT cache and verify preserved values.
 - [ ] Complete all three seeds of masked-feature trained/random/coordinate comparisons. Retain failed
   gates if any; do not choose only favorable tasks or seeds.
-- [ ] Only after adequate development evidence, freeze a chromosome-replication
-  protocol. Current v2 has not established a universally better final model.
+- [x] Freeze/test the chromosome-replication protocol before observing new chromosome-test scores.
+- [ ] Launch only after the completed development report passes its original gate and is reviewed. Current v2 has not established a universally better final model.
 - [ ] Obtain authorized DART rows, verify labels/coordinates/coverage, then
   prespecify an appropriately labelled comparison.
 - [ ] Official graph-SSL architecture and stronger complete sequence-embedding
@@ -284,3 +380,18 @@ The EN-TEx panel, HG008 prospective refits, original scaling, all three TraitGym
 studies, matched SV types and COSIGT studies remain complete. Their null and
 negative results are retained in the central scorecard; these new experiments
 do not overwrite them or guarantee a stronger model.
+
+## Saved-probe repair
+
+The native cCRE/INS-DEL runners now support `--save-probes`; default behavior is
+unchanged. The shared, previously tested HG008 persistence helper was moved to
+`evaluation.probe_artifacts` and reused. Each optional artifact stores the
+training-fitted sklearn pipeline (including scaling), validation temperature
+and threshold, feature dimension, partition metadata and encoder identity.
+Serialization is immediately checked against the original raw predictions.
+Random-uniform and prevalence baselines are not misrepresented as fitted models.
+The fixed chromosome replication opts in; ongoing development fits retain their
+original command lines. Two tests show bitwise equality of all default/opt-in
+metrics and predictions, plus exact raw/calibrated/classification replay after
+reload. This prevents repeating the historical missing-probe external-replay
+blocker; it does not retrospectively recover lost historical classifiers.
