@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import asdict
 import json
+from importlib.metadata import version
 from pathlib import Path
 import sys
 
@@ -18,6 +19,7 @@ from scripts.server.run_ccre_frozen_probe_fold import evaluate_feature_sets, val
 from scripts.server.run_ccre_frozen_probe_matrix import build_jobs, checkpoint_for
 from tasks.entex.mapping import aggregate_features
 from tasks.entex.prepare import fingerprint
+from tasks.transfer.selected_probe import evaluate_selected, completion_summary
 
 
 IDENTITY = ["variant_id", "locus_id", "chrom", "start", "end", "ref", "alt", "label", "match_group"]
@@ -217,6 +219,9 @@ def main() -> None:
         datasets=plan["datasets"], completed_runs=0, planned_runs=len(jobs) * len(datasets),
         encoder_training=False, evaluation_partition="test", feature_coverage="100% C/K/S/H required",
         scope="full_matrix" if len(jobs) == len(build_jobs(manuscript)) else "partial_matrix")
+    if plan.get("selected_probe"):
+        receipt["probe_implementation"] = fingerprint(Path(__file__).with_name("selected_probe.py"))
+        receipt["runtime"] = {name: version(name) for name in ["numpy", "scipy", "scikit-learn", "torch", "pandas"]}
     write_json(args.out_root / "status.json", receipt)
     write_json(args.out_root / "qc.json", qc)
     try:
@@ -244,11 +249,16 @@ def main() -> None:
                     raise ValueError("Custom features must not replace manuscript feature meanings")
                 matrices.update({k: concatenate_modalities(components, names) for k, names in custom.items()})
                 access = {**factorial_feature_access(), **{k: " + ".join(names) for k, names in custom.items()}}
-                metrics, per_chromosome, predictions = evaluate_feature_sets(
-                    segids=examples.example_id.to_numpy(), chromosomes=examples.chrom.to_numpy(),
-                    labels=examples.label.to_numpy(), features={k: matrices[k] for k in plan["feature_sets"]},
-                    test_chrs=set(job.test), val_chrs=set(job.validation), seed=job.seed,
-                    probe_max_iter=plan["probe_max_iter"], feature_access=access)
+                arguments = dict(segids=examples.example_id.to_numpy(), chromosomes=examples.chrom.to_numpy(),
+                    labels=examples.label.to_numpy(), test_chrs=set(job.test), val_chrs=set(job.validation), seed=job.seed)
+                selection = validation_predictions = None
+                if plan.get("selected_probe"):
+                    metrics, per_chromosome, predictions, selection, validation_predictions = evaluate_selected(
+                        **arguments, features=matrices, plan=plan)
+                else:
+                    metrics, per_chromosome, predictions = evaluate_feature_sets(
+                        **arguments, features={k: matrices[k] for k in plan["feature_sets"]},
+                        probe_max_iter=plan["probe_max_iter"], feature_access=access)
                 metrics["balanced_accuracy"] = [balanced_accuracy_score(p.y_true, p.y_pred)
                     for feature in metrics.feature_set for p in [predictions.loc[predictions.feature_set.eq(feature)]]]
                 metrics["chromosome_weighted_auprc"] = [weighted_chromosome_ap(
@@ -257,7 +267,12 @@ def main() -> None:
                 metrics["positive_prevalence"], metrics["n_val"] = metrics.positive_fraction, metrics.n_validation
                 predictions = predictions.rename(columns={"segid": "example_id"}).merge(
                     examples[["example_id", *IDENTITY]], on="example_id", validate="many_to_one")
-                for frame in [metrics, per_chromosome, predictions]:
+                frames = [metrics, per_chromosome, predictions]
+                if validation_predictions is not None:
+                    validation_predictions = validation_predictions.rename(columns={"segid": "example_id"}).merge(
+                        examples[["example_id", *IDENTITY]], on="example_id", validate="many_to_one")
+                    frames.append(validation_predictions)
+                for frame in frames:
                     for key, value in dict(task=plan["task"], dataset=name, fold=job.fold,
                                            seed=job.seed, context=job.closure).items():
                         frame[key] = value
@@ -266,9 +281,16 @@ def main() -> None:
                 metrics.to_csv(out / "metrics.csv", index=False)
                 per_chromosome.to_csv(out / "per_chromosome.csv", index=False)
                 predictions.to_parquet(out / "predictions.parquet", index=False)
+                extra = {}
+                if selection is not None:
+                    selection.to_csv(out / "validation_selection.csv", index=False)
+                    validation_predictions.to_parquet(out / "validation_predictions.parquet", index=False)
+                    extra = {key: fingerprint(out / filename) for key, filename in [
+                        ("validation_selection", "validation_selection.csv"),
+                        ("validation_predictions", "validation_predictions.parquet")]}
                 write_json(out / "audit.json", dict(status="complete", holdout=holdout,
                     identity=identity, feature_coverage={k: 1.0 for k in components}, n_excluded=0,
-                    all_probes_converged=bool(metrics.probe_converged.all()),
+                    **completion_summary(metrics), **extra,
                     predictions=fingerprint(out / "predictions.parquet"), topology_cache=cache_fp,
                     interpretation=plan["interpretation"]))
                 receipt["completed_runs"] += 1

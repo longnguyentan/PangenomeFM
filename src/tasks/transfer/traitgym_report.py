@@ -14,6 +14,9 @@ from scripts.server.run_ccre_frozen_probe_fold import binary_metrics
 from tasks.entex.analyze import BASE, CT, FULL, LABELS, estimate
 from tasks.entex.prepare import fingerprint
 from tasks.transfer.report import save_figure
+from tasks.transfer.selected_probe import completion_summary, validate_selection
+from evaluation.calibration import apply_temperature, fit_temperature
+from tasks.ccre.binary import _choose_threshold
 from tasks.transfer.traitgym import IDENTITY, verified_fingerprint, weighted_chromosome_ap, write_json
 
 CSH = BASE + "_plus_topology_control"
@@ -22,7 +25,8 @@ METRICS = ["auprc", "chromosome_weighted_auprc", "auroc", "normalized_ap", "bala
            "precision", "recall"]
 
 
-def replay_run(directory: Path, plan: dict, test_chromosomes: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
+def replay_run(directory: Path, plan: dict, test_chromosomes: list[str],
+               validation_chromosomes: list[str] | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
     audit = json.loads((directory / "audit.json").read_text())
     if audit.get("status") != "complete" or audit.get("n_excluded") != 0:
         raise ValueError("Incomplete run or excluded variants")
@@ -32,6 +36,27 @@ def replay_run(directory: Path, plan: dict, test_chromosomes: list[str]) -> tupl
     if (metrics.feature_set.duplicated().any() or set(metrics.feature_set) != set(plan["feature_sets"])
             or set(frame.feature_set) != set(plan["feature_sets"])):
         raise ValueError("Missing or duplicated feature sets")
+    if plan.get("selected_probe"):
+        for key, filename in [("validation_selection", "validation_selection.csv"),
+                              ("validation_predictions", "validation_predictions.parquet")]:
+            verified_fingerprint(directory / filename, audit[key]["sha256"])
+        selection = pd.read_csv(directory / "validation_selection.csv", float_precision="round_trip")
+        validation = pd.read_parquet(directory / "validation_predictions.parquet")
+        validate_selection(selection, validation, metrics, plan)
+        if (set(validation.chromosome) & set(frame.chromosome)
+                or set(validation.variant_id) & set(frame.variant_id)
+                or (validation_chromosomes is not None and set(validation.chromosome) != set(validation_chromosomes))):
+            raise ValueError("Validation/test identity overlap or unexpected chromosome partition")
+        for m in metrics.itertuples():
+            part = validation.loc[validation.feature_set.eq(m.feature_set)]
+            temperature = fit_temperature(part.y_true.to_numpy(), part.p_raw.to_numpy())
+            if (len(part) != m.n_validation or not part.y_true.eq(part.label).all()
+                    or not np.isclose(temperature, m.temperature, atol=1e-10, rtol=0)
+                    or not np.allclose(apply_temperature(part.p_raw, temperature), part.p_calibrated, atol=1e-12, rtol=0)
+                    or _choose_threshold(part.y_true, part.p_calibrated) != m.threshold):
+                raise ValueError("Validation calibration/threshold or identities do not replay")
+        if not completion_summary(metrics)["all_probes_completed"]:
+            raise ValueError("Incomplete optimization or fixed-budget fit")
     metrics = metrics.set_index("feature_set")
     identity, chrom_rows = None, []
     for feature in plan["feature_sets"]:
@@ -41,7 +66,7 @@ def replay_run(directory: Path, plan: dict, test_chromosomes: list[str]) -> tupl
                 or set(p.chromosome) != set(test_chromosomes) or not p.chrom.eq(p.chromosome).all()
                 or len(p) != m.n_test or not p.threshold.eq(m.threshold).all()
                 or not np.isfinite(p.p_calibrated).all() or not p.p_calibrated.between(0, 1).all()
-                or m.probe_max_iter != plan["probe_max_iter"]):
+                or m.probe_max_iter != plan.get("feature_max_iter", {}).get(feature, plan["probe_max_iter"])):
             raise ValueError("Prediction identities, chromosome partition, numerical budget or labels differ")
         current = p[IDENTITY].reset_index(drop=True)
         if identity is not None:
@@ -50,6 +75,9 @@ def replay_run(directory: Path, plan: dict, test_chromosomes: list[str]) -> tupl
         for key in ["task", "dataset", "fold", "seed", "context"]:
             if not p[key].eq(m[key]).all():
                 raise ValueError("Metric/prediction run identity differs")
+        if plan.get("selected_probe") and not np.allclose(
+                apply_temperature(p.p_raw, m.temperature), p.p_calibrated, atol=1e-12, rtol=0):
+            raise ValueError("Test calibration does not replay")
         replay = binary_metrics(p.y_true.to_numpy(), p.p_calibrated.to_numpy(), float(m.threshold))
         for chrom, group in p.groupby("chromosome"):
             chrom_rows.append(dict(feature_set=feature, chromosome=chrom,
@@ -119,7 +147,7 @@ def figures(absolute: pd.DataFrame, contrasts: pd.DataFrame, out: Path, plan: di
     import matplotlib.pyplot as plt
     plt.rcParams.update({"font.size": 9, "svg.fonttype": "none", "pdf.fonttype": 42,
                          "axes.spines.top": False, "axes.spines.right": False})
-    fig, axes = plt.subplots(1, 2, figsize=(10, 4), layout="constrained")
+    fig, axes = plt.subplots(1, 2, figsize=(10, max(4, .3 * len(plan["feature_sets"]))), layout="constrained")
     colors = {"strict": "#245a81", "1hop": "#be6831"}
     for ax, dataset in zip(axes, ["complex_traits", "mendelian_traits"]):
         subset = absolute.loc[absolute.dataset.eq(dataset) & absolute.metric.eq("auprc")]
@@ -142,7 +170,7 @@ def figures(absolute: pd.DataFrame, contrasts: pd.DataFrame, out: Path, plan: di
     fig.suptitle("TraitGym locus priors: five-fold adaptation; frozen v1 encoders")
     save_figure(fig, out, "traitgym_feature_ap")
     plt.close(fig)
-    fig, ax = plt.subplots(figsize=(8, 4), layout="constrained")
+    fig, ax = plt.subplots(figsize=(8, max(4, .22 * len(contrasts.loc[contrasts.metric.eq("auprc") & contrasts.contrast.str.startswith("T_given_")]))), layout="constrained")
     data = contrasts.loc[contrasts.metric.eq("auprc") & contrasts.contrast.str.startswith("T_given_")]
     for i, (_, r) in enumerate(data.iterrows()):
         ax.plot(r["mean"], i, "o", color=colors[r.context])
@@ -169,7 +197,7 @@ def main() -> None:
         for name in plan["datasets"]:
             path = args.root / name / job["fold"] / f"seed_{job['seed']}" / job["closure"]
             observed_chromosomes, expected_n = expected_test_support(qc[name], job["test"])
-            metrics, identity = replay_run(path, plan, observed_chromosomes)
+            metrics, identity = replay_run(path, plan, observed_chromosomes, expected_test_support(qc[name], job["validation"])[0])
             if len(identity) != expected_n:
                 raise ValueError("Test predictions dropped original source rows")
             for key, expected in dict(dataset=name, fold=job["fold"], seed=job["seed"], context=job["closure"]).items():
@@ -193,15 +221,20 @@ def main() -> None:
     for name, frame in [("per_run", metrics), ("absolute", absolute), ("contrasts", contrasts), ("paired", paired)]:
         frame.to_csv(args.out_dir / (name + ".csv"), index=False)
     figures(absolute, contrasts, args.out_dir, plan)
+    completed = completion_summary(metrics)
+    passed = completed.get("all_probes_completed", completed["all_probes_converged"])
+    completion_text = ("All linear probes converged and all fixed-budget fits completed."
+                       if completed.get("fixed_budget_estimators_present") and passed
+                       else f"All probes converged: {completed['all_probes_converged']}.")
     (args.out_dir / "README.md").write_text(
         "# TraitGym frozen locus-prior results\n\n" + plan["interpretation"] + "\n\n"
-        + f"Completed {len(rows)} declared runs; {len(metrics)} fits. All converged: {bool(metrics.probe_converged.all())}.\n\n"
+        + f"Completed {len(rows)} declared runs; {len(metrics)} evaluations. {completion_text}\n\n"
         + "## All primary and handcrafted-control AUPRC contrasts\n\n"
         + markdown_contrasts(contrasts) + "\n\n"
         + "Intervals are pointwise hierarchical fold/seed bootstrap. Exact fold sign-flip p-values and BH-adjusted q-values are also supplied; five folds limit inferential resolution.\n")
     write_json(args.out_dir / "audit.json", dict(status="complete", scope=receipt["scope"],
-        all_probes_converged=bool(metrics.probe_converged.all()), n_runs=len(rows), n_fits=len(metrics),
-        numerical_gate="pass" if metrics.probe_converged.all() else "optimization_incomplete",
+        **completed, n_runs=len(rows), n_fits=len(metrics),
+        numerical_gate="pass" if passed else "optimization_incomplete",
         source_root=str(args.root), sources=sources, plan=plan,
         interpretation="Exploratory pointwise fold/seed intervals; seed repetitions are not independent biological samples. No performance-based subset selection."))
 

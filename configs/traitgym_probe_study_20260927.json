@@ -1,0 +1,475 @@
+{
+  "artifact_type": "analysis_plan",
+  "version": 1,
+  "task": "traitgym_probe_study",
+  "objective": "Test validation-selected regularization, a fixed nonlinear probe, and validation-selected late fusion without altering frozen representations or variant support.",
+  "recorded_before_first_probe": true,
+  "dataset_revision": "1fde19555fe8c0a55b1382bdf4c6f7082209f566",
+  "datasets": [
+    "complex_traits",
+    "mendelian_traits"
+  ],
+  "reference_config": "configs/entex_v1.json",
+  "partition": "All five existing manuscript chromosome folds, three seeds, strict and one-hop; original test and validation chromosomes also excluded from graph encoder training",
+  "unit": "Original variant row; repeated positions with different alleles remain together by chromosome. Preserve all original match groups, each containing one positive and nine negatives on one chromosome.",
+  "encoder": "Existing v1 frozen checkpoint for each fold/seed/context; no new pretraining, tuning or checkpoint selection on TraitGym",
+  "sequence": "Unmodified manuscript segment-level NT-v2 50M cache; not reference-minus-alternate embeddings",
+  "mapping": "Previously audited GRCh38 [pos-1,pos) containing reference segment; no nearest fallback and no row exclusions",
+  "probe": "Native standardized balanced logistic probe with validation-only C selection; fixed-budget shallow histogram gradient boosting; convex probability blend selected on validation chromosomes. No refit or hyperparameter choice on test.",
+  "feature_sets": [
+    "V_linear",
+    "CS_linear",
+    "CST_linear",
+    "CSH_linear",
+    "CSHT_linear",
+    "CSV_linear",
+    "CSVT_linear",
+    "CSVH_linear",
+    "CSVHT_linear",
+    "V_fixed",
+    "CS_fixed",
+    "CSV_fixed",
+    "CSVT_fixed",
+    "CSVH_fixed",
+    "CSVHT_fixed",
+    "V_histgb",
+    "CS_histgb",
+    "CSV_histgb",
+    "CSVT_histgb",
+    "CSVH_histgb",
+    "CSVHT_histgb",
+    "V_CS_fusion",
+    "V_CST_fusion",
+    "V_CSH_fusion",
+    "V_CSHT_fusion"
+  ],
+  "probe_max_iter": 4000,
+  "primary": "Exploratory changes versus fixed manuscript probe; incremental T evaluated within each predeclared probe family and with H controls.",
+  "controls": [
+    "Original C=1 prediction replay",
+    "V-only endpoint retained in all fusion comparisons",
+    "Identical original variants, checkpoints, chromosome splits and frozen feature arrays"
+  ],
+  "secondary_metrics": [
+    "chromosome-size-weighted AUPRC",
+    "AUROC",
+    "prevalence-normalized AP",
+    "balanced accuracy",
+    "F1",
+    "precision",
+    "recall"
+  ],
+  "inference": "Existing hierarchical fold/seed bootstrap with 10000 draws; paired exact fold sign-flip and BH correction over all dataset/context/contrast comparisons within each metric. Overlapping training folds limit independence.",
+  "n_bootstrap": 10000,
+  "statistics_seed": 20260927,
+  "validity_gates": [
+    "100% original variant and match-group support",
+    "Train/validation/test chromosome isolation",
+    "Exact C=1 replay against prior completed scores",
+    "All linear candidates converge; HGB completes its fixed budget; all predictions finite",
+    "Saved validation selection and prediction replay",
+    "No test-driven choice among reported arms"
+  ],
+  "interpretation": "Exploratory follow-up on previously inspected TraitGym variants, using all five manuscript chromosome folds and all seeds/contexts. Improvement of a downstream classifier does not establish better encoder weights. V is an author-provided NT-2.5B allele score; S remains frozen NT-v2 50M. HGB is a fixed 150-tree-budget estimator without a convergence criterion; only logistic probes can be called converged. No official leaderboard equivalence.",
+  "references": [
+    "https://github.com/songlab-cal/TraitGym",
+    "https://huggingface.co/datasets/songlab/TraitGym"
+  ],
+  "development_status": "Exploratory study motivated by previously inspected test results. All grids and model arms pinned before fitting; this is not new independent confirmation or a basis for best-model claims.",
+  "variant_score_definition": "V contains signed LLR and its absolute value, fixed before fitting. The original author NT-2.5B masked-allele score averages forward and reverse sequences; this is not its full embedding-based benchmark.",
+  "custom_feature_sets": {
+    "variant_llr": [
+      "variant_llr"
+    ],
+    "coordinate_plus_variant_llr": [
+      "coordinate",
+      "variant_llr"
+    ],
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "variant_llr"
+    ],
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "variant_llr",
+      "frozen_pangenomefm"
+    ],
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "variant_llr",
+      "topology_control"
+    ],
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "variant_llr",
+      "topology_control",
+      "frozen_pangenomefm"
+    ]
+  },
+  "feature_labels": {
+    "V_linear": "V linear",
+    "CS_linear": "CS linear",
+    "CST_linear": "CST linear",
+    "CSH_linear": "CSH linear",
+    "CSHT_linear": "CSHT linear",
+    "CSV_linear": "CSV linear",
+    "CSVT_linear": "CSVT linear",
+    "CSVH_linear": "CSVH linear",
+    "CSVHT_linear": "CSVHT linear",
+    "V_fixed": "V fixed",
+    "CS_fixed": "CS fixed",
+    "CSV_fixed": "CSV fixed",
+    "CSVT_fixed": "CSVT fixed",
+    "CSVH_fixed": "CSVH fixed",
+    "CSVHT_fixed": "CSVHT fixed",
+    "V_histgb": "V histgb",
+    "CS_histgb": "CS histgb",
+    "CSV_histgb": "CSV histgb",
+    "CSVT_histgb": "CSVT histgb",
+    "CSVH_histgb": "CSVH histgb",
+    "CSVHT_histgb": "CSVHT histgb",
+    "V_CS_fusion": "V CS fusion",
+    "V_CST_fusion": "V CST fusion",
+    "V_CSH_fusion": "V CSH fusion",
+    "V_CSHT_fusion": "V CSHT fusion"
+  },
+  "comparisons": [
+    [
+      "linear_vs_fixed_V",
+      "V_linear",
+      "V_fixed"
+    ],
+    [
+      "histgb_vs_fixed_V",
+      "V_histgb",
+      "V_fixed"
+    ],
+    [
+      "linear_vs_fixed_CS",
+      "CS_linear",
+      "CS_fixed"
+    ],
+    [
+      "histgb_vs_fixed_CS",
+      "CS_histgb",
+      "CS_fixed"
+    ],
+    [
+      "linear_vs_fixed_CSV",
+      "CSV_linear",
+      "CSV_fixed"
+    ],
+    [
+      "histgb_vs_fixed_CSV",
+      "CSV_histgb",
+      "CSV_fixed"
+    ],
+    [
+      "linear_vs_fixed_CSVT",
+      "CSVT_linear",
+      "CSVT_fixed"
+    ],
+    [
+      "histgb_vs_fixed_CSVT",
+      "CSVT_histgb",
+      "CSVT_fixed"
+    ],
+    [
+      "linear_vs_fixed_CSVH",
+      "CSVH_linear",
+      "CSVH_fixed"
+    ],
+    [
+      "histgb_vs_fixed_CSVH",
+      "CSVH_histgb",
+      "CSVH_fixed"
+    ],
+    [
+      "linear_vs_fixed_CSVHT",
+      "CSVHT_linear",
+      "CSVHT_fixed"
+    ],
+    [
+      "histgb_vs_fixed_CSVHT",
+      "CSVHT_histgb",
+      "CSVHT_fixed"
+    ],
+    [
+      "T_given_CSV_linear",
+      "CSVT_linear",
+      "CSV_linear"
+    ],
+    [
+      "T_given_CSVH_linear",
+      "CSVHT_linear",
+      "CSVH_linear"
+    ],
+    [
+      "T_given_CSV_histgb",
+      "CSVT_histgb",
+      "CSV_histgb"
+    ],
+    [
+      "T_given_CSVH_histgb",
+      "CSVHT_histgb",
+      "CSVH_histgb"
+    ],
+    [
+      "T_given_CS_linear",
+      "CST_linear",
+      "CS_linear"
+    ],
+    [
+      "T_given_V_CS_fusion",
+      "V_CST_fusion",
+      "V_CS_fusion"
+    ],
+    [
+      "T_given_CSH_linear",
+      "CSHT_linear",
+      "CSH_linear"
+    ],
+    [
+      "T_given_V_CSH_fusion",
+      "V_CSHT_fusion",
+      "V_CSH_fusion"
+    ],
+    [
+      "fusion_vs_concat_CSV",
+      "V_CS_fusion",
+      "CSV_linear"
+    ],
+    [
+      "fusion_vs_V_CS",
+      "V_CS_fusion",
+      "V_linear"
+    ],
+    [
+      "fusion_vs_concat_CSVT",
+      "V_CST_fusion",
+      "CSVT_linear"
+    ],
+    [
+      "fusion_vs_V_CST",
+      "V_CST_fusion",
+      "V_linear"
+    ],
+    [
+      "fusion_vs_concat_CSVH",
+      "V_CSH_fusion",
+      "CSVH_linear"
+    ],
+    [
+      "fusion_vs_V_CSH",
+      "V_CSH_fusion",
+      "V_linear"
+    ],
+    [
+      "fusion_vs_concat_CSVHT",
+      "V_CSHT_fusion",
+      "CSVHT_linear"
+    ],
+    [
+      "fusion_vs_V_CSHT",
+      "V_CSHT_fusion",
+      "V_linear"
+    ]
+  ],
+  "variant_scores": {
+    "complex_traits": {
+      "filename": "complex_traits_nt_llr.parquet",
+      "sha256": "b7180623654f41961c6997b1ff8d1002091cc62ddb4c264acac26ddab73d5187",
+      "publisher_path": "complex_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+    },
+    "mendelian_traits": {
+      "filename": "mendelian_traits_nt_llr.parquet",
+      "sha256": "8c88e183115bbe05c7dec777a1155d62531985f60b481acbc4e914970446f3fd",
+      "publisher_path": "mendelian_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+    }
+  },
+  "author_code_commit": "4d80fe889415ffc02d45c7cb5446a326288819bd",
+  "author_model": "InstaDeepAI/nucleotide-transformer-2.5b-multi-species",
+  "score_provenance": "Exact published score files pinned by dataset revision and LFS SHA-256. Source rule reads original test.parquet and writes predictions in source order. Files have positional indices, not genomic IDs; alignment relies on this published contract. Model-weight revision and exact original runtime are not recorded by the author code.",
+  "selected_probe": {
+    "linear_inputs": [
+      "variant_llr",
+      "coordinate_plus_frozen_sequence_fm",
+      "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+      "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+    ],
+    "histgb_inputs": [
+      "variant_llr",
+      "coordinate_plus_frozen_sequence_fm",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+    ],
+    "C_grid": [
+      0.0001,
+      0.001,
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "mixture_weights": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "histgb": {
+      "learning_rate": 0.05,
+      "max_iter": 150,
+      "max_leaf_nodes": 7,
+      "min_samples_leaf": 20,
+      "l2_regularization": 1.0,
+      "max_bins": 255
+    },
+    "outputs": {
+      "V_linear": {
+        "estimator": "linear",
+        "input": "variant_llr"
+      },
+      "CS_linear": {
+        "estimator": "linear",
+        "input": "coordinate_plus_frozen_sequence_fm"
+      },
+      "CST_linear": {
+        "estimator": "linear",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm"
+      },
+      "CSH_linear": {
+        "estimator": "linear",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+      },
+      "CSHT_linear": {
+        "estimator": "linear",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm"
+      },
+      "CSV_linear": {
+        "estimator": "linear",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+      },
+      "CSVT_linear": {
+        "estimator": "linear",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm"
+      },
+      "CSVH_linear": {
+        "estimator": "linear",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+      },
+      "CSVHT_linear": {
+        "estimator": "linear",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+      },
+      "V_fixed": {
+        "estimator": "fixed",
+        "input": "variant_llr"
+      },
+      "CS_fixed": {
+        "estimator": "fixed",
+        "input": "coordinate_plus_frozen_sequence_fm"
+      },
+      "CSV_fixed": {
+        "estimator": "fixed",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+      },
+      "CSVT_fixed": {
+        "estimator": "fixed",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm"
+      },
+      "CSVH_fixed": {
+        "estimator": "fixed",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+      },
+      "CSVHT_fixed": {
+        "estimator": "fixed",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+      },
+      "V_histgb": {
+        "estimator": "histgb",
+        "input": "variant_llr"
+      },
+      "CS_histgb": {
+        "estimator": "histgb",
+        "input": "coordinate_plus_frozen_sequence_fm"
+      },
+      "CSV_histgb": {
+        "estimator": "histgb",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+      },
+      "CSVT_histgb": {
+        "estimator": "histgb",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm"
+      },
+      "CSVH_histgb": {
+        "estimator": "histgb",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+      },
+      "CSVHT_histgb": {
+        "estimator": "histgb",
+        "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+      },
+      "V_CS_fusion": {
+        "estimator": "fusion",
+        "variant_input": "variant_llr",
+        "locus_input": "coordinate_plus_frozen_sequence_fm"
+      },
+      "V_CST_fusion": {
+        "estimator": "fusion",
+        "variant_input": "variant_llr",
+        "locus_input": "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm"
+      },
+      "V_CSH_fusion": {
+        "estimator": "fusion",
+        "variant_input": "variant_llr",
+        "locus_input": "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+      },
+      "V_CSHT_fusion": {
+        "estimator": "fusion",
+        "variant_input": "variant_llr",
+        "locus_input": "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm"
+      }
+    }
+  },
+  "feature_max_iter": {
+    "V_linear": 4000,
+    "CS_linear": 4000,
+    "CST_linear": 4000,
+    "CSH_linear": 4000,
+    "CSHT_linear": 4000,
+    "CSV_linear": 4000,
+    "CSVT_linear": 4000,
+    "CSVH_linear": 4000,
+    "CSVHT_linear": 4000,
+    "V_fixed": 4000,
+    "CS_fixed": 4000,
+    "CSV_fixed": 4000,
+    "CSVT_fixed": 4000,
+    "CSVH_fixed": 4000,
+    "CSVHT_fixed": 4000,
+    "V_histgb": 150,
+    "CS_histgb": 150,
+    "CSV_histgb": 150,
+    "CSVT_histgb": 150,
+    "CSVH_histgb": 150,
+    "CSVHT_histgb": 150,
+    "V_CS_fusion": 4000,
+    "V_CST_fusion": 4000,
+    "V_CSH_fusion": 4000,
+    "V_CSHT_fusion": 4000
+  },
+  "selection_rule": "Max validation raw-probability AUPRC; exact ties prefer smaller C or larger V mixture weight. Calibration and classification threshold use validation only."
+}
