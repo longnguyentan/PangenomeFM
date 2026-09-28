@@ -96,3 +96,39 @@ Whole-graph NT completion and component-context preparation establish input
 coverage, not biological improvement.
 
 See `../../docs/MANUSCRIPT_EVIDENCE_AUDIT_20260928.md` for the change/evidence audit.
+
+## NMI exemplar writing pass
+
+The current revision also uses the four supplied NMI papers as structural
+examples. Results now follow method rationale, known SV types, regulatory reuse,
+trained/random attribution and external limits. The complete H/random table is
+main Table 2; the original reconstruction plot is Supplementary Fig. S1. There
+are four main figures and two main tables. Numerical evidence and figure assets
+are unchanged. See `../../docs/NMI_STRUCTURE_REVISION_20260928.md` for the
+page-anchored review and the movement map.
+
+All 118 original attached-LaTeX comment occurrences are restored in the included
+comment-only `editorial_comment_archive.tex`. Existing inline comments remain;
+new editorial rationale uses `% Long Note:`. Verify preservation with:
+
+```bash
+/opt/anaconda3/bin/python manuscript/revision_20260924/check_editorial_comments.py
+```
+
+`nmi_revision_provenance.json` records this pass separately from the prior
+method-focused provenance. Both records describe writing revisions, not new model
+results. Rebuild the same stable output PDF using the commands above.
+
+## Comment completion and the open editor
+
+The latest supplied 13 request groups have local `% Long Note:` dispositions:
+12 Done, with R08 explicitly evidence-open for actual genotyping improvement.
+All 38 original groups also have status responses in the included comment archive.
+See `../../docs/LATEX_COMMENT_COMPLETION_20260928.md` for the current checklist.
+
+The pdfLaTeX compression primitive is now engine-guarded. The native standalone
+compiler proceeds past that error but cannot load companion project files. The
+current source was checked with full-project draft-mode TeX, producing no new PDF.
+The existing output PDF is the preceding NMI-writing snapshot; it is not a render
+of the subsequent small prose/comment edits. The current editor remains open.
+`comment_resolution_provenance.json` distinguishes these verification states.

@@ -1,0 +1,77 @@
+{
+  "date": "2026-09-28",
+  "base_commit": "3e1032c34c7ced0477b4fd40c28bf67f8166190f",
+  "scope": "NMI exemplar-informed editorial revision. No new measurements or partial experiments imported.",
+  "inputs": [
+    {
+      "example": 1,
+      "title": "Task-structured modularity emerges in artificial networks and aligns with brain architecture",
+      "path": "/Users/longnguyentan/Downloads/[NMI] Example 1 - s42256-026-01306-9.pdf",
+      "doi": "10.1038/s42256-026-01306-9",
+      "sha256": "b18277137d7e656959ebdb86d5257ad9d6c966cfc1b297fe647fc26037200d32",
+      "bytes": 14390052,
+      "pages": 15
+    },
+    {
+      "example": 2,
+      "title": "Guiding large language models to predict edit sequences for molecular synthesizability optimization",
+      "path": "/Users/longnguyentan/Downloads/[NMI] Example 2 - s42256-026-01304-x.pdf",
+      "doi": "10.1038/s42256-026-01304-x",
+      "sha256": "b19319a3afae0d3cdffc25c891a3c5dcaba1ed94e20dafb5c073879d527a6214",
+      "bytes": 2630655,
+      "pages": 14
+    },
+    {
+      "example": 3,
+      "title": "Causal evidence that language models use confidence to drive behaviour",
+      "path": "/Users/longnguyentan/Downloads/[NMI] Example 3 - s42256-026-01293-x.pdf",
+      "doi": "10.1038/s42256-026-01293-x",
+      "sha256": "492fc4414c7c9da5a2081dbe3a3f0d95ba4f2d12910a312bfb04eed59a974eff",
+      "bytes": 6418433,
+      "pages": 23
+    },
+    {
+      "example": 4,
+      "title": "NucleicBERT interprets RNA sequence space through self-supervised language modelling",
+      "path": "/Users/longnguyentan/Downloads/[NMI] Example 4 - s42256-026-01295-9.pdf",
+      "doi": "10.1038/s42256-026-01295-9",
+      "sha256": "6fa42c184362947752a76c824bcb0a86b138069233fcbfa6a3d3c15293b753d1",
+      "bytes": 5895562,
+      "pages": 19
+    }
+  ],
+  "counts": {
+    "abstract_words_texcount": 148,
+    "main_narrative_words_excluding_headers_captions_methods_texcount": 2125,
+    "previous_main_narrative_words": 2428,
+    "main_figures": 4,
+    "main_tables": 2,
+    "supplement_figures": 5,
+    "supplement_tables": 13,
+    "main_bibliography_entries": 25,
+    "supplement_bibliography_entries": 8,
+    "original_comment_occurrences_preserved": 118,
+    "baseline_comment_occurrences_preserved_in_own_files": 23,
+    "long_note_blocks_outside_archive": 16
+  },
+  "output": {
+    "path": "output/pdf/PangenomeFM_working_revision_20260928.pdf",
+    "sha256": "6f8bf16399e36af24ebba4eb86bd0068a962ab9699b03aabfbb7b4d7b7d8ed99",
+    "bytes": 596793,
+    "pages": 32
+  },
+  "validation": {
+    "latex": "latexmk with existing local TeX; zero warnings, unresolved references or box warnings",
+    "visual": "All 32 pages reviewed; changed Discussion and supplementary citation pages rechecked after final repair.",
+    "comments": "check_editorial_comments.py --verify-git-baseline passed; mutation checks reject deletion, whitespace alteration, active archive TeX and disabled archive input.",
+    "numerical_evidence": "Six generated row files equal pinned base byte for byte; source snapshots and paired arithmetic validated by existing builder.",
+    "figures": "All tracked PDF/SVG figure assets equal pinned base byte for byte.",
+    "citations": "Supplementary inline S prefixes now match separate S-numbered bibliography; main citation numbering unchanged by that fix.",
+    "python": "Ruff and py_compile pass for comment checker.",
+    "intentional_whitespace": "One original comment trailing space at attachment line 265 is preserved verbatim; current archive line 209."
+  },
+  "subsequent_revision": {
+    "record": "comment_resolution_provenance.json",
+    "note": "Saved source now contains follow-up comment statuses, small prose clarifications and an engine guard. The output PDF above is the preceding fully rendered snapshot."
+  }
+}

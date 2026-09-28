@@ -1,5 +1,11 @@
 # Response to every supplied LaTeX comment — 28 September 2026
 
+> **Current status:** see [the completion checklist](LATEX_COMMENT_COMPLETION_20260928.md).
+> Every original group now has an explicit `% Long Note:` disposition in the source
+> archive. This detailed ledger records the preceding method-focused pass; its old
+> section names/page counts are historical. The latest native-editor compilation
+> limitation and non-PDF validation are recorded in the completion checklist.
+
 ## Scope and version control
 
 Source: [the supplied LaTeX attachment](</Users/longnguyentan/.codex/attachments/ae853bc4-a996-4af1-a000-dbf9e8155c44/Pasted text.txt>).

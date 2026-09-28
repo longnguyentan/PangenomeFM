@@ -1,0 +1,448 @@
+% Long Note: Original attachment comments are preserved verbatim below, including resolved and superseded requests.
+% Long Note: Original line anchors identify the supplied attachment; these comments do not replace the current manuscript.
+% Long Note: Dispositions and new editorial responses remain beside the relevant current text and in the comment-response audit.
+
+% Long Note: Original attachment line 3.
+% Prevent pdflatex object-stream overflow with complex vector figures.
+% Long Note: Done [T01]. Original compression workaround retained with an engine guard;
+% native multiproject compilation is checked separately.
+
+% Long Note: Original attachment line 27.
+% Uncomment if line numbers are required.
+
+% Long Note: Original attachment line 28.
+% \usepackage[mathlines]{lineno}\linenumbers
+% Long Note: Done [T02]. Optional line-numbering switch retained, not activated without a
+% submission requirement.
+
+% Long Note: Original attachment line 44.
+% \titleformat{\section}{\large\bfseries}{\thesection.}{0.6em}{}
+
+% Long Note: Original attachment line 45.
+% \titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.6em}{}
+% Long Note: Done [T03]. Commented formatting alternatives retained; active headings are
+% unnumbered.
+
+% Long Note: Original attachment line 58.
+%
+% Long Note: Done [T04]. Macro whitespace-control comment retained.
+
+% Long Note: Original attachment line 71.
+% Nature Machine Intelligence
+% Long Note: Done [T05]. Venue/style note retained; no acceptance claim is inferred.
+
+% Long Note: Original attachment line 75.
+% Pangenome Foundation Model capture
+% Long Note: Done [T06]. Title scopes the contribution to topology-native representation
+% learning.
+
+% Long Note: Original attachment line 76.
+% Need to add HGSVC and HPRC to the author list
+
+% Long Note: Original attachment line 82.
+% HGSVC, HPRC,
+% Long Note: Author input needed [A01]. Exact approved consortium author wording, membership
+% and approval are unavailable.
+
+% Long Note: Original attachment line 101.
+% NEW STRUCTURES
+
+% Long Note: Original attachment line 103.
+% Title
+
+% Long Note: Original attachment line 104.
+% Abstract
+
+% Long Note: Original attachment line 106.
+% Introduction
+
+% Long Note: Original attachment line 108.
+% Results
+
+% Long Note: Original attachment line 109.
+%   1. Graph-native representations add complementary information to regulatory-element prediction
+
+% Long Note: Original attachment line 110.
+%   2. Graph-native representations contribute strongly to structural-variant breakpoint classification
+
+% Long Note: Original attachment line 111.
+%   3. Frozen graph representations generalize across chromosomes and transfer across pangenome resources
+
+% Long Note: Original attachment line 112.
+%   4. Neighborhood context distinguishes learned graph representations from degree-based shortcuts
+
+% Long Note: Original attachment line 114.
+% Discussion
+
+% Long Note: Original attachment line 116.
+% Methods
+
+% Long Note: Original attachment line 117.
+%   Pangenome resources and graph preparation
+
+% Long Note: Original attachment line 118.
+%   Masked graph-connection pretraining
+
+% Long Note: Original attachment line 119.
+%   PangenomeFM architecture
+
+% Long Note: Original attachment line 120.
+%   Strict and one-hop graph context
+
+% Long Note: Original attachment line 121.
+%   Chromosome-held-out evaluation
+
+% Long Note: Original attachment line 122.
+%   Cross-resource and cross-release transfer
+
+% Long Note: Original attachment line 123.
+%   Sequence embeddings and downstream classifiers
+
+% Long Note: Original attachment line 124.
+%   Baselines, ablations and capacity
+
+% Long Note: Original attachment line 125.
+%   Statistical analysis
+
+% Long Note: Original attachment line 126.
+%   Exploratory path/QTL/GWAS analyses
+
+% Long Note: Original attachment line 128.
+% Data availability
+
+% Long Note: Original attachment line 129.
+% Code availability
+
+% Long Note: Original attachment line 130.
+% Acknowledgements
+
+% Long Note: Original attachment line 131.
+% Funding
+
+% Long Note: Original attachment line 132.
+% Author contributions
+
+% Long Note: Original attachment line 133.
+% References
+
+% Long Note: Original attachment line 135.
+% Supplementary Information
+% Long Note: Done [T07]. Historical outline retained as comments; the revised method-led
+% structure supersedes its ordering.
+
+% Long Note: Original attachment line 146.
+% Structure: biological representation problem --> graph-native idea --> cCRE --> SV --> generalization --> control --> scoped conclusion
+% Long Note: Done [T08]. Abstract revised around the representation problem, design, evidence
+% and attribution limit.
+
+% Long Note: Original attachment line 153.
+% Long and Tomoya, here are what I think about the layout of the introduction: representation of DNA sequences and human genomes (linear->graph - capturing diversity, complex variations and regions), existing DNA foundation models and their applications (this can be swapped to the beginning of this session), the need of non-linear/graph representation of genomes and foundation models  to capture information in graph genomes or pangnomes, previous efforts of building pangenome foundation models and what they lack of, -> introduce pangenomeFM, improvement over previous work, applications of using pangenomeFM for downstream tasks.
+% Long Note: Done [S01]. Introduction progression implemented; R01.
+% Long Note: Done [R01]. Introduction follows the six-paragraph representation-to-method
+% progression; see sec:intro.
+
+% Long Note: Original attachment line 157.
+% Long, the following paper should be cited (add other related papers if any) to stress the importance of using graph genomes for functional genomics analysis
+
+% Long Note: Original attachment line 158.
+% https://www.nature.com/articles/s41467-026-73663-3
+% Long Note: Done [S02]. Requested functional-genomics citation verified; R02.
+% Long Note: Done [R02]. Macias-Velasco et al. is cited with DOI 10.1038/s41467-026-73663-3;
+% its genome/pipeline scope is stated accurately.
+
+% Long Note: Original attachment line 161.
+% [LONG NOTE]
+
+% Long Note: Original attachment line 162.
+% Para 1: linear to graph: what linear has, what it loses, and why graph could enable the diversity
+
+% Long Note: Original attachment line 163.
+% Para 2: why the representation matters in biology
+
+% Long Note: Original attachment line 164.
+% para 3: talks about the DNA foundation models (DNABERT,etc.)
+
+% Long Note: Original attachment line 165.
+% para 4: talks about pangenome topology features which sequence tokens do not present/have
+
+% Long Note: Original attachment line 166.
+% para 5: previous work & gaps (DeepGene, PangenomeX, etc.)
+
+% Long Note: Original attachment line 167.
+% para 6: introduce PangenomeFM + evidence/result (main generalization, etc.)
+% Long Note: Done [S03]. Six-paragraph outline implemented in sec:intro.
+
+% Long Note: Original attachment line 172.
+% Intro should start with the representation of human genomes, genetic variation should be mentioned later
+% Long Note: Done [S04]. Representation-first opening retained; R03.
+% Long Note: Done [R03]. The Introduction opens with human-genome representation and
+% coordinate systems before discussing variation.
+
+% Long Note: Original attachment line 183.
+% Long, the layout looks more like a CS paper, we need to change it to the format of Nature Machine Intelligence or Nature Methods (check some recent papers in those journals and follow their layout)
+% Long Note: Done [S05]. NMI examples reviewed and structure revised; R04.
+% Long Note: Done [R04]. All four supplied NMI examples informed the method-led structure;
+% four main figures and two main tables retain key controls.
+
+% Long Note: Original attachment line 187.
+% Long, this figure should be cited in Introduction, where you can merge the current related work and background into Introduction
+% Long Note: Done [S06]. Paradigm figure cited in integrated Introduction; R05.
+% Long Note: Done [R05]. The Introduction integrates background/prior work and cites
+% fig:paradigms; no separate Related Work section is needed.
+
+% Long Note: Original attachment line 190.
+% TODO(figure): redesign with keyword-only labels. End each paradigm at
+
+% Long Note: Original attachment line 191.
+% its learned output; explain downstream reuse in the caption rather than a
+
+% Long Note: Original attachment line 192.
+% PangenomeFM-only output column.
+% Long Note: Done [T09]. Parallel output figure redesigned and verified; R06.
+% Long Note: Done [R06]. The redesigned keyword-led paradigm figure ends every row at its
+% learned representation; reuse is explained in the caption.
+
+% Long Note: Original attachment line 264.
+% Long, add results on predicting cCREs and ENCODE data?
+
+% Long Note: Original attachment line 265.
+% add citation of this paper 
+
+% Long Note: Original attachment line 266.
+% https://www.nature.com/articles/s41467-026-73663-3
+% Long Note: Done [S07]. cCRE/ENCODE result and requested citation retained; R07/R02.
+
+% Long Note: Original attachment line 268.
+% cCRE is now the first standalone Result. The existing binary cCRE
+
+% Long Note: Original attachment line 269.
+% result is included below. TODO(new analysis): if ENCODE class labels are cleanly
+
+% Long Note: Original attachment line 270.
+% recoverable, add PLS/pELS/dELS/CTCF-only stratification and/or topology gain by
+
+% Long Note: Original attachment line 271.
+% local graph/variant complexity. Do not assume which class benefits most.
+% Long Note: Done [R07]. Binary cCRE, PLS/pELS/dELS/CTCF-only and fixed complexity strata are
+% reported in sec:ccre-result. The old first-Result placement is superseded by the
+% method-first order.
+
+% Long Note: Original attachment line 282.
+% TODO(new analysis): add cCRE class / complexity stratification here if completed.
+
+% Long Note: Original attachment line 283.
+% Recommended tests: PLS, pELS, dELS, CTCF-only; and/or low/medium/high local
+
+% Long Note: Original attachment line 284.
+% graph complexity using thresholds fixed independently of model performance.
+% Long Note: Done [S08]. Four subclasses and fixed complexity strata reported; R07.
+
+% Long Note: Original attachment line 285.
+% Optional biological vignette: one transparently selected locus with graph,
+
+% Long Note: Original attachment line 286.
+% annotation track, and predictions; avoid selecting solely by maximal gain.
+% Long Note: Optional, not done [S09]. No selected-locus vignette is claimed; it needs
+% verified tracks, predictions and a predeclared selection rule.
+
+% Long Note: Original attachment line 320.
+% Keep this table:
+
+% Long Note: Original attachment line 321.
+% For final NMI submission, consider moving the table to Supplementary once the
+
+% Long Note: Original attachment line 322.
+% standalone biological figures carry these values clearly.
+% Long Note: Done [T10]. Primary numerical table preserved in Supplement; main biological
+% figures retain its outcomes.
+
+% Long Note: Original attachment line 343.
+% Is it possible to improve SV genotyping (especially in complex and copy number variant regions)?
+% Long Note: Evidence open [M01]. Genotyping assessment answered, but improved calls are not
+% established; R08.
+% Long Note: Evidence open [R08]. The genotyping question is answered by the completed COSIGT
+% assessment, but improved genotype calls, especially complex/CNV calls, are NOT
+% demonstrated. Quality prediction is not genotype-concordance improvement; see
+% sec:generalization-result.
+
+% Long Note: Original attachment line 373.
+% Long, this subsection title is too cs/graph-heavy, we need to rephrase
+% Long Note: Done [S10]. Heading revised without unsupported learned-neighborhood inference;
+% R09.
+% Long Note: Done [R09]. The heading now reads Structural information and pretraining make
+% different contributions; no neighborhood-learning superiority is assumed.
+
+% Long Note: Original attachment line 381.
+% TODO: because the degree-baseline values differ between strict and one-hop
+
+% Long Note: Original attachment line 382.
+% analyses, state explicitly whether node degree was recomputed after context expansion.
+
+% Long Note: Original attachment line 383.
+% HIGH PRIORITY CONTROL: recompute degree sum / preferential attachment on the
+
+% Long Note: Original attachment line 384.
+% actual expanded one-hop graph visible to the baseline. Do not strengthen the
+
+% Long Note: Original attachment line 385.
+% "neighborhood organization" claim until this control is verified.
+
+% Long Note: Original attachment line 410.
+% Long, I feel that the first (or the first two) subsessions should be dedicated to novel components of PangenomeFM (and highlight those key components)
+% Long Note: Done [S11]. Method components lead Results and Methods; R10.
+% Long Note: Done [R10]. The first Results section explains the design; Methods begins with
+% representation/coupled encoder, objective/optimization and frozen reuse.
+% Established components are attributed.
+
+% Long Note: Original attachment line 416.
+% Long, specify how many graph genomes, etc.
+% Long Note: Partial, evidence open [S12]. Graph/cache and path-resource counts specified;
+% exact donor provenance of the SV-resolution training graph remains unverified.
+
+% Long Note: Original attachment line 431.
+% TODO(authors): state the connected:unconnected sampling ratio and the resulting
+
+% Long Note: Original attachment line 432.
+% chance-level AUPRC. This is needed to interpret values such as 0.5997.
+
+% Long Note: Original attachment line 448.
+% TODO: specify the implemented gate function, pair-scoring architecture,
+
+% Long Note: Original attachment line 449.
+% and the exact focal/class-adaptive form of w_{uv}; these are required for reproducibility.
+
+% Long Note: Original attachment line 450.
+% Suggested final wording must be copied from the actual archived code/config, not inferred.
+% Long Note: Done [M04]. Shared-state gate, ordered scorer and exact adopted focal loss
+% specified.
+
+% Long Note: Original attachment line 458.
+% We may need to talk about loss functions and optimization in PangenomFM
+% Long Note: Done [M05]. Loss and optimization specified; R11.
+% Long Note: Done [R11]. sec:objective specifies the ordered scorer, exact focal loss and
+% class weighting, AdamW, schedule, clipping and stopping criteria.
+
+% Long Note: Original attachment line 480.
+% TODO(authors): once the class ratio is added above, report the corresponding
+
+% Long Note: Original attachment line 481.
+% chance AUPRC here and add it as a reference line to the generalization figure.
+% Long Note: Done [M03]. Prevalence/chance levels and reference line reported; actual
+% context-specific ratios distinguished.
+
+% Long Note: Original attachment line 487.
+% TODO(authors): state exactly which graph is used to compute degree under each
+
+% Long Note: Original attachment line 488.
+% context. Recompute degree on the expanded one-hop graph if this was not done in
+
+% Long Note: Original attachment line 489.
+% the original baseline. The main-text interpretation must be updated if the
+
+% Long Note: Original attachment line 490.
+% strict-to-one-hop reversal changes after this fair control.
+% Long Note: Done [M02]. Visible-graph baseline replay verified; historical masking
+% limitations remain explicit.
+
+% Long Note: Original attachment line 493.
+% TODO(authors): give the numeric cutoffs used to define the three complexity strata
+
+% Long Note: Original attachment line 494.
+% and the number of regions/examples in each stratum.
+
+% Long Note: Original attachment line 497.
+% TODO(authors): the principal configuration (48/2) is not part of this sweep, and the
+
+% Long Note: Original attachment line 498.
+% 96/4 setting reports higher strict AUPRC than the principal HPRC R2 model. Preferably
+
+% Long Note: Original attachment line 499.
+% run 48/2 under the exact diagnostic sweep protocol; otherwise state explicitly why
+
+% Long Note: Original attachment line 500.
+% the sweep and the main runs are not directly comparable.
+
+% Long Note: Original attachment line 508.
+% Tomoya and Long, These results should be included as a separate subsection in Results, including detailed interpretations of these results,
+
+% Long Note: Original attachment line 509.
+% RECONCILED IN THIS REVISION: the scientifically relevant coverage/truncation result
+
+% Long Note: Original attachment line 510.
+% is summarized in the first biological Results section; detailed QC remains here
+
+% Long Note: Original attachment line 511.
+% and in Supplementary so it does not consume one of the <=5 headline Results sections.
+% Long Note: Done [S13]. Dedicated coverage/truncation Results heading and interpretation;
+% R12.
+% Long Note: Done [R12]. A dedicated sequence-coverage Results subsubsection reports full
+% segment coverage and 26.3 percent end sampling, with detailed QC in the
+% supplement.
+
+% Long Note: Original attachment line 516.
+% TODO: name the downstream classifier family and its hyperparameters,
+
+% Long Note: Original attachment line 517.
+% regularization, model-selection procedure, and whether any threshold tuning used
+
+% Long Note: Original attachment line 518.
+% validation chromosomes only.
+% Long Note: Done [M08]. Original and later probe settings and validation-only selection
+% distinguished.
+
+% Long Note: Original attachment line 520.
+% TODO: clarify whether 60,685 applies to each split or to validation and
+
+% Long Note: Original attachment line 521.
+% test combined. Do not leave this ambiguous in the submission version.
+% Long Note: Done [M09]. cCRE validation and test counts explicitly apply to each split.
+
+% Long Note: Original attachment line 526.
+% TODO: clarify whether 34,781 applies to each split or to validation and
+
+% Long Note: Original attachment line 527.
+% test combined.
+% Long Note: Done [M10]. INS/DEL validation and test counts explicitly apply to each split.
+
+% Long Note: Original attachment line 552.
+% TODO: state the actual experimental reason the QTL overlap analysis was
+
+% Long Note: Original attachment line 553.
+% restricted to chr8 (for example, source-data availability or pilot scope). Do NOT
+
+% Long Note: Original attachment line 554.
+% use an unrelated chr8 literature example as a post-hoc justification.
+% Long Note: Done [M11]. Actual chromosome-8 pilot scope stated without a post-hoc biological
+% rationale.
+
+% Long Note: Original attachment line 567.
+% Long, please prepare a github under shilab repo for your code, should we share the pretrained model there or huggingface etc.?
+% Long Note: Author input needed [A02]. Current repository disclosed; Shi-lab destination,
+% release license and checkpoint hosting remain unconfirmed.
+
+% Long Note: Original attachment line 574.
+% acknowledge NHGRI U24 and NIGMS R01 for funding
+% Long Note: Author input needed [A03]. Exact grant award numbers, recipients and required
+% acknowledgement wording remain unconfirmed.
+
+% Long Note: Original attachment line 588.
+% Long, Supplementary information should read like a manuscript, including its own sessions, text, figures, tables, and references
+% Long Note: Done [S14]. Supplement has its own narrative and references; R13.
+% Long Note: Done [R13]. The supplement has its own narrative sections, figures, tables and
+% S-numbered references; in-text S labels now match its bibliography.
+
+% Long Note: Original attachment line 689.
+% TODO(authors): give exact graph-complexity thresholds and counts here once recovered.
+% Long Note: Done [M06]. Six-component complexity definition, fixed cutoffs and region counts
+% supplied.
+
+% Long Note: Original attachment line 694.
+% TODO(authors): the principal 48/2 configuration is not included in this sweep.
+
+% Long Note: Original attachment line 695.
+% Preferably add the exact 48/2 diagnostic run; otherwise explain why these rows
+
+% Long Note: Original attachment line 696.
+% are not directly comparable with the principal HPRC R2 experiment.
+% Long Note: Done [M07]. Archived matched 48/2 evidence recovered; fold-pooled versus
+% window-mean distinction stated.

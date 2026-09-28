@@ -1,12 +1,13 @@
 % Completed evidence only; source table snapshots and hashes accompany this file.
-\subsubsection{An explicit three-class extension retains uncertain inversion effects}
+% Long Note: Keep the controlled multiclass result in main text. Run counts,
+% convergence/replay receipts and the full common-support sensitivity belong in
+% the supplement; the uncertain inversion and absent random arm stay explicit.
+\subsubsection{A three-class extension tests whether the signal persists beyond INS/DEL}
 \label{sec:sv-type-extension}
 
-We extended known-event classification to INS, DEL and INV using a common first-affected-base anchor, separate from the historical two-endpoint INS/DEL representation. The natural-frequency analysis retained all 174,267 primary-chromosome events: 110,623 INS, 63,346 DEL and 298 INV. These are frequencies within the ascertained HGSVC3 callset, not population SV frequencies. All 30 fold/seed/context runs and 1,170 feature/class evaluations converged and their saved metrics replayed. The unchanged frozen v1 representation $T$ increased macro one-versus-rest AP from 0.406955 to 0.474012 under strict context and 0.458608 under one-hop context. After measured event log length $L$ and the 14 graph-statistic features $H$, the paired gains were 0.047664 (\CI 0.039885--0.055252) and 0.014988 (0.007719--0.021421), respectively (\cref{tab:sv-natural}).
+We extended known-event classification to INS, DEL and INV using a common first-affected-base anchor, distinct from the historical two-endpoint INS/DEL representation. The natural-frequency analysis retained all 174,267 primary-chromosome events, including 298 inversions. Frozen $T$ increased macro one-versus-rest AP from 0.4070 to 0.4740 strict and 0.4586 one-hop. After measured event log length $L$ and 14 graph-statistic features $H$, gains remained 0.0477 (\CI 0.0399--0.0553) and 0.0150 (0.0077--0.0214), respectively (\cref{tab:sv-natural}).
 
-The macro result does not resolve the rare inversion endpoint. After $C+S+L+H$, INV gains were 0.015190 (\CI $-0.004323$ to 0.036473) strict and $-0.001538$ ($-0.019657$ to 0.011729) one-hop. Length was particularly informative for INV, and both adjusted intervals span zero. The macro contrasts had exact fold sign-flip $p=0.0625$ and within-metric Benjamini--Hochberg $q=0.0741$; positive pointwise bootstrap intervals are therefore not multiplicity-controlled confirmation.
-
-A separately completed common-support sensitivity retained 223 events per class, with equal one-versus-rest prevalence of one third. Its macro gains beyond $C+S$ were 0.023644 strict and 0.026716 one-hop, but $H$ was stronger than $T$ alone and both $T$-after-$H$ intervals spanned zero (\cref{tab:s-sv-matched}). Differences between these populations are not improvements in model weights. Neither SV-type experiment contains a matched random-encoder arm, performs SV discovery, or measures genotype accuracy.
+This macro result does not establish an inversion-specific benefit: both length- and $H$-adjusted INV intervals included zero. Nor does it isolate pretraining, because the extension has no matched random-encoder arm. A common-support sensitivity with 223 events per class yielded inconclusive $T$-after-$H$ gains (\cref{tab:s-sv-matched}). The natural-frequency macro contrasts had exact fold sign-flip $p=0.0625$ and within-metric BH $q=0.0741$; their positive pointwise bootstrap intervals are not multiplicity-controlled confirmation. All estimates concern an ascertained callset rather than population SV frequencies.
 
 \begin{table}[ht]
 \centering

@@ -2,21 +2,16 @@
 
 The learned-versus-random comparison conditions on the same coordinates, sequence and graph-statistic features. Negative and inconclusive contrasts remain alongside the positive strict INS/DEL result (\cref{tab:s-hr}). The original $C+S+T$ versus $C+S$ contrasts answer a different question and cannot substitute for these controls.
 
-\begin{table}[H]
-\centering
-\caption{\textbf{Original-v1 trained-minus-random controls after $C+S+H$.} Each row uses 15 paired fold/seed runs. Exact sign flips use five seed-averaged fold differences; $q$ is the supplied within-metric BH adjustment. These are exploratory comparisons on previously inspected folds.}
-\label{tab:s-hr}
-\footnotesize
-\begin{tabular}{@{}llrlrr@{}}
-\toprule
-Task & Context & AP difference & 95\% CI & $p$ & $q$ \\
-\midrule
-\csname @@input\endcsname hr_completed_rows.tex
-\bottomrule
-\end{tabular}
-\end{table}
+% Long Note: Example 4 places pretrained/random controls beside primary
+% benchmarks. The full H/R table now appears in the main Results; its values,
+% paired runs, intervals and multiplicity adjustment are unchanged.
+The complete trained-minus-random table is shown in the main Results (\cref{tab:s-hr}), because it directly qualifies the representation claim.
 
+% Long Note: Execution completeness and exact class counts moved from main text.
 \subsection{Matched three-class SV sensitivity}
+
+The natural-frequency extension retained 110,623 INS, 63,346 DEL and 298 INV. All 30 fold/seed/context runs and 1,170 feature/class evaluations converged and their saved metrics replayed. The unchanged original $T$ had macro AP 0.474012 strict and 0.458608 one-hop, compared with $C+S$ 0.406955. Its $T$-after-$C+S+L+H$ increments were 0.047664 and 0.014988; the corresponding adjusted INV increments were 0.015190 (\CI $-0.004323$ to 0.036473) and $-0.001538$ ($-0.019657$ to 0.011729). The main table preserves the exact six-decimal estimates. Neither SV-type experiment contains a matched random-encoder arm.
+
 
 The matched cohort contains 223 events of each type, restricted to equal chromosome/length-bin support. Its macro $C+S$ AP is 0.414145 and $C+S+H$ AP is 0.473760. The latter exceeds $C+S+T$ (0.437789 strict; 0.440860 one-hop), and adding $T$ after $H$ is inconclusive (\cref{tab:s-sv-matched}). This population excludes 75 primary-chromosome inversions lacking matched support; all 298 inversions remain included in the natural-frequency experiment. Absolute AP across these different prevalences and feature constructions should not be used to rank model versions.
 
@@ -75,7 +70,7 @@ These three initializations share one development chromosome block and receive n
 
 \begin{table}[H]
 \centering
-\caption{\textbf{Sequence-conditioned $E$ development controls.} AP values and differences condition on $C+S+H$, using fold-A validation only. All four encoder arms and all three seeds were retained; the table gives the two contrasts discussed in Results. Coordinate-only models have less capacity. Seeds are initializations on the same genomic block, so no chromosome confidence interval is reported.}
+\caption{\textbf{Sequence-conditioned $E$ development controls.} AP values and differences condition on $C+S+H$, using fold-A validation only. All four encoder arms and all three seeds were retained; the table gives the two contrasts discussed above. Coordinate-only models have less capacity. Seeds are initializations on the same genomic block, so no chromosome confidence interval is reported.}
 \label{tab:s-development}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
