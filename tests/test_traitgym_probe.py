@@ -8,7 +8,7 @@ from evaluation.modality_factorial import build_modality_factorial
 from scripts.server.audit_traitgym_coverage import normalize
 from scripts.server.run_ccre_frozen_probe_fold import evaluate_feature_sets
 from tasks.entex.prepare import fingerprint
-from tasks.transfer.traitgym import align_component, validate_examples, weighted_chromosome_ap
+from tasks.transfer.traitgym import align_component, validate_examples, validate_nt_provenance, weighted_chromosome_ap
 from tasks.transfer.traitgym_report import METRICS, replay_run, summarize
 
 
@@ -59,6 +59,27 @@ def test_chromosome_weighting_has_explicit_denominator():
     assert weighted_chromosome_ap(frame) == pytest.approx(.5)
     with pytest.raises(ValueError, match="defined"):
         weighted_chromosome_ap(frame.assign(auprc=[np.nan, .6]))
+
+
+def test_merged_nt_cache_shard_provenance(tmp_path):
+    cfg = json.loads(open("configs/entex_v1.json").read())
+    shard = dict(model_name=cfg["nt_model"], resolved_revision=cfg["nt_revision"],
+        full_segments_sha256=cfg["full_segments_sha256"], maximum_token_length=cfg["nt_max_length"],
+        maximum_raw_bases=cfg["nt_max_bases"], model_parameters_frozen=True, fine_tuned=False,
+        pooling="mean final hidden state over non-special, non-padding tokens")
+    sidecar = tmp_path / "shard_0.npz.audit.json"
+    sidecar.write_text(json.dumps(shard))
+    audit = dict(output_sha256="test", source_shards=[dict(path="/original/shard_0.npz",
+                  audit_sha256=fingerprint(sidecar)["sha256"])])
+    assert len(validate_nt_provenance(tmp_path / "merged.npz", audit, cfg, "test")) == 1
+    with pytest.raises(ValueError, match="checksum"):
+        validate_nt_provenance(tmp_path / "merged.npz", audit, cfg, "modified")
+    sidecar.write_text(json.dumps(dict(shard, fine_tuned=True)))
+    with pytest.raises(ValueError, match="Stale"):
+        validate_nt_provenance(tmp_path / "merged.npz", audit, cfg, "test")
+    audit["source_shards"][0]["audit_sha256"] = fingerprint(sidecar)["sha256"]
+    with pytest.raises(ValueError, match="provenance"):
+        validate_nt_provenance(tmp_path / "merged.npz", audit, cfg, "test")
 
 
 def test_native_probe_replay_and_tamper_detection(tmp_path):

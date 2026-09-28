@@ -89,6 +89,27 @@ def verified_fingerprint(path: Path, expected: str) -> dict:
     return actual
 
 
+def validate_nt_provenance(path: Path, audit: dict, config: dict, output_sha256: str) -> list[dict]:
+    """Follow the manuscript merged cache's per-shard preprocessing receipts."""
+    if audit.get("output_sha256") != output_sha256:
+        raise ValueError("NT cache checksum mismatch")
+    candidates, sources = [audit], []
+    if "source_shards" in audit:
+        candidates = []
+        for shard in audit["source_shards"]:
+            sidecar = path.parent / (Path(shard["path"]).name + ".audit.json")
+            sources.append(verified_fingerprint(sidecar, shard["audit_sha256"]))
+            candidates.append(json.loads(sidecar.read_text()))
+    required = dict(model_name=config["nt_model"], resolved_revision=config["nt_revision"],
+        full_segments_sha256=config["full_segments_sha256"],
+        maximum_token_length=config["nt_max_length"], maximum_raw_bases=config["nt_max_bases"],
+        model_parameters_frozen=True, fine_tuned=False,
+        pooling="mean final hidden state over non-special, non-padding tokens")
+    if not candidates or any(any(a.get(k) != v for k, v in required.items()) for a in candidates):
+        raise ValueError("NT model, preprocessing or frozen-state provenance mismatch")
+    return sources
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--config", type=Path, default=Path("configs/traitgym_locus_prior_20260927.json"))
@@ -147,17 +168,10 @@ def main() -> None:
         ids, values, audit = load_frozen_node_embedding_cache(path)
         source_fp = fingerprint(path)
         sources.extend([source_fp, fingerprint(Path(str(path) + ".audit.json"))])
-        if audit.get("full_segments_sha256") != config["full_segments_sha256"]:
-            raise ValueError("S/H cache graph differs")
         if key == "frozen_sequence_fm":
-            required = dict(model_name=config["nt_model"], resolved_revision=config["nt_revision"],
-                maximum_token_length=config["nt_max_length"], maximum_raw_bases=config["nt_max_bases"],
-                model_parameters_frozen=True, fine_tuned=False,
-                pooling="mean final hidden state over non-special, non-padding tokens",
-                output_sha256=source_fp["sha256"])
-            if any(audit.get(k) != v for k, v in required.items()):
-                raise ValueError("NT model, preprocessing, frozen-state or checksum mismatch")
-        elif audit.get("kind") != "handcrafted_topology_control" or values.shape[1] != 14:
+            sources.extend(validate_nt_provenance(path, audit, config, source_fp["sha256"]))
+        elif (audit.get("kind") != "handcrafted_topology_control" or values.shape[1] != 14
+                or audit.get("full_segments_sha256") != config["full_segments_sha256"]):
             raise ValueError("Expected the existing 14-statistic H control")
         for name, (examples, overlaps) in datasets.items():
             static[name][key] = align_component(examples, overlaps, ids, values)
