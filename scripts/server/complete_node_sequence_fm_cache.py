@@ -42,6 +42,29 @@ def graph_targets(full_segments: Path, cached_ids: np.ndarray,
     return np.asarray(ids if required is None else sorted(required), dtype=np.int64), np.asarray(missing, dtype=np.int64)
 
 
+
+def verify_extension(existing: Path, completed: Path, expected_ids: np.ndarray) -> dict:
+    """Audit serialized values after an append-only cache completion."""
+    with np.load(existing, allow_pickle=False) as old, np.load(completed, allow_pickle=False) as new:
+        old_ids, old_x = old['segid'], old['embeddings']
+        ids, x = new['segid'], new['embeddings']
+        if (not np.array_equal(ids, np.sort(expected_ids)) or len(np.unique(ids)) != len(ids)
+                or len(np.unique(old_ids)) != len(old_ids)):
+            raise ValueError('Completed sequence cache does not contain exact unique target IDs')
+        if (x.ndim != 2 or old_x.ndim != 2 or x.shape != (len(ids), old_x.shape[1])
+                or old_x.shape[0] != len(old_ids) or x.dtype != old_x.dtype or not np.isfinite(x).all()):
+            raise ValueError('Completed sequence cache shape/dtype/finite-value mismatch')
+        index = np.searchsorted(ids, old_ids)
+        if np.any(index >= len(ids)) or not np.array_equal(ids[index], old_ids):
+            raise ValueError('Original sequence IDs absent from completed cache')
+        # Compare bytes so signed zeros and float encodings are also preserved.
+        if x[index].tobytes() != old_x.tobytes():
+            raise ValueError('Original sequence vectors changed during completion')
+        return dict(original_rows=len(old_ids), completed_rows=len(ids), appended_rows=len(ids)-len(old_ids),
+                    dimension=x.shape[1], original_vectors_bitwise_unchanged=True,
+                    all_values_finite=True, exact_target_coverage=True,
+                    existing_sha256=sha256_file(existing), completed_sha256=sha256_file(completed))
+
 def benchmark_targets(full_segments: Path, manifest: Path, context: str) -> tuple[np.ndarray, dict]:
     """Use native unmasked link endpoints, including every chromosome and alternative node."""
     names = pd.read_csv(full_segments, usecols=["name"], dtype={"name": "string"})
@@ -158,7 +181,8 @@ def main() -> None:
                     receipt.update(status="running", active_command=index)
                     save()
                     execute(index, command)
-            receipt.update(status="complete", output=str(complete))
+            receipt.update(status="complete", output=str(complete),
+                           serialized_extension_audit=verify_extension(args.existing_cache, complete, ids))
         except BaseException as error:
             receipt.update(status="cancelled" if isinstance(error, KeyboardInterrupt) else "failed",
                            error=f"{type(error).__name__}: {error}")

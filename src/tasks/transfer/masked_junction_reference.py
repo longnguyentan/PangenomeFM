@@ -5,6 +5,7 @@ import argparse
 import json
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from tasks.transfer.masked_feature_report import compare as validate_masked_matrix
@@ -19,9 +20,14 @@ def compare(candidate: pd.DataFrame, reference: pd.DataFrame, plan: dict) -> pd.
         if len(old)!=4 or old.feature.duplicated().any() or set(old.feature)!={'cs','csh','cst','csht'}:
             raise ValueError('Incomplete unique junction reference')
         all_rows=pd.concat([group,old],ignore_index=True)
-        for key in ['fold','context','targets_sha256','n_train','n_val','n_test','n_evaluated','positive_prevalence','evaluation_partition']:
+        for key in ['fold','context','targets_sha256','n_train','n_val','n_test','n_evaluated','evaluation_partition']:
             if all_rows[key].nunique()!=1:
                 raise ValueError('Junction and masked-feature populations differ')
+        prevalence = all_rows['positive_prevalence'].to_numpy()
+        # Prior report CSV rounds a replayed proportion by one ULP; target hashes
+        # and exact evaluated counts above still establish identical labels.
+        if not np.allclose(prevalence, prevalence[0], rtol=0, atol=1e-15):
+            raise ValueError('Junction and masked-feature prevalence differs')
         for feature in ['cs','csh']:
             if all_rows.loc[all_rows.feature.eq(feature),'scores_sha256'].nunique()!=1:
                 raise ValueError('Junction and masked-feature baseline scores differ')

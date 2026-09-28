@@ -1,5 +1,6 @@
 from itertools import product
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -41,3 +42,10 @@ def test_paired_development_matrix_and_baseline_identity():
     broken.loc[broken.feature.eq('cs'),'scores_sha256']='changed'
     with pytest.raises(ValueError,match='baseline'):
         compare_junction(frame,broken,reference_plan)
+
+    rounded=old.copy()
+    rounded['positive_prevalence']=np.nextafter(.5, 0.)
+    assert len(compare_junction(frame,rounded,reference_plan))==len(paired)
+    rounded['positive_prevalence']=.499
+    with pytest.raises(ValueError,match='prevalence'):
+        compare_junction(frame,rounded,reference_plan)

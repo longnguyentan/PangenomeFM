@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "purpose": "Complete frozen NT coverage for all segments of the existing processed HPRC R2 graph, enabling subsequent complete-bubble context experiments without replacing any benchmark cache.",
+  "graph": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+  "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+  "existing_cache": "results/foundation_evidence_20260927/benchmark_nt_completion/benchmark_nt.npz",
+  "existing_cache_sha256": "9f5015336bd1c0b9c5f81ed98e659e23f498ca28b57e5646d17ce411f93baabe",
+  "expected_graph_segments": 751237,
+  "expected_existing_segments": 479477,
+  "expected_new_segments": 271760,
+  "minimum_free_disk_bytes": 12000000000,
+  "output": "results/foundation_evidence_20260927/whole_graph_nt_completion_20260928",
+  "dependency": "results/foundation_evidence_20260927/masked_feature_full/status.json",
+  "scheduling": "After the complete masked-feature campaign releases all four GPUs; wait while another process uses more than 256 MiB on any assigned GPU. Fail on a failed dependency or after 12 hours waiting.",
+  "gpus": [0, 1, 2, 3],
+  "batch_size": 16,
+  "model": "InstaDeepAI/nucleotide-transformer-v2-50m-multi-species",
+  "revision": "81b29e5786726d891dbf929404ef20adca5b36f1",
+  "preprocessing": "Unchanged manuscript cache contract: maximum 6000 raw bases via balanced ends; 1000 tokens; final-layer non-special-token mean; frozen parameters; offline model reuse.",
+  "validity": "Require exact canonical graph IDs, matching graph/model/preprocessing hashes, finite float32 vectors, and byte-identical preservation of all original serialized vectors. No biological labels used.",
+  "scope": "Representation infrastructure only: no new graph download, no retraining, no biological performance claim, and no substitution into active or completed experiments. Current pathless SV graph remains pathless."
+}

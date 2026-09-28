@@ -181,3 +181,24 @@ def test_merge_rejects_same_model_with_different_preprocessing(tmp_path, monkeyp
                                      "--output", str(tmp_path / "merged.npz")])
     with pytest.raises(ValueError, match="preprocessing contracts differ"):
         merge.main()
+
+
+def test_completed_sequence_cache_preserves_serialized_vectors_and_exact_scope(tmp_path):
+    from scripts.server.complete_node_sequence_fm_cache import verify_extension
+    old, new = tmp_path / 'old.npz', tmp_path / 'new.npz'
+    values = np.array([[1., -0.], [3., 4.]], dtype=np.float32)
+    np.savez(old, segid=[2, 0], embeddings=values)
+    full = np.array([[3., 4.], [5., 6.], [1., -0.]], dtype=np.float32)
+    np.savez(new, segid=[0, 1, 2], embeddings=full)
+    audit = verify_extension(old, new, np.array([2, 0, 1]))
+    assert audit['original_vectors_bitwise_unchanged'] and audit['appended_rows'] == 1
+    full[2, 1] = 0.  # Numerically equal, but not a bitwise-preserved original vector.
+    np.savez(new, segid=[0, 1, 2], embeddings=full)
+    with pytest.raises(ValueError, match='vectors changed'):
+        verify_extension(old, new, np.arange(3))
+    with pytest.raises(ValueError, match='exact unique target'):
+        verify_extension(old, new, np.arange(4))
+    full[1, 0] = np.nan
+    np.savez(new, segid=[0, 1, 2], embeddings=full)
+    with pytest.raises(ValueError, match='finite-value'):
+        verify_extension(old, new, np.arange(3))
