@@ -19,7 +19,7 @@ unchanged; no replacement graph or biological fine-tuning is used.
 |---|---|---|
 | Natural-frequency SV type | 30 runs / 1,170 feature-class evaluations | One-versus-rest AP; 110,623 INS, 63,346 DEL, 298 INV, all retained |
 | Masked-feature development | 12 pretraining runs / 24 probes / 96 evaluations | Fold-A biological validation; four arms, three seeds, one-hop |
-| Fixed chromosome replication | Running first fold-A test probes | 120 probes / 480 evaluations planned; full-matrix result pending |
+| Fixed chromosome replication | 10/120 probes complete at 02:46 EDT | 480 evaluations planned; full-matrix result pending |
 | Whole-graph NT completion | Complete and verified | All 751,237 segments; 271,760 added, original vectors unchanged |
 
 These are native repository/tmux experiments, not registered Workbench runs.

@@ -1,6 +1,6 @@
 # Model and downstream continuation — 28 September 2026
 
-Verified at 02:37 EDT; live jobs may have progressed beyond this snapshot. This is an execution record, not a manuscript revision.
+Verified at 02:46 EDT; live jobs may have progressed beyond this snapshot. This is an execution record, not a manuscript revision.
 The [central checklist](MODEL_AND_DOWNSTREAM_STATUS_20260927.md) retains the
 complete historical task inventory and all failed scientific gates.
 
@@ -15,7 +15,7 @@ complete historical task inventory and all failed scientific gates.
 | Natural-cohort full matrix | Complete: 30/30 runs, 1,170 converged and replayed evaluations, zero exclusions | [Full audit](../results/foundation_evidence_20260928/sv_type_natural_full_analysis/audit.json) |
 | New masked-feature pretraining objective | Complete: 12 pretraining runs, 24 frozen probes / 96 feature evaluations; three-seed gate passes | [Protocol](../configs/masked_nt_objective_20260928.json) |
 | Whole-graph NT coverage | Complete: all 751,237 graph segments, original 479,477 rows byte-identical | [Protocol](../configs/whole_graph_nt_completion_20260928.json) |
-| Chromosome replication | Running: first fold-A test probes; fixed 5 folds × 3 seeds × 4 arms | [Protocol](../configs/masked_nt_chromosome_replication_20260928.json) |
+| Chromosome replication | Running: 10/120 probes complete; fold A / seed 314159 active | [Protocol](../configs/masked_nt_chromosome_replication_20260928.json) |
 | Alternative-component context | Complete: 14,786 components partly covered by benchmark-union cache | [Coverage](../results/foundation_evidence_20260928/reference_component_context_20260928/coverage.csv) |
 | DART-Eval accessibility task | Official schema/reference/split located; table download requires authentication | [Source audit](../results/foundation_evidence_20260928/dart_feasibility/source_audit.json), [403 receipt](../results/foundation_evidence_20260928/dart_feasibility/download.json) |
 
@@ -466,3 +466,5 @@ PYTHONPATH=src:. python scripts/server/run_masked_v1_reference.py \
 
 Use a fresh output root for reproduction. The dependency is the complete current
 chromosome replication; no new reference performance is available yet.
+
+[Execution snapshot at 02:46 EDT](../results/foundation_evidence_20260928/execution_state.json): 10/120 chromosome probes complete, no active biological failures; 30-probe v1 supplement queued. Server access is working.

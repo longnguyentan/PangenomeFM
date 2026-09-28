@@ -1,6 +1,6 @@
 # PangenomeFM: model and downstream evidence status
 
-Last verified 28 September 2026, 02:37 EDT. Technical work only; no manuscript edits.
+Last verified 28 September 2026, 02:46 EDT. Technical work only; no manuscript edits.
 Branch: `codex/v2-evidence-review-20260927`.
 
 ## Active continuation, 28 September
@@ -20,7 +20,7 @@ Branch: `codex/v2-evidence-review-20260927`.
 - [x] Full local suite **438 passed**; targeted Ruff/diff checks pass. Existing manuscript checks remain included.
 - [x] Repair fitted-probe persistence: opt-in saved scaler/classifier/calibration with exact reload replay; frozen chromosome replication will retain its classifiers.
 - [x] Implement/test the gated, fixed chromosome-replication runner/reporter; review the completed gate and launch the detached job. All controls retained; fold B reported separately due to development exposure.
-- [ ] Complete **120 chromosome-test probe runs / 480 evaluations**. The job is running first fold-A test probes after NT completion. Full-matrix inference remains pending.
+- [ ] Complete **120 chromosome-test probe runs / 480 evaluations**. **10/120 probes complete** at 02:46 EDT; fold A / seed 314159 active after NT completion. Full-matrix inference remains pending.
 - [x] Correct graph-scope denominator: 751,237 total segments, 303,425 downstream cache rows, 479,477 benchmark NT rows. Audit 14,786 partly covered alternative components; no new graph release.
 - [x] Complete the **271,760-segment frozen NT extension**: all 751,237 graph segments covered; all original 479,477 rows byte-identical, all values finite. Separate output; replication retains the original cache.
 
@@ -692,3 +692,5 @@ historical INS/DEL examples (110,623 INS; 63,346 DEL). Cached manuscript AP
 regression checks pass; they are not retraining.
 
 [Scientific result review and remaining limitations](RESULT_REVIEW_20260928.md).
+
+[Latest verified execution snapshot](../results/foundation_evidence_20260928/execution_state.json). The queued original-v1 reference has started its dependency wait; it has not fitted any probes yet.

@@ -1,0 +1,42 @@
+{
+  "observed_at_utc": "2026-09-28T06:46:40.133385+00:00",
+  "native_commit": "533b4f1d795beb4c6c05ddb366159f88df07ef38",
+  "free_disk_bytes": 675193806848,
+  "studies": {
+    "sv_type_natural_recovery2_driver": {
+      "status": "complete",
+      "stage": "merge_and_replay"
+    },
+    "masked_feature_full": {
+      "status": "complete",
+      "stage": "report"
+    },
+    "whole_graph_nt_completion_20260928": {
+      "status": "complete",
+      "serialized_extension_audit": {
+        "original_rows": 479477,
+        "completed_rows": 751237,
+        "appended_rows": 271760,
+        "dimension": 512,
+        "original_vectors_bitwise_unchanged": true,
+        "all_values_finite": true,
+        "exact_target_coverage": true,
+        "existing_sha256": "9f5015336bd1c0b9c5f81ed98e659e23f498ca28b57e5646d17ce411f93baabe",
+        "completed_sha256": "5c07f9bd8b46e4104c7c787fd96dae7cdf14ab8207807a87495e3e0365d257f3"
+      }
+    },
+    "masked_chromosome_replication": {
+      "status": "running",
+      "stage": "fold_a/314159/test_probes",
+      "completed_fold_seed_groups": 1
+    },
+    "masked_v1_reference": {
+      "status": "waiting",
+      "stage": "replication_dependency",
+      "completed_fold_seed_groups": 0
+    }
+  },
+  "completed_chromosome_probe_runs": 10,
+  "planned_chromosome_probe_runs": 120,
+  "active_biological_failures": []
+}
