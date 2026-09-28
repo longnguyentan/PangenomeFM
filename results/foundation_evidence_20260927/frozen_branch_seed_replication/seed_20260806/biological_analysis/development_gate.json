@@ -1,0 +1,36 @@
+{
+  "status": "not_promoted",
+  "checks": [
+    {
+      "task": "ccre",
+      "after_H_control_gains": {
+        "T_Rq": 0.0009775015034556578,
+        "Rt_Q": 0.0001755351211645273,
+        "Rt_Rq": 0.0014856252803459036
+      },
+      "difference_from_better_single_branch": {
+        "cst": 0.0006830414599071633,
+        "csht": 0.0005597592855367539
+      },
+      "passes": true
+    },
+    {
+      "task": "sv",
+      "after_H_control_gains": {
+        "T_Rq": 0.0014952468167378496,
+        "Rt_Q": -1.2799380966210805e-06,
+        "Rt_Rq": 0.002743870735206988
+      },
+      "difference_from_better_single_branch": {
+        "cst": 0.0022742879690806905,
+        "csht": 0.0014920239646878386
+      },
+      "passes": false
+    }
+  ],
+  "tolerance": 0.005,
+  "single_branch_tolerance_applied_to_both_feature_sets": true,
+  "limitation": "Adaptively motivated one-fold development; no confirmatory superiority claim",
+  "strict_context_eligible": false,
+  "test_predictions_produced": false
+}

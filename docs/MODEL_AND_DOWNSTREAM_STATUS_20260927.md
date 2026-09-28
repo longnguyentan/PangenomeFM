@@ -1,18 +1,17 @@
 # PangenomeFM: model and downstream evidence status
 
-Updated 27 September 2026. Technical work only; no manuscript edits.
+Last verified 27 September 2026, 21:08 EDT. Technical work only; no manuscript edits.
 Branch: `codex/v2-evidence-review-20260927`.
 
 ## What changed in this execution
 
-The frozen two-branch candidate passed the prespecified **seed-42 development
-gate**. The first additional seed reproduces its SV advantage, but the cCRE
-comparison against a random topology branch is slightly negative. Therefore
-the trained-topology benefit for cCRE is not consistently replicated. The
-remaining biological seed and all-seed solver sensitivity are running. The
-seed-42 convergence check has completed: all compared fits converge and its
-development gate still passes. The
-candidate specification is fixed; a final superiority claim is not supported.
+The frozen two-branch candidate has completed the original-budget comparison
+at all three initialization seeds. It beats both-random in every seed on SVs
+and cCREs, but the trained-topology-versus-random-topology increment is not
+consistently positive. Thus the full development gate does **not** replicate.
+The seed-42 convergence check passes with every compared fit converged; the
+same fixed numerical repair is running at both remaining seeds. The candidate
+specification is fixed, but no final superiority or NMI-readiness claim is supported.
 
 - [x] Complete eight new frozen biological probes: four branch combinations ×
   SV/cCRE; replay metrics and verify identical examples, labels and baselines.
@@ -33,8 +32,8 @@ candidate specification is fixed; a final superiority claim is not supported.
   native audits completed, including the unfavorable cCRE contrast.
 - [x] Finish all twelve selected-architecture reconstruction runs across three
   seeds (two trained branches and their random controls per seed).
-- [ ] Finish seed-20260806 biological probing: running in the same durable
-  server session; reconstruction is complete and audited.
+- [x] Finish seed-20260806 biological probing and consolidate every seed.
+  The original-budget three-seed report is complete; failed contrasts are retained.
 - [x] Complete the seed-42 4,000-iteration probe sensitivity: all 48 compared
   feature fits converge (maximum 1,192 iterations); its development gate passes.
 - [ ] Complete the same sensitivity at both remaining seeds. Some original
@@ -118,6 +117,25 @@ or substitute a success threshold overrides the frozen, controlled evaluation.
 | Biological learning | Existing logistic probe only; both encoders and NT remain frozen |
 | Scope | One-hop development; strict remains ineligible under the current geometry-matching protocol |
 
+```mermaid
+flowchart LR
+  G["Exact HPRC R2 graph"] --> T["Frozen topology branch: 48D per segment"]
+  G --> Q["Frozen NT-conditioned graph branch: 48D per segment"]
+  N["Frozen NT segment cache"] --> Q
+  T --> E["Ordered concatenation: 96D per segment"]
+  Q --> E
+  E --> F["Existing task-specific feature construction"]
+  N --> F
+  C["Coordinate features"] --> F
+  H["Handcrafted graph features for controls"] --> F
+  F --> P["Logistic probe"]
+  Y["Biological labels"] -->|"probe training only"| P
+```
+
+The two branches learn only from the repaired, label-free junction task before
+freezing. SV endpoint-pair construction and cCRE segment construction retain
+their existing definitions; 96D describes each segment before task aggregation.
+
 No new sequence model, graph release, biological fine-tuning, tissue selection,
 or learned biological fusion gate was introduced. Q is sequence-conditioned;
 the combined representation must not be called topology-only T.
@@ -129,7 +147,7 @@ checkpoints' test and validation chromosomes, context and seed.
 
 ### Observed validation AUPRC
 
-Fold A, seed 42, one-hop. Same 91,932 training / 43,217 validation SV examples
+Original 800-iteration budget; fold A, seed 42, one-hop. Same 91,932 training / 43,217 validation SV examples
 and 164,435 / 73,988 cCRE examples. **No test-chromosome predictions.**
 
 | Representation E | SV C+S+E | SV C+S+H+E | cCRE C+S+E | cCRE C+S+H+E |
@@ -154,8 +172,9 @@ fixed representation while passing the same-dimension controls.
 **Numerical caveat:** subsequent log inspection found two convergence warnings
 in each seed-42 composite SV probe log, and none in the corresponding cCRE logs.
 The historical logs did not identify which feature fit issued each warning.
-The apparent development-gate pass is therefore provisional pending a fixed
-4,000-iteration sensitivity with per-feature iteration/convergence receipts.
+The original development gate therefore required a fixed 4,000-iteration
+sensitivity with per-feature iteration/convergence receipts. The completed
+seed-42 result immediately below resolves this numerical check for that seed.
 Only the optimizer's iteration ceiling changes; estimator, class weighting,
 regularization, feature definitions, checkpoints and examples remain fixed.
 The probes re-extract frozen features on GPU, which can introduce small
@@ -204,7 +223,8 @@ These remain development-validation scores, not independent chromosome tests.
 The inherited per-seed gate reports **not_promoted** because cCRE fails the
 trained-topology-versus-random-topology comparison. This result is retained;
 no replacement seed, head, feature choice or threshold was selected. The final
-seed continues unchanged. The numerical solver sensitivity is separate.
+seed completed unchanged; its results follow below. The numerical solver
+sensitivity is separate.
 
 Reconstruction gains replicate qualitatively: topology trained/random AP is
 0.731156/0.596269; NT-conditioned trained/random AP is 0.863401/0.626892.
@@ -215,6 +235,41 @@ biological contrast is positive.
 [Seed 314159 biological table](../results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/audited_per_run.csv)
 · [All paired contrasts](../results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/paired_differences.csv)
 · [Recorded failed gate](../results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/development_gate.json).
+
+## Complete three-seed biological replication at the original budget
+
+The remaining 32 probes (16 per additional seed) and automatic consolidation
+completed. This table summarizes all three seeds, after C+S+H, using the original
+800-iteration ceiling. Means describe initialization variation on **one already
+inspected validation fold**; they are not independent-chromosome estimates.
+Some SV fits reached that ceiling. The uniform convergence reruns remain separate.
+
+| Task | Comparator subtracted from T+Q | Mean Δ AP | Seed SD | Positive seeds |
+|---|---|---:|---:|---:|
+| SV | Both-random | +0.003725 | 0.001323 | 3/3 |
+| SV | Random T + trained Q | +0.001676 | 0.001533 | 2/3 |
+| SV | Trained T + random Q | +0.001360 | 0.000551 | 3/3 |
+| SV | Trained T only | +0.001426 | 0.000270 | 3/3 |
+| cCRE | Both-random | +0.001256 | 0.000215 | 3/3 |
+| cCRE | Random T + trained Q | +0.000149 | 0.000233 | 2/3 |
+| cCRE | Trained T + random Q | +0.001073 | 0.000123 | 3/3 |
+| cCRE | Trained Q only | +0.000243 | 0.000274 | 3/3 |
+
+Seed 20260806 reaches T+Q AP 0.916371 SV and 0.921184 cCRE. Its SV comparison
+against random T+Q is -0.00000128: effectively a numerical near-tie, but it does
+not satisfy the prespecified positive-gain rule. Seed 314159's cCRE comparison
+is -0.00009561. Therefore **not every seed passes the development gate**. The
+threshold is unchanged, and no seed is dropped or replaced.
+
+The most consistent learned-branch contribution in this development experiment
+comes from Q. The incremental contribution of trained T beyond Q and H remains
+weaker. This supports further controlled model work, not a claim that every
+biological task has improved or that all benchmarks should now be expanded.
+
+[All 144 compared feature rows](../results/foundation_evidence_20260927/frozen_branch_seed_replication_analysis/audited_per_run.csv)
+· [All paired seed contrasts](../results/foundation_evidence_20260927/frozen_branch_seed_replication_analysis/paired_per_seed.csv)
+· [Mean/SD/range summary](../results/foundation_evidence_20260927/frozen_branch_seed_replication_analysis/seed_summary.csv)
+· [Seed stability figure](../results/foundation_evidence_20260927/frozen_branch_seed_replication_analysis/frozen_branch_seed_stability.pdf).
 
 ## Reconstruction across all three initialization seeds
 
@@ -364,7 +419,7 @@ removing queried links can support a standalone novelty claim.
 
 | Priority | Remaining work | Present status / concrete next action |
 |---|---|---|
-| 1 | Seed replication and numerical convergence | Seed 314159 complete, mixed cCRE evidence; seed 20260806 biological probes and fixed solver sensitivity running |
+| 1 | Seed replication and numerical convergence | Three original-budget seeds complete; partial-random controls mixed. Seed-42 numerical repair complete; remaining two running |
 | 2 | Chromosome replication and v2 task transfer | Not run; freeze protocol before additional label-informed choices |
 | 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | Not completed; include GraphMAE/ToP-style controls, identical examples/input budgets and sequence truncation controls |
 | 4 | TraitGym | Data, all REF checks and actual v1 T coverage in all 30 caches pass; official-protocol classifier still needed |
@@ -456,16 +511,15 @@ PYTHONPATH=src:. python scripts/server/audit_inversion_readiness.py \
   --out-dir <fresh-inversion-audit>
 ```
 
-Actual active server root:
+Completed original-budget replication root:
 `/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication`.
 Tmux socket `evidence-20260927`, session `frozen_branch_seed_replication`.
 `status.json` records stage completion and failures; each child retains commands,
 native checkpoints, predictions and logs. A launched stage is not a completed
 result. Historical and other-LLM worktrees are preserved.
-The `frozen_branch_seed_report` tmux session waits for that existing experiment
-and automatically creates the complete three-seed report at
-`<readiness-results>/frozen_branch_seed_replication_analysis`. It records an
-explicit failure if a source job fails or an eight-hour wait expires, and does
+The `frozen_branch_seed_report` tmux session completed successfully and created
+the complete three-seed report at
+`<readiness-results>/frozen_branch_seed_replication_analysis`. Its bounded failure handling records source-job or timeout errors and does
 not treat a failed scientific gate as a missing result.
 [Exact finalizer](../results/foundation_evidence_20260927/finalize_seed_replication.py).
 

@@ -41,7 +41,11 @@ results, and the other implementation worktree are preserved.
   and seeds; current improvements are development evidence only.
 - [x] Complete the first additional seed (314159): SV gains persist; the cCRE
   trained-topology versus random-topology contrast is -0.000096 after C+S+H.
-  That failed contrast is retained; seed 20260806 continues unchanged.
+  That failed contrast is retained. Seed 20260806 completed unchanged; its SV
+  learned-T versus random-T contrast is a near-tie (-0.00000128).
+- [x] Complete the three-seed original-budget biological report; both-random
+  gains are positive in every seed, but the full development gate is not met
+  in every seed. No failed comparison or seed was excluded.
 - [x] Complete all three seeds of selected-architecture reconstruction; trained
   T and Q outperform their random controls on identical candidates at every seed.
 - [x] Complete seed-42 fixed 4,000-iteration sensitivity: 48 compared feature
@@ -781,3 +785,37 @@ or inconsistent labels in the historical binary SV pipeline. Nine targeted
 tests also pass on the server; all 173,969 historical INS/DEL labels satisfy
 the new guard. The latest team report retains both completed replication
 evidence and the active solver/remaining-seed jobs.
+
+
+## Three-seed completion and solver repair (27 September, 21:05 EDT)
+
+The original-budget three-seed biological replication and automatic summary
+completed. All 144 compared feature rows and every paired contrast are saved
+under `results/foundation_evidence_20260927/frozen_branch_seed_replication_analysis/`.
+After C+S+H, mean T+Q minus both-random AP is +0.003725 SV and +0.001256 cCRE,
+positive in every seed. Trained T versus random T, with Q retained, is positive
+in only two of three seeds for each task: cCRE seed 314159 is -0.00009561;
+SV seed 20260806 is a near-tie at -0.00000128. The full development gate does
+not pass every seed. This is one inspected validation fold, not three chromosome
+replications; no confirmatory interval is computed from seeds.
+
+The seed-42 4,000-iteration check completed, with all 48 compared feature fits
+converged (maximum 1,192 iterations). Its after-H both-random gains are +0.005332
+SV and +0.001268 cCRE. The same fixed numerical sensitivity has started for
+both remaining seeds, retaining all eight model arms and both tasks. All
+original results remain available. Immutable continuation/report scripts avoid
+changing code beneath running jobs.
+
+All selected-branch reconstruction runs completed at all three seeds, and both
+trained branches exceed random at every seed on identical candidates. The
+original topology report was replayed with canonical integer-label hashing;
+only the identity encoding changed, not its predictions. The historical trained
+seed-42 topology checkpoint lacks an initial-weight hash; that limitation is
+explicitly retained. New seeds and all NT-conditioned controls verify it.
+
+Actual TraitGym frozen v1 T coverage is 100% for both datasets in all 30
+fold/seed/context caches, with graph/manifest/checkpoint hashes and holdouts
+verified. No TraitGym classifier has been fitted. The full suite now has
+374 passing tests. The latest overview includes all 52 historical context rows,
+the fixed candidate diagram, and primary-source prior art on topology-only
+pretraining, degree-corrected link prediction and connectivity-shift controls.

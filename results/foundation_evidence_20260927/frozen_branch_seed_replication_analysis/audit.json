@@ -1,0 +1,202 @@
+{
+  "status": "complete",
+  "seeds": [
+    42,
+    314159,
+    20260806
+  ],
+  "fold": "fold_a",
+  "context": "1hop",
+  "scope": "Initialization stability on one already inspected development fold",
+  "confirmatory_ci": false,
+  "independent_chromosome_replication": false,
+  "source_gates": [
+    {
+      "seed": 42,
+      "status": "eligible_for_replication",
+      "checks": [
+        {
+          "task": "ccre",
+          "after_H_control_gains": {
+            "T_Rq": 0.0010287211975478217,
+            "Rt_Q": 0.00036817092756280534,
+            "Rt_Rq": 0.0012225209940563975
+          },
+          "difference_from_better_single_branch": {
+            "cst": 8.638964651952463e-05,
+            "csht": 8.777225987988135e-05
+          },
+          "passes": true
+        },
+        {
+          "task": "sv",
+          "after_H_control_gains": {
+            "T_Rq": 0.0018305511755839499,
+            "Rt_Q": 0.0030030759322109413,
+            "Rt_Rq": 0.005229982093313601
+          },
+          "difference_from_better_single_branch": {
+            "cst": 0.0028453331200497534,
+            "csht": 0.0016572165167519914
+          },
+          "passes": true
+        }
+      ],
+      "tolerance": 0.005,
+      "single_branch_tolerance_applied_to_both_feature_sets": true,
+      "limitation": "Adaptively motivated one-fold development; no confirmatory superiority claim",
+      "strict_context_eligible": false,
+      "test_predictions_produced": false
+    },
+    {
+      "seed": 314159,
+      "status": "not_promoted",
+      "checks": [
+        {
+          "task": "ccre",
+          "after_H_control_gains": {
+            "T_Rq": 0.0012116496847330849,
+            "Rt_Q": -9.56116914863081e-05,
+            "Rt_Rq": 0.00105898367419488
+          },
+          "difference_from_better_single_branch": {
+            "cst": 0.00022880184792994918,
+            "csht": 8.226029588465078e-05
+          },
+          "passes": false
+        },
+        {
+          "task": "sv",
+          "after_H_control_gains": {
+            "T_Rq": 0.0007542929962588429,
+            "Rt_Q": 0.0020270411081864115,
+            "Rt_Rq": 0.003202527598506477
+          },
+          "difference_from_better_single_branch": {
+            "cst": 0.001328683519097651,
+            "csht": 0.0011301233716344283
+          },
+          "passes": true
+        }
+      ],
+      "tolerance": 0.005,
+      "single_branch_tolerance_applied_to_both_feature_sets": true,
+      "limitation": "Adaptively motivated one-fold development; no confirmatory superiority claim",
+      "strict_context_eligible": false,
+      "test_predictions_produced": false
+    },
+    {
+      "seed": 20260806,
+      "status": "not_promoted",
+      "checks": [
+        {
+          "task": "ccre",
+          "after_H_control_gains": {
+            "T_Rq": 0.0009775015034555468,
+            "Rt_Q": 0.0001755351211645273,
+            "Rt_Rq": 0.0014856252803459036
+          },
+          "difference_from_better_single_branch": {
+            "cst": 0.0006830414599071633,
+            "csht": 0.0005597592855367539
+          },
+          "passes": true
+        },
+        {
+          "task": "sv",
+          "after_H_control_gains": {
+            "T_Rq": 0.0014952468167380717,
+            "Rt_Q": -1.2799380963990359e-06,
+            "Rt_Rq": 0.00274387073520721
+          },
+          "difference_from_better_single_branch": {
+            "cst": 0.0022742879690805795,
+            "csht": 0.0014920239646880606
+          },
+          "passes": false
+        }
+      ],
+      "tolerance": 0.005,
+      "single_branch_tolerance_applied_to_both_feature_sets": true,
+      "limitation": "Adaptively motivated one-fold development; no confirmatory superiority claim",
+      "strict_context_eligible": false,
+      "test_predictions_produced": false
+    }
+  ],
+  "all_seed_development_gates_pass": false,
+  "interpretation": "All seeds and contrasts retained; mean/SD/range describe seed variation, not chromosome uncertainty",
+  "sources": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/composite_biological_analysis/audit.json",
+      "bytes": 3178,
+      "mtime_ns": 1790553815637168126,
+      "sha256": "01ec0024471448b88d93a347130afab2469cd71d36ee5cad942f46968ec5153f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/composite_biological_analysis/audited_per_run.csv",
+      "bytes": 28290,
+      "mtime_ns": 1790553815637168126,
+      "sha256": "100e03e95a208521b3116ea7cec1fd0a577a5c7a33aade510c30e7a844153f34"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/composite_biological_analysis/paired_differences.csv",
+      "bytes": 12197,
+      "mtime_ns": 1790553815641168086,
+      "sha256": "512e526b7cd2e22e769c0cbcbc90cedb6af3ca0cb8896f0543b5a4f0614d9b7b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/composite_biological_analysis/development_gate.json",
+      "bytes": 1011,
+      "mtime_ns": 1790553815637168126,
+      "sha256": "46a1848e7880e7c9c558e09f3c0829f41c3411d2da90e92254bf4e64141985a4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/audit.json",
+      "bytes": 3272,
+      "mtime_ns": 1790554826771379599,
+      "sha256": "412084ee3d27e717859bfa2ff97dc9d324bb9d520c7dce0be88c7a03eb348ace"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/audited_per_run.csv",
+      "bytes": 29906,
+      "mtime_ns": 1790554826767379636,
+      "sha256": "d97fb4463a453d671fec7fbdfcb5c57cfd5b447ba2784a12d603c276a4291a57"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/paired_differences.csv",
+      "bytes": 12205,
+      "mtime_ns": 1790554826767379636,
+      "sha256": "6d8134ef772dd6dd728c752b40d13ff6a4e0a1c0a571878ad52059365fbf6173"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/development_gate.json",
+      "bytes": 998,
+      "mtime_ns": 1790554826767379636,
+      "sha256": "b8d9181a2cdda88fd2aedd27e55fdf89ef7c3d2242d8cc3a3bfef359aa2b0a82"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/biological_analysis/audit.json",
+      "bytes": 3278,
+      "mtime_ns": 1790557375449231043,
+      "sha256": "3ad4b97ebc2b4dbda346f04118a644a76c2552e8cdd094601509af4ee52abf6c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/biological_analysis/audited_per_run.csv",
+      "bytes": 30100,
+      "mtime_ns": 1790557375449231043,
+      "sha256": "ba59b3c1f5f813a0be269bca524e0bf414334ef51750ce910064319d12cb8fde"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/biological_analysis/paired_differences.csv",
+      "bytes": 12217,
+      "mtime_ns": 1790557375449231043,
+      "sha256": "43e847341c521efb65cc0072e0e54cc8ace4c0543bc43aabe53dd1fe49e4b8ba"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/biological_analysis/development_gate.json",
+      "bytes": 1001,
+      "mtime_ns": 1790557375449231043,
+      "sha256": "c411db676c2a5cb2b8fbdb8b144ea5345bac6b32a0cb1839dbdbf10b6429aeaa"
+    }
+  ]
+}
