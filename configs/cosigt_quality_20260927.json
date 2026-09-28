@@ -1,0 +1,127 @@
+{
+  "artifact_type": "analysis_plan",
+  "version": 1,
+  "task": "cosigt_genotyping_quality",
+  "recorded_before_first_fit": true,
+  "objective": "Predict measured genotyping quality among publisher-evaluable samples at chromosome-held-out loci; test incremental value of frozen topology.",
+  "reference_config": "configs/entex_v1.json",
+  "n_loci": 265,
+  "loci_sha256": "df8f268923ef3f7fadd56c9e4f34d79d59990c20952477900219f81a46d6d9d3",
+  "targets": [
+    "mean_qv_fraction",
+    "mean_qv_pred"
+  ],
+  "primary_target": "mean_qv_fraction",
+  "primary_metric": "mae",
+  "aggregation": "mean",
+  "unit": "One GRCh38 locus, equal weight; donor measurements aggregated once before splitting. No sample identity or observed-donor count enters features.",
+  "partition": "All five manuscript chromosome folds x three original checkpoint seeds x strict/1hop; encoders and probes exclude test/validation chromosomes during encoder training.",
+  "encoder": "Unchanged frozen manuscript v1 T and NT-v2 50M S; reconstruction-shortcut caveat retained. This does not compare learned versus random weights.",
+  "probe": "StandardScaler fit only on training chromosomes, Ridge with intercept and direct Cholesky solver, penalty selected by validation MAE; strongest penalty breaks exact ties. No refit on validation, no clipping, no test-directed choice.",
+  "ridge_alphas": [
+    0.001,
+    0.01,
+    0.1,
+    1,
+    10,
+    100,
+    1000
+  ],
+  "feature_sets": [
+    "train_median",
+    "coordinate",
+    "sequence_kmer",
+    "frozen_sequence_fm",
+    "frozen_pangenomefm",
+    "coordinate_plus_frozen_sequence_fm",
+    "coordinate_plus_frozen_pangenomefm",
+    "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+    "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+    "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+    "locus_length",
+    "C_S_L",
+    "C_S_L_T",
+    "C_S_L_H",
+    "C_S_L_H_T"
+  ],
+  "custom_feature_sets": {
+    "locus_length": [
+      "locus_log_length"
+    ],
+    "C_S_L": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "locus_log_length"
+    ],
+    "C_S_L_T": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "locus_log_length",
+      "frozen_pangenomefm"
+    ],
+    "C_S_L_H": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "locus_log_length",
+      "topology_control"
+    ],
+    "C_S_L_H_T": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "locus_log_length",
+      "topology_control",
+      "frozen_pangenomefm"
+    ]
+  },
+  "comparisons": [
+    [
+      "T_given_CS",
+      "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm"
+    ],
+    [
+      "T_given_CSH",
+      "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+    ],
+    [
+      "T_given_CSL",
+      "C_S_L_T",
+      "C_S_L"
+    ],
+    [
+      "T_given_CSLH",
+      "C_S_L_H_T",
+      "C_S_L_H"
+    ]
+  ],
+  "metrics": [
+    "mae",
+    "rmse",
+    "spearman",
+    "r2"
+  ],
+  "n_bootstrap": 10000,
+  "statistics_seed": 20260927,
+  "inference": "Original paired hierarchical fold/seed bootstrap; positive gain means baseline minus full for error metrics and full minus baseline for correlations/R2. Exact fold sign-flip plus BH within metric across endpoints/contexts/contrasts. Five dependent training folds limit confidence; seeds are not independent biological samples.",
+  "validity_gates": [
+    "All 265 loci retained, complete mapped features",
+    "Same target/example identities for every model",
+    "No missing outcomes treated as failures",
+    "At least 10 loci and nonconstant outcome per train/validation/test partition",
+    "Every source/cache/checkpoint identity passes",
+    "Saved prediction replay and train/validation-only penalty selection"
+  ],
+  "limitations": [
+    "Only 265 regions, conditional on available assembled truth; no general callability inference",
+    "Predicts quality, does not improve genotyping calls directly",
+    "Publisher panel excludes tested donors; original HPRC2 FM graph may contain overlapping donors",
+    "Region graph differs from publisher locus graph",
+    "Static locus vector cannot predict individual donor-specific quality",
+    "No expected positive outcome or architecture selection using this test set"
+  ],
+  "references": [
+    "https://link.springer.com/article/10.1186/s13059-026-04242-4",
+    "https://github.com/davidebolo1993/cosigt_paper/tree/3d84bf8490bbff5ec33cf72706e713d1a41730ed"
+  ]
+}
