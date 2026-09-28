@@ -10,6 +10,7 @@ import argparse
 import json
 from pathlib import Path
 import resource
+import subprocess
 import time
 
 import numpy as np
@@ -35,16 +36,38 @@ def main() -> None:
     ap.add_argument('--threads', type=int, default=2)
     ap.add_argument('--chunk-size', type=int, default=512)
     ap.add_argument('--window-k', type=int, default=128)
+    ap.add_argument('--after-status', type=Path, action='append', default=[],
+        help='Wait for completed dependency receipts before allocating a GPU')
+    ap.add_argument('--wait-hours', type=float, default=12)
     cli = ap.parse_args()
-    if cli.threads < 1:
-        raise ValueError('Positive CPU thread limit required')
+    if cli.threads < 1 or not 0 < cli.wait_hours <= 12:
+        raise ValueError('Positive CPU thread limit and bounded 0-12 hour wait required')
     cli.out_dir.mkdir(parents=True, exist_ok=False)
     started=time.time()
-    record=dict(status='running', scope='Resource profiling only; no optimizer, label access or checkpoint selection',
+    record=dict(status='waiting', stage='dependencies_and_device', dependencies=[str(p) for p in cli.after_status], scope='Resource profiling only; no optimizer, label access or checkpoint selection',
         biological_labels_used=False, weight_updates=0, mode=cli.mode,device=cli.device,
         checkpoint=fingerprint(cli.checkpoint),implementation=fingerprint(Path(__file__)))
     write_json(cli.out_dir/'status.json',record)
     try:
+        deadline=time.monotonic()+cli.wait_hours*3600
+        while True:
+            dependencies=[json.loads(p.read_text()) if p.exists() else {'status':'missing'} for p in cli.after_status]
+            if any(d.get('status') in {'failed','cancelled'} for d in dependencies):
+                raise ValueError('Profiling dependency failed; preserve it before further execution')
+            ready=all(d.get('status')=='complete' for d in dependencies)
+            if ready and cli.device.startswith('cuda'):
+                gpu=torch.device(cli.device).index or 0
+                output=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.used',
+                    '--format=csv,noheader,nounits'],text=True)
+                memory={int(i):int(m) for i,m in (line.split(',') for line in output.splitlines())}
+                ready=memory[gpu]<256
+            if ready:
+                break
+            if time.monotonic()>deadline:
+                raise TimeoutError('Profiling dependency/device wait expired')
+            time.sleep(30)
+        record.update(status='running',stage='loading')
+        write_json(cli.out_dir/'status.json',record)
         torch.set_num_threads(cli.threads)
         audit=json.loads((cli.contexts/'audit.json').read_text())
         if audit['status']!='complete' or audit['failed_windows'] or not audit['materialized']:
@@ -91,6 +114,8 @@ def main() -> None:
         if device.type=='cuda':
             torch.cuda.synchronize(device)
             torch.cuda.reset_peak_memory_stats(device)
+        record.update(stage='forward_backward')
+        write_json(cli.out_dir/'status.json',record)
         compute=time.time()
         loss,n=objective(sd,mask)
         if not torch.isfinite(loss):
@@ -103,7 +128,7 @@ def main() -> None:
             torch.cuda.synchronize(device)
         if encoder_parameter_digest(encoder)!=initial:
             raise ValueError('Profiling changed encoder weights')
-        record.update(status='complete',loss=float(loss.detach()),n_masked_segments=n,
+        record.update(status='complete',stage='complete',loss=float(loss.detach()),n_masked_segments=n,
             all_gradients_finite=True,encoder_weights_unchanged=True,
             forward_backward_seconds=time.time()-compute,wall_seconds=time.time()-started,
             cpu_peak_rss_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,

@@ -1,0 +1,6 @@
+fold,train_segments,validation_segments,test_segments,train_validation_overlap,train_test_overlap,validation_test_overlap
+fold_a,392848,177856,171903,0,0,0
+fold_b,423081,141670,177856,0,0,0
+fold_c,480193,120744,141670,0,0,0
+fold_d,491429,130434,120744,0,0,0
+fold_e,440270,171903,130434,0,0,0

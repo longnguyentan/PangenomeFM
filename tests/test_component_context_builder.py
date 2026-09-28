@@ -78,6 +78,7 @@ def test_attention_estimates_are_bounds_not_total_memory_or_exclusion_rules():
 
 def test_preparation_materializes_oriented_native_tables_and_keeps_failed_qc(tmp_path):
     import hashlib
+    from pathlib import Path
     import json
     from scripts.server.prepare_component_contexts import run
 
@@ -97,12 +98,21 @@ def test_preparation_materializes_oriented_native_tables_and_keeps_failed_qc(tmp
         full_segments_sha256=plan['full_segments_sha256'],output_sha256=plan['sequence_cache_sha256'],model_parameters_frozen=True)))
     result = run(plan, tmp_path/'out', materialize=True)
     assert result['status']=='complete' and result['training_ready'] is False
+    from scripts.server.verify_component_contexts import verify
+    verification = verify(tmp_path/'out')
+    assert verification['n_verified_windows']==1
     frame = pd.read_csv(tmp_path/'out'/'manifest.csv')
     assert frame.n_segments.tolist()==[4] and frame.original_one_hop_partial_components.tolist()==[1]
     assert frame.removed_reference_flanks_from_one_hop.tolist()==[0]
     pd.testing.assert_frame_equal(pd.read_csv(frame.links_path.iloc[0]), links.iloc[:3].reset_index(drop=True))
     with np.load(tmp_path/'out'/'context_segment_ids.npz') as ids:
         assert ids['segment_ids'].tolist()==[0,1,3,4]
+    edge_path=Path(frame.links_path.iloc[0])
+    broken=pd.read_csv(edge_path)
+    broken.loc[0,'from_orient']='-'
+    broken.to_csv(edge_path,index=False)
+    with pytest.raises(ValueError,match='differs from original'):
+        verify(tmp_path/'out')
     # An invalid core produces a retained failure row and no usable training manifest.
     pd.DataFrame([dict(name='empty',closure='1hop',target_sn='GRCh38#0#chr2',start=0,end=10)]).to_csv(sources/'manifest.csv',index=False)
     plan['manifest_sha256']=hashlib.sha256((sources/'manifest.csv').read_bytes()).hexdigest()

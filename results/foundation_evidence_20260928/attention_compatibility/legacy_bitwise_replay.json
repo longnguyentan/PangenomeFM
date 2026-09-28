@@ -1,0 +1,33 @@
+{
+  "status": "complete",
+  "historical_commit": "ab35f3a",
+  "historical_module_sha256": "a7e1f6351b5c1378d4717245e3739a413f72703adab0e624c0fd522e32fac05b",
+  "current_module_sha256": "e5fba6a72afec507943f1c1408c9f39420a48e6780956c94551b8d5744a52846",
+  "torch_version": "2.10.0",
+  "cases": [
+    {
+      "window_k": null,
+      "training": false,
+      "output_bitwise_equal": true,
+      "all_gradients_bitwise_equal": true
+    },
+    {
+      "window_k": null,
+      "training": true,
+      "output_bitwise_equal": true,
+      "all_gradients_bitwise_equal": true
+    },
+    {
+      "window_k": 16,
+      "training": false,
+      "output_bitwise_equal": true,
+      "all_gradients_bitwise_equal": true
+    },
+    {
+      "window_k": 16,
+      "training": true,
+      "output_bitwise_equal": true,
+      "all_gradients_bitwise_equal": true
+    }
+  ]
+}

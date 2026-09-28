@@ -1,0 +1,66 @@
+{
+  "status": "complete",
+  "scope": "Resource profiling only; no optimizer, label access or checkpoint selection",
+  "biological_labels_used": false,
+  "weight_updates": 0,
+  "mode": "chunked_exact",
+  "device": "cpu",
+  "checkpoint": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/masked_feature_full/seed_42/full_trained/checkpoint.pt",
+    "bytes": 329954,
+    "mtime_ns": 1790571971446485533,
+    "sha256": "9de1e0195e4c76d210b812b56cf486d8918975566aa6ff843c111041464fe8c3"
+  },
+  "implementation": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/scripts/server/profile_component_attention.py",
+    "bytes": 6905,
+    "mtime_ns": 1790579770872703089,
+    "sha256": "adb9071bfcae86f277ee6306b6437204f911eed55e8067149aee150dad2e0906"
+  },
+  "window": "slice_GRCh38_0_chr1_0_5000000_1hop",
+  "n_segments": 28229,
+  "n_handles": 28287,
+  "original_dense_score_bytes": 12802469904,
+  "context_audit": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/component_contexts_20260928/audit.json",
+    "bytes": 5487,
+    "mtime_ns": 1790579573409894084,
+    "sha256": "65cf096c5b5dccc0fffa00c2a243d96f46d20b2fde8abb41e123b09830c918c9"
+  },
+  "manifest": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/component_contexts_20260928/manifest.csv",
+    "bytes": 324608,
+    "mtime_ns": 1790579572977896403,
+    "sha256": "18d664be9f00ae47272eac59427861b469fab77d8edc2266cec981a173d44727"
+  },
+  "segments": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/component_contexts_20260928/slices/slice_GRCh38_0_chr1_0_5000000_1hop_segments.csv.gz",
+    "bytes": 307332,
+    "mtime_ns": 1790579424454600452,
+    "sha256": "ad0d3dd754f4a2bad91e23d63c80d1ba2ebd2542e1459e3e7c1e385a85daa5e0"
+  },
+  "links": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/component_contexts_20260928/slices/slice_GRCh38_0_chr1_0_5000000_1hop_links.csv.gz",
+    "bytes": 392240,
+    "mtime_ns": 1790579425050598036,
+    "sha256": "a9601058eb9e1f98c1ae33d307443843c1903ce4c829334acbce040c3fa9eea9"
+  },
+  "loss": 1.0944525003433228,
+  "n_masked_segments": 8468,
+  "all_gradients_finite": true,
+  "encoder_weights_unchanged": true,
+  "forward_backward_seconds": 212.8878812789917,
+  "wall_seconds": 261.7622084617615,
+  "cpu_peak_rss_kib": 5176376,
+  "cuda_peak_allocated_bytes": null,
+  "cuda_peak_reserved_bytes": null,
+  "torch_version": "2.6.0+cu124",
+  "chunk_size": 512,
+  "window_k": null,
+  "limitations": [
+    "Single optimizer-free step; not a convergence or biological-performance result.",
+    "CPU peak RSS includes graph/cache loading and is not GPU peak memory.",
+    "Exact mode preserves global mathematical attention, but floating-point/dropout order differs.",
+    "Window mode changes context and repairs local-attention semantics; requires a separately fixed protocol."
+  ]
+}

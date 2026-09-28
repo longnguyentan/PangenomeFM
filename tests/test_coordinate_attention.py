@@ -99,3 +99,13 @@ def test_legacy_sparse_issue_is_reproducible_without_changing_historical_behavio
     outgoing=torch.stack([torch.softmax((q[i]*k[dst[src==i]]).sum(-1)/2,dim=0)[:,:,None]
         .mul(v[dst[src==i]]).sum(0) for i in range(5)])
     assert not torch.allclose(current,outgoing)
+
+
+def test_masked_feature_constructor_records_actual_opt_in_implementation():
+    from argparse import Namespace
+    from training.pretrain_masked_features import make_encoder
+    for mode in ['legacy','chunked_exact','chunked_window']:
+        args=Namespace(hidden_dim=48,n_heads=4,n_layers=2,dropout=.1,stream_mode='full',
+            coordinate_attention_mode=mode,attention_chunk_size=16,window_k=4 if mode=='chunked_window' else None)
+        model=make_encoder(args)
+        assert all(layer.coordinate_attention_mode==mode and layer.attention_chunk_size==16 for layer in model.linear_layers)

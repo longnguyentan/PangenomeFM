@@ -28,7 +28,10 @@ def make_encoder(args):
     return DualStreamPangenomeGAT(in_dim=519, hidden_dim=args.hidden_dim,
         n_heads=args.n_heads, n_layers=args.n_layers, dropout=args.dropout,
         edge_mlp_dim=args.hidden_dim*2, use_multiscale_rope=True, n_rope_scales=3,
-        use_orientation=True, stream_mode=args.stream_mode, graph_message_direction='bidirectional')
+        use_orientation=True, stream_mode=args.stream_mode, graph_message_direction='bidirectional',
+        coordinate_attention_mode=getattr(args, 'coordinate_attention_mode', 'legacy'),
+        attention_chunk_size=getattr(args, 'attention_chunk_size', 512),
+        window_k=getattr(args, 'window_k', None))
 
 
 def mask_seed(seed: int, name: str, epoch: int, view: int = 0) -> int:
@@ -72,6 +75,8 @@ def main() -> None:
         junction_geometry_match='signed_gap_bins', junction_geometry_bin_ratio=1.25,
         split_seed=20260806, pop_cond=False, use_edge_features=False, adaptive_window=False,
         window_k=None, no_rope=False, no_fusion_gate=False)
+    expected.setdefault('coordinate_attention_mode', 'legacy')
+    expected.setdefault('attention_chunk_size', 512)
     if any(getattr(args, k, None) != v for k, v in expected.items()) or template['in_dim'] != 519:
         raise ValueError('Template does not have the fixed Q-branch architecture/input policy')
     reference = json.loads(Path('configs/server_full_multicohort_20260806.json').read_text())

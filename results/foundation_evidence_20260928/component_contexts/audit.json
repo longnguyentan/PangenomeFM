@@ -1,0 +1,106 @@
+{
+  "status": "complete",
+  "plan": {
+    "version": 1,
+    "purpose": "Complete attached alternative components on original intervals; label-free context and memory preparation only.",
+    "full_segments": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+    "full_segments_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+    "full_links": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_links.csv.gz",
+    "full_links_sha256": "7435ac55187d7bca464b961621aada6f8d46e0f7ef900ff7d59d0daee89e2f3b",
+    "manifest": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+    "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+    "sequence_cache": "results/foundation_evidence_20260927/whole_graph_nt_completion_20260928/whole_graph_nt.npz",
+    "sequence_cache_sha256": "5c07f9bd8b46e4104c7c787fd96dae7cdf14ab8207807a87495e3e0365d257f3",
+    "fold_config": "configs/server_full_multicohort_20260806.json",
+    "fold_config_sha256": "5cec5e982fdcfe1a3620bf257835b70ef702b606cde9a66026fec2531e6ee96d",
+    "expected_segments": 751237,
+    "heads": 4,
+    "scalar_bytes": 4,
+    "sparse_window_k": 128,
+    "gpu_bytes": 25769803776,
+    "policy": "Original one-hop contexts plus every alternative component touching the reference core and every reference boundary anchor of those components; no recursive expansion from added anchors. Preserve original stored directed/oriented links.",
+    "validity": "Retain all original one-hop intervals in QC; check actual canonical segment disjointness in all five folds, whole frozen NT coverage, orientation preservation, and dense score storage. No labels or reconstruction-candidate filtering.",
+    "limits": [
+      "Components are not verified bubbles or phased paths.",
+      "Dense score bytes omit activations/backward/optimizer; exceeding 24 GiB forbids that implementation, not the window.",
+      "No new model training until attention correctness and actual memory are verified."
+    ]
+  },
+  "materialized": true,
+  "code_commit": "ab35f3a6f52b2304e7431016ed1ee55721ebfc8c",
+  "implementation": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/scripts/server/prepare_component_contexts.py",
+    "bytes": 10504,
+    "mtime_ns": 1790579290439043553,
+    "sha256": "beb68c4fff1636902c3d7003f8f7f2e100e361bca1b24b73eba32b8ec137b6e1"
+  },
+  "biological_labels_used": false,
+  "sources": {
+    "full_segments": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+      "bytes": 870096546,
+      "mtime_ns": 1786041795869081191,
+      "sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347"
+    },
+    "full_links": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_links.csv.gz",
+      "bytes": 10729631,
+      "mtime_ns": 1786041795869081191,
+      "sha256": "7435ac55187d7bca464b961621aada6f8d46e0f7ef900ff7d59d0daee89e2f3b"
+    },
+    "manifest": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+      "bytes": 1044864,
+      "mtime_ns": 1786109265393977620,
+      "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+    },
+    "sequence_cache": {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/whole_graph_nt_completion_20260928/whole_graph_nt.npz",
+      "bytes": 1420057107,
+      "mtime_ns": 1790576986353371924,
+      "sha256": "5c07f9bd8b46e4104c7c787fd96dae7cdf14ab8207807a87495e3e0365d257f3"
+    },
+    "fold_config": {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/server_full_multicohort_20260806.json",
+      "bytes": 10951,
+      "mtime_ns": 1790478318571167524,
+      "sha256": "5cec5e982fdcfe1a3620bf257835b70ef702b606cde9a66026fec2531e6ee96d"
+    }
+  },
+  "cross_reference_contig_links": 0,
+  "n_windows": 608,
+  "failed_windows": 0,
+  "n_unique_context_segments": 742607,
+  "n_unique_alternative_segments": 439182,
+  "n_components_covered": 135043,
+  "n_components_total": 135902,
+  "n_dense_score_over_gpu": 0,
+  "n_windows_with_incomplete_original_components": 605,
+  "n_windows_with_isolated_core": 0,
+  "context_size_quantiles": {
+    "0.0": 6.0,
+    "0.5": 638.0,
+    "0.9": 2527.500000000001,
+    "0.95": 5184.799999999997,
+    "0.99": 9257.009999999987,
+    "1.0": 28229.0
+  },
+  "dense_score_bytes_quantiles": {
+    "0.0": 576.0,
+    "0.5": 6533136.0,
+    "0.9": 103724452.80000015,
+    "0.95": 445980874.39999974,
+    "0.99": 1501096362.3999994,
+    "1.0": 12802469904.0
+  },
+  "training_ready": false,
+  "limitations": [
+    "Undirected alternative components are not directed bubbles or phased haplotypes.",
+    "Expansion begins only at original core nodes; added reference anchors do not recursively expand.",
+    "All windows retained; memory flags do not authorize excluding complex windows.",
+    "Score-matrix bytes are a lower bound on dense model memory, not peak GPU profiling.",
+    "Sparse attention semantics require repair/verification before wider-context training.",
+    "Materialized tables are compatible graph inputs, not a trained model or performance result.",
+    "All original one-hop reference flanks retained; newly added anchors do not recursively trigger more components."
+  ]
+}
