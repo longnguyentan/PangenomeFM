@@ -889,3 +889,9 @@ The model-head transfer diagnostic continues separately on validation only.
   Reports: `TRAITGYM_DOWNSTREAM_20260927.md`,
   `COSIGT_GENOTYPING_QUALITY_20260927.md`, and
   `MODEL_AND_DOWNSTREAM_STATUS_20260927.md`.
+
+Server follow-through: the idle dedicated evidence worktree was safely
+fast-forwarded to `6d055a2`, preserving six differing generated artifacts in
+`pre_sync_48ca40a_to_6d055a2/` before checkout. Fourteen targeted tests pass in
+the server environment (nine sklearn `n_jobs` deprecation warnings). Native
+experiment receipts retain their original execution pins.

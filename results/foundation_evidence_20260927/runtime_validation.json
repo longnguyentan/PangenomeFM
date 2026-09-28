@@ -1,0 +1,23 @@
+{
+  "code_commit": "6d055a2f69adc29b861086644d3dd3b2f6c24ecb",
+  "local": {
+    "command": "PYTHONPATH=src:. MPLCONFIGDIR=/private/tmp/pfm-mpl /opt/anaconda3/bin/python -m pytest -q",
+    "passed": 390,
+    "warnings": 15,
+    "seconds": 31.35
+  },
+  "server": {
+    "checkout": "/home/tuv43532/PangenomeFM_evidence_report_20260927",
+    "command": "PYTHONPATH=src:. OMP_NUM_THREADS=4 /home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python -m pytest tests/test_genotyping_quality.py tests/test_traitgym_probe.py tests/test_frozen_head_transfer.py -q",
+    "passed": 14,
+    "warnings": 9,
+    "seconds": 4.09,
+    "warning_type": "sklearn FutureWarning: n_jobs has no effect in 1.8",
+    "scope": "targeted runtime compatibility; full suite ran locally"
+  },
+  "sync": {
+    "status": "local, GitHub and dedicated server worktree synchronized at tested code commit",
+    "original_execution_pins_preserved_in_receipts": true,
+    "differing_generated_outputs_backed_up_before_sync": 6
+  }
+}
