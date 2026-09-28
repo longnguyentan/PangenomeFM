@@ -1,0 +1,28 @@
+{
+  "artifact_type": "analysis_plan",
+  "version": 1,
+  "objective": "Test whether a lower-capacity pretraining pair head improves frozen topology transfer, including its incremental value beyond the independently trained NT-conditioned branch.",
+  "reason": "The selected MLP-head topology branch has variable reconstruction across seeds and weak or mixed incremental cCRE benefit after Q and handcrafted statistics. Reconstruction-selected architecture need not maximize biological reuse.",
+  "development_status": "Adaptively motivated follow-up on already inspected fold A; not independent replication. TraitGym scores are not used to select this intervention.",
+  "intervention": "Use the already completed bidirectional_linear topology checkpoint from the fixed four-arm reconstruction pilot instead of bidirectional_default. No additional epochs, graph changes, input changes, or biological encoder fine-tuning.",
+  "fixed": {
+    "seed": 42,
+    "context": "1hop",
+    "fold": "fold_a",
+    "partition": "development_validation only; no held-out chromosome scoring",
+    "topology_branch": "Same 48-dimensional bidirectional encoder with seven visible-graph inputs and geometry-matched junction-repair objective; linear interaction pair scorer used during its existing pretraining",
+    "sequence_branch": "Existing independently pretrained 48-dimensional NT-conditioned graph branch, unchanged checkpoint",
+    "random_control": "Existing matched-configuration frozen random topology encoder from the same linear-head pilot; historical trained checkpoint lacks the starting-weight checksum, so exact initialization identity remains unverified",
+    "representation": "Ordered frozen [T,Q] concatenation with all four trained/partial-random/random combinations",
+    "probe": "Existing logistic probe with uniform max_iter=4000; same examples, calibration, regularization, solver, tolerance and feature construction"
+  },
+  "models": ["v2", "v2_random", "T_Q", "T_Rq", "Rt_Q", "Rt_Rq"],
+  "tasks": ["HGSVC3 insertion versus deletion", "ENCODE binary cCRE"],
+  "feature_sets": ["C+S", "C+S+H", "C+S+E", "C+S+H+E"],
+  "reuse": "Use the completed converged seed-42 NT-only and NT-random probes, with exact baseline/example identity and numerical-budget checks; do not refit unchanged arms unnecessarily",
+  "contrasts": ["Linear-head T_Q minus each of its matched-dimension random/partial-random controls", "Linear-head versus MLP-head T_Q after C+S and C+S+H", "Linear-head T only versus MLP-head T only", "Linear-head T_Q versus unchanged Q alone"],
+  "validity_gates": ["Every input and checkpoint provenance check passes", "Identical biological examples, labels and C+S/C+S+H predictions", "Every probe converges", "Preserve both favorable and unfavorable task contrasts"],
+  "decision": "A candidate is eligible only for further development if it improves over the MLP-head composite on both tasks after C+S+H and passes all original per-seed random-control gates. Any such improvement remains exploratory; do not promote it directly to a best-model or confirmatory claim.",
+  "failure": "Retain all results and do not expand an unsuccessful head change to the full matrix. Test richer allele/path representations only after verified correspondence and data support.",
+  "novelty": "A weak head is a standard design choice and not a standalone novelty claim. This experiment tests transfer behavior of the audited pangenome-specific pretraining task."
+}
