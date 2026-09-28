@@ -471,5 +471,6 @@
     "V_CSH_fusion": 4000,
     "V_CSHT_fusion": 4000
   },
-  "selection_rule": "Max validation raw-probability AUPRC; exact ties prefer smaller C or larger V mixture weight. Calibration and classification threshold use validation only."
+  "selection_rule": "Max validation raw-probability AUPRC; exact ties prefer smaller C or larger V mixture weight. Calibration and classification threshold use validation only.",
+  "numerical_policy": "Promote native probabilities to float64 before any convex blend. Native values are preserved exactly; mixture, validation replay and calibration use explicit double precision."
 }

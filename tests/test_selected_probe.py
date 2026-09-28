@@ -11,7 +11,7 @@ from tasks.transfer.selected_probe import (choose_mixture, completion_summary, e
 
 def fixture():
     rng = np.random.default_rng(170)
-    x = rng.normal(size=(150, 4))
+    x = rng.normal(size=(150, 4)).astype(np.float32)
     y = np.tile([0, 0, 0, 0, 1], 30)
     outputs = {f'{name}_{kind}': dict(estimator=kind, input=name)
                for kind in ['linear', 'fixed', 'histgb'] for name in ['V', 'CS']}
@@ -128,3 +128,18 @@ def test_selected_report_replays_validation_and_test(tmp_path):
     metrics.to_csv(tmp_path/'metrics.csv', index=False)
     with pytest.raises(ValueError, match='Selected parameter'):
         replay_run(tmp_path, plan, ['chr1'], ['chr2'])
+
+
+def test_mixture_precision_is_explicit_even_with_float32_inputs():
+    from sklearn.metrics import average_precision_score
+    rng = np.random.default_rng(412)
+    y = np.tile([0, 1], 50)
+    v = rng.uniform(size=100).astype(np.float32)
+    b = rng.uniform(size=100).astype(np.float32)
+    _, sweep = choose_mixture(y, v, b, [0., .25, .5, .75, 1.])
+    for row in sweep:
+        w = row['value']
+        assert row['validation_auprc'] == average_precision_score(y, w*v.astype(np.float64)+(1-w)*b.astype(np.float64))
+    args = fixture()
+    _, _, predictions, _, _ = evaluate_selected(**args)
+    assert predictions.p_raw.dtype == np.float64

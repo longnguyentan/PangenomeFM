@@ -41,6 +41,8 @@ def choose_mixture(y_val, variant_probability, locus_probability, weights):
     if (not weights or len(set(weights)) != len(weights) or not {0., 1.} <= set(weights)
             or any(not np.isfinite(w) or w < 0 or w > 1 for w in weights)):
         raise ValueError("Convex mixture grid must contain both unmodified endpoints")
+    variant_probability = np.asarray(variant_probability, dtype=np.float64)
+    locus_probability = np.asarray(locus_probability, dtype=np.float64)
     sweep = [dict(parameter="weight_on_V", value=w, validation_auprc=float(average_precision_score(
         y_val, w*variant_probability+(1-w)*locus_probability))) for w in weights]
     selected = min(sweep, key=lambda row: (-row["validation_auprc"], -row["value"]))
@@ -66,7 +68,8 @@ def evaluate_selected(*, segids, chromosomes, labels, features, test_chrs, val_c
         selection.extend(dict(input_feature=name, **row, selected=row["value"] == chosen["value"]) for row in sweep)
         for tag, c in [("fixed", 1.), ("linear", chosen["value"])]:
             model = models[c]
-            cached[(name, tag)] = dict(val=model.predict_proba(x[val])[:, 1], test=model.predict_proba(x[test])[:, 1],
+            cached[(name, tag)] = dict(val=model.predict_proba(x[val])[:, 1].astype(np.float64),
+                test=model.predict_proba(x[test])[:, 1].astype(np.float64),
                 selected_parameter=c, probe_solver="lbfgs", probe_max_iter=plan["probe_max_iter"],
                 probe_iterations=int(max(model[-1].n_iter_)), probe_converged=True, probe_numerical_pass=True,
                 probe_completion="converged", probe_convergence_messages="")
