@@ -75,7 +75,7 @@ The length-adjusted macro comparison retains gains of +0.023226 strict and +0.02
 
 **Handcrafted graph statistics are stronger than T alone in this task.** C+S+H reaches macro AUPRC 0.473760. Adding T after H gives +0.002470 strict (CI [-0.005189, 0.011544]) and -0.001892 one-hop (CI [-0.011793, 0.008245]); all class-level T-after-H intervals also cross zero. The result supports graph information beyond the C+S baseline in this population, but does not establish superior learned topology representations.
 
-No AP contrast survives the supplied BH correction on exact fold sign-flip p-values. The strict macro primary contrast has p=0.0625 and q=0.285714; one-hop p=0.1250 and q=0.363636. Five folds limit the resolution of these tests. Positive pointwise bootstrap intervals should be described alongside these results, not as unqualified confirmatory significance.
+No AP contrast survives the supplied BH correction on exact fold sign-flip p-values. The strict macro primary contrast has p=0.0625 and q=0.285714; one-hop p=0.1250 and q=0.363636. With five nonzero fold differences, the minimum two-sided exact sign-flip p-value is 2/32 = 0.0625; this test cannot reach 0.05 even when all five signs agree. These p-values therefore describe limited inferential resolution rather than proving no effect. Positive pointwise bootstrap intervals should be described alongside these results, not as unqualified confirmatory significance.
 
 ## Auditable outputs
 
