@@ -45,7 +45,7 @@ def main() -> None:
             or not np.isfinite(loci[plan["targets"]].to_numpy()).all()):
         raise ValueError("Outcome universe differs or contains unmeasured loci")
     features = FrozenLocusFeatures(loci, overlaps, config, args.feature_cache, args.sequence_cache,
-        args.topology_control_cache, args.manifest, plan["aggregation"])
+        args.topology_control_cache, args.manifest, plan["topology_control_sha256"], plan["aggregation"])
     features.static["locus_log_length"] = np.log1p(loci.end-loci.start).to_numpy()[:, None]
     jobs = build_jobs(manuscript, seeds=set(args.seeds) if args.seeds else None,
                       contexts=set(args.contexts) if args.contexts else None)

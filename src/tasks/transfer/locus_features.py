@@ -20,7 +20,7 @@ class FrozenLocusFeatures:
 
     def __init__(self, loci: pd.DataFrame, overlaps: pd.DataFrame, config: dict,
                  feature_cache: Path, sequence_cache: Path, topology_control_cache: Path,
-                 manifest: Path, aggregation: str = "mean"):
+                 manifest: Path, topology_control_sha256: str, aggregation: str = "mean"):
         if loci.locus_id.duplicated().any() or set(loci.locus_id) != set(overlaps.locus_id):
             raise ValueError("Require unique and completely mapped loci")
         if (overlaps.duplicated(["locus_id", "segid"]).any() or (overlaps.overlap_bp <= 0).any()
@@ -43,12 +43,16 @@ class FrozenLocusFeatures:
         for name, path in [("frozen_sequence_fm", sequence_cache), ("topology_control", topology_control_cache)]:
             ids, values, audit = load_frozen_node_embedding_cache(path)
             source = fingerprint(path)
-            if audit.get("output_sha256") != source["sha256"]:
+            # Historical H receipts identify graph/processing but do not store
+            # the output hash; require its independently pinned plan checksum.
+            expected_sha = audit.get("output_sha256") if name == "frozen_sequence_fm" else topology_control_sha256
+            if expected_sha != source["sha256"]:
                 raise ValueError("Frozen feature checksum mismatch")
             self.sources.extend([source, fingerprint(Path(str(path) + ".audit.json"))])
             if name == "frozen_sequence_fm":
                 self.sources.extend(validate_nt_provenance(path, audit, config, source["sha256"]))
             elif (audit.get("kind") != "handcrafted_topology_control" or values.shape[1] != 14
+                    or audit.get("status") != "complete" or audit.get("downstream_label_access") != "none"
                     or audit.get("full_segments_sha256") != config["full_segments_sha256"]):
                 raise ValueError("Expected original 14-statistic graph control")
             self.static[name] = self.pool(ids, values)
