@@ -1,6 +1,6 @@
 {
   "artifact_type": "analysis_plan",
-  "version": 1,
+  "version": 2,
   "task": "hgsvc3_natural_sv_type",
   "recorded_before_first_fit": true,
   "objective": "Predict INS/DEL/INV at the natural primary-chromosome event frequencies; compare to the completed length-matched sensitivity without changing its cohort.",
@@ -121,5 +121,12 @@
   "report_title": "Frozen SV type: natural callset frequencies",
   "figure_title": "Known SV type at natural callset frequencies: frozen encoders",
   "exploration": "Predeclared after the matched-cohort results were inspected; new event denominator, not an independent resource replication.",
-  "execution": "One fold/seed/context smoke checks mapping, complete C/S/T/H coverage and convergence only. Scores do not choose arms. Then five fold shards, each 3 seeds x 2 contexts, exact matrix merge and saved-prediction replay."
+  "execution": "One fold/seed/context smoke checks mapping, complete C/S/T/H coverage and convergence only. Scores do not choose arms. Then five fold shards, each 3 seeds x 2 contexts, exact matrix merge and saved-prediction replay.",
+  "coverage_recovery": {
+    "recorded_before_first_fit": true,
+    "failed_smoke": "d5fb705; missing T for 64 events at terminal chrY segment 303424; no model fitted",
+    "policy": "Append only missing reference embeddings from original reference-overlapping manifest windows, bypassing candidate-count filtering during frozen inference. Every preexisting vector must remain bitwise identical; original caches retained. No graph/checkpoint/model change.",
+    "targets": "Full existing C/K target-segment universe, independently of event labels; both missing terminal reference segments completed in every fold/seed/context",
+    "full_original_denominator_retained": true
+  }
 }
