@@ -1,6 +1,6 @@
 # PangenomeFM: model and downstream evidence status
 
-Last verified 27 September 2026, 22:07 EDT. Technical work only; no manuscript edits.
+Last verified 27 September 2026, 22:29 EDT. Technical work only; no manuscript edits.
 Branch: `codex/v2-evidence-review-20260927`.
 
 ## What changed in this execution
@@ -11,9 +11,9 @@ and cCREs, but the trained-topology-versus-random-topology increment is not
 consistently positive. Thus the full development gate does **not** replicate.
 The uniform 4,000-iteration comparison is now complete at all three seeds;
 all 144 compared fits converge, but the same two scientific gates still fail.
-A controlled weak-head transfer diagnostic is running. TraitGym now has a
-completed 60-run locus-prior matrix and a separately specified allele-score
-sensitivity completed; the additional allele scores did not rescue the combined model. The candidate specification is fixed, but no final
+The controlled weak-head transfer diagnostic is complete: it improves SV
+but slightly reduces cCRE performance, failing its predefined joint gate. TraitGym
+has two completed 60-run matrices; the additional allele scores did not rescue the combined model. The candidate specification is fixed, but no final
 superiority or NMI-readiness claim is supported.
 
 - [x] Complete eight new frozen biological probes: four branch combinations ×
@@ -48,7 +48,11 @@ superiority or NMI-readiness claim is supported.
 - [x] Complete the TraitGym NT-2.5B allele-score sensitivity: 60 runs / 480
   converged fits. No positive topology interval; C+S+V underperforms C+S for
   Mendelian traits despite V being informative alone.
-- [ ] Complete the fixed weak-head transfer diagnostic; it is running.
+- [x] Complete and independently replay the fixed weak-head transfer diagnostic.
+  All fits converge; joint SV/cCRE improvement fails and the change is not promoted.
+- [x] Locate and prepare measured COSIGT genotyping-quality outcomes: 265 loci,
+  14,838 unique sample–locus measurements, 100% original C/K/S/H/T coverage.
+  This is preparation/mapping only; its prediction experiment is not run.
 - [ ] Replicate across chromosome folds and run the selected candidate on new
   downstream endpoints; the full v2 matrix is not completed.
 
@@ -464,13 +468,13 @@ removing queried links can support a standalone novelty claim.
 
 | Priority | Remaining work | Present status / concrete next action |
 |---|---|---|
-| 1 | Model transfer improvement | All three seeds numerically converged; mixed scientific gates persist. Prespecified weak-head diagnostic running |
+| 1 | Model transfer improvement | All three seeds converged; mixed scientific gates persist. Weak head complete, improves SV only; not promoted |
 | 2 | Chromosome replication and v2 task transfer | Not run; freeze protocol before additional label-informed choices |
 | 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | Not completed; include GraphMAE/ToP-style controls, identical examples/input budgets and sequence truncation controls |
 | 4 | TraitGym | Both 60-run adapted matrices complete; neither establishes a positive topology gain. Official LOCO and full embedding comparison remain separate |
 | 5 | INV-containing SV type task | 298 primary events pass mapping/NT coverage; multiclass probe/overlap controls still needed |
 | 6 | DART-Eval | Official suite identified; select coordinate-anchored tasks and audit coverage before claiming a comparable result |
-| 7 | Measured SV genotypability | Variant-level leave-one-out outcomes and callable denominators still missing; FILTER, SVR and self-genotyping are not valid replacements |
+| 7 | Measured SV genotypability | New COSIGT locus-quality outcomes prepared/mapped with complete features; regression not run. Original per-variant PanGenie concordance and callable denominator remain unresolved |
 | 8 | GTEx / SV-expression / trait links | Compact positive sets insufficient; obtain all-tested/callable universes before defining negatives |
 | 9 | Path-aware RNA/methylation, donor scaling | Need verified haplotype-to-canonical-segment correspondence and donor-excluded graph design |
 | 10 | Cross-graph correspondence / construction invariance | Need nontrivial sequence/assembly truth, coordinate controls and duplicate/sample-overlap audits |
@@ -498,6 +502,43 @@ exist elsewhere or inside differently named files. The required per-variant
 outcomes remain unresolved.
 [Inventory audit](../results/foundation_evidence_20260927/genotypability_public_inventory.json)
 · [Official archive README](https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/HGSVC3/working/20241218_phase3-main-pub_data/20241218_phase3-main-pub_data.README.txt).
+
+## Completed weak-head diagnostic
+
+The prespecified linear-head replacement was evaluated on development fold A,
+seed 42, one-hop. Twelve new native probes (48 feature fits) completed, with
+unchanged frozen Q/random-Q branches and existing matched random T. The six-model
+report reuses the completed Q reference; all 48 compared fits converge. Saved
+predictions, metric tables, paired arithmetic and gate replay exactly on the
+laptop after translating source-directory paths.
+
+| C+S+H+T+Q | Original MLP-head T | Linear-head T | Change |
+|---|---:|---:|---:|
+| SV insertion/deletion | 0.918519 | 0.918789 | +0.000269 |
+| cCRE | 0.920713 | 0.920692 | -0.000021 |
+
+The within-candidate random-control gate passes, but the additional intervention
+gate requires improvement on **both** tasks. It fails; this head change is not
+promoted to a full matrix. Its negative cCRE contrast is retained. Neither this
+single development fold nor the small SV increase establishes superiority.
+[Head comparison](../results/foundation_evidence_20260927/weak_head_transfer/analysis/head_comparison.csv)
+· [Final intervention decision](../results/foundation_evidence_20260927/weak_head_transfer/analysis/head_decision.json)
+· [Independent replay](../results/foundation_evidence_20260927/weak_head_transfer/analysis/local_replay.json).
+
+## New measured genotyping-quality resource
+
+[The COSIGT preparation report](COSIGT_GENOTYPING_QUALITY_20260927.md) documents
+14,862 source rows, 24 exact duplicates, 14,838 unique measured pairs, and 265
+GRCh38 intervals. All intervals map to the existing HPRC R2 graph, and all 11,070
+target segments have complete C/K/S/H and 30-cache T coverage. The 1,592 absent
+sample–locus combinations remain unmeasured. This is a feasible locus-quality
+regression starting point, not a completed predictive result or the original
+per-variant PanGenie benchmark. Donor exclusion in the publisher's genotyping
+panel does not establish donor exclusion in our frozen HPRC R2 representation.
+
+The final local suite passes **390 tests** (15 known warnings). All completed
+head and TraitGym prediction replays pass. Remaining unrun model/task extensions
+are listed explicitly above; a complete numerical run is not a positive result.
 
 ## Reproduction and server continuation
 

@@ -1,0 +1,85 @@
+{
+  "raw_rows": 14862,
+  "exact_duplicate_rows_removed": 24,
+  "measured_sample_locus_pairs": 14838,
+  "n_samples": 62,
+  "n_loci": 265,
+  "loci_with_outcomes": 265,
+  "cartesian_sample_locus_pairs": 16430,
+  "unobserved_pairs": 1592,
+  "observed_pair_fraction": 0.903104077906269,
+  "missing_required_values": 0,
+  "qv_fraction_above_one": 18,
+  "max_qv_sum_excess": 0.0005000000000023874,
+  "rounding_clipped": false,
+  "min_observed_donors": 28,
+  "max_observed_donors": 62,
+  "chromosomes": {
+    "chr1": 26,
+    "chr10": 14,
+    "chr11": 19,
+    "chr12": 13,
+    "chr13": 5,
+    "chr14": 8,
+    "chr15": 9,
+    "chr16": 12,
+    "chr17": 12,
+    "chr18": 3,
+    "chr19": 16,
+    "chr2": 24,
+    "chr20": 5,
+    "chr21": 2,
+    "chr22": 4,
+    "chr3": 17,
+    "chr4": 15,
+    "chr5": 8,
+    "chr6": 15,
+    "chr7": 20,
+    "chr8": 10,
+    "chr9": 8
+  },
+  "estimand": "continuous measured locus quality conditional on published evaluable donors",
+  "missingness": "Cartesian support is descriptive; unobserved pairs are not asserted attempted, callable, failed, or negative",
+  "no_performance_results": true,
+  "source_receipt": {
+    "commit": "3d84bf8490bbff5ec33cf72706e713d1a41730ed",
+    "files": [
+      {
+        "path": "resources/benchmarking/leave_all_out/svs_predictions/cosigt_svs_hgsvcv3_samples_on_hprcy1_assemblies.tsv.gz",
+        "url": "https://raw.githubusercontent.com/davidebolo1993/cosigt_paper/3d84bf8490bbff5ec33cf72706e713d1a41730ed/resources/benchmarking/leave_all_out/svs_predictions/cosigt_svs_hgsvcv3_samples_on_hprcy1_assemblies.tsv.gz",
+        "bytes": 1695219,
+        "sha256": "b9966d90570397e19ff4e69ab69a91b23768f9eb333768d38a7fc6ced2d6fc17"
+      },
+      {
+        "path": "resources/benchmarking/svs/svs_refined.hgsvcv3.bed",
+        "url": "https://raw.githubusercontent.com/davidebolo1993/cosigt_paper/3d84bf8490bbff5ec33cf72706e713d1a41730ed/resources/benchmarking/svs/svs_refined.hgsvcv3.bed",
+        "bytes": 8030,
+        "sha256": "daae9698e40d9bf14834194755e7dd55c11a82d8cb881b7ef0d2a53f23a70d71"
+      },
+      {
+        "path": "resources/reference/README.md",
+        "url": "https://raw.githubusercontent.com/davidebolo1993/cosigt_paper/3d84bf8490bbff5ec33cf72706e713d1a41730ed/resources/reference/README.md",
+        "bytes": 826,
+        "sha256": "f0998ebc9f439b4a764156212b3f74c5f823a6d6e51e70991752257ec7a28b02"
+      }
+    ]
+  },
+  "implementation": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/src/tasks/transfer/genotyping_quality.py",
+    "bytes": 6666,
+    "mtime_ns": 1790562047833890970,
+    "sha256": "aa3fb81c2112bd40a331193fd32d66f7933516b2dc5be6e83b46ea2f43d6f87e"
+  },
+  "outcomes": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/data/external/cosigt_readiness_20260927/resources/benchmarking/leave_all_out/svs_predictions/cosigt_svs_hgsvcv3_samples_on_hprcy1_assemblies.tsv.gz",
+    "bytes": 1695219,
+    "mtime_ns": 1790561879389519808,
+    "sha256": "b9966d90570397e19ff4e69ab69a91b23768f9eb333768d38a7fc6ced2d6fc17"
+  },
+  "regions": {
+    "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/data/external/cosigt_readiness_20260927/resources/benchmarking/svs/svs_refined.hgsvcv3.bed",
+    "bytes": 8030,
+    "mtime_ns": 1790561879652810727,
+    "sha256": "daae9698e40d9bf14834194755e7dd55c11a82d8cb881b7ef0d2a53f23a70d71"
+  }
+}

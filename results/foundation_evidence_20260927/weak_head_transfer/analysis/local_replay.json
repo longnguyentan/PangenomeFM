@@ -1,0 +1,34 @@
+{
+  "status": "complete",
+  "independent_prediction_replay": [
+    {
+      "file": "audited_per_run.csv",
+      "rows": 48,
+      "exact": true
+    },
+    {
+      "file": "paired_differences.csv",
+      "rows": 100,
+      "exact": true
+    },
+    {
+      "file": "probe_optimization.csv",
+      "rows": 48,
+      "exact": true
+    },
+    {
+      "file": "all_sv_strata.csv",
+      "rows": 456,
+      "exact": true
+    }
+  ],
+  "head_comparison_exact": true,
+  "gate_replay_exact": true,
+  "all_baselines_identical": true,
+  "n_compared_feature_fits": 48,
+  "source_path_translation": {
+    "results/foundation_evidence_20260927/weak_head_transfer/probes": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_transfer/probes",
+    "results/foundation_evidence_20260927/probe_convergence_4000_raw": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000"
+  },
+  "numerical_values_changed": false
+}

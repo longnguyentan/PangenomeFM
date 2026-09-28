@@ -869,3 +869,23 @@ score alone has Mendelian AP 0.160370, but adding it to C+S lowers AP from
 0.120840 to 0.102110. No positive topology interval appears in either study.
 This is a retained unsuccessful improvement, not a processing failure.
 The model-head transfer diagnostic continues separately on validation only.
+
+
+## Final diagnostic and new quality-data preparation, 27 September 22:29 EDT
+
+- Weak-head transfer: 12/12 native probes completed. The six-model comparison
+  has 48 converged feature fits. Local saved-prediction replay matches every
+  numerical value and gate; only machine-specific source paths are translated.
+- Linear-head versus original MLP-head T+Q after C+S+H: SV +0.0002693169,
+  cCRE -0.0000206030. Random-control checks pass, but the prespecified requirement
+  to improve both tasks fails. The intervention is **not promoted**.
+- COSIGT sample-excluded measured genotyping quality is a newly located endpoint.
+  Implemented continuous-target preparation, removed 24 exact source duplicates
+  with an audit, and kept 1,592 unobserved pairs explicitly unmeasured. Prepared
+  14,838 measured pairs at 265 loci. All loci map, and all original C/K/S/H/T
+  caches cover every required segment. No prediction fit yet; per-locus quality
+  is distinct from per-variant concordance and donor-excluded FM generalization.
+- Full local suite: **390 passed**, 15 known warnings; targeted Ruff passes.
+  Reports: `TRAITGYM_DOWNSTREAM_20260927.md`,
+  `COSIGT_GENOTYPING_QUALITY_20260927.md`, and
+  `MODEL_AND_DOWNSTREAM_STATUS_20260927.md`.

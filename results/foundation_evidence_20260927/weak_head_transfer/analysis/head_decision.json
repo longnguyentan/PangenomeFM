@@ -1,0 +1,23 @@
+{
+  "status": "not_promoted",
+  "reason": "Predefined head-intervention gate additionally requires improvement on both SV and cCRE after C+S+H; cCRE change is negative",
+  "all_fits_converged": true,
+  "within_candidate_random_control_gate": "eligible_for_replication",
+  "improves_both_tasks": false,
+  "paired_head_results": [
+    {
+      "task": "ccre",
+      "auprc_mlp": 0.9207125644589312,
+      "auprc_linear": 0.9206919614403328,
+      "delta_linear_minus_mlp": -2.060301859840852e-05
+    },
+    {
+      "task": "sv",
+      "auprc_mlp": 0.9185192271945044,
+      "auprc_linear": 0.9187885440571372,
+      "delta_linear_minus_mlp": 0.0002693168626328
+    }
+  ],
+  "predefined_plan": "configs/frozen_head_transfer_20260927.json",
+  "scope": "one development fold/seed; no CI or test evaluation"
+}

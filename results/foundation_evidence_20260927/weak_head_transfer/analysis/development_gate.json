@@ -1,0 +1,38 @@
+{
+  "status": "eligible_for_replication",
+  "checks": [
+    {
+      "task": "ccre",
+      "after_H_control_gains": {
+        "T_Rq": 0.0008306780185964868,
+        "Rt_Q": 0.00030143499584234235,
+        "Rt_Rq": 0.0012486218444142105
+      },
+      "difference_from_better_single_branch": {
+        "cst": -8.993419236913436e-05,
+        "csht": 7.262447173228548e-05
+      },
+      "passes": true
+    },
+    {
+      "task": "sv",
+      "after_H_control_gains": {
+        "T_Rq": 0.0014792711783261359,
+        "Rt_Q": 0.0032383294238460536,
+        "Rt_Rq": 0.005548204742289009
+      },
+      "difference_from_better_single_branch": {
+        "cst": 0.0018028538939983685,
+        "csht": 0.0012804593950245247
+      },
+      "passes": true
+    }
+  ],
+  "tolerance": 0.005,
+  "single_branch_tolerance_applied_to_both_feature_sets": true,
+  "limitation": "Adaptively motivated one-fold development; no confirmatory superiority claim",
+  "strict_context_eligible": false,
+  "test_predictions_produced": false,
+  "probe_optimization_fully_recorded": true,
+  "all_probes_converged": true
+}

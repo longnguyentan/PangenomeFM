@@ -1,0 +1,347 @@
+{
+  "status": "coverage_audited",
+  "no_model_fitted": true,
+  "partial_locus_pooling_allowed": false,
+  "coverage": [
+    {
+      "feature": "C_K",
+      "cache": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "S_original",
+      "cache": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "S_benchmark_completed",
+      "cache": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/benchmark_nt.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "H",
+      "cache": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_a/seed_314159/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_314159/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_a/seed_314159/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_314159/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_a/seed_20260806/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_20260806/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_a/seed_20260806/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_20260806/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_a/seed_42/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_42/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_a/seed_42/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_42/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_d/seed_314159/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_314159/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_d/seed_314159/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_314159/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_d/seed_20260806/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_20260806/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_d/seed_20260806/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_20260806/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_d/seed_42/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_42/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_d/seed_42/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_42/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_e/seed_314159/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_314159/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_e/seed_314159/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_314159/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_e/seed_20260806/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_20260806/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_e/seed_20260806/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_20260806/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_e/seed_42/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_42/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_e/seed_42/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_42/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_c/seed_314159/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_314159/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_c/seed_314159/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_314159/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_c/seed_20260806/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_20260806/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_c/seed_20260806/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_20260806/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_c/seed_42/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_42/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_c/seed_42/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_42/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_b/seed_314159/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_314159/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_b/seed_314159/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_314159/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_b/seed_20260806/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_20260806/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_b/seed_20260806/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_20260806/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_b/seed_42/1hop.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_42/1hop.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    },
+    {
+      "feature": "T/fold_b/seed_42/strict.npz",
+      "cache": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_42/strict.npz",
+      "n_target_segments": 11070,
+      "missing_segments": 0,
+      "n_loci": 265,
+      "complete_loci": 265,
+      "incomplete_loci": 0,
+      "incomplete_locus_ids": []
+    }
+  ]
+}

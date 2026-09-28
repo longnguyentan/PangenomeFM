@@ -1,18 +1,7 @@
 {
-  "observed_at_utc": "2026-09-28T01:08:06.006865+00:00",
+  "observed_at_utc": "2026-09-28T02:29:10.309935+00:00",
   "ssh_access": "working",
   "jobs": [
-    {
-      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/status.json",
-      "status": "complete",
-      "completed_stages": [
-        "seed_314159/pretraining",
-        "seed_314159/biological_and_report",
-        "seed_20260806/pretraining",
-        "seed_20260806/biological_and_report"
-      ],
-      "commit": "3193055da8093da2ac9a8372cb76b8c9765bd6ad"
-    },
     {
       "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000/status.json",
       "status": "complete",
@@ -20,21 +9,56 @@
       "commit": "c86d447176ef64b385854c48df0164c36b46c66e"
     },
     {
-      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_replication_finalizer_status.json",
-      "status": "complete",
-      "implementation_commit": "c86d447176ef64b385854c48df0164c36b46c66e"
-    },
-    {
       "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/status.json",
-      "status": "running",
-      "completed_seeds": [],
+      "status": "complete",
+      "completed_seeds": [
+        314159,
+        20260806
+      ],
       "native_code_commit": "c86d447176ef64b385854c48df0164c36b46c66e"
     },
     {
       "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_314159/status.json",
-      "status": "running",
-      "completed_commands": 2,
+      "status": "complete",
+      "completed_commands": 16,
       "commit": "c86d447176ef64b385854c48df0164c36b46c66e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_20260806/status.json",
+      "status": "complete",
+      "completed_commands": 16,
+      "commit": "c86d447176ef64b385854c48df0164c36b46c66e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/status.json",
+      "status": "complete",
+      "completed_runs": 60,
+      "planned_runs": 60
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/status.json",
+      "status": "complete",
+      "completed_runs": 60,
+      "planned_runs": 60
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_transfer/status.json",
+      "status": "complete",
+      "numerical_gate": true,
+      "control_gate": "eligible_for_replication",
+      "improves_both_tasks": false,
+      "native_commit": "48ca40a91a19f107290d38d6bd6b13619a6dc98e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_transfer/probes/status.json",
+      "status": "complete",
+      "completed_commands": 12,
+      "commit": "48ca40a91a19f107290d38d6bd6b13619a6dc98e"
     }
-  ]
+  ],
+  "native_execution_pins": {
+    "PangenomeFM_readiness_20260927": "c86d447176ef64b385854c48df0164c36b46c66e",
+    "PangenomeFM_evidence_report_20260927": "48ca40a91a19f107290d38d6bd6b13619a6dc98e"
+  },
+  "interpretation": "Completed jobs include scientifically negative outcomes. Native execution pins remain recorded; later analysis code is tracked separately."
 }

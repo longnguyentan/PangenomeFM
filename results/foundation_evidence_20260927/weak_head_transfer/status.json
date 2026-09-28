@@ -1,0 +1,169 @@
+{
+  "status": "complete",
+  "plan": {
+    "artifact_type": "analysis_plan",
+    "version": 1,
+    "objective": "Test whether a lower-capacity pretraining pair head improves frozen topology transfer, including its incremental value beyond the independently trained NT-conditioned branch.",
+    "reason": "The selected MLP-head topology branch has variable reconstruction across seeds and weak or mixed incremental cCRE benefit after Q and handcrafted statistics. Reconstruction-selected architecture need not maximize biological reuse.",
+    "development_status": "Adaptively motivated follow-up on already inspected fold A; not independent replication. TraitGym scores are not used to select this intervention.",
+    "intervention": "Use the already completed bidirectional_linear topology checkpoint from the fixed four-arm reconstruction pilot instead of bidirectional_default. No additional epochs, graph changes, input changes, or biological encoder fine-tuning.",
+    "fixed": {
+      "seed": 42,
+      "context": "1hop",
+      "fold": "fold_a",
+      "partition": "development_validation only; no held-out chromosome scoring",
+      "topology_branch": "Same 48-dimensional bidirectional encoder with seven visible-graph inputs and geometry-matched junction-repair objective; linear interaction pair scorer used during its existing pretraining",
+      "sequence_branch": "Existing independently pretrained 48-dimensional NT-conditioned graph branch, unchanged checkpoint",
+      "random_control": "Existing matched-configuration frozen random topology encoder from the same linear-head pilot; historical trained checkpoint lacks the starting-weight checksum, so exact initialization identity remains unverified",
+      "representation": "Ordered frozen [T,Q] concatenation with all four trained/partial-random/random combinations",
+      "probe": "Existing logistic probe with uniform max_iter=4000; same examples, calibration, regularization, solver, tolerance and feature construction"
+    },
+    "models": [
+      "v2",
+      "v2_random",
+      "T_Q",
+      "T_Rq",
+      "Rt_Q",
+      "Rt_Rq"
+    ],
+    "tasks": [
+      "HGSVC3 insertion versus deletion",
+      "ENCODE binary cCRE"
+    ],
+    "feature_sets": [
+      "C+S",
+      "C+S+H",
+      "C+S+E",
+      "C+S+H+E"
+    ],
+    "reuse": "Use the completed converged seed-42 NT-only and NT-random probes, with exact baseline/example identity and numerical-budget checks; do not refit unchanged arms unnecessarily",
+    "contrasts": [
+      "Linear-head T_Q minus each of its matched-dimension random/partial-random controls",
+      "Linear-head versus MLP-head T_Q after C+S and C+S+H",
+      "Linear-head T only versus MLP-head T only",
+      "Linear-head T_Q versus unchanged Q alone"
+    ],
+    "validity_gates": [
+      "Every input and checkpoint provenance check passes",
+      "Identical biological examples, labels and C+S/C+S+H predictions",
+      "Every probe converges",
+      "Preserve both favorable and unfavorable task contrasts"
+    ],
+    "decision": "A candidate is eligible only for further development if it improves over the MLP-head composite on both tasks after C+S+H and passes all original per-seed random-control gates. Any such improvement remains exploratory; do not promote it directly to a best-model or confirmatory claim.",
+    "failure": "Retain all results and do not expand an unsuccessful head change to the full matrix. Test richer allele/path representations only after verified correspondence and data support.",
+    "novelty": "A weak head is a standard design choice and not a standalone novelty claim. This experiment tests transfer behavior of the audited pangenome-specific pretraining task."
+  },
+  "config": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_driver_6987793/frozen_head_transfer_20260927.json",
+    "bytes": 3464,
+    "mtime_ns": 1790559674000000000,
+    "sha256": "6ea422e0a0d6bcdd9784c237f0b177510e01e2a356fa03475d2c210a4c5dfa37"
+  },
+  "implementation": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_driver_6987793/run_frozen_head_transfer.py",
+    "bytes": 7711,
+    "mtime_ns": 1790559836000000000,
+    "sha256": "ac14b6f5956dcbaea0ebc3c4271468893516ea5e9ff3f4861f54f760e3f77750"
+  },
+  "native_commit": "48ca40a91a19f107290d38d6bd6b13619a6dc98e",
+  "commands": [
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "scripts/server/run_v2_review_controls.py",
+      "--main-checkout",
+      "/home/tuv43532/PangenomeFM",
+      "--out-root",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_transfer/probes",
+      "--fold",
+      "fold_a",
+      "--seed",
+      "42",
+      "--contexts",
+      "1hop",
+      "--validation-only",
+      "--probe-max-iter",
+      "4000",
+      "--primary-features-only",
+      "--extraction-candidate-policy",
+      "manuscript",
+      "--topology-control-cache",
+      "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+      "--probe-gpus",
+      "0",
+      "1",
+      "2",
+      "3",
+      "--models",
+      "v2",
+      "v2_random",
+      "T_Q",
+      "T_Rq",
+      "Rt_Q",
+      "Rt_Rq",
+      "--candidate-checkpoint",
+      "v2=/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/geometry_pilot/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_maskedq_jrbranching16_geommatch1.25_visdeg_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "--candidate-checkpoint",
+      "v2_random=/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/geometry_random_controls/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_frozenR_maskedq_jrbranching16_geommatch1.25_visdeg_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "--candidate-checkpoint",
+      "T_Q=/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/geometry_pilot/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_maskedq_jrbranching16_geommatch1.25_visdeg_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "--companion-checkpoint",
+      "T_Q=/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_conditioned_trained/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_maskedq_jrbranching16_geommatch1.25_visdeg_xcache_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "--candidate-checkpoint",
+      "T_Rq=/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/geometry_pilot/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_maskedq_jrbranching16_geommatch1.25_visdeg_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "--companion-checkpoint",
+      "T_Rq=/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_conditioned_random/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_frozenR_maskedq_jrbranching16_geommatch1.25_visdeg_xcache_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "--candidate-checkpoint",
+      "Rt_Q=/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/geometry_random_controls/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_frozenR_maskedq_jrbranching16_geommatch1.25_visdeg_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "--companion-checkpoint",
+      "Rt_Q=/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_conditioned_trained/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_maskedq_jrbranching16_geommatch1.25_visdeg_xcache_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "--candidate-checkpoint",
+      "Rt_Rq=/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/geometry_random_controls/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_frozenR_maskedq_jrbranching16_geommatch1.25_visdeg_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "--companion-checkpoint",
+      "Rt_Rq=/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_conditioned_random/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_frozenR_maskedq_jrbranching16_geommatch1.25_visdeg_xcache_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt"
+    ],
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "-m",
+      "tasks.transfer.frozen_branch_report",
+      "--root",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_transfer/probes",
+      "--topology-root",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_transfer/probes",
+      "--sequence-root",
+      "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000",
+      "--out-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_transfer/analysis"
+    ]
+  ],
+  "waiting_for": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/status.json",
+  "checkpoints": {
+    "nt": {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_conditioned_trained/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_maskedq_jrbranching16_geommatch1.25_visdeg_xcache_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "bytes": 344946,
+      "mtime_ns": 1790546996581364723,
+      "sha256": "15fe0a7466ba1396c9f0fd64408f88e3444915b20c9d96fe1a23b2a5ee7387ea"
+    },
+    "nt_random": {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_conditioned_random/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_frozenR_maskedq_jrbranching16_geommatch1.25_visdeg_xcache_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "bytes": 345458,
+      "mtime_ns": 1790546866614715067,
+      "sha256": "fef50b9319d302c50342131d5c727c8610352161045a03a0c7f94c1cfc029ea0"
+    },
+    "v2": {
+      "path": "/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/geometry_pilot/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_maskedq_jrbranching16_geommatch1.25_visdeg_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "bytes": 245858,
+      "mtime_ns": 1790541932807928791,
+      "sha256": "cd61b677597453b1787fdf3f481eec6c803f66ae5f57d98d9d3104022108b60d"
+    },
+    "v2_random": {
+      "path": "/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/geometry_random_controls/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_frozenR_maskedq_jrbranching16_geommatch1.25_visdeg_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+      "bytes": 246562,
+      "mtime_ns": 1790542439062398820,
+      "sha256": "e8ab80f5cb94442c161c4338843b37b385152d84941644b3e47e5d21f2096f09"
+    }
+  },
+  "numerical_gate": true,
+  "control_gate": "eligible_for_replication",
+  "improves_both_tasks": false,
+  "interpretation": "Development diagnostic only; an unfavorable result is retained as a complete experiment"
+}
