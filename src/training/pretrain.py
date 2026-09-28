@@ -550,7 +550,7 @@ def load_slice(
         junction_audit = junction_audit_obj.as_dict()
         if audit_out is not None:
             audit_out.update(junction_audit)
-    elif objective_of(args) == "junction_repair" and extraction_only:
+    elif objective_of(args) in {"junction_repair", "masked_nt_features"} and extraction_only:
         # Frozen extraction never scores candidates; keep every slice so that
         # embedding coverage does not depend on how many junctions it holds.
         edge_df = pd.DataFrame(
@@ -605,7 +605,7 @@ def load_slice(
         train_groups = [
             train_idx[group_col[train_idx] == g] for g in np.unique(group_col[train_idx])
         ]
-    elif objective_of(args) == "junction_repair" and extraction_only:
+    elif objective_of(args) in {"junction_repair", "masked_nt_features"} and extraction_only:
         train_idx = np.arange(n, dtype=np.int64)
         val_idx = np.empty(0, dtype=np.int64)
         test_idx = np.empty(0, dtype=np.int64)
@@ -616,7 +616,7 @@ def load_slice(
         audit_out.update(n_train_candidates=len(train_idx), n_val_candidates=len(val_idx),
                          n_test_candidates=len(test_idx))
     if len(train_idx) < 10 and not (
-        objective_of(args) == "junction_repair" and extraction_only
+        objective_of(args) in {"junction_repair", "masked_nt_features"} and extraction_only
     ):
         if audit_out is not None:
             audit_out["exclusion"] = "fewer_than_10_training_candidates"
