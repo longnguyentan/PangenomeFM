@@ -1,0 +1,93 @@
+{
+  "status": "complete",
+  "sources": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/composite_biological_validation/status.json",
+      "bytes": 24904,
+      "mtime_ns": 1790552500189339770,
+      "sha256": "e2a8fe037f314e1002da07382305d5e80d87e4238bd7aca6054f86d8f739aafb"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/biological_validation_common/status.json",
+      "bytes": 11136,
+      "mtime_ns": 1790545490452817147,
+      "sha256": "746db7cb9c9796bee833a8390dc4074a8d224e90b54bb5703578615d25934ab4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_biological_validation/status.json",
+      "bytes": 11174,
+      "mtime_ns": 1790547771681404127,
+      "sha256": "ccc0e76707bdb1b6d9eb36ce114b0b9ef43844b0ab1b42444d6690242e55a964"
+    }
+  ],
+  "branch_evidence": [
+    {
+      "model": "T_Q",
+      "task": "sv",
+      "checkpoint_hashes": [
+        "6f46ec8ea5f8a6daa6450b1373b6d4af66b07851ec7da1eb0e358f4fdbdf416a",
+        "15fe0a7466ba1396c9f0fd64408f88e3444915b20c9d96fe1a23b2a5ee7387ea"
+      ]
+    },
+    {
+      "model": "T_Q",
+      "task": "ccre",
+      "checkpoint_hashes": [
+        "6f46ec8ea5f8a6daa6450b1373b6d4af66b07851ec7da1eb0e358f4fdbdf416a",
+        "15fe0a7466ba1396c9f0fd64408f88e3444915b20c9d96fe1a23b2a5ee7387ea"
+      ]
+    },
+    {
+      "model": "T_Rq",
+      "task": "sv",
+      "checkpoint_hashes": [
+        "6f46ec8ea5f8a6daa6450b1373b6d4af66b07851ec7da1eb0e358f4fdbdf416a",
+        "fef50b9319d302c50342131d5c727c8610352161045a03a0c7f94c1cfc029ea0"
+      ]
+    },
+    {
+      "model": "T_Rq",
+      "task": "ccre",
+      "checkpoint_hashes": [
+        "6f46ec8ea5f8a6daa6450b1373b6d4af66b07851ec7da1eb0e358f4fdbdf416a",
+        "fef50b9319d302c50342131d5c727c8610352161045a03a0c7f94c1cfc029ea0"
+      ]
+    },
+    {
+      "model": "Rt_Q",
+      "task": "sv",
+      "checkpoint_hashes": [
+        "ea444e5dc55cc8bdd75aa333681a65d8ae138f1d229d9161adf70ddfb8e17903",
+        "15fe0a7466ba1396c9f0fd64408f88e3444915b20c9d96fe1a23b2a5ee7387ea"
+      ]
+    },
+    {
+      "model": "Rt_Q",
+      "task": "ccre",
+      "checkpoint_hashes": [
+        "ea444e5dc55cc8bdd75aa333681a65d8ae138f1d229d9161adf70ddfb8e17903",
+        "15fe0a7466ba1396c9f0fd64408f88e3444915b20c9d96fe1a23b2a5ee7387ea"
+      ]
+    },
+    {
+      "model": "Rt_Rq",
+      "task": "sv",
+      "checkpoint_hashes": [
+        "ea444e5dc55cc8bdd75aa333681a65d8ae138f1d229d9161adf70ddfb8e17903",
+        "fef50b9319d302c50342131d5c727c8610352161045a03a0c7f94c1cfc029ea0"
+      ]
+    },
+    {
+      "model": "Rt_Rq",
+      "task": "ccre",
+      "checkpoint_hashes": [
+        "ea444e5dc55cc8bdd75aa333681a65d8ae138f1d229d9161adf70ddfb8e17903",
+        "fef50b9319d302c50342131d5c727c8610352161045a03a0c7f94c1cfc029ea0"
+      ]
+    }
+  ],
+  "arithmetic": "metrics replayed from actual identical validation examples",
+  "dimensions": "48+48 in every composite; each single-branch reference is 48",
+  "scope": "one development fold/seed; encoders frozen; no test predictions",
+  "n_runs": 12
+}

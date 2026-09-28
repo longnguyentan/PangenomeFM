@@ -1,0 +1,92 @@
+{
+  "status": "catalog_inspected",
+  "provider": "Genomic Intelligence",
+  "tasks": [
+    {
+      "task": "chromatin",
+      "default_model": "g0-deepsea",
+      "models": [
+        {
+          "id": "g0-deepsea",
+          "name": "G0 DeepSEA Chromatin (Mammalian)",
+          "description": "G0 DeepSEA Chromatin (Mammalian)",
+          "is_default": true,
+          "bio_spec": {
+            "sequence_type": "DNA",
+            "tokenization": "BPE",
+            "kmer_k": null,
+            "max_tokens": 512,
+            "request_max_bp": 500000,
+            "context_window_bp": 1000,
+            "trained_window_bp": null,
+            "organism": "human",
+            "capabilities": [
+              "multilabel_classification"
+            ],
+            "output_formats": [
+              "probabilities",
+              "BED"
+            ],
+            "training_data": "ENCODE chromatin accessibility (919 cell types x features)"
+          }
+        },
+        {
+          "id": "dnabert-deepsea",
+          "name": "DNABERT DeepSEA Chromatin (Mammalian, 6-mer)",
+          "description": "DNABERT DeepSEA Chromatin (Mammalian, 6-mer)",
+          "is_default": false,
+          "bio_spec": {
+            "sequence_type": "DNA",
+            "tokenization": "k-mer",
+            "kmer_k": 6,
+            "max_tokens": 512,
+            "request_max_bp": 500000,
+            "context_window_bp": 1000,
+            "trained_window_bp": null,
+            "organism": "human",
+            "capabilities": [
+              "multilabel_classification"
+            ],
+            "output_formats": [
+              "probabilities",
+              "BED"
+            ],
+            "training_data": "ENCODE chromatin accessibility (919 cell types x features)"
+          }
+        }
+      ]
+    },
+    {
+      "task": "expression",
+      "default_model": "g0-expression",
+      "models": [
+        {
+          "id": "g0-expression",
+          "name": "G0 Expression",
+          "description": "G0 Expression",
+          "is_default": true,
+          "bio_spec": {
+            "sequence_type": "DNA",
+            "tokenization": "BPE",
+            "kmer_k": null,
+            "max_tokens": 1024,
+            "request_max_bp": 500000,
+            "context_window_bp": null,
+            "trained_window_bp": 9198,
+            "organism": "human",
+            "capabilities": [
+              "regression",
+              "expression_prediction"
+            ],
+            "output_formats": [
+              "json"
+            ],
+            "training_data": "Human and mouse RNA-seq: ENCODE bulk, GTEx via recount3, and cellxgene single-cell pseudobulk"
+          }
+        }
+      ]
+    }
+  ],
+  "predictions_requested": false,
+  "interpretation": "Supervised ENCODE/GTEx models are potential comparators, not independent experimental labels. No pseudo-labels or unverified claims of frozen-unsupervised pretraining."
+}

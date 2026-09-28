@@ -1,0 +1,84 @@
+{
+  "status": "coverage_audit_complete",
+  "graph": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+    "bytes": 870096546,
+    "mtime_ns": 1786041795869081191,
+    "sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347"
+  },
+  "caches": {
+    "manuscript_NT": {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+      "bytes": 573489289,
+      "mtime_ns": 1786930030728110426,
+      "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de"
+    },
+    "benchmark_NT": {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/benchmark_nt.npz",
+      "bytes": 906437982,
+      "mtime_ns": 1790546325608455626,
+      "sha256": "9f5015336bd1c0b9c5f81ed98e659e23f498ca28b57e5646d17ce411f93baabe"
+    }
+  },
+  "datasets": [
+    {
+      "dataset": "complex_traits",
+      "source": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/complex_traits_matched_9.parquet",
+        "bytes": 411336,
+        "mtime_ns": 1790551325000000000,
+        "sha256": "068940684e1e6f735a25a1a4418fb65390628023a96188af7f1a15dd17de7036"
+      },
+      "n": 11400,
+      "unique_loci": 11400,
+      "multi_segment_rows": 0,
+      "mixed_label_loci": 0,
+      "graph_coverage": 1.0,
+      "official_match_groups": 1140
+    },
+    {
+      "dataset": "mendelian_traits",
+      "source": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/mendelian_traits_matched_9.parquet",
+        "bytes": 50205,
+        "mtime_ns": 1790551326000000000,
+        "sha256": "144db4bf965e3c2b8936cd675448bade96369b6546cfdadb5c7b2bca17389607"
+      },
+      "n": 3380,
+      "unique_loci": 3354,
+      "multi_segment_rows": 0,
+      "mixed_label_loci": 0,
+      "graph_coverage": 1.0,
+      "official_match_groups": 338
+    }
+  ],
+  "coordinate_contract": "Official TraitGym pos is 1-based; map [pos-1,pos) without nearest fallback",
+  "no_model_fitted": true,
+  "original_rows_retained": true,
+  "reference_verification": {
+    "checked": 14780,
+    "mismatches": 0,
+    "sampling": "First encountered mapped example per dataset, independent of label/model scores",
+    "sample_records": [
+      {
+        "dataset": "complex_traits",
+        "variant_id": "chr1:867476:C:T",
+        "segid": 307,
+        "start0": 867375,
+        "end0": 867576,
+        "variant_position_in_record": 101
+      },
+      {
+        "dataset": "mendelian_traits",
+        "variant_id": "chr1:1425822:C:G",
+        "segid": 876,
+        "start0": 1425721,
+        "end0": 1425922,
+        "variant_position_in_record": 101
+      }
+    ]
+  },
+  "interpretation": "Cache membership is potential input coverage, not proof of complete checkpoint/window embedding coverage",
+  "next_gate": "Preserve official matched controls and chromosome protocol; audit class-dependent loss before fitting",
+  "representation_limit": "Static segment T is a locus prior and does not distinguish ref versus alt alleles"
+}

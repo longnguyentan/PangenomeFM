@@ -21,6 +21,9 @@ def plot_contrasts(differences: pd.DataFrame, out: Path) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    from matplotlib.ticker import MaxNLocator
+    plt.rcParams.update({"font.size": 10, "pdf.fonttype": 42, "svg.fonttype": "none",
+                         "axes.spines.top": False, "axes.spines.right": False})
     labels = ["T+random Q", "random T+Q", "both random", "T only", "Q only"]
     fig, axes = plt.subplots(1, 2, figsize=(10, 4), layout="constrained", sharey=True)
     for ax, task in zip(axes, ["sv", "ccre"]):
@@ -36,6 +39,7 @@ def plot_contrasts(differences: pd.DataFrame, out: Path) -> None:
         ax.set(yticks=range(5), yticklabels=labels, ylim=(4.6, -.6), xlim=(low-padding, high+padding),
                xlabel="T+Q minus comparator: validation Δ AUPRC",
                title="SV insertion/deletion" if task == "sv" else "cCRE")
+        ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
     fig.suptitle("After C+S+H: one development fold/seed; no confidence interval")
     save_figure(fig, out, "frozen_branch_gains")
     plt.close(fig)

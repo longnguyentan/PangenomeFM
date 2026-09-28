@@ -201,6 +201,8 @@ def plot_validation(frame: pd.DataFrame, controls: pd.DataFrame | None, out: Pat
                                    ('node_inputs_boosting', 'Raw inputs: boosting', '#87549b')]:
             ax.axhline(indexed.loc[name, 'auprc'], color=color, ls=':', lw=1.4, label=label)
     labels = dict(zip(ARMS, ["Incoming\nMLP", "Incoming\nLinear", "Bidirectional\nMLP", "Bidirectional\nLinear"]))
+    if frame.representation.eq("sequence_conditioned_coordinate").all():
+        labels = {arm: "Coordinate stream\n" + ("Linear" if arm.endswith("_linear") else "MLP") for arm in arms}
     ax.set(xticks=range(len(arms)), xticklabels=[labels[arm] for arm in arms],
            ylim=(0, 1), ylabel="Validation AUPRC", title=f"Junction reconstruction: {frame.representation.iloc[0].replace('_', ' ')}")
     ax.legend(frameon=False, loc="upper left", bbox_to_anchor=(1.01, 1))

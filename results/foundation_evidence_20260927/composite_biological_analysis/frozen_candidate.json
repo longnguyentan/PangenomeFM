@@ -1,0 +1,53 @@
+{
+  "status": "candidate_frozen_for_seed_replication",
+  "representation": "ordered frozen [T48,Q48] concatenation",
+  "topology_checkpoint_sha256": "6f46ec8ea5f8a6daa6450b1373b6d4af66b07851ec7da1eb0e358f4fdbdf416a",
+  "sequence_context_checkpoint_sha256": "15fe0a7466ba1396c9f0fd64408f88e3444915b20c9d96fe1a23b2a5ee7387ea",
+  "nt_cache_sha256": "9f5015336bd1c0b9c5f81ed98e659e23f498ca28b57e5646d17ce411f93baabe",
+  "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+  "gate": {
+    "status": "eligible_for_replication",
+    "checks": [
+      {
+        "task": "ccre",
+        "after_H_control_gains": {
+          "T_Rq": 0.0010287211975478217,
+          "Rt_Q": 0.00036817092756280534,
+          "Rt_Rq": 0.0012225209940563975
+        },
+        "difference_from_better_single_branch": {
+          "cst": 8.638964651941361e-05,
+          "csht": 8.777225987999238e-05
+        },
+        "passes": true
+      },
+      {
+        "task": "sv",
+        "after_H_control_gains": {
+          "T_Rq": 0.0018305511755839499,
+          "Rt_Q": 0.0030030759322108302,
+          "Rt_Rq": 0.005229982093313601
+        },
+        "difference_from_better_single_branch": {
+          "cst": 0.0028453331200498644,
+          "csht": 0.0016572165167518804
+        },
+        "passes": true
+      }
+    ],
+    "tolerance": 0.005,
+    "single_branch_tolerance_applied_to_both_feature_sets": true,
+    "limitation": "Adaptively motivated one-fold development; no confirmatory superiority claim",
+    "strict_context_eligible": false,
+    "test_predictions_produced": false
+  },
+  "full_matrix_complete": false,
+  "biological_encoders_frozen": true,
+  "source_code_commit": "7be1faeb84721f4a1fab5afa600d845f8a9d01b1",
+  "analysis_plan": "configs/frozen_branch_analysis_plan_20260927.json",
+  "input_artifacts": {
+    "results/foundation_evidence_20260927/composite_biological_analysis/audit.json": "01ec0024471448b88d93a347130afab2469cd71d36ee5cad942f46968ec5153f",
+    "results/foundation_evidence_20260927/nt_junction_analysis/audit.json": "d5f355ab75d8527b67166f241494fd89e7504055959a128731e66b4a13f486a2",
+    "results/foundation_evidence_20260927/nt_coordinate_analysis/audit.json": "d7b195bbd1cb9435b885e46d81633df18e45850288b40efea156720f17a5192d"
+  }
+}

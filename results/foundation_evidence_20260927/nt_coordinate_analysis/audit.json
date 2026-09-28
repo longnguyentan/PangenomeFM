@@ -1,0 +1,37 @@
+{
+  "status": "complete",
+  "source_receipts": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_coordinate_trained/status.json",
+      "bytes": 4824,
+      "mtime_ns": 1790551598746647709,
+      "sha256": "14142ec7088ff52d35fad77b8d9350c597248e8100e1133b0781ec4360db502b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/nt_coordinate_random/status.json",
+      "bytes": 4848,
+      "mtime_ns": 1790551501519740929,
+      "sha256": "16bd4807da0cadb255710ec1407371d7be47f7fcbaf1b0eda1ae39c5b5b5b2e5"
+    }
+  ],
+  "candidate_identity": "passed",
+  "candidate_identity_encoding": "CSV with exact integer endpoints and binary labels; schema v2",
+  "raw_input_control_source": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/nt_raw_input_controls/audit.json",
+    "bytes": 6248,
+    "mtime_ns": 1790547771869402207,
+    "sha256": "ee39b0aad96d798701450482ad0c02ca03af3906273b376c19bca98140611eda"
+  },
+  "frozen_random_parameter_identity": "passed",
+  "checkpoint_metric_replay": "passed",
+  "matched_initialization": [
+    "passed"
+  ],
+  "matched_configuration": "passed",
+  "representation": "sequence_conditioned_coordinate",
+  "selected_arm": "bidirectional_linear",
+  "selection_criterion": "native window-macro validation AUROC",
+  "selected_checkpoint_sha256": "b870bd8118a0b8fc7cd628090e8941462f35ec832f71c33f2267de6c4eff5ea0",
+  "scope": "single-fold development comparison; not independent biological evidence",
+  "confidence_intervals": "not estimated after selection on this development partition"
+}

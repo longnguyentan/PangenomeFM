@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "generated_at": "2026-08-31T17:15:21+0000",
+  "probe_root": "/home/tuv43532/PangenomeFM/server_workspace/results/ccre_sequence_fm_factorial_20260815",
+  "prediction_files": 30,
+  "folds": [
+    "fold_a",
+    "fold_b",
+    "fold_c",
+    "fold_d",
+    "fold_e"
+  ],
+  "seeds": [
+    42,
+    314159,
+    20260806
+  ],
+  "contexts": [
+    "1hop",
+    "strict"
+  ],
+  "n_bootstrap": 10000,
+  "bootstrap_seed": 20260830,
+  "subtype_comparison": "named ENCODE cCRE subtype versus common background; other positive cCRE classes excluded",
+  "complexity_comparison": "original binary cCRE outcome within strict-context native-graph complexity tertiles fixed independently of model performance",
+  "required_feature_sets": [
+    "coordinate_plus_frozen_sequence_fm",
+    "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm"
+  ],
+  "outputs": {
+    "run_metrics": "ccre_stratum_run_metrics.csv",
+    "absolute_summary": "ccre_stratum_absolute_summary.csv",
+    "topology_gains": "ccre_stratum_topology_gains.csv",
+    "gain_interactions": "ccre_stratum_gain_interactions.csv"
+  },
+  "node_labels": "/home/tuv43532/PangenomeFM/server_workspace/data/downstream/ccre/hprc_r2_screen_v4/node_labels.csv.gz",
+  "node_labels_sha256": "8553a54b911ed00607ddc5c556430c41f64c1f558120aee2ba784fab97d20e3f",
+  "node_label_rows": 303425,
+  "canonical_label_values": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "binary_target_definition": "ccre_class != background",
+  "binary_positive_labels": 146902,
+  "binary_background_labels": 156523,
+  "complexity_features": "/home/tuv43532/PangenomeFM/server_workspace/results/complexity_context_v2_20260815/native_complexity_v2/complexity_features.tsv",
+  "complexity_features_sha256": "7485d2c4d1cb8a047969fa1f92de6cfea3945f0de9f229f41d2382081d516d24",
+  "complexity_window_bp": 5000000,
+  "strict_complexity_window_counts": {
+    "low": 203,
+    "medium": 202,
+    "high": 203
+  },
+  "labels_with_complexity_assignment": 303420,
+  "subtype_source_labels": {
+    "PLS": "PLS",
+    "pELS": "pELS",
+    "dELS": "dELS",
+    "CTCF-only": "CA-CTCF"
+  }
+}

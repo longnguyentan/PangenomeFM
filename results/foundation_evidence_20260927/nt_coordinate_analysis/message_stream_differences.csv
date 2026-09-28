@@ -1,0 +1,7 @@
+encoder,metric,full,coordinate,difference,scope
+trained,auprc,0.8699813163932932,0.7309369591334781,0.13904435725981512,one development fold/seed; no CI
+trained,auroc,0.8899264723378941,0.7456513979773944,0.1442750743604997,one development fold/seed; no CI
+trained,macro_window_auroc,0.9040214769348628,0.756674097049239,0.14734737988562374,one development fold/seed; no CI
+frozen_random,auprc,0.6547474961610897,0.6117285401138597,0.04301895604723005,one development fold/seed; no CI
+frozen_random,auroc,0.6730622248661511,0.5928518738845925,0.0802103509815586,one development fold/seed; no CI
+frozen_random,macro_window_auroc,0.6933202023684976,0.6222054523411683,0.07111475002732925,one development fold/seed; no CI

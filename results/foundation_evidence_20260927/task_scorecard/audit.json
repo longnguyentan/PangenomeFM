@@ -1,0 +1,237 @@
+{
+  "status": "complete",
+  "rows": 52,
+  "sources": [
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/data/manuscript_gap_sources_20260830/figure5_absolute.csv",
+      "bytes": 1499,
+      "mtime_ns": 1790470946693869397,
+      "sha256": "4d870febb67cee93e4ce357e04ea76e00f6cf6663837cd5724d14fbaaf346582"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/data/manuscript_gap_sources_20260830/figure5_contributions.csv",
+      "bytes": 2951,
+      "mtime_ns": 1790470946693982023,
+      "sha256": "f92fc2fb4878a8d226417eff7abbb308cb79afd923d5306c26b7c4539113874e"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/extension_20260927/analysis/atac/paired_gains.csv",
+      "bytes": 555,
+      "mtime_ns": 1790500417000000000,
+      "sha256": "3c128493d6bc7e1812ff8714605065e790286517ef1b898354265cdc93c55fe7"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/extension_20260927/analysis/atac/summary.csv",
+      "bytes": 12800,
+      "mtime_ns": 1790500417000000000,
+      "sha256": "14b852fd0cfb2f1665971c780a2e7b9126f5be44e9462816968a1d852178f196"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/extension_20260927/analysis/h3k27me3/paired_gains.csv",
+      "bytes": 542,
+      "mtime_ns": 1790506187000000000,
+      "sha256": "51dc94bfc3d0ae73ac067c418f30602176488feddbb500c35cf7ef31159813a9"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/extension_20260927/analysis/h3k27me3/summary.csv",
+      "bytes": 12672,
+      "mtime_ns": 1790506187000000000,
+      "sha256": "529bd2fc3b3f8817452c742f07a7f040d96fb63c389a6a6ac438da6d745a8656"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/extension_20260927/analysis/h3k4me3/paired_gains.csv",
+      "bytes": 542,
+      "mtime_ns": 1790502358000000000,
+      "sha256": "a5772a334037eb1e5c788c577971f2bd504c18e0384182e69f7d3c8e7ae2fdbf"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/extension_20260927/analysis/h3k4me3/summary.csv",
+      "bytes": 12710,
+      "mtime_ns": 1790502358000000000,
+      "sha256": "0d8e86598f61a25b1f7ee391984c261cc47c9a1545721c60dcdfa853d9ce7a27"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/meeting_20260929/rna_analysis/paired_gains.csv",
+      "bytes": 547,
+      "mtime_ns": 1790463318000000000,
+      "sha256": "165bba5008b0c29fb47f80ae4a1a10e3e37d5008e55d271b24f12e40901c7333"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/meeting_20260929/rna_analysis/summary.csv",
+      "bytes": 12825,
+      "mtime_ns": 1790463318000000000,
+      "sha256": "61a01493dbf41f1c916e85d03d8be08ed788184cf9d6920dfd96621bec19b0b5"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p0_analysis/paired_gains.csv",
+      "bytes": 549,
+      "mtime_ns": 1790470946736962916,
+      "sha256": "18301dd456b1713bf8eb0908c2e82d5060331b9e1ccd5547ba98cc1205ee290b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p0_analysis/summary.csv",
+      "bytes": 12708,
+      "mtime_ns": 1790470946738050713,
+      "sha256": "5a952acc52eb9cf59a5fdd0fe9adb6a9faf57f7ede1cc19f6c45d5c96a6cbcdf"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p0_ctcf_analysis/paired_gains.csv",
+      "bytes": 556,
+      "mtime_ns": 1790470946746726009,
+      "sha256": "cfd1f0c3934523bcb343fec3b5310e4fadc51d7c0fbef1432197fa0d7621a2de"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p0_ctcf_analysis/summary.csv",
+      "bytes": 12725,
+      "mtime_ns": 1790470946747621264,
+      "sha256": "981f2708703b9d85df6bb6f59aee7ae5257324a90d2d85f8a4f47ac675a74b96"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p0_exposure_matched_analysis/paired_gains.csv",
+      "bytes": 545,
+      "mtime_ns": 1790470946756479727,
+      "sha256": "933980abd2cdcfb51674dbea1dea97eb16fd4c451c88eaa45fb72808914fc93f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p0_exposure_matched_analysis/summary.csv",
+      "bytes": 12592,
+      "mtime_ns": 1790470946757176189,
+      "sha256": "436831e15f210077bb53a9a35b75f9330130117593f0d271e068c5e557aeea63"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p0_h3k27ac_analysis/paired_gains.csv",
+      "bytes": 554,
+      "mtime_ns": 1790470946765885235,
+      "sha256": "1758b2ccff581a3bc9c7b372efb9bbfb9881f3ab307e87b985b98865e069e557"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p0_h3k27ac_analysis/summary.csv",
+      "bytes": 12779,
+      "mtime_ns": 1790470946766857615,
+      "sha256": "caf8d01c7a3e44ccaa7043fe9c390aaee1f1f5ba6f7756504c3ec1450cef5e49"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/Peyers_patch/paired_gains.csv",
+      "bytes": 539,
+      "mtime_ns": 1790470946780320269,
+      "sha256": "8f02b6cc79971c02436f3bbe4b9bc48301b07e6ac1b6dcf3ade646b7b8117cc7"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/Peyers_patch/summary.csv",
+      "bytes": 12580,
+      "mtime_ns": 1790470946781379608,
+      "sha256": "db1a1b014d9b47a9f24c817100f5a4991a6e0af992dbc8257ae41ee400938701"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/body_of_pancreas/paired_gains.csv",
+      "bytes": 538,
+      "mtime_ns": 1790470946792095081,
+      "sha256": "8fe4f2c3889ef3ded9c0dba71bf7e31808dbf0b273e0757568509318aa15204a"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/body_of_pancreas/summary.csv",
+      "bytes": 12623,
+      "mtime_ns": 1790470946792889877,
+      "sha256": "c89d65fa506e40d629183f21e8972f59b0b44e9dfe33e6c76b81b52d211500b3"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/gastroesophageal_sphincter/paired_gains.csv",
+      "bytes": 535,
+      "mtime_ns": 1790470946801298588,
+      "sha256": "0bcf3b23aee6bb66ffe94dd7db5ee8baf95aadd8aa5ff696e7343e997ca1bbc2"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/gastroesophageal_sphincter/summary.csv",
+      "bytes": 12617,
+      "mtime_ns": 1790470946802228426,
+      "sha256": "2dac723feb25a7b26bb7219311ff86995f25d2dc568a887ed3d26731205c8c41"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/macro_paired_gains.csv",
+      "bytes": 537,
+      "mtime_ns": 1790470946802510344,
+      "sha256": "0e49dfca2a98477d6c61c2f8308043a27c9fc0fbd60b39581277e0dba72ef62b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/macro_summary.csv",
+      "bytes": 12621,
+      "mtime_ns": 1790470946803140098,
+      "sha256": "64a7ba67bbeaac5bd3bb46367962cd70bfc914a2f872840157630ab9e2c4cf19"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/thyroid_gland/paired_gains.csv",
+      "bytes": 539,
+      "mtime_ns": 1790470946811427391,
+      "sha256": "b67f0a09d52dbba7d1cfc5e781e662758d009300d093f212df81eed8bb5b3e7c"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/thyroid_gland/summary.csv",
+      "bytes": 12624,
+      "mtime_ns": 1790470946812233979,
+      "sha256": "9a6071505c020699064b8376640237f9fdf0bb031d2d83db38c5257bffdbbbbc"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/tibial_nerve/paired_gains.csv",
+      "bytes": 535,
+      "mtime_ns": 1790470946821307110,
+      "sha256": "e0d43b1ee3a176b5482c1b44b068d6e2fbb8ac41e947c9fbbe488f16564f4cbb"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p1_analysis/tibial_nerve/summary.csv",
+      "bytes": 12608,
+      "mtime_ns": 1790470946821965280,
+      "sha256": "00ed575206325b4be77c0c9df6a7d7ceda316609637ab7ee9430f5db43488c52"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p2_analysis/ctcf/paired_gains.csv",
+      "bytes": 545,
+      "mtime_ns": 1790470946833653717,
+      "sha256": "b988936ab32afc6451d319faca3a4ca6c902e25e52f2f6361c3f10d45d08dcf3"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p2_analysis/ctcf/summary.csv",
+      "bytes": 12763,
+      "mtime_ns": 1790470946834494971,
+      "sha256": "08f8b62d59293fedd9534eb658d4bd60ad8847f466d7b0019538247fe898cc65"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p2_analysis/h3k27ac/paired_gains.csv",
+      "bytes": 539,
+      "mtime_ns": 1790470946844614024,
+      "sha256": "5d34a5b5e57ec20853c55ac52b71f44f835ff29bc7fac9ee3bf887c1a8ae0980"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/entex/v1/p2_analysis/h3k27ac/summary.csv",
+      "bytes": 12730,
+      "mtime_ns": 1790470946845438487,
+      "sha256": "01ca78727ecae7bc645b5f7a219ac25b81da0eebb76a71087815c38e2bed1d3b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/ccre_subclass_source/ccre_stratum_absolute_summary.csv",
+      "bytes": 6458,
+      "mtime_ns": 1788196521000000000,
+      "sha256": "f007442fbb2abec6673306439e6f23deb073e7974acf19de8f866f58095718ce"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/ccre_subclass_source/ccre_stratum_topology_gains.csv",
+      "bytes": 4803,
+      "mtime_ns": 1788196521000000000,
+      "sha256": "bd128e9e220c3f7e4b757a4140e3db9185d1f1798b5eb05b4b80b82f26f79e3f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/hg008_prospective_refit/analysis/paired_gains.csv",
+      "bytes": 1096,
+      "mtime_ns": 1790542835000000000,
+      "sha256": "39a1ebfc88ef0229e27da3e8c9d2de056b5569f3c4b4517fddc147a995dc13cd"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/hg008_prospective_refit/analysis/summary.csv",
+      "bytes": 5031,
+      "mtime_ns": 1790542835000000000,
+      "sha256": "606e1e6bec830a4501c880b677e6289aa231be3df16eedffada95312442dbb4f"
+    }
+  ],
+  "arithmetic": "C+S+T minus C+S checked to 1e-10",
+  "best_result_selection": false,
+  "scope": "source-table consolidation; not re-training or fresh prediction replay"
+}

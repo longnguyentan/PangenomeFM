@@ -35,7 +35,7 @@ results, and the other implementation worktree are preserved.
   both heads, matched random encoders, exact starting-weight hashes and raw NT controls.
 - [x] Complete and audit frozen biological validation for that candidate:
   cCRE improves; SV remains better with topology-native v2.
-- [ ] Test whether separate topology/sequence representations preserve both
+- [x] Test whether separate topology/sequence representations preserve both
   benefits, and perform a coordinate-stream/message ablation before graph-specific claims.
 - [ ] Replicate the resulting prespecified candidate across chromosome folds
   and seeds; current improvements are development evidence only.
@@ -730,3 +730,35 @@ ineligible under the current matched objective, and measured leave-one-out
 genotypability/path correspondence remain external data requirements. No new
 surrogate labels, replacement graph releases or claimed full-matrix performance
 were introduced in this pass.
+
+## Frozen branch preservation, ablation and new-task readiness
+
+The next experiment proposed above is now complete. Four matched 96D branch
+combinations were evaluated on both development tasks. The fixed trained
+topology + trained NT-conditioned representation passes its prespecified
+single-fold development gate; after C+S+H its gains over both-random are
++0.005230 SV and +0.001223 cCRE. The tiny extra cCRE gain over its better
+single branch (+0.000088) must not be described as a replicated improvement.
+This sequence-conditioned candidate is distinct from the topology-native
+candidate whose cCRE gate failed. The original failure remains in the record.
+
+The graph-message ablation is also complete: matched trained full versus
+coordinate-stream reconstruction AP is 0.869981 versus 0.730937. The coordinate
+stream still receives visible degree, so it is not a graph-free control.
+
+The selected branch dimensions, heads, budgets and masking settings are fixed.
+Additional initialization seeds 314159 and 20260806 are running with random
+twins, all four composites and both single branches. They remain fold-A
+development evidence, not an independent chromosome replication.
+
+TraitGym's 14,780 examples have 100% canonical graph/NT coverage and all REF
+alleles match the actual graph sequence. The existing HGSVC3 inversion source
+has 300 events: 298 primary-chromosome events map both ends with NT coverage,
+and two nonprimary-contig events remain explicitly unmapped. These are real
+feasibility audits, not completed new classifiers.
+
+The [team-facing model and downstream status report](MODEL_AND_DOWNSTREAM_STATUS_20260927.md)
+contains the fixed architecture, exact new tables/figures, the complete 52-row
+historical scorecard, new-task feasibility, unresolved data requirements,
+and reproduction commands. Full local suite: 354 tests passed before adding
+the separate seed-report validation tests. No manuscript edits were made.

@@ -1,0 +1,16 @@
+fold,split,n_inv,n_mapped,n_sequence_covered
+fold_a,train,152,152,152
+fold_a,validation,74,74,74
+fold_a,test,72,72,72
+fold_b,train,165,165,165
+fold_b,validation,59,59,59
+fold_b,test,74,74,74
+fold_c,train,197,197,197
+fold_c,validation,42,42,42
+fold_c,test,59,59,59
+fold_d,train,205,205,205
+fold_d,validation,51,51,51
+fold_d,test,42,42,42
+fold_e,train,175,175,175
+fold_e,validation,72,72,72
+fold_e,test,51,51,51
