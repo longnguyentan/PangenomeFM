@@ -85,6 +85,11 @@ def main() -> None:
             if initial[kind+'_trained']!=initial[kind+'_random']:
                 raise ValueError('Matched initializations differ')
     frame=pd.concat(records,ignore_index=True)
+    # Keep native feature keys for exact paired replay, but identify the changed
+    # representation explicitly: these sequence-conditioned vectors are not T.
+    frame['embedding']=frame.model.map(lambda name: 'E_random' if name.endswith('random') else 'E')
+    frame['embedding_representation']='sequence_conditioned_masked_features'
+    frame['feature_display']=frame.feature.map(dict(cs='C+S',csh='C+S+H',cst='C+S+E',csht='C+S+H+E'))
     differences=compare(frame,plan,seeds)
     args.out_dir.mkdir(parents=True,exist_ok=False)
     frame.to_csv(args.out_dir/'audited_per_run.csv',index=False)
@@ -98,7 +103,9 @@ def main() -> None:
         scope='Exploratory fold-A validation; seeds are not independent chromosome replicates; no CI',
         all_declared_seeds_complete=set(seeds)==set(plan['seeds']), checks=selected.to_dict('records'),
         source=fingerprint(args.root/'status.json'), all_metrics_replayed=True, all_probes_converged=True,
-        graph_contribution_requires_separate_full_vs_coordinate_comparison=True)
+        graph_contribution_requires_separate_full_vs_coordinate_comparison=True,
+        representation='E is sequence-conditioned; native cst/csht keys are retained solely for pipeline compatibility',
+        report_implementation=fingerprint(Path(__file__)))
     write_json(args.out_dir/'audit.json',gate)
     import matplotlib
     matplotlib.use('Agg')
