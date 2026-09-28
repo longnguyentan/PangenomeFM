@@ -103,8 +103,12 @@ def main() -> None:
         frame.to_csv(args.out_dir/(name+'.csv'), index=False)
     write_json(args.out_dir/'audit.json', dict(status='complete', n_runs=len(rows), n_evaluations=len(metrics),
         all_probes_converged=True, all_metrics_replayed=True, n_events=len(examples), n_excluded=0,
-        population='Chromosome/length-bin matched known events; not natural prevalence; no random-encoder superiority claim'))
-    lines = ['# Frozen SV type: length-matched common-support experiment', '',
+        population=plan.get('population', 'Chromosome/length-bin matched known events; not natural prevalence'),
+        class_counts=examples.svtype.value_counts().to_dict(),
+        no_random_encoder_superiority_claim=True))
+    lines = ['# '+plan.get('report_title', 'Frozen SV type: length-matched common-support experiment'), '',
+        plan.get('population', 'Chromosome/length-bin matched common-support events.'), '',
+        'Class counts: '+', '.join(f'{k}={v:,}' for k, v in examples.svtype.value_counts().items())+'.', '',
         '| Class | Context | Contrast | ΔAP | 95% CI | Fold p | BH q |', '|---|---|---|---:|---|---:|---:|']
     for r in contrasts.loc[contrasts.metric.eq('auprc')].itertuples():
         lines.append(f'| {r.target_class} | {r.context} | {r.contrast} | {r.mean:+.6f} | [{r.ci95_low:+.6f}, {r.ci95_high:+.6f}] | {r.sign_flip_p:.4f} | {r.bh_q_within_metric:.4f} |')
@@ -122,7 +126,7 @@ def main() -> None:
         ax.axvline(0, color='.6', lw=.8)
         ax.set(yticks=range(len(part)), yticklabels=[f'{r.context}: {r.contrast}' for r in part.itertuples()], title=target, xlabel='Δ AUPRC (95% CI)')
         ax.invert_yaxis()
-    fig.suptitle('Known SV type: 223 events per class, frozen graph/sequence encoders')
+    fig.suptitle(plan.get('figure_title', 'Known SV type: 223 events per class, frozen graph/sequence encoders'))
     save_figure(fig, args.out_dir, 'sv_type_topology_gains')
     plt.close(fig)
 

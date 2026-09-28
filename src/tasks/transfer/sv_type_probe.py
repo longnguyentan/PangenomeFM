@@ -20,6 +20,19 @@ from tasks.transfer.sv_types import CLASSES
 from tasks.transfer.traitgym import verified_fingerprint, write_json
 
 
+def validate_population(examples: pd.DataFrame, loci: pd.DataFrame, plan: dict) -> None:
+    """Require the declared event denominator and an exact, unique anchor table."""
+    if (len(examples) != plan['n_events']
+            or examples.svtype.value_counts().to_dict() != plan['class_counts']
+            or examples.variant_id.duplicated().any()
+            or loci.locus_id.duplicated().any()
+            or set(examples.locus_id) != set(loci.locus_id)):
+        raise ValueError('Event population or unique anchor universe differs from plan')
+    merged = examples.merge(loci, on='locus_id', suffixes=('', '_anchor'), validate='many_to_one')
+    if any(not merged[c].eq(merged[c+'_anchor']).all() for c in ['chrom', 'start', 'end']):
+        raise ValueError('Event/anchor coordinates differ')
+
+
 def evaluate_types(examples: pd.DataFrame, matrices: dict, plan: dict, job):
     """Reuse the manuscript binary classifier separately for each supplied class."""
     if (examples.variant_id.duplicated().any() or set(examples.svtype) != set(CLASSES)
@@ -64,6 +77,7 @@ def main() -> None:
     source = verified_fingerprint(args.examples, plan['examples_sha256'])
     loci_source = verified_fingerprint(args.loci, plan['loci_sha256'])
     examples, loci = pd.read_parquet(args.examples), pd.read_parquet(args.loci)
+    validate_population(examples, loci, plan)
     mapping = json.loads((args.mapping_dir/'mapping_qc.json').read_text())
     if (mapping['source_loci']['sha256'] != loci_source['sha256']
             or mapping['source_graph']['sha256'] != config['full_segments_sha256'] or mapping['fraction_mapped'] != 1):
