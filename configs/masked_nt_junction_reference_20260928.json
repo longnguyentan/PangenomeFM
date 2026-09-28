@@ -1,0 +1,17 @@
+{
+  "artifact_type": "analysis_plan",
+  "version": 1,
+  "objective": "Compare every completed masked-feature arm with the previously evaluated same-width junction-trained Q branch on identical frozen biological validation examples.",
+  "timing": "Separate supplemental comparison recorded after masked-feature pretraining began, before its biological metrics were inspected. The ongoing core protocol and its random/coordinate gates are unchanged.",
+  "reference_table": "results/foundation_evidence_20260927/seed_convergence_4000/analysis/audited_per_run.csv",
+  "reference_sha256": "ea07c1742843c799e216381e233a44f7399ba30412ba4d083563a447793ff04a",
+  "reference_model": "Q",
+  "candidate_arms": ["full_trained", "full_random", "coordinate_trained", "coordinate_random"],
+  "tasks": ["sv", "ccre"],
+  "seeds": [42, 314159, 20260806],
+  "features": ["cst", "csht"],
+  "metrics": ["auprc", "auroc", "normalized_ap", "balanced_accuracy", "f1"],
+  "validity": "Reference table has already passed independent prediction replay. Require identical target hashes, split sizes, prevalence, chromosome scope and bitwise C+S / C+S+H baseline scores. Require completed, converged new probes, and retain all arms and seeds.",
+  "interpretation": "Descriptive, adaptively motivated one-fold validation comparison; report every seed and mean/range, without chromosome confidence intervals or changing the core promotion rule.",
+  "limitations": ["Masked-feature budget is up to 20 epochs versus 10 for junction Q; this is not a compute-matched loss-only ablation", "Different masking/targets and target normalization are explicit, while inference architecture/input cache/dimension are shared", "Does not compare the 48D masked representation to the 96D T+Q composite", "No independent held-out-chromosome superiority claim"]
+}
