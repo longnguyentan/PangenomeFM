@@ -1,0 +1,57 @@
+{
+  "native_fitting_commit": "ee466cb",
+  "recovery_commit": "f2d09c1",
+  "reason": "Exact chromosome containers differed as JSON lists versus native dataclass tuples; all values matched",
+  "commands": [
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/test_traitgym_shards.py",
+      "tests/test_selected_probe.py",
+      "tests/test_genotyping_fallback.py",
+      "tests/test_sv_types.py",
+      "tests/test_sv_type_probe.py"
+    ],
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "-m",
+      "tasks.transfer.traitgym_shards",
+      "--shards",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_shards",
+      "--out-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_full"
+    ],
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "-m",
+      "tasks.transfer.traitgym_report",
+      "--root",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_full",
+      "--out-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_full_analysis"
+    ],
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_driver/full_gate.py",
+      "--base",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927",
+      "--out",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_driver/full_gate.json"
+    ],
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "-m",
+      "tasks.transfer.genotyping_fallback",
+      "--config",
+      "configs/cosigt_fallback_20260927.json",
+      "--root",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_quality_full",
+      "--loci",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_quality_preparation/loci.parquet",
+      "--out-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_fallback_server_replay"
+    ]
+  ]
+}

@@ -1,0 +1,1573 @@
+{
+  "status": "complete",
+  "scope": "full_matrix",
+  "all_probes_converged": null,
+  "all_linear_probes_converged": true,
+  "fixed_budget_estimators_present": true,
+  "all_probes_completed": true,
+  "n_runs": 60,
+  "n_evaluations": 1500,
+  "n_fits": 3600,
+  "numerical_gate": "pass",
+  "source_root": "results/foundation_evidence_20260927/traitgym_probe_float64_full",
+  "sources": [
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_42/strict/audit.json",
+      "bytes": 2950,
+      "mtime_ns": 1790565968000000000,
+      "sha256": "50ae048931138d46f51efbe0437a61fdd106c286834683555b91098124da5094"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_42/strict/metrics.csv",
+      "bytes": 14845,
+      "mtime_ns": 1790565968000000000,
+      "sha256": "5bbbddc94cd2e7f1a2596ece9686fd4e653e6a0bff925fbe7443d356734c4c93"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_42/strict/predictions.parquet",
+      "bytes": 1500827,
+      "mtime_ns": 1790565968000000000,
+      "sha256": "e6c7cc20e74cb97f9cf82db7d9e5e0152cb19b0b4846804b135227d9d281816e"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_42/strict/audit.json",
+      "bytes": 2954,
+      "mtime_ns": 1790566128000000000,
+      "sha256": "037519965e8efffc9411e0c745e5dcc1d4959a0ff3d37466542c5b48991fc6c8"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_42/strict/metrics.csv",
+      "bytes": 14047,
+      "mtime_ns": 1790566127000000000,
+      "sha256": "4615d88d366de627368c7c533cbe88132327e61e4ee80a82794de895ce3feb5e"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_42/strict/predictions.parquet",
+      "bytes": 336081,
+      "mtime_ns": 1790566128000000000,
+      "sha256": "bc474f00fe7b096e9261e95c2af0c99533bb4318c067afe8abeb69828a42c36b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_42/1hop/audit.json",
+      "bytes": 2938,
+      "mtime_ns": 1790566392000000000,
+      "sha256": "de315826fd9b59fde897b9da63ce20e025b58bdfdf8ef604df407166c63e50a8"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_42/1hop/metrics.csv",
+      "bytes": 14767,
+      "mtime_ns": 1790566392000000000,
+      "sha256": "39db92a7e553b7b6b7a3d628dfbf7b5cb0da41eec28af9f38684583dbe0c1e9b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_42/1hop/predictions.parquet",
+      "bytes": 1501415,
+      "mtime_ns": 1790566392000000000,
+      "sha256": "037b8ea53edd1a6056bd5ee7fc5440a24c9fbba5f863a96d0c4549dc9a79f24f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_42/1hop/audit.json",
+      "bytes": 2942,
+      "mtime_ns": 1790566597000000000,
+      "sha256": "1b046ac42d2c9e0f8b44ac71459e350a46bf975045e36762dd1005ec3f589a93"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_42/1hop/metrics.csv",
+      "bytes": 14001,
+      "mtime_ns": 1790566597000000000,
+      "sha256": "30e5842ea826e9c14aec724b9cb18f448a7ebd22306dff400006d9893862688b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_42/1hop/predictions.parquet",
+      "bytes": 335994,
+      "mtime_ns": 1790566597000000000,
+      "sha256": "a4c71fadb0de907499800c3c2410427406479ca028d3738b5cab29470541967f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_314159/strict/audit.json",
+      "bytes": 2974,
+      "mtime_ns": 1790566827000000000,
+      "sha256": "86cfb26d2598957e62a9a9df57359ff94d47887eeb75d8d4d0da62f207592e02"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_314159/strict/metrics.csv",
+      "bytes": 14947,
+      "mtime_ns": 1790566827000000000,
+      "sha256": "50078f92c4171c4060287476853d03549a495d68fcf4e58d35b5c2c577e8c368"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_314159/strict/predictions.parquet",
+      "bytes": 1597590,
+      "mtime_ns": 1790566827000000000,
+      "sha256": "3d6dd94fb38adc95bd41c835063099e0ae92b72834904404b3a4f68caafdf7c5"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_314159/strict/audit.json",
+      "bytes": 2978,
+      "mtime_ns": 1790567004000000000,
+      "sha256": "f594cf8ebc83b7b9e88311a9ab2abaf60ccff6320242d142618f39fe613a806f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_314159/strict/metrics.csv",
+      "bytes": 14146,
+      "mtime_ns": 1790567004000000000,
+      "sha256": "8e1601d833a638473251822ece40c9e4d719778bc1c7e6a4c7690256e8393e53"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_314159/strict/predictions.parquet",
+      "bytes": 335171,
+      "mtime_ns": 1790567004000000000,
+      "sha256": "3faeb9f60807d3b634e44801c64f18603c2cc015b94301dc85924b60f99306df"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_314159/1hop/audit.json",
+      "bytes": 2962,
+      "mtime_ns": 1790567252000000000,
+      "sha256": "383f4bb907fe8fa2ca80b1b1edbeaec53c7292f831a79494020be9699d124bcc"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_314159/1hop/metrics.csv",
+      "bytes": 14907,
+      "mtime_ns": 1790567252000000000,
+      "sha256": "d7ecbfdda5a8ba4660d91c4f1a22f03d1528e752a27cd30d74c2667f200b91f4"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_314159/1hop/predictions.parquet",
+      "bytes": 1590300,
+      "mtime_ns": 1790567252000000000,
+      "sha256": "456d1737389d10d54d62df43db4d4fbd62892b217e5c9bd01bc6439845e36413"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_314159/1hop/audit.json",
+      "bytes": 2966,
+      "mtime_ns": 1790567436000000000,
+      "sha256": "54cb4663841b541ceca32a95ce9ae667227c2eaa0d1c16693ba7e350154d4225"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_314159/1hop/metrics.csv",
+      "bytes": 14056,
+      "mtime_ns": 1790567436000000000,
+      "sha256": "2e2ec53dfa1d57fcff89ff6c47e034587ebb74d082076b8172d8797d169d6b18"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_314159/1hop/predictions.parquet",
+      "bytes": 336050,
+      "mtime_ns": 1790567436000000000,
+      "sha256": "30d80e963fa993d2727036a8f9e3dbb776e7365a75d701d328387cfb1a4566c2"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_20260806/strict/audit.json",
+      "bytes": 2986,
+      "mtime_ns": 1790567666000000000,
+      "sha256": "cc5a382e98e127669a7aabfb85b34d5ec57b8e1715a04f0bf9d08c5731d462f1"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_20260806/strict/metrics.csv",
+      "bytes": 15010,
+      "mtime_ns": 1790567666000000000,
+      "sha256": "5da8674b492e4041f42624f0ecb34b4882a5e45570e2ef51ce2308504f594896"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_20260806/strict/predictions.parquet",
+      "bytes": 1590903,
+      "mtime_ns": 1790567666000000000,
+      "sha256": "1a49b023ccf57d4a18f25e59d5970ca57cab01927ff88b9cd85695d90aa746a8"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_20260806/strict/audit.json",
+      "bytes": 2990,
+      "mtime_ns": 1790567839000000000,
+      "sha256": "679f34d90e7fb1e5efb2adfcbfef5cad642553be9f6231c23d963e11c3977d5b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_20260806/strict/metrics.csv",
+      "bytes": 14203,
+      "mtime_ns": 1790567839000000000,
+      "sha256": "6dfc236c5387ef14c097e80464621bd62889c449d1f973ad8bf1f17889ac575e"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_20260806/strict/predictions.parquet",
+      "bytes": 336166,
+      "mtime_ns": 1790567839000000000,
+      "sha256": "f8bf5c00100bf6910bb552d7bc7d5e3de9668472682ccf59b08e820f248252f9"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_20260806/1hop/audit.json",
+      "bytes": 2974,
+      "mtime_ns": 1790568054000000000,
+      "sha256": "b2f06ffd6a0b838fc799affe556bfcf20d5b8c068ac0b7e8ad4051f5c3eb33ea"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_20260806/1hop/metrics.csv",
+      "bytes": 14965,
+      "mtime_ns": 1790568054000000000,
+      "sha256": "398d8d84c93c31aad5a5b3459dcc5798e01b8b535fca7421aa6f18db0275e2b5"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_a/seed_20260806/1hop/predictions.parquet",
+      "bytes": 1501378,
+      "mtime_ns": 1790568054000000000,
+      "sha256": "c2cb35d30f19a743a2a5fa479bd9a159286d0ec766433e29668aeeeb13992e02"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_20260806/1hop/audit.json",
+      "bytes": 2978,
+      "mtime_ns": 1790568282000000000,
+      "sha256": "d1190ef765dd1147f20a0f7360e192b99b654b312041ade343384b265fbd95e1"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_20260806/1hop/metrics.csv",
+      "bytes": 14157,
+      "mtime_ns": 1790568282000000000,
+      "sha256": "bc7a2aaf6518ae5ec71721b0dba18c96c981d3dcd4a8228d9d816bdea390aa98"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_a/seed_20260806/1hop/predictions.parquet",
+      "bytes": 335750,
+      "mtime_ns": 1790568282000000000,
+      "sha256": "8c558f79efba06ba26b3a11f8f03e1f4b124080d454b4b403a9daf7ea4fc558d"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_42/strict/audit.json",
+      "bytes": 2948,
+      "mtime_ns": 1790565985000000000,
+      "sha256": "237d41b974b3803308d3df877a00cee145991fad7c51904eabf37a9b8b24e580"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_42/strict/metrics.csv",
+      "bytes": 14777,
+      "mtime_ns": 1790565985000000000,
+      "sha256": "dd6d21d1b9fbc9636ee85407e0c0ae11104a18a928afb34d7cfef73ed68f2275"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_42/strict/predictions.parquet",
+      "bytes": 1466151,
+      "mtime_ns": 1790565985000000000,
+      "sha256": "e68ef194389a7120c73e64930e5bfdae3700fe9b4b581609277d530aa19d855f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_42/strict/audit.json",
+      "bytes": 2953,
+      "mtime_ns": 1790566146000000000,
+      "sha256": "2050d98ba582f7b7f755e688e08d9084db53b94133b13a182d62717002149fbb"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_42/strict/metrics.csv",
+      "bytes": 14545,
+      "mtime_ns": 1790566146000000000,
+      "sha256": "e689d3eb829ee249aa7dd16aeca7bacf68ad07c9ecdce9f0701b147ae23dbd5f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_42/strict/predictions.parquet",
+      "bytes": 229114,
+      "mtime_ns": 1790566146000000000,
+      "sha256": "ccbcf0becb2cd5b93b3fa0b59cb6408462ae008c69dcb5e1aca84675755e62da"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_42/1hop/audit.json",
+      "bytes": 2936,
+      "mtime_ns": 1790566471000000000,
+      "sha256": "39b2dc1196acf80a0f7c8d00158a2304b73a696aeb9bfaa14db97696fe665836"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_42/1hop/metrics.csv",
+      "bytes": 14774,
+      "mtime_ns": 1790566471000000000,
+      "sha256": "a2cdf43568651aff6328607021c769d298aa985e31cbe489b7ab2c5c018ec613"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_42/1hop/predictions.parquet",
+      "bytes": 1504298,
+      "mtime_ns": 1790566471000000000,
+      "sha256": "5ecfe5297853c7675eaa5855d5c9d67998be1e1e129d42d4074b623d9d6e7340"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_42/1hop/audit.json",
+      "bytes": 2941,
+      "mtime_ns": 1790566666000000000,
+      "sha256": "efc50cfb889813f5f96f098b9e4f556a3d7c23b83d778b7b00835fd46066eb09"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_42/1hop/metrics.csv",
+      "bytes": 14213,
+      "mtime_ns": 1790566666000000000,
+      "sha256": "83a14080449f71658032ddd719142f0b2360b894af6d97caf28b7cb4d79531b8"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_42/1hop/predictions.parquet",
+      "bytes": 228122,
+      "mtime_ns": 1790566666000000000,
+      "sha256": "515718eb349edb584202b95dd828f7cf9566f2e26a20e33ba631ee74f58cea7b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_314159/strict/audit.json",
+      "bytes": 2972,
+      "mtime_ns": 1790566910000000000,
+      "sha256": "05a691b3cdf98f4d9441fd2d5a9484753074e26371f845ea9740589760960788"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_314159/strict/metrics.csv",
+      "bytes": 14957,
+      "mtime_ns": 1790566910000000000,
+      "sha256": "1695743f842e632d3dd3fa6df22b697cdee2e5bee7cee33a5ca175b1b9e1afbd"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_314159/strict/predictions.parquet",
+      "bytes": 1419038,
+      "mtime_ns": 1790566910000000000,
+      "sha256": "56898ce6e67d8da7d20d94bc5655389afdfaaf1d2bdd80c05b04faddd48c47a0"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_314159/strict/audit.json",
+      "bytes": 2977,
+      "mtime_ns": 1790567116000000000,
+      "sha256": "0ff7f9eb16565f1cdd1292b8209d87b4e21485a375a45148b571eedf6a452db2"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_314159/strict/metrics.csv",
+      "bytes": 14390,
+      "mtime_ns": 1790567116000000000,
+      "sha256": "1f4c7f4114272e60b4b0ad2d1a269ddbd03d8573c0fc1752726fb3adcd47e72c"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_314159/strict/predictions.parquet",
+      "bytes": 228804,
+      "mtime_ns": 1790567116000000000,
+      "sha256": "1cba3c7e2d0b987c2f1464948c0abbf97862de07221b2332fcfcced1f41acf49"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_314159/1hop/audit.json",
+      "bytes": 2960,
+      "mtime_ns": 1790567353000000000,
+      "sha256": "1232d3eb5f1054e7909f6b8454df0bbac12b18c084ec8adbdbbab2be2d950d18"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_314159/1hop/metrics.csv",
+      "bytes": 14879,
+      "mtime_ns": 1790567353000000000,
+      "sha256": "413648be12994aab5a86d837abe71e3f8482c6c69d5ac3774fb04821fb5ef12e"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_314159/1hop/predictions.parquet",
+      "bytes": 1463670,
+      "mtime_ns": 1790567353000000000,
+      "sha256": "ac76e0949676ffd0bfb6df347f9cf2548496df8edb3d9cba76ebef72159897e6"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_314159/1hop/audit.json",
+      "bytes": 2965,
+      "mtime_ns": 1790567541000000000,
+      "sha256": "86f6bd54ce2be7650a36346bf6f674b3daf004585b3277cd1e6b07540e76db0f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_314159/1hop/metrics.csv",
+      "bytes": 14458,
+      "mtime_ns": 1790567541000000000,
+      "sha256": "6d83ad06f1fb3140ea8f478da0a57aacdde63722d41be426fa67c7527b9ce5e3"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_314159/1hop/predictions.parquet",
+      "bytes": 227937,
+      "mtime_ns": 1790567541000000000,
+      "sha256": "7478e88acb74b54bbac9e338213dbd4611f7b2a16725e686cf290b8f68998eb4"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_20260806/strict/audit.json",
+      "bytes": 2984,
+      "mtime_ns": 1790567805000000000,
+      "sha256": "b54146099b9d331ae83414e3289fff9756ec30672930e06fae07694fe7d49f64"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_20260806/strict/metrics.csv",
+      "bytes": 15007,
+      "mtime_ns": 1790567805000000000,
+      "sha256": "47dc375050089871295bd546867e688684a26d00271665c614175e0459e1a51e"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_20260806/strict/predictions.parquet",
+      "bytes": 1505626,
+      "mtime_ns": 1790567805000000000,
+      "sha256": "9f96ff1b252bb64aa0dd83ba1900284bce3abc8849c72f41806e18c134886fe1"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_20260806/strict/audit.json",
+      "bytes": 2989,
+      "mtime_ns": 1790567960000000000,
+      "sha256": "250314cb1a2064e0fcdfea4e5f90ecf5dd8b9dc3cdc5815b14bef24f884b44c8"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_20260806/strict/metrics.csv",
+      "bytes": 14597,
+      "mtime_ns": 1790567960000000000,
+      "sha256": "9503469f683865d8ab32f8ce967b77514033bb90b0549e5f3bc35689277225f2"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_20260806/strict/predictions.parquet",
+      "bytes": 227766,
+      "mtime_ns": 1790567960000000000,
+      "sha256": "a678983fecfbb3988524e35f46a02d81bfd9f3e44c00ff502affd55b8592abf5"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_20260806/1hop/audit.json",
+      "bytes": 2972,
+      "mtime_ns": 1790568222000000000,
+      "sha256": "dd1e078492ad0d49ce95c0322fdb80344e2f4fa4f8c87b259191b8603a68fa0b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_20260806/1hop/metrics.csv",
+      "bytes": 14952,
+      "mtime_ns": 1790568222000000000,
+      "sha256": "b87501f367426bb83b365c61fc3690b2423d8e15cb61c135d07e13b256c7c1e2"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_b/seed_20260806/1hop/predictions.parquet",
+      "bytes": 1505608,
+      "mtime_ns": 1790568222000000000,
+      "sha256": "f1acc54dcac9edac134024cd030522ca81f0a10d4bf67ad06d4d7ce7bc5d713f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_20260806/1hop/audit.json",
+      "bytes": 2977,
+      "mtime_ns": 1790568405000000000,
+      "sha256": "3f9a95702b7462bbd8eedb475f434563c285ca635c84d47a578912dd420daf1a"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_20260806/1hop/metrics.csv",
+      "bytes": 14279,
+      "mtime_ns": 1790568405000000000,
+      "sha256": "b64ee74a760ecaa9bc2b0fd83c57e44e331b9927a30081f30ce725af07877128"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_b/seed_20260806/1hop/predictions.parquet",
+      "bytes": 228351,
+      "mtime_ns": 1790568405000000000,
+      "sha256": "b0306dac4865e4f1dff2dd21d40faa1f90ed23059c4a777d44f715244d9ede7f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_42/strict/audit.json",
+      "bytes": 2946,
+      "mtime_ns": 1790566043000000000,
+      "sha256": "916923e5bd52405f0c90e2492d03bd65e16b12ca6225c93aeb80bb1f4cc52e91"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_42/strict/metrics.csv",
+      "bytes": 14252,
+      "mtime_ns": 1790566043000000000,
+      "sha256": "df33729823d71dc4e31eb8e5a9aab5b4ab7a51f3efc7dbb352fbaddee20df5c8"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_42/strict/predictions.parquet",
+      "bytes": 770525,
+      "mtime_ns": 1790566043000000000,
+      "sha256": "d405b5942b334e571751fcee82a0ff16c9ec3bd8c97a81b8d1b14205be6085b8"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_42/strict/audit.json",
+      "bytes": 2952,
+      "mtime_ns": 1790566226000000000,
+      "sha256": "60194c132024bdedd45db322b46570f68efb25dcea657bbcf4a4a19e405b78ca"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_42/strict/metrics.csv",
+      "bytes": 14801,
+      "mtime_ns": 1790566226000000000,
+      "sha256": "5fc110139a52fb591b3451e26077d2dba2d0fd02c17eebd8506194a7e630a629"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_42/strict/predictions.parquet",
+      "bytes": 511797,
+      "mtime_ns": 1790566226000000000,
+      "sha256": "a13226bd6836fd91f7b1d888692a2a5e2e60c663df371420d4f1dfbe10d2eb1e"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_42/1hop/audit.json",
+      "bytes": 2934,
+      "mtime_ns": 1790566500000000000,
+      "sha256": "0991ba361a5ec9abc6a94e80c3eeee5d795cd322a7bf49e5edc3d6381a202575"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_42/1hop/metrics.csv",
+      "bytes": 14217,
+      "mtime_ns": 1790566500000000000,
+      "sha256": "e92c3e31a08343501c9b404a589246aa6892be3c42a6dfb6977b6b023dbd4a00"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_42/1hop/predictions.parquet",
+      "bytes": 773077,
+      "mtime_ns": 1790566500000000000,
+      "sha256": "51fb9aea68e24b3604da0256802384e6443e1f577cb982bca11aab5d02497d9b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_42/1hop/audit.json",
+      "bytes": 2940,
+      "mtime_ns": 1790566663000000000,
+      "sha256": "e34aebe55d1637d60cbff3fc8d92c57e8f08a331e192eb3bfbae6275e89cc569"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_42/1hop/metrics.csv",
+      "bytes": 14764,
+      "mtime_ns": 1790566663000000000,
+      "sha256": "116b2e72f9c22e10bcef2554fc8a7e344d663cb7b8bd9c24f5990ed5cbd43182"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_42/1hop/predictions.parquet",
+      "bytes": 526325,
+      "mtime_ns": 1790566663000000000,
+      "sha256": "f14bac2bd36a53d311a21860c5ee210735db1bd6a7442fec4c48c5981fae7af8"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_314159/strict/audit.json",
+      "bytes": 2970,
+      "mtime_ns": 1790566946000000000,
+      "sha256": "12b4b10ab4ff3c317dc7ce5e6dd386c707c3e12409cac847ffa4f6ce63f48c7d"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_314159/strict/metrics.csv",
+      "bytes": 14376,
+      "mtime_ns": 1790566946000000000,
+      "sha256": "87461274a4e600847249a4b3e2c86b257c2fef774f1f6f303fd8942c8f165e6f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_314159/strict/predictions.parquet",
+      "bytes": 772259,
+      "mtime_ns": 1790566946000000000,
+      "sha256": "e9454f9f58b3d2126bfdcb651cb273001e9f3d45134c0c58d374aa3087f8c930"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_314159/strict/audit.json",
+      "bytes": 2976,
+      "mtime_ns": 1790567142000000000,
+      "sha256": "5029c405dedde4aa9617a67246fa9000f63e3a045d62bb2c74a6536a57fd2cc3"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_314159/strict/metrics.csv",
+      "bytes": 14911,
+      "mtime_ns": 1790567142000000000,
+      "sha256": "f732fe0cdb943775ec67b09bf7caaa9aa4d75b53ec8ccdd37f2581d5effd0cd3"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_314159/strict/predictions.parquet",
+      "bytes": 511784,
+      "mtime_ns": 1790567142000000000,
+      "sha256": "2d71cc153f0f925b1cacf68ad3118599fd839b5a83ea87aafcb52fbe1cbe51c2"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_314159/1hop/audit.json",
+      "bytes": 2958,
+      "mtime_ns": 1790567394000000000,
+      "sha256": "a0693b1d494d4816d7998717c9b2e8c7282d2a7f2d41a03c9f5cb9572d6f1ea7"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_314159/1hop/metrics.csv",
+      "bytes": 14322,
+      "mtime_ns": 1790567394000000000,
+      "sha256": "8490fd5c63cc6349e0218a3de1005def5dc7e602796ffa9ebc3c8f04f99bbc19"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_314159/1hop/predictions.parquet",
+      "bytes": 775887,
+      "mtime_ns": 1790567394000000000,
+      "sha256": "4342cd7713b0372570be7cabc3ac09a37fe6ac8c409959c9afc878d5e987e8bb"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_314159/1hop/audit.json",
+      "bytes": 2964,
+      "mtime_ns": 1790567645000000000,
+      "sha256": "5400fe0ede3511745f3c95e22253a8f4b47eda35006b69022d8d9804943cc774"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_314159/1hop/metrics.csv",
+      "bytes": 14675,
+      "mtime_ns": 1790567645000000000,
+      "sha256": "27e4456ca14efb187742ad34688884b7efb97522184db566afa67d67d67ad45f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_314159/1hop/predictions.parquet",
+      "bytes": 525482,
+      "mtime_ns": 1790567645000000000,
+      "sha256": "863ff304189c4afa4d82b842b9c6e4861e20870f08d1bdb7d69a61df748e3dfe"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_20260806/strict/audit.json",
+      "bytes": 2982,
+      "mtime_ns": 1790567920000000000,
+      "sha256": "65b6c368a59cfa414ed910bb6f6e1ecb678143bbb9e1eee2d1f993de26ac4b4f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_20260806/strict/metrics.csv",
+      "bytes": 14394,
+      "mtime_ns": 1790567919000000000,
+      "sha256": "c29e7cc278b11555c3be65bb1d49df680aa909c9cad7786691be8fcc5b88cf30"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_20260806/strict/predictions.parquet",
+      "bytes": 774574,
+      "mtime_ns": 1790567919000000000,
+      "sha256": "706fec0fd2a3afbdc2926d3640d6b936aa0e89d183831fae8cd8cbd86473f57e"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_20260806/strict/audit.json",
+      "bytes": 2988,
+      "mtime_ns": 1790568130000000000,
+      "sha256": "1e599c27c9286712ca0f935574a9f094e91175491d6064137eaf0cec70b16f42"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_20260806/strict/metrics.csv",
+      "bytes": 14959,
+      "mtime_ns": 1790568130000000000,
+      "sha256": "02cd1a21a8ddf514d10c3f266f602172599be2e90d630b99d786a7e4517d799c"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_20260806/strict/predictions.parquet",
+      "bytes": 512626,
+      "mtime_ns": 1790568130000000000,
+      "sha256": "118f622929a9d0e822207f14d85f2838e762a06c5814fc003c2f527c8f1a8c17"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_20260806/1hop/audit.json",
+      "bytes": 2970,
+      "mtime_ns": 1790568408000000000,
+      "sha256": "c141d2b46765a73d0527caba9382351caf6566ecc398070244bca999d0dd113d"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_20260806/1hop/metrics.csv",
+      "bytes": 14363,
+      "mtime_ns": 1790568408000000000,
+      "sha256": "56fa64fd529349678ce5fdc1e028c71591e4b41dc39fbbec6f5c0d44b5a8d21b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_c/seed_20260806/1hop/predictions.parquet",
+      "bytes": 745881,
+      "mtime_ns": 1790568408000000000,
+      "sha256": "9e4fe9a5214ccd6a33c7ba51669f265e254241160bf946efa96d9cee15cf59ae"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_20260806/1hop/audit.json",
+      "bytes": 2976,
+      "mtime_ns": 1790568560000000000,
+      "sha256": "80b2a83097d5d371d4b9cf887f479b30a18bef5443b6e1fc7bde2e07b3d57dac"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_20260806/1hop/metrics.csv",
+      "bytes": 14798,
+      "mtime_ns": 1790568560000000000,
+      "sha256": "d512087f32261517195ecffa6ee4f46cf049f47654a54fdf5dc270dd83154842"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_c/seed_20260806/1hop/predictions.parquet",
+      "bytes": 526747,
+      "mtime_ns": 1790568560000000000,
+      "sha256": "a64436776f76de97f33aaab2822f9c453f164a7481101bda798b2c109f772362"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_42/strict/audit.json",
+      "bytes": 2933,
+      "mtime_ns": 1790566007000000000,
+      "sha256": "06ca303676f65d8610f96945172e20bffcb081dc67ef93944c718370ea73a019"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_42/strict/metrics.csv",
+      "bytes": 14717,
+      "mtime_ns": 1790566007000000000,
+      "sha256": "93ce68bb1c26bbe868911a61951899724ddda946227fa65683c0de42a3948a7d"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_42/strict/predictions.parquet",
+      "bytes": 846196,
+      "mtime_ns": 1790566007000000000,
+      "sha256": "8d2f838e8f779108931112992e6c90b59ec6812c5de6506eb87b63b97acb92f7"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_42/strict/audit.json",
+      "bytes": 2939,
+      "mtime_ns": 1790566199000000000,
+      "sha256": "5c2ce187f8f5baf44adcf8129e70b48f563283cbf0e11f66a37e85b6686ce6a0"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_42/strict/metrics.csv",
+      "bytes": 14593,
+      "mtime_ns": 1790566199000000000,
+      "sha256": "a83f36357e4440f3648728fbb05e822515a1841d3faeb977341602db07a17f32"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_42/strict/predictions.parquet",
+      "bytes": 253508,
+      "mtime_ns": 1790566199000000000,
+      "sha256": "77118483e4fe8bcc742694697420642fa30d1ed41f7cef4d90b981832f30990b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_42/1hop/audit.json",
+      "bytes": 2921,
+      "mtime_ns": 1790566483000000000,
+      "sha256": "40c7507ffa6197c584b1ca14d05961823dbd21ec39993670037fbdc31121ea7d"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_42/1hop/metrics.csv",
+      "bytes": 14646,
+      "mtime_ns": 1790566483000000000,
+      "sha256": "cc7eddb5787014da5abcc1a9c5f61b3b9c1fb9a132512f31461edcfd685c6985"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_42/1hop/predictions.parquet",
+      "bytes": 894843,
+      "mtime_ns": 1790566483000000000,
+      "sha256": "f820e783ce04cb6ddac9fddc997c82b6ec5cb02b8c3f9de1f80990527eea239a"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_42/1hop/audit.json",
+      "bytes": 2927,
+      "mtime_ns": 1790566655000000000,
+      "sha256": "8a4ba9f6ee3c436ed2323fdf5998b0a5e55dbaab70ac4b414a517bd45a676fd2"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_42/1hop/metrics.csv",
+      "bytes": 14608,
+      "mtime_ns": 1790566655000000000,
+      "sha256": "b289a7a3bf0effac12e4cd64d3e9cd18190879bab78e82cf8690f125ba3b3493"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_42/1hop/predictions.parquet",
+      "bytes": 246922,
+      "mtime_ns": 1790566655000000000,
+      "sha256": "3d009c575227de5fab04964a82ac0b6f0e78f948f265c62bb984bb682f49e557"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_314159/strict/audit.json",
+      "bytes": 2957,
+      "mtime_ns": 1790566931000000000,
+      "sha256": "ded10b773d6b24773f2229068d325523b3a7e99e329ac579a80c4f807ff36760"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_314159/strict/metrics.csv",
+      "bytes": 14813,
+      "mtime_ns": 1790566930000000000,
+      "sha256": "5ed71377a63b98d8fedd90b67577a162e1b521b0a99e3b8b373b356830aa60c3"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_314159/strict/predictions.parquet",
+      "bytes": 846283,
+      "mtime_ns": 1790566930000000000,
+      "sha256": "66d0fade5adea2eaed1e79327d0ca875fbc78012ffcf341250df21318b02b8a0"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_314159/strict/audit.json",
+      "bytes": 2963,
+      "mtime_ns": 1790567147000000000,
+      "sha256": "7d5507daa777b3d3bf95f8e8a8140415ffa116fa237dae3a828e685a3c66a539"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_314159/strict/metrics.csv",
+      "bytes": 14751,
+      "mtime_ns": 1790567146000000000,
+      "sha256": "fbbd642b7510b3edea6af2bafa6e3e63b5b84af72f87db28c5e1effa4ded5700"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_314159/strict/predictions.parquet",
+      "bytes": 244540,
+      "mtime_ns": 1790567147000000000,
+      "sha256": "fdbf444080a37216e0d66de31ad8182cc37c6a849269105812c793670e5cf867"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_314159/1hop/audit.json",
+      "bytes": 2945,
+      "mtime_ns": 1790567415000000000,
+      "sha256": "9ae77469f1d49ceb834434ed1eb4cdca6fb51d575e5b0004bc847dd355991762"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_314159/1hop/metrics.csv",
+      "bytes": 14744,
+      "mtime_ns": 1790567415000000000,
+      "sha256": "c5396659c90bd023848eaa84431089d6d5f9021a3616d582de794aad42a36749"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_314159/1hop/predictions.parquet",
+      "bytes": 894788,
+      "mtime_ns": 1790567415000000000,
+      "sha256": "d4a692dc205bd69751ffeb2f5726af52a0fc69f6ba8861c9ca9dd0d6c60523c1"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_314159/1hop/audit.json",
+      "bytes": 2951,
+      "mtime_ns": 1790567629000000000,
+      "sha256": "add956a3b3d53f7e0d893fa18be1663c995ea09458f28a9e30cdde93da7299e6"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_314159/1hop/metrics.csv",
+      "bytes": 14457,
+      "mtime_ns": 1790567629000000000,
+      "sha256": "bd82986239d4676246ba5510be2b4c279003f338d0b21d79be449c6434e17c82"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_314159/1hop/predictions.parquet",
+      "bytes": 249135,
+      "mtime_ns": 1790567629000000000,
+      "sha256": "3c7f8e016ef794b069fe469fccc6c711a13671a6c7755a849ea8b8089fd5d586"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_20260806/strict/audit.json",
+      "bytes": 2969,
+      "mtime_ns": 1790567879000000000,
+      "sha256": "ebefe6f97d008153433b0cb796316c19f1fbd88c2e9a3cf639b1f06f78d2ec12"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_20260806/strict/metrics.csv",
+      "bytes": 14861,
+      "mtime_ns": 1790567879000000000,
+      "sha256": "876aef11c40ab0d024746f88497492dcf8562b1b379c68e70bfc5f7ac332ca80"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_20260806/strict/predictions.parquet",
+      "bytes": 842984,
+      "mtime_ns": 1790567879000000000,
+      "sha256": "526070bc727e686348a4d28d4ec2773412b2e399cc1c90b5003794bdfa8b4dbd"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_20260806/strict/audit.json",
+      "bytes": 2975,
+      "mtime_ns": 1790568055000000000,
+      "sha256": "dd6a033ed7fc1323b8cd1f2fd3fdca37f34c78e485e79ccaaa1214e0c3520b3c"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_20260806/strict/metrics.csv",
+      "bytes": 14789,
+      "mtime_ns": 1790568055000000000,
+      "sha256": "98d9ff334c12cc073f3a25f9b95b91418d8ba3d9522e73ae96284dc5003e2ba1"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_20260806/strict/predictions.parquet",
+      "bytes": 253272,
+      "mtime_ns": 1790568055000000000,
+      "sha256": "74a6530e6affd1457a36c1de19648b58e25acaba83d76cd7eb13b37eb287d3f1"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_20260806/1hop/audit.json",
+      "bytes": 2957,
+      "mtime_ns": 1790568343000000000,
+      "sha256": "4daf1cd8dadd8ba68266bd9d27ef7a0152f6de2237a504549e742d13d87b4b82"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_20260806/1hop/metrics.csv",
+      "bytes": 14803,
+      "mtime_ns": 1790568342000000000,
+      "sha256": "a97d2abcb6b81d961125764a2f1b1df6ecb136ed2dd4df746f8f568253e963ff"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_d/seed_20260806/1hop/predictions.parquet",
+      "bytes": 847381,
+      "mtime_ns": 1790568342000000000,
+      "sha256": "df534f780c647a6828a57b7008ce70fa6f05cbc38cc1735b21e7049d2f2daff5"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_20260806/1hop/audit.json",
+      "bytes": 2963,
+      "mtime_ns": 1790568516000000000,
+      "sha256": "920e6cf22e1cebceba1b58a25a64d7450deca4918cedf0923bd1a1be63252c27"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_20260806/1hop/metrics.csv",
+      "bytes": 14559,
+      "mtime_ns": 1790568516000000000,
+      "sha256": "4bef7abe9174bea7a03eba462d5c368ca4a1de68f594275b667128109a7cd13d"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_d/seed_20260806/1hop/predictions.parquet",
+      "bytes": 248455,
+      "mtime_ns": 1790568516000000000,
+      "sha256": "616a57dd35da0cfc01e5476e38867e4f2797acdfd35b8124728cb53eccfed0ab"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_42/strict/audit.json",
+      "bytes": 2935,
+      "mtime_ns": 1790565989000000000,
+      "sha256": "4917e78698356c8367c029ce3fc41d3e04d1623578cf6338f4d3e8b28e5c36f7"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_42/strict/metrics.csv",
+      "bytes": 14855,
+      "mtime_ns": 1790565988000000000,
+      "sha256": "3d99e483a8af3cc3657c6ed647de25741128a4e255dd4c6232a94d9fb4126488"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_42/strict/predictions.parquet",
+      "bytes": 990601,
+      "mtime_ns": 1790565989000000000,
+      "sha256": "e144c9a950def623ec4cc6e7a0424e6d33c860ecd96643fb2f1ed2eb0c8ee965"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_42/strict/audit.json",
+      "bytes": 2940,
+      "mtime_ns": 1790566173000000000,
+      "sha256": "63bb6dde8d0b2d2d56c832ddc3d3e6938abb5ed19efc944aa1ffab93d1081912"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_42/strict/metrics.csv",
+      "bytes": 14497,
+      "mtime_ns": 1790566173000000000,
+      "sha256": "6f53a11afa85c829016338b43f7c13a2dbf2259433b2b606f7327836e1322559"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_42/strict/predictions.parquet",
+      "bytes": 132357,
+      "mtime_ns": 1790566173000000000,
+      "sha256": "56cf0d29f9cbba62685a9177bff2303c5f7d150c5cf8a87fc22c80a0a3c52f80"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_42/1hop/audit.json",
+      "bytes": 2923,
+      "mtime_ns": 1790566464000000000,
+      "sha256": "e7ab60f70662974a1af751d139604f17fb274b07588655212399d5c920d05e65"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_42/1hop/metrics.csv",
+      "bytes": 14754,
+      "mtime_ns": 1790566464000000000,
+      "sha256": "dbc8997f80405b5b0ce664e923f6058e5b1a1a2d322435f605d869f08a7c7cd2"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_42/1hop/predictions.parquet",
+      "bytes": 991543,
+      "mtime_ns": 1790566464000000000,
+      "sha256": "01b2d735c86b2cd05ca87ce7c20fc93a276907288600550c196bede74d82fa70"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_42/1hop/audit.json",
+      "bytes": 2928,
+      "mtime_ns": 1790566658000000000,
+      "sha256": "e02fe3d1e2d3220735670f9eb456c2a1ee9d0c700353b91e9e63e7d2ec5a2dfd"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_42/1hop/metrics.csv",
+      "bytes": 14421,
+      "mtime_ns": 1790566658000000000,
+      "sha256": "c2638940c3fc998bcfac7310495fb94d15a684c76095c3ebc5b1e37d14162342"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_42/1hop/predictions.parquet",
+      "bytes": 128777,
+      "mtime_ns": 1790566658000000000,
+      "sha256": "d30a41b45d9ef9eb7d631d866fde7d8aa5a75f22b7b06734063a5c3964a20859"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_314159/strict/audit.json",
+      "bytes": 2959,
+      "mtime_ns": 1790566901000000000,
+      "sha256": "39dc9f4de7b3cebf037ffd18b4b4bb26786f2930cb593e23da55582346a58da8"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_314159/strict/metrics.csv",
+      "bytes": 14949,
+      "mtime_ns": 1790566901000000000,
+      "sha256": "6599b9a732e32d73e807e4bbb4cef03f8b6ef784a2c53ab72049c307a51fe921"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_314159/strict/predictions.parquet",
+      "bytes": 991163,
+      "mtime_ns": 1790566901000000000,
+      "sha256": "72cb2717cd4bdeee044190742490f2a1012a6d08505ef85e09f063e13ab43153"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_314159/strict/audit.json",
+      "bytes": 2964,
+      "mtime_ns": 1790567095000000000,
+      "sha256": "a69b6ff12d3e1f49754230d2a065cb83a44ac93da9f84015e632c0a0a203ad45"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_314159/strict/metrics.csv",
+      "bytes": 14635,
+      "mtime_ns": 1790567095000000000,
+      "sha256": "63b7a9ae3e72d21333d9bfca8d034e97ba56351540ffc3278d980c0c5fbb1ab6"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_314159/strict/predictions.parquet",
+      "bytes": 128961,
+      "mtime_ns": 1790567095000000000,
+      "sha256": "84a682dd2455f9c27ad083ce973b0079c5b38d8edb2906153c8278ede3eb919b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_314159/1hop/audit.json",
+      "bytes": 2947,
+      "mtime_ns": 1790567333000000000,
+      "sha256": "38e2f58493f12503e040fe992debc7a44155ce16055112abab3e0bd7c829cdfb"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_314159/1hop/metrics.csv",
+      "bytes": 14895,
+      "mtime_ns": 1790567333000000000,
+      "sha256": "39b73fb38fe764fcabc4a0d5b2e0767977224a576758b3562892970b3de92a24"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_314159/1hop/predictions.parquet",
+      "bytes": 993454,
+      "mtime_ns": 1790567333000000000,
+      "sha256": "2d968ea11ad8ab5263cb35695a490fdb9ec8f32a28e325fb1f2d0f4a89d4fbcc"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_314159/1hop/audit.json",
+      "bytes": 2952,
+      "mtime_ns": 1790567518000000000,
+      "sha256": "9bb2b2f65d524d68e1082f764ac1aa8676690672e1b64950da02c25744a45a3b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_314159/1hop/metrics.csv",
+      "bytes": 14538,
+      "mtime_ns": 1790567518000000000,
+      "sha256": "06650d31967096c82058a37497f9fa4c16d3097ccf4430fe1ae2111c09e255f4"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_314159/1hop/predictions.parquet",
+      "bytes": 128616,
+      "mtime_ns": 1790567518000000000,
+      "sha256": "70d0bece97f09a62c83391272f9737a74543662c656b8c8da9a6f5c2dfa3097b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_20260806/strict/audit.json",
+      "bytes": 2971,
+      "mtime_ns": 1790567778000000000,
+      "sha256": "59ff30ae83f01a224755a8ce35e9aedd39c320bb0e2e16d78cd04cf3266a4dbc"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_20260806/strict/metrics.csv",
+      "bytes": 14982,
+      "mtime_ns": 1790567778000000000,
+      "sha256": "e74511a2444997cae41fef5e9cd4436cdad88db043810f2759a336a5c82a998b"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_20260806/strict/predictions.parquet",
+      "bytes": 989166,
+      "mtime_ns": 1790567778000000000,
+      "sha256": "535135c5420f2ea299c0bdac3dbae6eb7f75be876bb3799c6fde979b468193c7"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_20260806/strict/audit.json",
+      "bytes": 2976,
+      "mtime_ns": 1790567944000000000,
+      "sha256": "fbaa943b2aeeefff4608e93233f8f90320cf75de27ee8028e1f73ca6935cc4c6"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_20260806/strict/metrics.csv",
+      "bytes": 14685,
+      "mtime_ns": 1790567944000000000,
+      "sha256": "2cf2fdfbafb06e0f26d8c99fcdf660b9e9e24d2c910340c006500cab5dc38f0c"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_20260806/strict/predictions.parquet",
+      "bytes": 128758,
+      "mtime_ns": 1790567944000000000,
+      "sha256": "40bbf8e3ca491b4e4e952fcce39a1224f1cb801e684f8b42820e1f6e670f4e45"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_20260806/1hop/audit.json",
+      "bytes": 2959,
+      "mtime_ns": 1790568195000000000,
+      "sha256": "95f2ff6be83e7aed1868b44f1a6d90996bb9dbd05f5d1fede0d9c3e65afbde1f"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_20260806/1hop/metrics.csv",
+      "bytes": 14951,
+      "mtime_ns": 1790568195000000000,
+      "sha256": "7fcef0ae2629766f825ced5b9bda904946d65025d5fa31a733cc837b695be538"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/complex_traits/fold_e/seed_20260806/1hop/predictions.parquet",
+      "bytes": 990039,
+      "mtime_ns": 1790568195000000000,
+      "sha256": "ec0f26497abb9f7556fda7f493848c86d77ac280593c2d3a9a4b6ee140aacd04"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_20260806/1hop/audit.json",
+      "bytes": 2964,
+      "mtime_ns": 1790568384000000000,
+      "sha256": "f8dd5cfbc5bfed8345f257cdd77203e9e7b8aa57c0a3bac857f277623bebefd6"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_20260806/1hop/metrics.csv",
+      "bytes": 14601,
+      "mtime_ns": 1790568384000000000,
+      "sha256": "cf8ab203bc04e20c857e6b6b4a07607ff8ead0f548352664eccf819ec19bbf35"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/results/foundation_evidence_20260927/traitgym_probe_float64_full/mendelian_traits/fold_e/seed_20260806/1hop/predictions.parquet",
+      "bytes": 128814,
+      "mtime_ns": 1790568384000000000,
+      "sha256": "f9ecf07eb2cefa6c3e5166adb453815f8b0339f5baed141922aa7a6422f84acf"
+    }
+  ],
+  "plan": {
+    "artifact_type": "analysis_plan",
+    "version": 1,
+    "task": "traitgym_probe_study",
+    "objective": "Test validation-selected regularization, a fixed nonlinear probe, and validation-selected late fusion without altering frozen representations or variant support.",
+    "recorded_before_first_probe": true,
+    "dataset_revision": "1fde19555fe8c0a55b1382bdf4c6f7082209f566",
+    "datasets": [
+      "complex_traits",
+      "mendelian_traits"
+    ],
+    "reference_config": "configs/entex_v1.json",
+    "partition": "All five existing manuscript chromosome folds, three seeds, strict and one-hop; original test and validation chromosomes also excluded from graph encoder training",
+    "unit": "Original variant row; repeated positions with different alleles remain together by chromosome. Preserve all original match groups, each containing one positive and nine negatives on one chromosome.",
+    "encoder": "Existing v1 frozen checkpoint for each fold/seed/context; no new pretraining, tuning or checkpoint selection on TraitGym",
+    "sequence": "Unmodified manuscript segment-level NT-v2 50M cache; not reference-minus-alternate embeddings",
+    "mapping": "Previously audited GRCh38 [pos-1,pos) containing reference segment; no nearest fallback and no row exclusions",
+    "probe": "Native standardized balanced logistic probe with validation-only C selection; fixed-budget shallow histogram gradient boosting; convex probability blend selected on validation chromosomes. No refit or hyperparameter choice on test.",
+    "feature_sets": [
+      "V_linear",
+      "CS_linear",
+      "CST_linear",
+      "CSH_linear",
+      "CSHT_linear",
+      "CSV_linear",
+      "CSVT_linear",
+      "CSVH_linear",
+      "CSVHT_linear",
+      "V_fixed",
+      "CS_fixed",
+      "CSV_fixed",
+      "CSVT_fixed",
+      "CSVH_fixed",
+      "CSVHT_fixed",
+      "V_histgb",
+      "CS_histgb",
+      "CSV_histgb",
+      "CSVT_histgb",
+      "CSVH_histgb",
+      "CSVHT_histgb",
+      "V_CS_fusion",
+      "V_CST_fusion",
+      "V_CSH_fusion",
+      "V_CSHT_fusion"
+    ],
+    "probe_max_iter": 4000,
+    "primary": "Exploratory changes versus fixed manuscript probe; incremental T evaluated within each predeclared probe family and with H controls.",
+    "controls": [
+      "Original C=1 prediction replay",
+      "V-only endpoint retained in all fusion comparisons",
+      "Identical original variants, checkpoints, chromosome splits and frozen feature arrays"
+    ],
+    "secondary_metrics": [
+      "chromosome-size-weighted AUPRC",
+      "AUROC",
+      "prevalence-normalized AP",
+      "balanced accuracy",
+      "F1",
+      "precision",
+      "recall"
+    ],
+    "inference": "Existing hierarchical fold/seed bootstrap with 10000 draws; paired exact fold sign-flip and BH correction over all dataset/context/contrast comparisons within each metric. Overlapping training folds limit independence.",
+    "n_bootstrap": 10000,
+    "statistics_seed": 20260927,
+    "validity_gates": [
+      "100% original variant and match-group support",
+      "Train/validation/test chromosome isolation",
+      "Exact C=1 replay against prior completed scores",
+      "All linear candidates converge; HGB completes its fixed budget; all predictions finite",
+      "Saved validation selection and prediction replay",
+      "No test-driven choice among reported arms"
+    ],
+    "interpretation": "Exploratory follow-up on previously inspected TraitGym variants, using all five manuscript chromosome folds and all seeds/contexts. Improvement of a downstream classifier does not establish better encoder weights. V is an author-provided NT-2.5B allele score; S remains frozen NT-v2 50M. HGB is a fixed 150-tree-budget estimator without a convergence criterion; only logistic probes can be called converged. No official leaderboard equivalence.",
+    "references": [
+      "https://github.com/songlab-cal/TraitGym",
+      "https://huggingface.co/datasets/songlab/TraitGym"
+    ],
+    "development_status": "Exploratory study motivated by previously inspected test results. All grids and model arms pinned before fitting; this is not new independent confirmation or a basis for best-model claims.",
+    "variant_score_definition": "V contains signed LLR and its absolute value, fixed before fitting. The original author NT-2.5B masked-allele score averages forward and reverse sequences; this is not its full embedding-based benchmark.",
+    "custom_feature_sets": {
+      "variant_llr": [
+        "variant_llr"
+      ],
+      "coordinate_plus_variant_llr": [
+        "coordinate",
+        "variant_llr"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "frozen_pangenomefm"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "topology_control"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "topology_control",
+        "frozen_pangenomefm"
+      ]
+    },
+    "feature_labels": {
+      "V_linear": "V linear",
+      "CS_linear": "CS linear",
+      "CST_linear": "CST linear",
+      "CSH_linear": "CSH linear",
+      "CSHT_linear": "CSHT linear",
+      "CSV_linear": "CSV linear",
+      "CSVT_linear": "CSVT linear",
+      "CSVH_linear": "CSVH linear",
+      "CSVHT_linear": "CSVHT linear",
+      "V_fixed": "V fixed",
+      "CS_fixed": "CS fixed",
+      "CSV_fixed": "CSV fixed",
+      "CSVT_fixed": "CSVT fixed",
+      "CSVH_fixed": "CSVH fixed",
+      "CSVHT_fixed": "CSVHT fixed",
+      "V_histgb": "V histgb",
+      "CS_histgb": "CS histgb",
+      "CSV_histgb": "CSV histgb",
+      "CSVT_histgb": "CSVT histgb",
+      "CSVH_histgb": "CSVH histgb",
+      "CSVHT_histgb": "CSVHT histgb",
+      "V_CS_fusion": "V CS fusion",
+      "V_CST_fusion": "V CST fusion",
+      "V_CSH_fusion": "V CSH fusion",
+      "V_CSHT_fusion": "V CSHT fusion"
+    },
+    "comparisons": [
+      [
+        "linear_vs_fixed_V",
+        "V_linear",
+        "V_fixed"
+      ],
+      [
+        "histgb_vs_fixed_V",
+        "V_histgb",
+        "V_fixed"
+      ],
+      [
+        "linear_vs_fixed_CS",
+        "CS_linear",
+        "CS_fixed"
+      ],
+      [
+        "histgb_vs_fixed_CS",
+        "CS_histgb",
+        "CS_fixed"
+      ],
+      [
+        "linear_vs_fixed_CSV",
+        "CSV_linear",
+        "CSV_fixed"
+      ],
+      [
+        "histgb_vs_fixed_CSV",
+        "CSV_histgb",
+        "CSV_fixed"
+      ],
+      [
+        "linear_vs_fixed_CSVT",
+        "CSVT_linear",
+        "CSVT_fixed"
+      ],
+      [
+        "histgb_vs_fixed_CSVT",
+        "CSVT_histgb",
+        "CSVT_fixed"
+      ],
+      [
+        "linear_vs_fixed_CSVH",
+        "CSVH_linear",
+        "CSVH_fixed"
+      ],
+      [
+        "histgb_vs_fixed_CSVH",
+        "CSVH_histgb",
+        "CSVH_fixed"
+      ],
+      [
+        "linear_vs_fixed_CSVHT",
+        "CSVHT_linear",
+        "CSVHT_fixed"
+      ],
+      [
+        "histgb_vs_fixed_CSVHT",
+        "CSVHT_histgb",
+        "CSVHT_fixed"
+      ],
+      [
+        "T_given_CSV_linear",
+        "CSVT_linear",
+        "CSV_linear"
+      ],
+      [
+        "T_given_CSVH_linear",
+        "CSVHT_linear",
+        "CSVH_linear"
+      ],
+      [
+        "T_given_CSV_histgb",
+        "CSVT_histgb",
+        "CSV_histgb"
+      ],
+      [
+        "T_given_CSVH_histgb",
+        "CSVHT_histgb",
+        "CSVH_histgb"
+      ],
+      [
+        "T_given_CS_linear",
+        "CST_linear",
+        "CS_linear"
+      ],
+      [
+        "T_given_V_CS_fusion",
+        "V_CST_fusion",
+        "V_CS_fusion"
+      ],
+      [
+        "T_given_CSH_linear",
+        "CSHT_linear",
+        "CSH_linear"
+      ],
+      [
+        "T_given_V_CSH_fusion",
+        "V_CSHT_fusion",
+        "V_CSH_fusion"
+      ],
+      [
+        "fusion_vs_concat_CSV",
+        "V_CS_fusion",
+        "CSV_linear"
+      ],
+      [
+        "fusion_vs_V_CS",
+        "V_CS_fusion",
+        "V_linear"
+      ],
+      [
+        "fusion_vs_concat_CSVT",
+        "V_CST_fusion",
+        "CSVT_linear"
+      ],
+      [
+        "fusion_vs_V_CST",
+        "V_CST_fusion",
+        "V_linear"
+      ],
+      [
+        "fusion_vs_concat_CSVH",
+        "V_CSH_fusion",
+        "CSVH_linear"
+      ],
+      [
+        "fusion_vs_V_CSH",
+        "V_CSH_fusion",
+        "V_linear"
+      ],
+      [
+        "fusion_vs_concat_CSVHT",
+        "V_CSHT_fusion",
+        "CSVHT_linear"
+      ],
+      [
+        "fusion_vs_V_CSHT",
+        "V_CSHT_fusion",
+        "V_linear"
+      ]
+    ],
+    "variant_scores": {
+      "complex_traits": {
+        "filename": "complex_traits_nt_llr.parquet",
+        "sha256": "b7180623654f41961c6997b1ff8d1002091cc62ddb4c264acac26ddab73d5187",
+        "publisher_path": "complex_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+      },
+      "mendelian_traits": {
+        "filename": "mendelian_traits_nt_llr.parquet",
+        "sha256": "8c88e183115bbe05c7dec777a1155d62531985f60b481acbc4e914970446f3fd",
+        "publisher_path": "mendelian_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+      }
+    },
+    "author_code_commit": "4d80fe889415ffc02d45c7cb5446a326288819bd",
+    "author_model": "InstaDeepAI/nucleotide-transformer-2.5b-multi-species",
+    "score_provenance": "Exact published score files pinned by dataset revision and LFS SHA-256. Source rule reads original test.parquet and writes predictions in source order. Files have positional indices, not genomic IDs; alignment relies on this published contract. Model-weight revision and exact original runtime are not recorded by the author code.",
+    "selected_probe": {
+      "linear_inputs": [
+        "variant_llr",
+        "coordinate_plus_frozen_sequence_fm",
+        "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+        "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+      ],
+      "histgb_inputs": [
+        "variant_llr",
+        "coordinate_plus_frozen_sequence_fm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+      ],
+      "C_grid": [
+        0.0001,
+        0.001,
+        0.01,
+        0.1,
+        1.0,
+        10.0
+      ],
+      "mixture_weights": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "histgb": {
+        "learning_rate": 0.05,
+        "max_iter": 150,
+        "max_leaf_nodes": 7,
+        "min_samples_leaf": 20,
+        "l2_regularization": 1.0,
+        "max_bins": 255
+      },
+      "outputs": {
+        "V_linear": {
+          "estimator": "linear",
+          "input": "variant_llr"
+        },
+        "CS_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm"
+        },
+        "CST_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm"
+        },
+        "CSH_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+        },
+        "CSHT_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm"
+        },
+        "CSV_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+        },
+        "CSVT_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm"
+        },
+        "CSVH_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+        },
+        "CSVHT_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+        },
+        "V_fixed": {
+          "estimator": "fixed",
+          "input": "variant_llr"
+        },
+        "CS_fixed": {
+          "estimator": "fixed",
+          "input": "coordinate_plus_frozen_sequence_fm"
+        },
+        "CSV_fixed": {
+          "estimator": "fixed",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+        },
+        "CSVT_fixed": {
+          "estimator": "fixed",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm"
+        },
+        "CSVH_fixed": {
+          "estimator": "fixed",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+        },
+        "CSVHT_fixed": {
+          "estimator": "fixed",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+        },
+        "V_histgb": {
+          "estimator": "histgb",
+          "input": "variant_llr"
+        },
+        "CS_histgb": {
+          "estimator": "histgb",
+          "input": "coordinate_plus_frozen_sequence_fm"
+        },
+        "CSV_histgb": {
+          "estimator": "histgb",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+        },
+        "CSVT_histgb": {
+          "estimator": "histgb",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm"
+        },
+        "CSVH_histgb": {
+          "estimator": "histgb",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+        },
+        "CSVHT_histgb": {
+          "estimator": "histgb",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+        },
+        "V_CS_fusion": {
+          "estimator": "fusion",
+          "variant_input": "variant_llr",
+          "locus_input": "coordinate_plus_frozen_sequence_fm"
+        },
+        "V_CST_fusion": {
+          "estimator": "fusion",
+          "variant_input": "variant_llr",
+          "locus_input": "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm"
+        },
+        "V_CSH_fusion": {
+          "estimator": "fusion",
+          "variant_input": "variant_llr",
+          "locus_input": "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+        },
+        "V_CSHT_fusion": {
+          "estimator": "fusion",
+          "variant_input": "variant_llr",
+          "locus_input": "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm"
+        }
+      }
+    },
+    "feature_max_iter": {
+      "V_linear": 4000,
+      "CS_linear": 4000,
+      "CST_linear": 4000,
+      "CSH_linear": 4000,
+      "CSHT_linear": 4000,
+      "CSV_linear": 4000,
+      "CSVT_linear": 4000,
+      "CSVH_linear": 4000,
+      "CSVHT_linear": 4000,
+      "V_fixed": 4000,
+      "CS_fixed": 4000,
+      "CSV_fixed": 4000,
+      "CSVT_fixed": 4000,
+      "CSVH_fixed": 4000,
+      "CSVHT_fixed": 4000,
+      "V_histgb": 150,
+      "CS_histgb": 150,
+      "CSV_histgb": 150,
+      "CSVT_histgb": 150,
+      "CSVH_histgb": 150,
+      "CSVHT_histgb": 150,
+      "V_CS_fusion": 4000,
+      "V_CST_fusion": 4000,
+      "V_CSH_fusion": 4000,
+      "V_CSHT_fusion": 4000
+    },
+    "selection_rule": "Max validation raw-probability AUPRC; exact ties prefer smaller C or larger V mixture weight. Calibration and classification threshold use validation only.",
+    "numerical_policy": "Promote native probabilities to float64 before any convex blend. Native values are preserved exactly; mixture, validation replay and calibration use explicit double precision."
+  },
+  "calibration_replay": "Saved temperatures/probabilities and thresholds replay; validation NLL is within 1e-12 of an independent local refit. Temperature refit drift is recorded separately.",
+  "interpretation": "Exploratory pointwise fold/seed intervals; seed repetitions are not independent biological samples. No performance-based subset selection."
+}

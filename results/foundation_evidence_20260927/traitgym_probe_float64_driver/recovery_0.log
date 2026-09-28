@@ -1,0 +1,9 @@
+.................                                                        [100%]
+=============================== warnings summary ===============================
+tests/test_selected_probe.py: 2 warnings
+tests/test_sv_type_probe.py: 9 warnings
+  /home/tuv43532/PangenomeFM_evidence_report_20260927/scripts/server/run_ccre_frozen_probe_fold.py:214: FutureWarning: 'n_jobs' has no effect since 1.8 and will be removed in 1.10. You provided 'n_jobs=1', please leave it unspecified.
+    model, optimization = fit_logistic_probe(matrix[is_train], labels[is_train], seed, probe_max_iter)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+17 passed, 11 warnings in 7.54s

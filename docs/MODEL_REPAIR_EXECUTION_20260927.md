@@ -909,3 +909,12 @@ experiment receipts retain their original execution pins.
 Details, outputs and commands are linked from the current [checklist](MODEL_AND_DOWNSTREAM_STATUS_20260927.md). Server access remained authenticated; no password was sent through tools or saved. Shared main/other-LLM worktrees were preserved.
 
 Current full local suite: **413 passed**, 14 known warnings. Targeted Ruff and source/config/document whitespace checks pass; untouched Matplotlib SVG output contains its generator whitespace.
+
+
+## Completed TraitGym probe repair and final replay, 28 September 2026
+
+- All 60 native runs complete at `ee466cb`: 3,240 converged logistic candidates, 360 completed fixed-budget boosting models and 1,500 reported arms. No biological encoder fine-tuning occurred.
+- Final aggregation initially failed because JSON chromosome lists were compared with dataclass tuples. Confirmed all 30 native job identities and exact chromosome values; implemented and tested canonical container normalization at `f2d09c1`. Original failed receipts remain. Recovery merges every shard and passes native report, all-baseline comparison and independent COSIGT fallback replay.
+- All 360 fixed-C comparisons reproduce the prior complete allele-score study bit-for-bit. Independent laptop replay matches all four TraitGym result tables exactly. All five COSIGT fallback numerical tables also match the server exactly.
+- Mendelian fixed C+S+V boosting raises AP 0.102110 → 0.171056, gain +0.068946 [0.017423, 0.145067]. C+S boosting reaches 0.191960 versus 0.120840; its interval remains wide and crosses zero. Four of five fold means improve in both comparisons; fold E is retained and worsens. No topology AP contrast has a wholly positive interval. This is a classifier sensitivity, not a successful encoder-improvement claim.
+- Full local suite: **416 passed**, 14 known warnings. Server recovery targeted tests pass. Every original prediction, split, control and failure is retained. Current checklist and per-task documents link exact commands, counts, metrics, intervals, figures and source identities.

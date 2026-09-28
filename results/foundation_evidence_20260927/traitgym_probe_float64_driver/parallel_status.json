@@ -1,0 +1,15 @@
+{
+  "status": "failed",
+  "native_commit": "ee466cb",
+  "stage": "merge_and_replay",
+  "maximum_parallel_folds": 5,
+  "completed_folds": [
+    "fold_a",
+    "fold_e",
+    "fold_b",
+    "fold_d",
+    "fold_c"
+  ],
+  "error": "ValueError('Shards do not form exactly the original 30 fold/seed/context jobs')",
+  "updated": 1790568560.831894
+}

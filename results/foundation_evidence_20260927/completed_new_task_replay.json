@@ -66,6 +66,79 @@
           "local_sha256": "c83d9365f3ab51bd22193704e01c229aaf6061478afc9f0cd42c3a8609303cd9"
         }
       ]
+    },
+    {
+      "study": "traitgym_probe",
+      "checks": [
+        {
+          "table": "per_run",
+          "rows": 1500,
+          "exact_numeric_equality": true,
+          "server_sha256": "d212d3b56da62133e4bc98bf53397572814324b035afaddb4670dbb1c5554ac8",
+          "local_sha256": "d212d3b56da62133e4bc98bf53397572814324b035afaddb4670dbb1c5554ac8"
+        },
+        {
+          "table": "absolute",
+          "rows": 800,
+          "exact_numeric_equality": true,
+          "server_sha256": "25d3c5b180d96d0b1dc4cdd3d585f6b139d35c1a584827a4b4f8d2b869df02cd",
+          "local_sha256": "25d3c5b180d96d0b1dc4cdd3d585f6b139d35c1a584827a4b4f8d2b869df02cd"
+        },
+        {
+          "table": "contrasts",
+          "rows": 448,
+          "exact_numeric_equality": true,
+          "server_sha256": "cd60760a610ac2f0d1d1eb7a4648c4cd2cfca229888f8881a2d0c1c368dd978e",
+          "local_sha256": "cd60760a610ac2f0d1d1eb7a4648c4cd2cfca229888f8881a2d0c1c368dd978e"
+        },
+        {
+          "table": "paired",
+          "rows": 6720,
+          "exact_numeric_equality": true,
+          "server_sha256": "8b355a0f079ceac590925a1ee9f577102506e5bfb6095937417fafcd0b19aaad",
+          "local_sha256": "8b355a0f079ceac590925a1ee9f577102506e5bfb6095937417fafcd0b19aaad"
+        }
+      ]
+    },
+    {
+      "study": "cosigt_fallback",
+      "checks": [
+        {
+          "table": "per_run",
+          "rows": 1740,
+          "exact_numeric_equality": true,
+          "server_sha256": "0f39a5ead524c31f71a462f9d080dab5e9e9df4bc77770c615a8254a08b36506",
+          "local_sha256": "0f39a5ead524c31f71a462f9d080dab5e9e9df4bc77770c615a8254a08b36506"
+        },
+        {
+          "table": "absolute",
+          "rows": 348,
+          "exact_numeric_equality": true,
+          "server_sha256": "6a70afd5dec5f1cbcfff97c9b6d07f6ed32698f330682d628bebd3864bf2f2ac",
+          "local_sha256": "6a70afd5dec5f1cbcfff97c9b6d07f6ed32698f330682d628bebd3864bf2f2ac"
+        },
+        {
+          "table": "contrasts",
+          "rows": 432,
+          "exact_numeric_equality": true,
+          "server_sha256": "32104a653d933329494f655395f2e1092e7d2ec7590b94e17d626ab3361f6074",
+          "local_sha256": "32104a653d933329494f655395f2e1092e7d2ec7590b94e17d626ab3361f6074"
+        },
+        {
+          "table": "paired",
+          "rows": 6480,
+          "exact_numeric_equality": true,
+          "server_sha256": "8c50eab4f2aa2c39e3df6330fdc69e11e17b2b3afc9872a8de856e8790d1a593",
+          "local_sha256": "8c50eab4f2aa2c39e3df6330fdc69e11e17b2b3afc9872a8de856e8790d1a593"
+        },
+        {
+          "table": "selection",
+          "rows": 840,
+          "exact_numeric_equality": true,
+          "server_sha256": "1fa222b6693e9b9c3219cd8e658d27b0ba4503d0c0b45a6f819673727c5d6809",
+          "local_sha256": "1fa222b6693e9b9c3219cd8e658d27b0ba4503d0c0b45a6f819673727c5d6809"
+        }
+      ]
     }
   ]
 }

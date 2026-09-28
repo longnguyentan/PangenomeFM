@@ -1,0 +1,22 @@
+{
+  "status": "complete",
+  "completed_stages": 5,
+  "native_fitting_commit": "ee466cb",
+  "recovery_commit": "f2d09c1",
+  "started": 1790568790.647964,
+  "stage": 4,
+  "command": [
+    "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+    "-m",
+    "tasks.transfer.genotyping_fallback",
+    "--config",
+    "configs/cosigt_fallback_20260927.json",
+    "--root",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_quality_full",
+    "--loci",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_quality_preparation/loci.parquet",
+    "--out-dir",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_fallback_server_replay"
+  ],
+  "updated": 1790569023.1081667
+}

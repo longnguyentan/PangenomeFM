@@ -1,0 +1,20 @@
+{
+  "status": "pass",
+  "local_suite": {
+    "tests_passed": 416,
+    "warnings": 14,
+    "command": "OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONPATH=src:. MPLCONFIGDIR=/private/tmp/pfm-mpl /opt/anaconda3/bin/python -m pytest -q",
+    "sha256": "70cc8bc75db6041929efed6a32493107931d04aeb37583a924e62ab18b4930f6"
+  },
+  "server_targeted": {
+    "tests_passed": 17,
+    "warnings": 11,
+    "command_receipt": "traitgym_probe_float64_driver/recovery_launch.json",
+    "log": "traitgym_probe_float64_driver/recovery_0.log",
+    "sha256": "a88676f006cb170ced2dccbda75689aa2a29a53ea82a5c49624f544220018316"
+  },
+  "source_lint": "Targeted Ruff checks pass",
+  "regression": "All 360 TraitGym fixed-C output comparisons bitwise identical",
+  "new_scientific_tables": "All 17 native/local numerical tables exactly equal across four studies",
+  "encoders": "Frozen throughout; no biological-label pretraining updates"
+}

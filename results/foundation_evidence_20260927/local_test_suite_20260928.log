@@ -1,0 +1,22 @@
+........................................................................ [ 17%]
+........................................................................ [ 34%]
+........................................................................ [ 51%]
+........................................................................ [ 69%]
+........................................................................ [ 86%]
+........................................................                 [100%]
+=============================== warnings summary ===============================
+.worktrees/v2-evidence-review/tests/test_multimodal_pangenome.py::test_ordered_path_encoder_uses_path_order
+.worktrees/v2-evidence-review/tests/test_multimodal_pangenome.py::test_multimodal_model_computes_every_objective
+  /Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/src/models/multimodal_pangenome.py:176: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.encoder = nn.TransformerEncoder(layer, num_layers=n_layers)
+
+.worktrees/v2-evidence-review/tests/test_multimodal_pangenome.py::test_multimodal_model_computes_every_objective
+  /Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/src/models/multimodal_pangenome.py:84: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+    self.encoder = nn.TransformerEncoder(layer, num_layers=n_layers)
+
+.worktrees/v2-evidence-review/tests/test_rotating_link_baselines.py: 11 warnings
+  /opt/anaconda3/lib/python3.13/site-packages/sklearn/metrics/_ranking.py:1046: UserWarning: No positive class found in y_true, recall is set to one for all thresholds.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+416 passed, 14 warnings in 34.87s

@@ -1,0 +1,3246 @@
+{
+  "status": "pass",
+  "n_comparisons": 360,
+  "comparisons": [
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 2870,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 550,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1600,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1090,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 680,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "V_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CS_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSV_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVH_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "feature": "CSVHT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 1940,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "V_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CS_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSV_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVH_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "feature": "CSVHT_fixed",
+      "n": 260,
+      "bitwise_equal": true
+    }
+  ]
+}

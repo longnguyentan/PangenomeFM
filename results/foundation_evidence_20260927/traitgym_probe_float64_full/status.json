@@ -1,0 +1,1255 @@
+{
+  "status": "complete",
+  "plan": {
+    "artifact_type": "analysis_plan",
+    "version": 1,
+    "task": "traitgym_probe_study",
+    "objective": "Test validation-selected regularization, a fixed nonlinear probe, and validation-selected late fusion without altering frozen representations or variant support.",
+    "recorded_before_first_probe": true,
+    "dataset_revision": "1fde19555fe8c0a55b1382bdf4c6f7082209f566",
+    "datasets": [
+      "complex_traits",
+      "mendelian_traits"
+    ],
+    "reference_config": "configs/entex_v1.json",
+    "partition": "All five existing manuscript chromosome folds, three seeds, strict and one-hop; original test and validation chromosomes also excluded from graph encoder training",
+    "unit": "Original variant row; repeated positions with different alleles remain together by chromosome. Preserve all original match groups, each containing one positive and nine negatives on one chromosome.",
+    "encoder": "Existing v1 frozen checkpoint for each fold/seed/context; no new pretraining, tuning or checkpoint selection on TraitGym",
+    "sequence": "Unmodified manuscript segment-level NT-v2 50M cache; not reference-minus-alternate embeddings",
+    "mapping": "Previously audited GRCh38 [pos-1,pos) containing reference segment; no nearest fallback and no row exclusions",
+    "probe": "Native standardized balanced logistic probe with validation-only C selection; fixed-budget shallow histogram gradient boosting; convex probability blend selected on validation chromosomes. No refit or hyperparameter choice on test.",
+    "feature_sets": [
+      "V_linear",
+      "CS_linear",
+      "CST_linear",
+      "CSH_linear",
+      "CSHT_linear",
+      "CSV_linear",
+      "CSVT_linear",
+      "CSVH_linear",
+      "CSVHT_linear",
+      "V_fixed",
+      "CS_fixed",
+      "CSV_fixed",
+      "CSVT_fixed",
+      "CSVH_fixed",
+      "CSVHT_fixed",
+      "V_histgb",
+      "CS_histgb",
+      "CSV_histgb",
+      "CSVT_histgb",
+      "CSVH_histgb",
+      "CSVHT_histgb",
+      "V_CS_fusion",
+      "V_CST_fusion",
+      "V_CSH_fusion",
+      "V_CSHT_fusion"
+    ],
+    "probe_max_iter": 4000,
+    "primary": "Exploratory changes versus fixed manuscript probe; incremental T evaluated within each predeclared probe family and with H controls.",
+    "controls": [
+      "Original C=1 prediction replay",
+      "V-only endpoint retained in all fusion comparisons",
+      "Identical original variants, checkpoints, chromosome splits and frozen feature arrays"
+    ],
+    "secondary_metrics": [
+      "chromosome-size-weighted AUPRC",
+      "AUROC",
+      "prevalence-normalized AP",
+      "balanced accuracy",
+      "F1",
+      "precision",
+      "recall"
+    ],
+    "inference": "Existing hierarchical fold/seed bootstrap with 10000 draws; paired exact fold sign-flip and BH correction over all dataset/context/contrast comparisons within each metric. Overlapping training folds limit independence.",
+    "n_bootstrap": 10000,
+    "statistics_seed": 20260927,
+    "validity_gates": [
+      "100% original variant and match-group support",
+      "Train/validation/test chromosome isolation",
+      "Exact C=1 replay against prior completed scores",
+      "All linear candidates converge; HGB completes its fixed budget; all predictions finite",
+      "Saved validation selection and prediction replay",
+      "No test-driven choice among reported arms"
+    ],
+    "interpretation": "Exploratory follow-up on previously inspected TraitGym variants, using all five manuscript chromosome folds and all seeds/contexts. Improvement of a downstream classifier does not establish better encoder weights. V is an author-provided NT-2.5B allele score; S remains frozen NT-v2 50M. HGB is a fixed 150-tree-budget estimator without a convergence criterion; only logistic probes can be called converged. No official leaderboard equivalence.",
+    "references": [
+      "https://github.com/songlab-cal/TraitGym",
+      "https://huggingface.co/datasets/songlab/TraitGym"
+    ],
+    "development_status": "Exploratory study motivated by previously inspected test results. All grids and model arms pinned before fitting; this is not new independent confirmation or a basis for best-model claims.",
+    "variant_score_definition": "V contains signed LLR and its absolute value, fixed before fitting. The original author NT-2.5B masked-allele score averages forward and reverse sequences; this is not its full embedding-based benchmark.",
+    "custom_feature_sets": {
+      "variant_llr": [
+        "variant_llr"
+      ],
+      "coordinate_plus_variant_llr": [
+        "coordinate",
+        "variant_llr"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "frozen_pangenomefm"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "topology_control"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "topology_control",
+        "frozen_pangenomefm"
+      ]
+    },
+    "feature_labels": {
+      "V_linear": "V linear",
+      "CS_linear": "CS linear",
+      "CST_linear": "CST linear",
+      "CSH_linear": "CSH linear",
+      "CSHT_linear": "CSHT linear",
+      "CSV_linear": "CSV linear",
+      "CSVT_linear": "CSVT linear",
+      "CSVH_linear": "CSVH linear",
+      "CSVHT_linear": "CSVHT linear",
+      "V_fixed": "V fixed",
+      "CS_fixed": "CS fixed",
+      "CSV_fixed": "CSV fixed",
+      "CSVT_fixed": "CSVT fixed",
+      "CSVH_fixed": "CSVH fixed",
+      "CSVHT_fixed": "CSVHT fixed",
+      "V_histgb": "V histgb",
+      "CS_histgb": "CS histgb",
+      "CSV_histgb": "CSV histgb",
+      "CSVT_histgb": "CSVT histgb",
+      "CSVH_histgb": "CSVH histgb",
+      "CSVHT_histgb": "CSVHT histgb",
+      "V_CS_fusion": "V CS fusion",
+      "V_CST_fusion": "V CST fusion",
+      "V_CSH_fusion": "V CSH fusion",
+      "V_CSHT_fusion": "V CSHT fusion"
+    },
+    "comparisons": [
+      [
+        "linear_vs_fixed_V",
+        "V_linear",
+        "V_fixed"
+      ],
+      [
+        "histgb_vs_fixed_V",
+        "V_histgb",
+        "V_fixed"
+      ],
+      [
+        "linear_vs_fixed_CS",
+        "CS_linear",
+        "CS_fixed"
+      ],
+      [
+        "histgb_vs_fixed_CS",
+        "CS_histgb",
+        "CS_fixed"
+      ],
+      [
+        "linear_vs_fixed_CSV",
+        "CSV_linear",
+        "CSV_fixed"
+      ],
+      [
+        "histgb_vs_fixed_CSV",
+        "CSV_histgb",
+        "CSV_fixed"
+      ],
+      [
+        "linear_vs_fixed_CSVT",
+        "CSVT_linear",
+        "CSVT_fixed"
+      ],
+      [
+        "histgb_vs_fixed_CSVT",
+        "CSVT_histgb",
+        "CSVT_fixed"
+      ],
+      [
+        "linear_vs_fixed_CSVH",
+        "CSVH_linear",
+        "CSVH_fixed"
+      ],
+      [
+        "histgb_vs_fixed_CSVH",
+        "CSVH_histgb",
+        "CSVH_fixed"
+      ],
+      [
+        "linear_vs_fixed_CSVHT",
+        "CSVHT_linear",
+        "CSVHT_fixed"
+      ],
+      [
+        "histgb_vs_fixed_CSVHT",
+        "CSVHT_histgb",
+        "CSVHT_fixed"
+      ],
+      [
+        "T_given_CSV_linear",
+        "CSVT_linear",
+        "CSV_linear"
+      ],
+      [
+        "T_given_CSVH_linear",
+        "CSVHT_linear",
+        "CSVH_linear"
+      ],
+      [
+        "T_given_CSV_histgb",
+        "CSVT_histgb",
+        "CSV_histgb"
+      ],
+      [
+        "T_given_CSVH_histgb",
+        "CSVHT_histgb",
+        "CSVH_histgb"
+      ],
+      [
+        "T_given_CS_linear",
+        "CST_linear",
+        "CS_linear"
+      ],
+      [
+        "T_given_V_CS_fusion",
+        "V_CST_fusion",
+        "V_CS_fusion"
+      ],
+      [
+        "T_given_CSH_linear",
+        "CSHT_linear",
+        "CSH_linear"
+      ],
+      [
+        "T_given_V_CSH_fusion",
+        "V_CSHT_fusion",
+        "V_CSH_fusion"
+      ],
+      [
+        "fusion_vs_concat_CSV",
+        "V_CS_fusion",
+        "CSV_linear"
+      ],
+      [
+        "fusion_vs_V_CS",
+        "V_CS_fusion",
+        "V_linear"
+      ],
+      [
+        "fusion_vs_concat_CSVT",
+        "V_CST_fusion",
+        "CSVT_linear"
+      ],
+      [
+        "fusion_vs_V_CST",
+        "V_CST_fusion",
+        "V_linear"
+      ],
+      [
+        "fusion_vs_concat_CSVH",
+        "V_CSH_fusion",
+        "CSVH_linear"
+      ],
+      [
+        "fusion_vs_V_CSH",
+        "V_CSH_fusion",
+        "V_linear"
+      ],
+      [
+        "fusion_vs_concat_CSVHT",
+        "V_CSHT_fusion",
+        "CSVHT_linear"
+      ],
+      [
+        "fusion_vs_V_CSHT",
+        "V_CSHT_fusion",
+        "V_linear"
+      ]
+    ],
+    "variant_scores": {
+      "complex_traits": {
+        "filename": "complex_traits_nt_llr.parquet",
+        "sha256": "b7180623654f41961c6997b1ff8d1002091cc62ddb4c264acac26ddab73d5187",
+        "publisher_path": "complex_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+      },
+      "mendelian_traits": {
+        "filename": "mendelian_traits_nt_llr.parquet",
+        "sha256": "8c88e183115bbe05c7dec777a1155d62531985f60b481acbc4e914970446f3fd",
+        "publisher_path": "mendelian_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+      }
+    },
+    "author_code_commit": "4d80fe889415ffc02d45c7cb5446a326288819bd",
+    "author_model": "InstaDeepAI/nucleotide-transformer-2.5b-multi-species",
+    "score_provenance": "Exact published score files pinned by dataset revision and LFS SHA-256. Source rule reads original test.parquet and writes predictions in source order. Files have positional indices, not genomic IDs; alignment relies on this published contract. Model-weight revision and exact original runtime are not recorded by the author code.",
+    "selected_probe": {
+      "linear_inputs": [
+        "variant_llr",
+        "coordinate_plus_frozen_sequence_fm",
+        "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+        "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+      ],
+      "histgb_inputs": [
+        "variant_llr",
+        "coordinate_plus_frozen_sequence_fm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+      ],
+      "C_grid": [
+        0.0001,
+        0.001,
+        0.01,
+        0.1,
+        1.0,
+        10.0
+      ],
+      "mixture_weights": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "histgb": {
+        "learning_rate": 0.05,
+        "max_iter": 150,
+        "max_leaf_nodes": 7,
+        "min_samples_leaf": 20,
+        "l2_regularization": 1.0,
+        "max_bins": 255
+      },
+      "outputs": {
+        "V_linear": {
+          "estimator": "linear",
+          "input": "variant_llr"
+        },
+        "CS_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm"
+        },
+        "CST_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm"
+        },
+        "CSH_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+        },
+        "CSHT_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm"
+        },
+        "CSV_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+        },
+        "CSVT_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm"
+        },
+        "CSVH_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+        },
+        "CSVHT_linear": {
+          "estimator": "linear",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+        },
+        "V_fixed": {
+          "estimator": "fixed",
+          "input": "variant_llr"
+        },
+        "CS_fixed": {
+          "estimator": "fixed",
+          "input": "coordinate_plus_frozen_sequence_fm"
+        },
+        "CSV_fixed": {
+          "estimator": "fixed",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+        },
+        "CSVT_fixed": {
+          "estimator": "fixed",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm"
+        },
+        "CSVH_fixed": {
+          "estimator": "fixed",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+        },
+        "CSVHT_fixed": {
+          "estimator": "fixed",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+        },
+        "V_histgb": {
+          "estimator": "histgb",
+          "input": "variant_llr"
+        },
+        "CS_histgb": {
+          "estimator": "histgb",
+          "input": "coordinate_plus_frozen_sequence_fm"
+        },
+        "CSV_histgb": {
+          "estimator": "histgb",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+        },
+        "CSVT_histgb": {
+          "estimator": "histgb",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm"
+        },
+        "CSVH_histgb": {
+          "estimator": "histgb",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+        },
+        "CSVHT_histgb": {
+          "estimator": "histgb",
+          "input": "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm"
+        },
+        "V_CS_fusion": {
+          "estimator": "fusion",
+          "variant_input": "variant_llr",
+          "locus_input": "coordinate_plus_frozen_sequence_fm"
+        },
+        "V_CST_fusion": {
+          "estimator": "fusion",
+          "variant_input": "variant_llr",
+          "locus_input": "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm"
+        },
+        "V_CSH_fusion": {
+          "estimator": "fusion",
+          "variant_input": "variant_llr",
+          "locus_input": "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+        },
+        "V_CSHT_fusion": {
+          "estimator": "fusion",
+          "variant_input": "variant_llr",
+          "locus_input": "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm"
+        }
+      }
+    },
+    "feature_max_iter": {
+      "V_linear": 4000,
+      "CS_linear": 4000,
+      "CST_linear": 4000,
+      "CSH_linear": 4000,
+      "CSHT_linear": 4000,
+      "CSV_linear": 4000,
+      "CSVT_linear": 4000,
+      "CSVH_linear": 4000,
+      "CSVHT_linear": 4000,
+      "V_fixed": 4000,
+      "CS_fixed": 4000,
+      "CSV_fixed": 4000,
+      "CSVT_fixed": 4000,
+      "CSVH_fixed": 4000,
+      "CSVHT_fixed": 4000,
+      "V_histgb": 150,
+      "CS_histgb": 150,
+      "CSV_histgb": 150,
+      "CSVT_histgb": 150,
+      "CSVH_histgb": 150,
+      "CSVHT_histgb": 150,
+      "V_CS_fusion": 4000,
+      "V_CST_fusion": 4000,
+      "V_CSH_fusion": 4000,
+      "V_CSHT_fusion": 4000
+    },
+    "selection_rule": "Max validation raw-probability AUPRC; exact ties prefer smaller C or larger V mixture weight. Calibration and classification threshold use validation only.",
+    "numerical_policy": "Promote native probabilities to float64 before any convex blend. Native values are preserved exactly; mixture, validation replay and calibration use explicit double precision."
+  },
+  "sources": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/traitgym_probe_study_20260927.json",
+      "bytes": 15548,
+      "mtime_ns": 1790565198313871281,
+      "sha256": "066bbb5f42017a1f55b0d43befb01a183a1337567a29d17ae93b77401ae5d06a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/traitgym_topology_coverage/audit.json",
+      "bytes": 43356,
+      "mtime_ns": 1790557117963955986,
+      "sha256": "bcac132f0343bb202d723574b78dfc2ae8ea4329ab6852d70c5bcea4e55a7ec2"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/server_full_multicohort_20260806.json",
+      "bytes": 10951,
+      "mtime_ns": 1790478318571167524,
+      "sha256": "5cec5e982fdcfe1a3620bf257835b70ef702b606cde9a66026fec2531e6ee96d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/source.json",
+      "bytes": 203,
+      "mtime_ns": 1790551326000000000,
+      "sha256": "adb8bb9423ea618e132fcd2814768231664a7ca77ad40fb07508e89b0af6e9f7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/audit.json",
+      "bytes": 3201,
+      "mtime_ns": 1790559182889286572,
+      "sha256": "85054cd3fea38feb81805738bb6bf793ccfd4fd1627dbc617eb3f08219a85f4a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/complex_traits_examples.parquet",
+      "bytes": 828016,
+      "mtime_ns": 1790552097521114460,
+      "sha256": "d6f49dc719e04a612d03d6222ce8014c9e8e598649d343116d898baf4ab662c0"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/complex_traits_overlaps.parquet",
+      "bytes": 165649,
+      "mtime_ns": 1790552097525114416,
+      "sha256": "ab11ec9fca1dd86ab3660714c06b3c204e4dce19fe78dace971dd8a956102976"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/complex_traits_matched_9.parquet",
+      "bytes": 411336,
+      "mtime_ns": 1790551325000000000,
+      "sha256": "068940684e1e6f735a25a1a4418fb65390628023a96188af7f1a15dd17de7036"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/mendelian_traits_examples.parquet",
+      "bytes": 172683,
+      "mtime_ns": 1790552097889110410,
+      "sha256": "2a332c154ee2d4c8c56c7635a92c82dcbcf763f8e4cbc358b8c5e451cd2b8e53"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/mendelian_traits_overlaps.parquet",
+      "bytes": 50055,
+      "mtime_ns": 1790552097893110365,
+      "sha256": "2c1a702607babb6b2d08c150ce8068b4de3307cc88df93fd003fad26cbc04c97"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/mendelian_traits_matched_9.parquet",
+      "bytes": 50205,
+      "mtime_ns": 1790551326000000000,
+      "sha256": "144db4bf965e3c2b8936cd675448bade96369b6546cfdadb5c7b2bca17389607"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+      "bytes": 37629106,
+      "mtime_ns": 1786349512365280119,
+      "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz.audit.json",
+      "bytes": 1560,
+      "mtime_ns": 1786349516673233045,
+      "sha256": "75de2b22f2a7fdf262c6aa37344e2be5a40b0d7db1266dbfa4c1422d94437333"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/author_features/complex_traits_nt_llr.parquet",
+      "bytes": 66021,
+      "mtime_ns": 1790560101000000000,
+      "sha256": "b7180623654f41961c6997b1ff8d1002091cc62ddb4c264acac26ddab73d5187"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/author_features/mendelian_traits_nt_llr.parquet",
+      "bytes": 19740,
+      "mtime_ns": 1790560102000000000,
+      "sha256": "8c88e183115bbe05c7dec777a1155d62531985f60b481acbc4e914970446f3fd"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+      "bytes": 573489289,
+      "mtime_ns": 1786930030728110426,
+      "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz.audit.json",
+      "bytes": 2699,
+      "mtime_ns": 1786930033504082368,
+      "sha256": "0bbc6c075c4105d9cbbef25521431415ec57a89a5240fa101fe4d0ae39e05399"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_0.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890258760027309,
+      "sha256": "48697d25c353dc38c97f72cf704a88310c0bdb1cfcc21ce4b4efea49110aa314"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_1.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890299839630026,
+      "sha256": "ab77707365a248f679c58e9d1522eb396068311af6017da64777ba2813b52ffe"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_2.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890294411682734,
+      "sha256": "81b635f7a0a356f9db0a40cd361ac5bea01cb254a81d369a729230343be8694a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_3.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890286575758712,
+      "sha256": "7b8e235d6a7d2641cb8e9e98fcf484cb5f08e5a0686b5cff1ccb53cd7a77ea34"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+      "bytes": 3834716,
+      "mtime_ns": 1790471724073996404,
+      "sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz.audit.json",
+      "bytes": 829,
+      "mtime_ns": 1790471725725979680,
+      "sha256": "0d6fabde5488b7ced332b37445982114957e42621deab356469e12b17e9709a0"
+    }
+  ],
+  "command": [
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/traitgym_shards.py",
+    "--shards",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_shards",
+    "--out-dir",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_full"
+  ],
+  "implementation": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/traitgym.py",
+    "bytes": 20091,
+    "mtime_ns": 1790564494033644133,
+    "sha256": "8c60cd675de127b7e09afcf78d73b205a3690a905b5fcbe8584a4e30d398290c"
+  },
+  "jobs": [
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    }
+  ],
+  "datasets": [
+    "complex_traits",
+    "mendelian_traits"
+  ],
+  "completed_runs": 60,
+  "planned_runs": 60,
+  "encoder_training": false,
+  "evaluation_partition": "test",
+  "feature_coverage": "100% C/K/S/H required",
+  "scope": "full_matrix",
+  "probe_implementation": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/selected_probe.py",
+    "bytes": 12751,
+    "mtime_ns": 1790565198313871281,
+    "sha256": "f668a15a55dd77c972fc1c216c2c39816185970f60e1aacc024c62ef699f8b14"
+  },
+  "runtime": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.0",
+    "torch": "2.6.0+cu124",
+    "pandas": "3.0.5"
+  },
+  "execution_shards": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_shards/fold_a/status.json",
+      "bytes": 27625,
+      "mtime_ns": 1790568282308796396,
+      "sha256": "bf5658ba21193ef12d9a8e595ee71f875ecdfb5729d530401d25774d3bc6b4cb"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_shards/fold_b/status.json",
+      "bytes": 27619,
+      "mtime_ns": 1790568405787480323,
+      "sha256": "27e6985da22c13e0339f14b49917a496fce857c56f10504b40a459a0cc966278"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_shards/fold_c/status.json",
+      "bytes": 27613,
+      "mtime_ns": 1790568560229834613,
+      "sha256": "0462477452828043034eff6fd54ec996be35dfa1298e6caaa7bc556a3ab8243b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_shards/fold_d/status.json",
+      "bytes": 27523,
+      "mtime_ns": 1790568516454301040,
+      "sha256": "d5f612dccda1103d4b1830ae6f09f2528ef19f7f661ac4d2639dd33c4c551345"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_probe_float64_shards/fold_e/status.json",
+      "bytes": 27529,
+      "mtime_ns": 1790568384923702673,
+      "sha256": "999ed82466be5153badb5651579806fca7847a7b003e092041e9ee81d681844c"
+    }
+  ],
+  "merger": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/traitgym_shards.py",
+    "bytes": 3615,
+    "mtime_ns": 1790568743359857468,
+    "sha256": "35764053d88a309a4601c9f2ede40c0fd2eb9c06db22013e6ed38d6d6b419ef8"
+  },
+  "no_scientific_protocol_change": true,
+  "recovery": "JSON lists and native dataclass tuples normalized before exact comparison; original failed driver retained."
+}
