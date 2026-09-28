@@ -96,6 +96,13 @@ def summarize(metrics: pd.DataFrame, plan: dict) -> tuple[pd.DataFrame, pd.DataF
     return pd.DataFrame(absolute), contrasts, paired
 
 
+def expected_test_support(qc: dict, chromosomes: list[str]) -> tuple[list[str], int]:
+    """A held-out chromosome may legitimately have zero variants in the source."""
+    counts = qc["chromosome_counts"]
+    observed = [chrom for chrom in chromosomes if counts.get(chrom, 0) > 0]
+    return observed, sum(counts[chrom] for chrom in observed)
+
+
 def figures(absolute: pd.DataFrame, contrasts: pd.DataFrame, out: Path) -> None:
     import matplotlib
     matplotlib.use("Agg")
@@ -147,10 +154,14 @@ def main() -> None:
     if receipt["status"] != "complete" or receipt["completed_runs"] != receipt["planned_runs"]:
         raise ValueError("Only summarize the complete declared run matrix")
     plan, rows, identities, sources = receipt["plan"], [], {}, []
+    qc = json.loads((args.root / "qc.json").read_text())
     for job in receipt["jobs"]:
         for name in plan["datasets"]:
             path = args.root / name / job["fold"] / f"seed_{job['seed']}" / job["closure"]
-            metrics, identity = replay_run(path, plan, job["test"])
+            observed_chromosomes, expected_n = expected_test_support(qc[name], job["test"])
+            metrics, identity = replay_run(path, plan, observed_chromosomes)
+            if len(identity) != expected_n:
+                raise ValueError("Test predictions dropped original source rows")
             for key, expected in dict(dataset=name, fold=job["fold"], seed=job["seed"], context=job["closure"]).items():
                 if not metrics[key].eq(expected).all():
                     raise ValueError("Declared job differs from actual result")
@@ -161,7 +172,6 @@ def main() -> None:
             rows.append(metrics)
             sources.extend(fingerprint(path / f) for f in ["audit.json", "metrics.csv", "predictions.parquet"])
     if receipt["scope"] == "full_matrix":
-        qc = json.loads((args.root / "qc.json").read_text())
         for name in plan["datasets"]:
             universe = pd.concat([v for (dataset, _), v in identities.items() if dataset == name])
             if (universe.variant_id.duplicated().any() or len(universe) != qc[name]["n"]

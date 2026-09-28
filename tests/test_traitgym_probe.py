@@ -9,7 +9,7 @@ from scripts.server.audit_traitgym_coverage import normalize
 from scripts.server.run_ccre_frozen_probe_fold import evaluate_feature_sets
 from tasks.entex.prepare import fingerprint
 from tasks.transfer.traitgym import align_component, validate_examples, validate_nt_provenance, weighted_chromosome_ap
-from tasks.transfer.traitgym_report import METRICS, replay_run, summarize
+from tasks.transfer.traitgym_report import METRICS, expected_test_support, replay_run, summarize
 
 
 def fixture():
@@ -59,6 +59,8 @@ def test_chromosome_weighting_has_explicit_denominator():
     assert weighted_chromosome_ap(frame) == pytest.approx(.5)
     with pytest.raises(ValueError, match="defined"):
         weighted_chromosome_ap(frame.assign(auprc=[np.nan, .6]))
+    assert expected_test_support({"chromosome_counts": {"chr1": 10, "chr6": 20}},
+                                 ["chr1", "chr6", "chr21"]) == (["chr1", "chr6"], 30)
 
 
 def test_merged_nt_cache_shard_provenance(tmp_path):
