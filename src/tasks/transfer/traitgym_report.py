@@ -7,7 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics import balanced_accuracy_score
+from sklearn.metrics import balanced_accuracy_score, log_loss
 
 from evaluation.paired_inference import bh_adjust, fold_sign_flip
 from scripts.server.run_ccre_frozen_probe_fold import binary_metrics
@@ -25,6 +25,21 @@ METRICS = ["auprc", "chromosome_weighted_auprc", "auroc", "normalized_ap", "bala
            "precision", "recall"]
 
 
+def validate_calibration(y, raw, calibrated, temperature: float, threshold: float) -> dict:
+    """Replay saved parameters; compare validation NLL, not platform-specific optimizer bits."""
+    if not np.isfinite(temperature) or not .05 <= temperature <= 20:
+        raise ValueError("Calibration temperature is outside the native optimization bounds")
+    replayed = apply_temperature(raw, temperature)
+    if not np.allclose(replayed, calibrated, atol=1e-12, rtol=0):
+        raise ValueError("Saved validation calibration does not replay")
+    fitted = fit_temperature(np.asarray(y), np.asarray(raw))
+    excess = float(log_loss(y, replayed, labels=[0, 1])-log_loss(y, apply_temperature(raw, fitted), labels=[0, 1]))
+    if excess > 1e-12 or _choose_threshold(y, calibrated) != threshold:
+        raise ValueError("Validation calibration objective or threshold differs")
+    return dict(temperature_refit_delta=float(fitted-temperature), validation_nll_excess=excess,
+                prediction_tolerance=1e-12, objective_tolerance=1e-12)
+
+
 def replay_run(directory: Path, plan: dict, test_chromosomes: list[str],
                validation_chromosomes: list[str] | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
     audit = json.loads((directory / "audit.json").read_text())
@@ -36,6 +51,7 @@ def replay_run(directory: Path, plan: dict, test_chromosomes: list[str],
     if (metrics.feature_set.duplicated().any() or set(metrics.feature_set) != set(plan["feature_sets"])
             or set(frame.feature_set) != set(plan["feature_sets"])):
         raise ValueError("Missing or duplicated feature sets")
+    calibration_checks = []
     if plan.get("selected_probe"):
         for key, filename in [("validation_selection", "validation_selection.csv"),
                               ("validation_predictions", "validation_predictions.parquet")]:
@@ -49,12 +65,10 @@ def replay_run(directory: Path, plan: dict, test_chromosomes: list[str],
             raise ValueError("Validation/test identity overlap or unexpected chromosome partition")
         for m in metrics.itertuples():
             part = validation.loc[validation.feature_set.eq(m.feature_set)]
-            temperature = fit_temperature(part.y_true.to_numpy(), part.p_raw.to_numpy())
-            if (len(part) != m.n_validation or not part.y_true.eq(part.label).all()
-                    or not np.isclose(temperature, m.temperature, atol=1e-10, rtol=0)
-                    or not np.allclose(apply_temperature(part.p_raw, temperature), part.p_calibrated, atol=1e-12, rtol=0)
-                    or _choose_threshold(part.y_true, part.p_calibrated) != m.threshold):
-                raise ValueError("Validation calibration/threshold or identities do not replay")
+            if len(part) != m.n_validation or not part.y_true.eq(part.label).all():
+                raise ValueError("Validation identities do not replay")
+            calibration_checks.append(dict(feature_set=m.feature_set, **validate_calibration(
+                part.y_true, part.p_raw, part.p_calibrated, m.temperature, m.threshold)))
         if not completion_summary(metrics)["all_probes_completed"]:
             raise ValueError("Incomplete optimization or fixed-budget fit")
     metrics = metrics.set_index("feature_set")
@@ -92,7 +106,9 @@ def replay_run(directory: Path, plan: dict, test_chromosomes: list[str],
         for key in [*METRICS, "positive_fraction"]:
             if not np.isclose(m[key], replay[key], atol=1e-10, rtol=0):
                 raise ValueError(f"Stored {key} differs from replay: {directory}/{feature}")
-    return metrics.reset_index(), identity
+    output = metrics.reset_index()
+    output.attrs["calibration_replay"] = calibration_checks
+    return output, identity
 
 
 def summarize(metrics: pd.DataFrame, plan: dict) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -192,6 +208,7 @@ def main() -> None:
     if receipt["status"] != "complete" or receipt["completed_runs"] != receipt["planned_runs"]:
         raise ValueError("Only summarize the complete declared run matrix")
     plan, rows, identities, sources = receipt["plan"], [], {}, []
+    calibration_checks = []
     qc = json.loads((args.root / "qc.json").read_text())
     for job in receipt["jobs"]:
         for name in plan["datasets"]:
@@ -207,6 +224,8 @@ def main() -> None:
             if identity_key in identities:
                 pd.testing.assert_frame_equal(identities[identity_key], identity)
             identities[identity_key] = identity
+            calibration_checks.extend(dict(dataset=name, fold=job["fold"], seed=job["seed"], context=job["closure"], **item)
+                                      for item in metrics.attrs.get("calibration_replay", []))
             rows.append(metrics)
             sources.extend(fingerprint(path / f) for f in ["audit.json", "metrics.csv", "predictions.parquet"])
     if receipt["scope"] == "full_matrix":
@@ -220,6 +239,8 @@ def main() -> None:
     args.out_dir.mkdir(parents=True, exist_ok=False)
     for name, frame in [("per_run", metrics), ("absolute", absolute), ("contrasts", contrasts), ("paired", paired)]:
         frame.to_csv(args.out_dir / (name + ".csv"), index=False)
+    if calibration_checks:
+        pd.DataFrame(calibration_checks).to_csv(args.out_dir / "calibration_replay.csv", index=False)
     figures(absolute, contrasts, args.out_dir, plan)
     completed = completion_summary(metrics)
     passed = completed.get("all_probes_completed", completed["all_probes_converged"])
@@ -233,9 +254,13 @@ def main() -> None:
         + markdown_contrasts(contrasts) + "\n\n"
         + "Intervals are pointwise hierarchical fold/seed bootstrap. Exact fold sign-flip p-values and BH-adjusted q-values are also supplied; five folds limit inferential resolution.\n")
     write_json(args.out_dir / "audit.json", dict(status="complete", scope=receipt["scope"],
-        **completed, n_runs=len(rows), n_fits=len(metrics),
+        **completed, n_runs=len(rows), n_evaluations=len(metrics),
+        n_fits=(len(rows) * (len(plan["selected_probe"]["linear_inputs"]) * len(plan["selected_probe"]["C_grid"])
+                            + len(plan["selected_probe"]["histgb_inputs"])) if plan.get("selected_probe") else len(metrics)),
         numerical_gate="pass" if passed else "optimization_incomplete",
         source_root=str(args.root), sources=sources, plan=plan,
+        calibration_replay=("Saved temperatures/probabilities and thresholds replay; validation NLL is within 1e-12 of an independent local refit. Temperature refit drift is recorded separately."
+                            if calibration_checks else "Not requested for legacy fixed-probe reports"),
         interpretation="Exploratory pointwise fold/seed intervals; seed repetitions are not independent biological samples. No performance-based subset selection."))
 
 

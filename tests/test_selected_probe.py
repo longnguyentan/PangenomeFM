@@ -143,3 +143,22 @@ def test_mixture_precision_is_explicit_even_with_float32_inputs():
     args = fixture()
     _, _, predictions, _, _ = evaluate_selected(**args)
     assert predictions.p_raw.dtype == np.float64
+
+
+def test_calibration_replay_allows_equivalent_optima_but_rejects_wrong_objective():
+    from evaluation.calibration import apply_temperature, fit_temperature
+    from tasks.ccre.binary import _choose_threshold
+    from tasks.transfer.traitgym_report import validate_calibration
+    rng = np.random.default_rng(421)
+    raw = rng.uniform(.05, .95, size=500)
+    y = rng.binomial(1, raw)
+    fitted = fit_temperature(y, raw)
+    temperature = fitted+1e-7
+    p = apply_temperature(raw, temperature)
+    check = validate_calibration(y, raw, p, temperature, _choose_threshold(y, p))
+    assert abs(check['temperature_refit_delta']) > 1e-10
+    wrong = apply_temperature(raw, fitted*2)
+    with pytest.raises(ValueError, match='objective'):
+        validate_calibration(y, raw, wrong, fitted*2, _choose_threshold(y, wrong))
+    with pytest.raises(ValueError, match='does not replay'):
+        validate_calibration(y, raw, p+.001, temperature, _choose_threshold(y, p))
