@@ -17,6 +17,8 @@ import time
 import warnings
 from pathlib import Path
 
+from evaluation.probe_artifacts import persist_fitted_probes
+
 import numpy as np
 import pandas as pd
 import torch
@@ -175,6 +177,7 @@ def evaluate_feature_sets(
     feature_access: dict[str, str] | None = None,
     validation_only: bool = False,
     probe_max_iter: int | None = None,
+    fitted_probes: dict | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Fit on train, calibrate on validation, and score the explicit partition."""
 
@@ -200,6 +203,7 @@ def evaluate_feature_sets(
     prediction_frames: list[pd.DataFrame] = []
     for feature_index, (feature_name, matrix) in enumerate(features.items()):
         optimization = {}
+        model = None
         if len(matrix) != len(labels):
             raise ValueError(f"Feature length mismatch for {feature_name}")
         if feature_name == "training_prevalence":
@@ -219,6 +223,17 @@ def evaluate_feature_sets(
         calibrated_val = apply_temperature(raw_val, temperature)
         calibrated_test = apply_temperature(raw_test, temperature)
         threshold = _choose_threshold(labels[is_val], calibrated_val)
+        if fitted_probes is not None and model is not None:
+            fitted_probes[feature_name] = {
+                "model": model, "temperature": float(temperature), "threshold": float(threshold),
+                "evaluation_mask": is_evaluation.copy(),
+                "metadata": {"feature_dimension": int(matrix.shape[1]), "seed": seed,
+                             "test_chromosomes": sorted(test_chrs),
+                             "validation_chromosomes": sorted(val_chrs),
+                             "training_chromosomes": sorted(set(chromosome_norm[is_train])),
+                             "evaluation_partition": "development_validation" if validation_only else "test",
+                             "calibration_partition": "validation", **optimization},
+            }
         common = {
             **optimization,
             "feature_set": feature_name,
@@ -292,6 +307,7 @@ def run_probe(
     extraction_candidate_policy: str = "checkpoint",
     companion_checkpoints: list[Path] | None = None,
     probe_max_iter: int | None = None,
+    save_probes: bool = False,
 ) -> dict[str, object]:
     if (out_dir / "audit.json").exists():
         raise FileExistsError(f"Refusing to overwrite completed output: {out_dir}")
@@ -404,6 +420,7 @@ def run_probe(
                     f'Frozen {representation} embedding; legacy T column is a multimodal embedding. '
                     'Sequence-model and graph-encoder parameters are frozen during biological fitting.')
 
+    fitted_probes = {} if save_probes else None
     metrics, per_chromosome, predictions = evaluate_feature_sets(
         segids=labels_frame["segid"].to_numpy(np.int64),
         chromosomes=labels_frame["chrom"].to_numpy(),
@@ -415,6 +432,7 @@ def run_probe(
         feature_access=selected_feature_access,
         validation_only=validation_only,
         probe_max_iter=probe_max_iter,
+        fitted_probes=fitted_probes,
     )
     for frame in (metrics, per_chromosome, predictions):
         frame.insert(0, "fold", fold)
@@ -422,6 +440,19 @@ def run_probe(
         frame.insert(2, "closure", closure)
 
     out_dir.mkdir(parents=True, exist_ok=False)
+    probe_artifacts = persist_fitted_probes(
+        fitted_probes or {}, features, out_dir / "fitted_probes",
+        {"fold": fold, "seed": seed, "context": closure,
+         "checkpoint": str(checkpoint.resolve()), "checkpoint_sha256": sha256_file(checkpoint),
+         "companion_checkpoints": [
+             {"path": str(p.resolve()), "sha256": sha256_file(p)}
+             for p in (companion_checkpoints or [])],
+         "feature_cache": str(feature_cache.resolve()),
+         "feature_cache_sha256": sha256_file(feature_cache) if save_probes else None,
+         "external_sequence_cache": str(external_sequence_cache.resolve()) if external_sequence_cache else None,
+         "topology_control_cache": str(topology_control_cache.resolve()) if topology_control_cache else None,
+         "embedding_representation": representation},
+    ) if save_probes else {}
     metrics.to_csv(out_dir / "metrics.csv", index=False)
     per_chromosome.to_csv(out_dir / "per_chromosome_metrics.csv", index=False)
     prediction_name = "validation_predictions.csv.gz" if validation_only else "test_predictions.csv.gz"
@@ -436,6 +467,7 @@ def run_probe(
     audit = {
         "schema_version": 1,
         "status": "complete",
+        "fitted_probe_artifacts": probe_artifacts,
         "evaluation_partition": "development_validation" if validation_only else "test",
         "heldout_predictions_produced": not validation_only,
         "validation_metrics_note": "Calibration and threshold also use validation; these development scores are not independent performance estimates" if validation_only else None,
@@ -510,6 +542,7 @@ def main() -> int:
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--max-slices", type=int)
     parser.add_argument("--validation-only", action="store_true")
+    parser.add_argument("--save-probes", action="store_true", help="Save and replay fitted classifiers, scalers and calibration for future frozen reuse")
     parser.add_argument("--probe-max-iter", type=int, help="Optional convergence sensitivity; default preserves manuscript 800")
     parser.add_argument("--extraction-candidate-policy", choices=["checkpoint", "manuscript"], default="checkpoint")
     parser.add_argument("--external-sequence-cache", type=Path)
@@ -548,6 +581,7 @@ def main() -> int:
         topology_control_cache=args.topology_control_cache,
         validation_only=args.validation_only,
         probe_max_iter=args.probe_max_iter,
+        save_probes=args.save_probes,
         extraction_candidate_policy=args.extraction_candidate_policy,
     )
     return 0

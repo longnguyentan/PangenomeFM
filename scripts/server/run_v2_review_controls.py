@@ -30,6 +30,7 @@ def main() -> int:
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--topology-control-cache", type=Path)
     ap.add_argument("--validation-only", action="store_true")
+    ap.add_argument("--save-probes", action="store_true")
     ap.add_argument("--probe-max-iter", type=int, help="Uniform convergence sensitivity for every probe")
     ap.add_argument("--primary-features-only", action="store_true",
                     help="Use C+S, C+S+T, C+S+H, C+S+H+T for the bounded development comparison")
@@ -130,6 +131,8 @@ def main() -> int:
                                 "--feature-cache", str(sw / "data/processed/hprc_r2_ccre_screen_v4_features.npz")]
                 if args.validation_only:
                     command.append("--validation-only")
+                if args.save_probes:
+                    command.append("--save-probes")
                 if args.probe_max_iter is not None:
                     command += ["--probe-max-iter", str(args.probe_max_iter)]
                 if model in companions:

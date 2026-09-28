@@ -278,6 +278,7 @@ def main() -> None:
                     "--contexts",
                     "1hop",
                     "--primary-features-only",
+                    "--save-probes",
                     "--probe-max-iter",
                     "4000",
                     "--extraction-candidate-policy",

@@ -16,6 +16,7 @@ from sklearn.metrics import balanced_accuracy_score
 from threadpoolctl import threadpool_info, threadpool_limits
 
 from evaluation.calibration import apply_temperature, fit_temperature
+from evaluation.probe_artifacts import persist_probe
 from evaluation.modality_factorial import load_frozen_node_embedding_cache
 from scripts.server.run_ccre_frozen_probe_fold import (
     binary_metrics,
@@ -66,20 +67,6 @@ def enforce_replay(error: float, tolerance: float, protocol: str) -> bool:
     if not np.isfinite(error) or (protocol == "historical_replay" and not passed):
         raise ValueError("Reconstructed original probe fails manuscript regression; external evaluation stopped")
     return passed
-
-
-def persist_probe(model, temperature, threshold, matrix, test, path, metadata):
-    """Persist and reload the fitted artifact before it can score external data."""
-    import joblib
-
-    bundle = dict(model=model, temperature=temperature, threshold=threshold, **metadata)
-    joblib.dump(bundle, path)
-    restored = joblib.load(path)
-    expected = model.predict_proba(matrix[test])[:, 1]
-    observed = restored["model"].predict_proba(matrix[test])[:, 1]
-    if not np.array_equal(expected, observed):
-        raise ValueError("Persisted probe does not reproduce pre-save predictions exactly")
-    return restored
 
 
 def main() -> None:
