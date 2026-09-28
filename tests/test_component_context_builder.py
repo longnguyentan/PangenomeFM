@@ -76,9 +76,9 @@ def test_attention_estimates_are_bounds_not_total_memory_or_exclusion_rules():
         attention_storage(0)
 
 
-def test_preparation_materializes_oriented_native_tables_and_keeps_failed_qc(tmp_path):
+@pytest.fixture
+def prepared_context(tmp_path):
     import hashlib
-    from pathlib import Path
     import json
     from scripts.server.prepare_component_contexts import run
 
@@ -97,6 +97,17 @@ def test_preparation_materializes_oriented_native_tables_and_keeps_failed_qc(tmp
     (sources/'nt.npz.audit.json').write_text(json.dumps(dict(status='complete',downstream_label_access='none',
         full_segments_sha256=plan['full_segments_sha256'],output_sha256=plan['sequence_cache_sha256'],model_parameters_frozen=True)))
     result = run(plan, tmp_path/'out', materialize=True)
+    return plan, result
+
+
+def test_preparation_materializes_oriented_native_tables_and_keeps_failed_qc(tmp_path, prepared_context):
+    import hashlib
+    from pathlib import Path
+    from scripts.server.prepare_component_contexts import run
+
+    plan, result = prepared_context
+    sources = tmp_path/'inputs'
+    _, links = fixture()
     assert result['status']=='complete' and result['training_ready'] is False
     from scripts.server.verify_component_contexts import verify
     verification = verify(tmp_path/'out')
@@ -120,3 +131,36 @@ def test_preparation_materializes_oriented_native_tables_and_keeps_failed_qc(tmp
         run(plan, tmp_path/'failed', materialize=True)
     assert pd.read_csv(tmp_path/'failed'/'windows.csv').status.tolist()==['failed']
     assert not (tmp_path/'failed'/'manifest.csv').exists()
+
+
+@pytest.mark.parametrize('tamper', ['incomplete_component','omitted_window','coordinates','counts','split'])
+def test_replay_rejects_incomplete_membership_and_unbound_qc(tmp_path, prepared_context, tamper):
+    from scripts.server.verify_component_contexts import verify
+
+    root=tmp_path/'out'
+    frame=pd.read_csv(root/'manifest.csv')
+    if tamper=='incomplete_component':
+        # A self-consistent induced subgraph is insufficient: it must also be
+        # the complete context derived from the original interval and graph.
+        nodes,links=fixture()
+        chosen=np.array([0,3])
+        np.savez_compressed(root/'context_segment_ids.npz',indptr=[0,2],segment_ids=chosen,names=['w1'])
+        nodes.iloc[chosen].to_csv(frame.segments_path.iloc[0],index=False)
+        links.iloc[:1].to_csv(frame.links_path.iloc[0],index=False)
+        frame['n_segments']=2
+        frame['n_links']=1
+    elif tamper=='omitted_window':
+        frame=frame.iloc[:0]
+        np.savez_compressed(root/'context_segment_ids.npz',indptr=[0],segment_ids=np.array([],int),names=np.array([],str))
+    elif tamper=='coordinates':
+        frame['start']=1
+    elif tamper=='counts':
+        frame['n_segments']=99
+    elif tamper=='split':
+        overlap=pd.read_csv(root/'fold_overlap.csv')
+        overlap['train_test_overlap']=99
+        overlap.to_csv(root/'fold_overlap.csv',index=False)
+    frame.to_csv(root/'manifest.csv',index=False)
+    frame.to_csv(root/'windows.csv',index=False)
+    with pytest.raises(ValueError,match='not complete|universe|summary counts|split or window'):
+        verify(root)
