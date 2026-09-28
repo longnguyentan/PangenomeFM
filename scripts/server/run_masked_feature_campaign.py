@@ -81,15 +81,15 @@ def main() -> None:
             run(command,directory/'biological.log')
             record['completed_seeds'].append(seed)
             write_json(root/'status.json',record)
+        record['stage']='report'
+        write_json(root/'status.json',record)
+        run([sys.executable,'-m','tasks.transfer.masked_feature_report','--root',str(root),
+            '--out-dir',str(root.parent/(root.name+'_analysis'))],root/'report.log')
         record['status']='complete'
     except Exception as exc:
         record.update(status='failed',error=repr(exc))
         raise
     finally:
         write_json(root/'status.json',record)
-    run([sys.executable,'-m','tasks.transfer.masked_feature_report','--root',str(root),
-        '--out-dir',str(root.parent/(root.name+'_analysis'))],root/'report.log')
-
-
 if __name__ == '__main__':
     main()
