@@ -9,7 +9,9 @@ The frozen two-branch candidate passed the prespecified **seed-42 development
 gate**. The first additional seed reproduces its SV advantage, but the cCRE
 comparison against a random topology branch is slightly negative. Therefore
 the trained-topology benefit for cCRE is not consistently replicated. The
-remaining seed and fixed solver-convergence sensitivity are running. The
+remaining biological seed and all-seed solver sensitivity are running. The
+seed-42 convergence check has completed: all compared fits converge and its
+development gate still passes. The
 candidate specification is fixed; a final superiority claim is not supported.
 
 - [x] Complete eight new frozen biological probes: four branch combinations ×
@@ -21,16 +23,23 @@ candidate specification is fixed; a final superiority claim is not supported.
   These are not 26 independent new benchmarks.
 - [x] Map both official TraitGym matched datasets without dropping examples;
   verify all 14,780 reference alleles against the actual HPRC graph sequence.
+- [x] Verify actual frozen v1 topology coverage for every TraitGym variant in
+  all 30 fold/seed/context caches, including checkpoint/holdout provenance: 100%.
 - [x] Audit the existing HGSVC3 inversion annotations: 300 source events,
   298 mapped primary-chromosome events; preserve the two unmapped contig events.
 - [x] Freeze the candidate and remaining-seed replication protocol before
   observing the new seeds.
 - [x] Finish seed 314159: 4 pretraining fits and 16 biological probes; all
   native audits completed, including the unfavorable cCRE contrast.
-- [ ] Finish seed 20260806: running in the same durable server session.
-- [ ] Complete the fixed 4,000-iteration probe sensitivity: log review found
-  some SV logistic fits reached the manuscript's 800-iteration cap. The original
-  runs remain unchanged; candidate promotion also requires this numerical check.
+- [x] Finish all twelve selected-architecture reconstruction runs across three
+  seeds (two trained branches and their random controls per seed).
+- [ ] Finish seed-20260806 biological probing: running in the same durable
+  server session; reconstruction is complete and audited.
+- [x] Complete the seed-42 4,000-iteration probe sensitivity: all 48 compared
+  feature fits converge (maximum 1,192 iterations); its development gate passes.
+- [ ] Complete the same sensitivity at both remaining seeds. Some original
+  SV fits reached the manuscript's 800-iteration cap; all original runs remain
+  available, and no seed is selected by its result.
 - [ ] Replicate across chromosome folds and run the selected candidate on new
   downstream endpoints; the full v2 matrix is not completed.
 
@@ -161,6 +170,26 @@ a search for a better biological score.
 All existing SV strata, including sparse/undefined bins, remain in
 `all_sv_strata.csv`.
 
+### Completed numerical check: seed 42, maximum 4,000 iterations
+
+All sixteen probes completed. The six-model comparison contains 48 feature
+fits; all converge, using at most 1,192 iterations. Every matched control gain
+retains its sign, and the development gate passes after the numerical check.
+
+| Task, after C+S+H | T+Q AP | Both-random AP | Gain over both-random | Gain over random T+Q | Gain over T+random Q |
+|---|---:|---:|---:|---:|---:|
+| SV INS/DEL | 0.918519 | 0.913187 | +0.005332 | +0.003031 | +0.001872 |
+| cCRE | 0.920713 | 0.919445 | +0.001268 | +0.000309 | +0.001024 |
+
+Gain over the better trained single branch is +0.001827 SV and +0.000093 cCRE.
+The very small cCRE difference remains a point estimate on an inspected fold.
+The same fixed sensitivity will be run at both other seeds before a uniform
+three-seed numerical summary. No original result is replaced or omitted.
+
+[Converged comparison](../results/foundation_evidence_20260927/probe_convergence_4000_analysis/audited_per_run.csv)
+· [Per-fit iteration counts](../results/foundation_evidence_20260927/probe_convergence_4000_analysis/probe_optimization.csv)
+· [Numerical and performance gates](../results/foundation_evidence_20260927/probe_convergence_4000_analysis/development_gate.json).
+
 ### First additional initialization seed: 314159
 
 All sixteen biological probes completed using the fixed protocol, with the
@@ -186,6 +215,32 @@ biological contrast is positive.
 [Seed 314159 biological table](../results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/audited_per_run.csv)
 · [All paired contrasts](../results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/paired_differences.csv)
 · [Recorded failed gate](../results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/biological_analysis/development_gate.json).
+
+## Reconstruction across all three initialization seeds
+
+The fixed architectures have completed reconstruction evaluation at every seed.
+All use the same 2,050 validation candidates in 104 windows, verified by the
+canonical integer-identity hash. These are initialization replications on one
+development fold, with no chromosome-level confidence interval.
+
+| Seed | T trained AP | T random AP | Q trained AP | Q random AP |
+|---|---:|---:|---:|---:|
+| 42 | 0.789716 | 0.625729 | 0.869981 | 0.654747 |
+| 314159 | 0.731156 | 0.596269 | 0.863401 | 0.626892 |
+| 20260806 | 0.690989 | 0.620547 | 0.875416 | 0.643347 |
+
+Both branches beat their frozen-random controls at every seed on this surrogate
+objective. This demonstrates learning in the repaired reconstruction task;
+it does not establish consistent biological transfer or superiority over other
+pretraining methods. Topology reconstruction is more sensitive to initialization.
+
+The historical seed-42 topology checkpoint did not store its initial-weight
+hash. Its matching configuration and unchanged random weights pass, but exact
+starting-weight identity cannot be retrospectively certified from that checkpoint.
+The two new topology seeds and all Q controls retain and verify initial hashes.
+The [seed-42 re-audit](../results/foundation_evidence_20260927/junction_pilot_reaudit/audit.json)
+also resolves an old hash-format difference (floating versus integer labels);
+predictions and metrics were not changed.
 
 ## Graph-message ablation
 
@@ -232,6 +287,17 @@ Coordinates are GRCh38, 1-based POS, mapped to [POS-1,POS), with no nearest
 fallback. All 14,780 REF alleles match the original graph sequence. The two
 viewer examples are deterministic source-order samples, independent of labels
 or model scores. [Coverage and reference audit](../results/foundation_evidence_20260927/traitgym_reference_audit/audit.json).
+
+**Actual topology coverage also passes:** all 11,400 complex-trait and 3,380
+Mendelian variants are present in each of the 30 existing v1 frozen caches
+(5 folds × 3 seeds × 2 contexts). Both label classes and every chromosome
+retain 100% coverage. The audit checks cache checksums, original graph/manifest
+identity, exact checkpoint hashes, validation/test chromosome exclusions,
+seed/context and absence of downstream-label access. Distinct alleles at a
+shared locus remain distinct examples.
+[Full coverage/provenance audit](../results/foundation_evidence_20260927/traitgym_topology_coverage/audit.json)
+· [All per-cache/class/chromosome counts](../results/foundation_evidence_20260927/traitgym_topology_coverage/coverage.csv).
+This concerns v1 caches; it does not assert v2 coverage or fit a TraitGym model.
 
 **Next implementation:** official leave-one-chromosome-out probing and
 chromosome-weighted AP, including the provided matched controls and published
@@ -286,12 +352,22 @@ our junction objective against established graph self-supervision, rather than
 claiming novelty from topology inputs alone.
 [Davies et al., 2026](https://link.springer.com/article/10.1007/s10618-026-01210-1).
 
+Degree correction itself is also established prior work. Aiyappa et al.
+show that ordinary link sampling can favor degree-only predictors and propose
+a degree-corrected task. FakeEdge addresses train/test connectivity shifts in
+link prediction. Our observed masking-induced degree deficit and pangenome
+geometry constraints must be distinguished from these mechanisms, and tested
+against appropriate adaptations. Neither the existence of degree bias nor
+removing queried links can support a standalone novelty claim.
+[Implicit degree bias](https://arxiv.org/abs/2405.14985),
+[FakeEdge](https://proceedings.mlr.press/v198/dong22a.html).
+
 | Priority | Remaining work | Present status / concrete next action |
 |---|---|---|
 | 1 | Seed replication and numerical convergence | Seed 314159 complete, mixed cCRE evidence; seed 20260806 biological probes and fixed solver sensitivity running |
 | 2 | Chromosome replication and v2 task transfer | Not run; freeze protocol before additional label-informed choices |
-| 3 | Stronger sequence / nonlinear probe comparisons | Not completed; use identical examples and input budgets, including sequence truncation controls |
-| 4 | TraitGym | Data, mapping and all REF checks pass; official-protocol classifier still needed |
+| 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | Not completed; include GraphMAE/ToP-style controls, identical examples/input budgets and sequence truncation controls |
+| 4 | TraitGym | Data, all REF checks and actual v1 T coverage in all 30 caches pass; official-protocol classifier still needed |
 | 5 | INV-containing SV type task | 298 primary events pass mapping/NT coverage; multiclass probe/overlap controls still needed |
 | 6 | DART-Eval | Official suite identified; select coordinate-anchored tasks and audit coverage before claiming a comparable result |
 | 7 | Measured SV genotypability | Variant-level leave-one-out outcomes and callable denominators still missing; FILTER, SVR and self-genotyping are not valid replacements |
@@ -364,6 +440,14 @@ PYTHONPATH=src:. python scripts/server/audit_traitgym_coverage.py \
   --full-segments /home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz \
   --verify-reference --out-dir <fresh-traitgym-audit>
 
+# Verify all 30 existing v1 topology caches on the prepared TraitGym examples.
+PYTHONPATH=src:. python scripts/server/audit_traitgym_topology.py \
+  --mapping-dir <traitgym-reference-audit> \
+  --topology-cache-root /home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference \
+  --results-root /home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806 \
+  --manifest /home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv \
+  --out-dir <fresh-traitgym-topology-audit>
+
 # Audit the already downloaded inversion annotation; retain unmapped events.
 PYTHONPATH=src:. python scripts/server/audit_inversion_readiness.py \
   --annotation /home/tuv43532/PangenomeFM/server_workspace/data/downstream/sv/hgsvc3/1.0/GRCh38/variants_GRCh38_sv_inv_HGSVC2024v1.0.tsv.gz \
@@ -385,7 +469,7 @@ explicit failure if a source job fails or an eight-hour wait expires, and does
 not treat a failed scientific gate as a missing result.
 [Exact finalizer](../results/foundation_evidence_20260927/finalize_seed_replication.py).
 
-The separate convergence experiment runs in
+The completed seed-42 convergence experiment is in
 `/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000`,
 tmux session `probe_convergence_4000` on the same socket. Its
 [exact command receipt](../results/foundation_evidence_20260927/probe_convergence_4000_launch.json)
@@ -398,10 +482,15 @@ The bounded continuation reuses the original recorded commands and changes
 only the output root and uniform iteration ceiling; original results remain
 intact. A convergence-aware three-seed report retains numerical failures as
 well as failed performance gates.
-[Continuation code](../scripts/server/run_frozen_branch_convergence.py). The native report will mark `optimization_incomplete` if any compared
+[Continuation code](../scripts/server/run_frozen_branch_convergence.py)
+· [Exact launch receipt](../results/foundation_evidence_20260927/seed_convergence_4000_launch.json).
+The `seed_convergence_4000` tmux session waits for the original runs, then repeats
+both remaining seeds and builds a uniform-budget three-seed report. It uses
+immutable copies of the committed driver/report beside the active checkout,
+with file hashes recorded; running shared code is not modified. The native report will mark `optimization_incomplete` if any compared
 probe remains unconverged. Use a fresh output root to reproduce it.
 
-Validation: **372 local tests passed**, including bitwise default-probe
+Validation: **374 local tests passed**, including bitwise default-probe
 prediction equivalence; the nine targeted label/convergence tests also pass
 in the server environment. The label-integrity check accepts all 173,969
 historical INS/DEL examples (110,623 INS; 63,346 DEL). Cached manuscript AP

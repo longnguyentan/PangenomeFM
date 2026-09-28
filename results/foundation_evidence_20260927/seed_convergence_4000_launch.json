@@ -1,0 +1,24 @@
+{
+  "commit": "2e99c90",
+  "native_checkout_commit": "c86d447176ef64b385854c48df0164c36b46c66e",
+  "command": [
+    "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+    "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/convergence_driver_2e99c90/run_frozen_branch_convergence.py",
+    "--replication-root",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication",
+    "--seed42-report",
+    "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000_analysis",
+    "--out-root",
+    "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000",
+    "--summary-script",
+    "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/convergence_driver_2e99c90/frozen_branch_replication_report.py",
+    "--execute"
+  ],
+  "files": {
+    "run.sh": "ce63b26feb0f435ac0030704cf2e74d3af2b35524407f4c6323b33c2ee02758b",
+    "frozen_branch_replication_report.py": "16008ad2001665c0a9aebd82481fc499f54a76fde0f601fdb530f51147864099",
+    "run_frozen_branch_convergence.py": "69721ea3a2cc448c6d407c23206c091a6240de4665a987f5388184de4cc55074"
+  },
+  "session": "seed_convergence_4000",
+  "tmux_socket": "evidence-20260927"
+}

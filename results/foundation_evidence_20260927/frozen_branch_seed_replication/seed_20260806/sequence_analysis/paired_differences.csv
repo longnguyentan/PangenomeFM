@@ -1,0 +1,4 @@
+arm,metric,trained_minus_random
+bidirectional_linear,auprc,0.23206937684378237
+bidirectional_linear,auroc,0.2394108268887566
+bidirectional_linear,macro_window_auroc,0.20800212144238328

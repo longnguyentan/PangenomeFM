@@ -1,0 +1,1045 @@
+{
+  "status": "complete",
+  "sources": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/audit.json",
+      "bytes": 3201,
+      "mtime_ns": 1790552159716430216,
+      "sha256": "85054cd3fea38feb81805738bb6bf793ccfd4fd1627dbc617eb3f08219a85f4a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/complex_traits_examples.parquet",
+      "bytes": 828016,
+      "mtime_ns": 1790552097521114460,
+      "sha256": "d6f49dc719e04a612d03d6222ce8014c9e8e598649d343116d898baf4ab662c0"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/complex_traits_overlaps.parquet",
+      "bytes": 165649,
+      "mtime_ns": 1790552097525114416,
+      "sha256": "ab11ec9fca1dd86ab3660714c06b3c204e4dce19fe78dace971dd8a956102976"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/mendelian_traits_examples.parquet",
+      "bytes": 172683,
+      "mtime_ns": 1790552097889110410,
+      "sha256": "2a332c154ee2d4c8c56c7635a92c82dcbcf763f8e4cbc358b8c5e451cd2b8e53"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/mendelian_traits_overlaps.parquet",
+      "bytes": 50055,
+      "mtime_ns": 1790552097893110365,
+      "sha256": "2c1a702607babb6b2d08c150ce8068b4de3307cc88df93fd003fad26cbc04c97"
+    }
+  ],
+  "implementation": {
+    "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/audit_traitgym_topology.py",
+    "bytes": 4941,
+    "mtime_ns": 1790557084000000000,
+    "sha256": "e69b49a660659ee402f382a58dedeabab0a2a91ce1b9431a1f3318456bef8ebf"
+  },
+  "command": [
+    "results/foundation_evidence_20260927/audit_traitgym_topology.py",
+    "--mapping-dir",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit",
+    "--topology-cache-root",
+    "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference",
+    "--results-root",
+    "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806",
+    "--manifest",
+    "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+    "--out-dir",
+    "results/foundation_evidence_20260927/traitgym_topology_coverage"
+  ],
+  "manifest": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+    "bytes": 1044864,
+    "mtime_ns": 1786109265393977620,
+    "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+  },
+  "caches": [
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_42/strict.npz",
+        "bytes": 54904209,
+        "mtime_ns": 1789518082682462216,
+        "sha256": "9085843e86152516d507dd9e784e631b8fafdaa62d9f8f2e8813eb727aee592b"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_42/strict.npz.audit.json",
+        "bytes": 837,
+        "mtime_ns": 1789518082790461072,
+        "sha256": "23445fc99f677791650d7b6a7dfc7b2d1915501ab5174614af004ab954ef407d"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_a/seed_42/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 42
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_42/1hop.npz",
+        "bytes": 55034018,
+        "mtime_ns": 1789518520105901186,
+        "sha256": "0d3f73a25095af83833b666d4a58217b6b232dc7400fe0397dbc8f46255b9355"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_42/1hop.npz.audit.json",
+        "bytes": 838,
+        "mtime_ns": 1789518520237899826,
+        "sha256": "3101462edcf23de4197458202d3af45aeeb5d4b533c379c49df322d0aea96be6"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_a/seed_42/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 42
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_314159/strict.npz",
+        "bytes": 54874313,
+        "mtime_ns": 1789518514665957244,
+        "sha256": "828d071c21051852a2577ea41c93e2700876a1d5b61c23b982033c50bdd77b1c"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_314159/strict.npz.audit.json",
+        "bytes": 841,
+        "mtime_ns": 1789518514801955842,
+        "sha256": "e7c2859a46ccdba358c99af8d5d6d53ab7b13f324d2ff7478ac8dd680a16e6a6"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_a/seed_314159/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 314159
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_314159/1hop.npz",
+        "bytes": 55383066,
+        "mtime_ns": 1789518524381857131,
+        "sha256": "5b5a250284f333f8f1010142b6a3e658da7f76fbd205dd8af87f6306a47c784a"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_314159/1hop.npz.audit.json",
+        "bytes": 842,
+        "mtime_ns": 1789518524509855811,
+        "sha256": "2cf2bc38482394e85a60a36edad7df43229e40943b77e12d5cf85762c395dea3"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_a/seed_314159/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 314159
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_20260806/strict.npz",
+        "bytes": 54882528,
+        "mtime_ns": 1789518641304655195,
+        "sha256": "c3afe1fc23a57c108e83fb4b73f8cfbc30fc238f1b727f841808fe8e3e19bb72"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_20260806/strict.npz.audit.json",
+        "bytes": 843,
+        "mtime_ns": 1789518641504653143,
+        "sha256": "7eaff199f0dcca70313626f6ebf6c2533ea7e4c153f792fa4bfa42dd35476397"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_a/seed_20260806/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 20260806
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_20260806/1hop.npz",
+        "bytes": 55253591,
+        "mtime_ns": 1789518811406914356,
+        "sha256": "d55192dddd7e0ac8d8c317d46730cb5be15b303208349e4b9b327761f358c4b0"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_20260806/1hop.npz.audit.json",
+        "bytes": 844,
+        "mtime_ns": 1789518811538913008,
+        "sha256": "4fc174d8654a052466c0e008c95a3a8f7e80be005c08a452d4cc037212d7e4a1"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_a/seed_20260806/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 20260806
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_42/strict.npz",
+        "bytes": 54910270,
+        "mtime_ns": 1789518821090815478,
+        "sha256": "8f62c883a35dbc03a3ed8382ee9db3dad11c01cbeb164ddedbed9b3d1dd7971a"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_42/strict.npz.audit.json",
+        "bytes": 837,
+        "mtime_ns": 1789518821226814089,
+        "sha256": "5947babb16fc8f42ffbc9505dc1b5a561c36dddab13935f1d8de6ab0770ca1d5"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_b/seed_42/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr2_chr7_chr12_chr17_chr22_val_chr3_chr8_chr13_chr18_chrX_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 42
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_42/1hop.npz",
+        "bytes": 55216045,
+        "mtime_ns": 1789518846890552153,
+        "sha256": "c4d1e039971dc200bfdc8bf9d253a6e22fc2e315fa49027a1442760a66bba834"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_42/1hop.npz.audit.json",
+        "bytes": 838,
+        "mtime_ns": 1789518847090550113,
+        "sha256": "2db7590547e3dd55307ec1beb541d7afda77ba9959f83f0de52966569005b270"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_b/seed_42/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr2_chr7_chr12_chr17_chr22_val_chr3_chr8_chr13_chr18_chrX_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 42
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_314159/strict.npz",
+        "bytes": 54852254,
+        "mtime_ns": 1789518915801849504,
+        "sha256": "88672f8fff93aea3244379e0d3f3f30f9eb9cdc446bf05f08bee0f41edef2dce"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_314159/strict.npz.audit.json",
+        "bytes": 841,
+        "mtime_ns": 1789518916049846977,
+        "sha256": "d19fdb587ddc25e39b6fa47537106afb40deeef447062088306f4adfdc82f5f6"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_b/seed_314159/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr2_chr7_chr12_chr17_chr22_val_chr3_chr8_chr13_chr18_chrX_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 314159
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_314159/1hop.npz",
+        "bytes": 55151080,
+        "mtime_ns": 1789519063980341546,
+        "sha256": "0a3f17d7947256f0964bcf72d59634d2083fd3f28e66c8a2f355b4e1ca56e598"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_314159/1hop.npz.audit.json",
+        "bytes": 842,
+        "mtime_ns": 1789519064212339188,
+        "sha256": "9461cbf1472ebe664222b37a4d1592e7bba70a2516dcb8b632021ab2c536ed14"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_b/seed_314159/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr2_chr7_chr12_chr17_chr22_val_chr3_chr8_chr13_chr18_chrX_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 314159
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_20260806/strict.npz",
+        "bytes": 54971471,
+        "mtime_ns": 1789519065480326299,
+        "sha256": "fbf1af8992c58aabe8a981647b840fd05424561c49d2e31821fa653b52b20601"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_20260806/strict.npz.audit.json",
+        "bytes": 843,
+        "mtime_ns": 1789519065672324347,
+        "sha256": "bb1024cb7a2c33e473342ce7a372c5c754be4fca8f44f7ea1cdaf1b650a76a84"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_b/seed_20260806/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr2_chr7_chr12_chr17_chr22_val_chr3_chr8_chr13_chr18_chrX_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 20260806
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_20260806/1hop.npz",
+        "bytes": 55111673,
+        "mtime_ns": 1789519120631765911,
+        "sha256": "df55ef60a17e7a79f25681c6015b8fe6f588caaa7e6ff840a84a1377c342899f"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_20260806/1hop.npz.audit.json",
+        "bytes": 844,
+        "mtime_ns": 1789519120839763799,
+        "sha256": "b8159c486b0ea08e8ef8fd5f44ec1286e424514fd25a9aeee24866aa7c812413"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_b/seed_20260806/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr2_chr7_chr12_chr17_chr22_val_chr3_chr8_chr13_chr18_chrX_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr12",
+          "chr17",
+          "chr2",
+          "chr22",
+          "chr7"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 20260806
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_42/strict.npz",
+        "bytes": 54894269,
+        "mtime_ns": 1789519168019284725,
+        "sha256": "23dcb4a8bc91ed3a791f5ebe1d75b94f95f912c4c6da472747bed1b5cec3833d"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_42/strict.npz.audit.json",
+        "bytes": 837,
+        "mtime_ns": 1789519168243282451,
+        "sha256": "129c3889284d8d87fd9ecdaf10e1e219342c2bb081df57689b30b1fd35c1ce3a"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_c/seed_42/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr3_chr8_chr13_chr18_chrX_val_chr4_chr9_chr14_chr19_chrY_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 42
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_42/1hop.npz",
+        "bytes": 55372538,
+        "mtime_ns": 1789519338677553828,
+        "sha256": "f72d83b124b1c8b4d51ab8a3abf73d22320f40329fb23f005f45e8ecf062d26c"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_42/1hop.npz.audit.json",
+        "bytes": 838,
+        "mtime_ns": 1789519338809552491,
+        "sha256": "7d7a33333c77fea677126274ce563ebe759766a92962d7d6ca241de5196c9577"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_c/seed_42/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr3_chr8_chr13_chr18_chrX_val_chr4_chr9_chr14_chr19_chrY_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 42
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_314159/strict.npz",
+        "bytes": 54896241,
+        "mtime_ns": 1789519335845582529,
+        "sha256": "54eada78e638c85a69b45f6702436560f7a4416945bc50d9954761867ea63ea8"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_314159/strict.npz.audit.json",
+        "bytes": 841,
+        "mtime_ns": 1789519335969581273,
+        "sha256": "a53a500602aa7f79642f6ba86704fc7d9a37e7a915644f9595a686d7ee67376d"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_c/seed_314159/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr3_chr8_chr13_chr18_chrX_val_chr4_chr9_chr14_chr19_chrY_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 314159
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_314159/1hop.npz",
+        "bytes": 55157206,
+        "mtime_ns": 1789519404592885986,
+        "sha256": "c0bef97737375682d77f010f5f841c2df046e7b7c877594ed2c42b2aa79b6852"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_314159/1hop.npz.audit.json",
+        "bytes": 842,
+        "mtime_ns": 1789519404832883555,
+        "sha256": "f2cee92c6732f44f4688079236c36ca20c72da1699e328924faf27d46e3bca27"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_c/seed_314159/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr3_chr8_chr13_chr18_chrX_val_chr4_chr9_chr14_chr19_chrY_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 314159
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_20260806/strict.npz",
+        "bytes": 54835050,
+        "mtime_ns": 1789519450344422630,
+        "sha256": "52dd1ffac2a736858ca768e040f9e2d570dfbae218d399b1a579b2ba6278a372"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_20260806/strict.npz.audit.json",
+        "bytes": 843,
+        "mtime_ns": 1789519450520420848,
+        "sha256": "7ef8150fb504e2f7a769c50e83871dcac3c4f5afe6dae2fc6cdf3b2a5efab6ea"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_c/seed_20260806/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr3_chr8_chr13_chr18_chrX_val_chr4_chr9_chr14_chr19_chrY_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 20260806
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_20260806/1hop.npz",
+        "bytes": 55244024,
+        "mtime_ns": 1789519594550963025,
+        "sha256": "4e74b62cf773c44d6117b2614995fa424551d0dc9eee9a1f1fddc4a0533dcba8"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_20260806/1hop.npz.audit.json",
+        "bytes": 844,
+        "mtime_ns": 1789519594662961892,
+        "sha256": "37b5edc867b61bcf35584cf8e7459560f9ebdc116d40b2a23a9738437b99bfec"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_c/seed_20260806/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr3_chr8_chr13_chr18_chrX_val_chr4_chr9_chr14_chr19_chrY_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr13",
+          "chr18",
+          "chr3",
+          "chr8",
+          "chrX"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 20260806
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_42/strict.npz",
+        "bytes": 54982568,
+        "mtime_ns": 1789519592458984190,
+        "sha256": "a3acde45c10fa5db6c8d54e4a5ee4542b9d7fdbf4ff3f76fdaebacd0e54d6b88"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_42/strict.npz.audit.json",
+        "bytes": 837,
+        "mtime_ns": 1789519592570983058,
+        "sha256": "2e27c3d5914df635bc05fe32f226641afb3c27640e4329e5a5ede57a89f04e75"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_d/seed_42/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr4_chr9_chr14_chr19_chrY_val_chr5_chr10_chr15_chr20_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 42
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_42/1hop.npz",
+        "bytes": 55033857,
+        "mtime_ns": 1789519651814383736,
+        "sha256": "bb4dbdfe26558febef80dc7b0fb85b22491f725ed326bf242ab7856c78ee499c"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_42/1hop.npz.audit.json",
+        "bytes": 838,
+        "mtime_ns": 1789519651942382442,
+        "sha256": "300015449004dfd6423ec0c7f980b28d303f5a174c145571bc5840553c007edd"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_d/seed_42/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr4_chr9_chr14_chr19_chrY_val_chr5_chr10_chr15_chr20_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 42
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_314159/strict.npz",
+        "bytes": 54944956,
+        "mtime_ns": 1789519670846191240,
+        "sha256": "b708cc7a5c0a96a46a75a626919d640774cdf10347b5c9264f4c416e6ae16e4e"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_314159/strict.npz.audit.json",
+        "bytes": 841,
+        "mtime_ns": 1789519670958190108,
+        "sha256": "f8d95847b2fb6d8366854d1946bdc7f9d86b5ba1ccd19455a5059cacb038ee69"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_d/seed_314159/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr4_chr9_chr14_chr19_chrY_val_chr5_chr10_chr15_chr20_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 314159
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_314159/1hop.npz",
+        "bytes": 55184402,
+        "mtime_ns": 1789519855076328596,
+        "sha256": "faa8495d3011fb38dc46e7f0bb5d9e04cfd2add3ee3bea0210e019dbe0f005c0"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_314159/1hop.npz.audit.json",
+        "bytes": 842,
+        "mtime_ns": 1789519855208327262,
+        "sha256": "99d4b0b21880e325e8cbdd3362272309fcb457b4ad476647adc4e857c6c65440"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_d/seed_314159/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr4_chr9_chr14_chr19_chrY_val_chr5_chr10_chr15_chr20_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 314159
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_20260806/strict.npz",
+        "bytes": 54873503,
+        "mtime_ns": 1789519849460385358,
+        "sha256": "08762d250af748448874d7e25624094cb646b9c1ab092bf6d436722f1c71f68b"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_20260806/strict.npz.audit.json",
+        "bytes": 843,
+        "mtime_ns": 1789519849572384225,
+        "sha256": "e9e1c684932fb51fface69f2ad71e38fbbe0dcc6d8082a79177349e7db72421b"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_d/seed_20260806/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr4_chr9_chr14_chr19_chrY_val_chr5_chr10_chr15_chr20_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 20260806
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_20260806/1hop.npz",
+        "bytes": 55074460,
+        "mtime_ns": 1789519956451304121,
+        "sha256": "b3254c8e0ae113e3238c0567728a35965454cbdf46afec838df064947908d2c8"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_20260806/1hop.npz.audit.json",
+        "bytes": 844,
+        "mtime_ns": 1789519956587302747,
+        "sha256": "25591099551dfb4897a485af6077d7bb05008dad09344e6b1460b1eeb9fb39cf"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_d/seed_20260806/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr4_chr9_chr14_chr19_chrY_val_chr5_chr10_chr15_chr20_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr14",
+          "chr19",
+          "chr4",
+          "chr9",
+          "chrY"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 20260806
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_42/strict.npz",
+        "bytes": 54934306,
+        "mtime_ns": 1789519972931137605,
+        "sha256": "b2322b5dde64f92e968014c8ced33a704df4be9aa5e8b3087a4067f405f1b0cc"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_42/strict.npz.audit.json",
+        "bytes": 837,
+        "mtime_ns": 1789519973047136433,
+        "sha256": "d83e2de99578b4b36586b2674dfc265bfe282c12d7813e9ba23cadc49ca653f3"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_e/seed_42/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr5_chr10_chr15_chr20_val_chr1_chr6_chr11_chr16_chr21_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 42
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_42/1hop.npz",
+        "bytes": 55428137,
+        "mtime_ns": 1789520102597655356,
+        "sha256": "715b1c7a71001f2461309fcb3dc5228908b8a91667f53de56f464ad3976e5fe2"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_42/1hop.npz.audit.json",
+        "bytes": 838,
+        "mtime_ns": 1789520102729653733,
+        "sha256": "56cd303df73eec4e05385d7b3f6b878f6d9fb351c086af9403db597f74ea8ce3"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_e/seed_42/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr5_chr10_chr15_chr20_val_chr1_chr6_chr11_chr16_chr21_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 42
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_314159/strict.npz",
+        "bytes": 54939000,
+        "mtime_ns": 1789520109677568398,
+        "sha256": "7d9461a6d8ea36d78feaa3b9de53e34205bf2e83877f2ae7664f00c848d035c3"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_314159/strict.npz.audit.json",
+        "bytes": 841,
+        "mtime_ns": 1789520109813566730,
+        "sha256": "16c4dd705ea85c2b936152e744febb269c0e9017625d8158733cb522a3d0e91d"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_e/seed_314159/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr5_chr10_chr15_chr20_val_chr1_chr6_chr11_chr16_chr21_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 314159
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_314159/1hop.npz",
+        "bytes": 55520734,
+        "mtime_ns": 1789520218700251361,
+        "sha256": "34a793a2e171e03b79802457741b3c6437f1ab21a20112936c3e7c7bb7915042"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_314159/1hop.npz.audit.json",
+        "bytes": 842,
+        "mtime_ns": 1789520218908248884,
+        "sha256": "82b13f1c213f66e641c340c77f51ace455d673dd6d78fed03adbdb9e1ff0c22e"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_e/seed_314159/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr5_chr10_chr15_chr20_val_chr1_chr6_chr11_chr16_chr21_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 314159
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_20260806/strict.npz",
+        "bytes": 54935737,
+        "mtime_ns": 1789520205992402886,
+        "sha256": "6a8b6221ee54cef0e0fa127862b88a111886f9d553180aa7244caf929767eaeb"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_20260806/strict.npz.audit.json",
+        "bytes": 843,
+        "mtime_ns": 1789520206200400401,
+        "sha256": "11ccccaffcc8279b16a7fe037fa28d26bd6cf284f2826f1fb0b089657e23ba62"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_e/seed_20260806/strict/run_001/ckpt_strict__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr5_chr10_chr15_chr20_val_chr1_chr6_chr11_chr16_chr21_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_closure": "strict",
+        "checkpoint_seed": 20260806
+      }
+    },
+    {
+      "cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_20260806/1hop.npz",
+        "bytes": 55286143,
+        "mtime_ns": 1789520363078561140,
+        "sha256": "3c828e47568e99b57fccefdafcb5c3c63daa38e2a7117ab28d77dd4235f997a6"
+      },
+      "sidecar": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_20260806/1hop.npz.audit.json",
+        "bytes": 844,
+        "mtime_ns": 1789520363202559711,
+        "sha256": "617083d9245c62fd359d752a55ee460bc24246f13fa087b4c6257efae80d1117"
+      },
+      "checkpoint": "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806/rotating_folds/hprc_r2/fold_e/seed_20260806/1hop/run_001/ckpt_1hop__shared_dual_mscale3_orient_adpwk32a4_focal2.0_dedge0.1_maskedq_splitseed20260806_heldout_chr5_chr10_chr15_chr20_val_chr1_chr6_chr11_chr16_chr21_ep100_pat20.pt",
+      "holdout": {
+        "checkpoint_test_chromosomes": [
+          "chr10",
+          "chr15",
+          "chr20",
+          "chr5"
+        ],
+        "checkpoint_validation_chromosomes": [
+          "chr1",
+          "chr11",
+          "chr16",
+          "chr21",
+          "chr6"
+        ],
+        "checkpoint_closure": "1hop",
+        "checkpoint_seed": 20260806
+      }
+    }
+  ],
+  "n_caches": 30,
+  "all_variants_covered": true,
+  "original_examples_retained": true,
+  "interpretation": "Actual v1 frozen checkpoint-cache coverage; not v2 coverage or a fitted TraitGym result",
+  "no_model_fitted": true
+}

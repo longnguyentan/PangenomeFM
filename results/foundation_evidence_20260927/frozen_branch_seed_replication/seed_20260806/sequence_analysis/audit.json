@@ -1,0 +1,32 @@
+{
+  "status": "complete",
+  "source_receipts": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/sequence_trained/status.json",
+      "bytes": 4842,
+      "mtime_ns": 1790555378326040387,
+      "sha256": "a9bd62975d57caef699dc4cdd8ac46dff705cd001d6a9fa118b5a021590f0c54"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/sequence_random/status.json",
+      "bytes": 4866,
+      "mtime_ns": 1790555302622787298,
+      "sha256": "f9462d8ed3f0ae51454c62cef8c7e0def94d9d5fa39e4313721d88a7c50d04cb"
+    }
+  ],
+  "candidate_identity": "passed",
+  "candidate_identity_encoding": "CSV with exact integer endpoints and binary labels; schema v2",
+  "raw_input_control_source": null,
+  "frozen_random_parameter_identity": "passed",
+  "checkpoint_metric_replay": "passed",
+  "matched_initialization": [
+    "passed"
+  ],
+  "matched_configuration": "passed",
+  "representation": "sequence_conditioned_graph",
+  "selected_arm": "bidirectional_linear",
+  "selection_criterion": "native window-macro validation AUROC",
+  "selected_checkpoint_sha256": "731661c1bac833bdfad704f906ecb0a34c7b827d6e41f537700d3140e860a611",
+  "scope": "single-fold development comparison; not independent biological evidence",
+  "confidence_intervals": "not estimated after selection on this development partition"
+}

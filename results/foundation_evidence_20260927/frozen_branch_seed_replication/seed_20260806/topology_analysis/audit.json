@@ -1,0 +1,32 @@
+{
+  "status": "complete",
+  "source_receipts": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/topology_trained/status.json",
+      "bytes": 2932,
+      "mtime_ns": 1790555326838548720,
+      "sha256": "53ff4f8ec3842812416b5c8636ad68f27117d5f6348de7f7abcebc2c229edd28"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_20260806/topology_random/status.json",
+      "bytes": 2956,
+      "mtime_ns": 1790555231851482522,
+      "sha256": "e275f113803d6804eabb00cafe60af70a8299dbc6ea8879cb41354463a7f415f"
+    }
+  ],
+  "candidate_identity": "passed",
+  "candidate_identity_encoding": "CSV with exact integer endpoints and binary labels; schema v2",
+  "raw_input_control_source": null,
+  "frozen_random_parameter_identity": "passed",
+  "checkpoint_metric_replay": "passed",
+  "matched_initialization": [
+    "passed"
+  ],
+  "matched_configuration": "passed",
+  "representation": "topology_native",
+  "selected_arm": "bidirectional_default",
+  "selection_criterion": "native window-macro validation AUROC",
+  "selected_checkpoint_sha256": "4b07f8eaa4407a91470419648cc1bb1f893b03eb74a8f6a078c57e78b10b975a",
+  "scope": "single-fold development comparison; not independent biological evidence",
+  "confidence_intervals": "not estimated after selection on this development partition"
+}
