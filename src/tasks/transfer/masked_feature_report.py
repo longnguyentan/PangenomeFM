@@ -44,7 +44,8 @@ def main() -> None:
     ap.add_argument('--out-dir',type=Path,required=True)
     ap.add_argument('--seeds',type=int,nargs='+',help='Explicit completed subset for a partial development report')
     args=ap.parse_args()
-    receipt=json.loads((args.root/'status.json').read_text())
+    receipt_bytes=(args.root/'status.json').read_bytes()
+    receipt=json.loads(receipt_bytes)
     plan=receipt['plan']
     seeds=args.seeds or plan['seeds']
     if len(set(seeds))!=len(seeds) or not set(seeds)<=set(receipt['completed_seeds']):
@@ -92,6 +93,8 @@ def main() -> None:
     frame['feature_display']=frame.feature.map(dict(cs='C+S',csh='C+S+H',cst='C+S+E',csht='C+S+H+E'))
     differences=compare(frame,plan,seeds)
     args.out_dir.mkdir(parents=True,exist_ok=False)
+    source_snapshot=args.out_dir/"execution_receipt.json"
+    source_snapshot.write_bytes(receipt_bytes)
     frame.to_csv(args.out_dir/'audited_per_run.csv',index=False)
     differences.to_csv(args.out_dir/'paired_differences.csv',index=False)
     pd.concat(optimization,ignore_index=True).to_csv(args.out_dir/'probe_optimization.csv',index=False)
@@ -102,7 +105,8 @@ def main() -> None:
     gate=dict(status='eligible_for_chromosome_replication' if set(seeds)==set(plan['seeds']) and selected.difference.gt(0).all() else 'not_promoted',
         scope='Exploratory fold-A validation; seeds are not independent chromosome replicates; no CI',
         all_declared_seeds_complete=set(seeds)==set(plan['seeds']), checks=selected.to_dict('records'),
-        source=fingerprint(args.root/'status.json'), all_metrics_replayed=True, all_probes_converged=True,
+        source=fingerprint(source_snapshot), live_status_path=str((args.root/'status.json').resolve()),
+        all_metrics_replayed=True, all_probes_converged=True,
         graph_contribution_requires_separate_full_vs_coordinate_comparison=True,
         representation='E is sequence-conditioned; native cst/csht keys are retained solely for pipeline compatibility',
         report_implementation=fingerprint(Path(__file__)))

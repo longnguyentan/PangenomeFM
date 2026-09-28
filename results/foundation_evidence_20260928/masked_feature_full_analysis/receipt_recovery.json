@@ -1,0 +1,7 @@
+{
+  "status": "original_receipt_recovered_exactly",
+  "expected_sha256": "a3bfb37c51e2a7b1eb82271159ee3bb82e263685e0b454e12271d918d8d9ef44",
+  "method": "Final live driver status differs only by status=complete versus running; deterministic reconstruction matches the previously recorded SHA-256 exactly.",
+  "original_gate_audit_modified": false,
+  "reason": "The driver finalizes its live status after report generation. Preserve the original bytes for auditable provenance; future reporters save an immutable snapshot."
+}

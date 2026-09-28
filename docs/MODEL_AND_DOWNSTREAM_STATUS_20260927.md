@@ -1,6 +1,6 @@
 # PangenomeFM: model and downstream evidence status
 
-Last verified 28 September 2026, 02:15 EDT. Technical work only; no manuscript edits.
+Last verified 28 September 2026, 02:24 EDT. Technical work only; no manuscript edits.
 Branch: `codex/v2-evidence-review-20260927`.
 
 ## Active continuation, 28 September
@@ -11,18 +11,19 @@ Branch: `codex/v2-evidence-review-20260927`.
 - [x] Complete the natural-cohort fold-A/42/strict smoke: **39 converged evaluations**, all events retained. All saved predictions and metrics replay independently on the laptop. No one-fold confidence intervals.
 - [x] Complete and replay the **30-run natural-cohort matrix: 1,170 converged evaluations, no exclusions**. Macro ΔT after C+S is +0.067057 strict / +0.051653 one-hop; after C+S+L+H, +0.047664 / +0.014988. INV-specific intervals after length/structure cross zero; no random-encoder superiority claim.
 - [x] Prespecify, implement and test **segment-grouped masked NT reconstruction** on the existing encoder. This is a GraphMAE-style objective adaptation, with paired random encoders and coordinate-only controls, not an official GraphMAE reproduction or a novel masked-autoencoder claim.
-- [ ] Complete **12 pretraining runs and 24 frozen validation probes** across three seeds. **12/12 pretraining runs complete**; two complete seeds replayed, final-seed probes running. Both completed seeds have positive trained-minus-random after C+S+H on both tasks; no chromosome replication result yet.
+- [x] Complete **12 pretraining runs and 24 frozen validation probes / 96 feature evaluations** across three seeds. All metrics replay and fits converge; trained-minus-random after C+S+H is positive at every seed/task (mean +0.005609 SV / +0.001836 cCRE). Full-versus-coordinate trained contrasts also positive. One development fold; no chromosome CI.
 - [x] Audit graph-wide reference-contig separation: no direct cross-contig reference link or multi-contig alternative component.
 - [x] Inspect the actual 1,218-genome SV release header/inventory: INS/DEL plus genotypes/frequencies, not the missing measured genotyping-concordance or DUP/complex labels.
 - [x] Identify DART-Eval task 3's official GRCh38 coordinates, five cell labels, original split and processed-table version. Anonymous data download returns **HTTP 403**; actual-table QC/fitting awaits an authorized copy.
-- [x] Full local suite **435 passed**; targeted Ruff/diff checks pass. Existing manuscript checks remain included.
+- [x] Full local suite **436 passed**; targeted Ruff/diff checks pass. Existing manuscript checks remain included.
 - [x] Repair fitted-probe persistence: opt-in saved scaler/classifier/calibration with exact reload replay; frozen chromosome replication will retain its classifiers.
-- [x] Implement/test the gated, fixed chromosome-replication runner and reporter. All controls retained; fold B is reported separately because its test chromosomes were used in fold-A development validation. Not launched before the complete gate.
+- [x] Implement/test the gated, fixed chromosome-replication runner/reporter; review the completed gate and launch the detached job. All controls retained; fold B reported separately due to development exposure.
+- [ ] Complete **120 chromosome-test probe runs / 480 evaluations**. The launched job waits for NT cache completion and free GPUs; no test results yet.
 - [x] Correct graph-scope denominator: 751,237 total segments, 303,425 downstream cache rows, 479,477 benchmark NT rows. Audit 14,786 partly covered alternative components; no new graph release.
-- [ ] Complete the separate, queued **271,760-segment frozen NT extension** after the model campaign. Existing cache values must be byte-identical; no label-driven retraining.
+- [ ] Complete the separate, active **271,760-segment frozen NT extension** on four GPUs. Existing cache values must be byte-identical; no label-driven retraining.
 
-[Current runbook, evidence and remaining gates](EXECUTION_20260928.md). The prior
-failed learned-versus-random development gate remains in force. New pretraining
+[Current runbook, evidence and remaining gates](EXECUTION_20260928.md). The prior junction candidate
+remains failed; the new masked-feature candidate passes its own declared development gate. New pretraining
 uses no biological labels; downstream encoders remain frozen.
 
 ## Completed studies before the 28 September continuation
@@ -171,7 +172,7 @@ or substitute a success threshold overrides the frozen, controlled evaluation.
 
 ## Earlier frozen junction architecture candidate
 
-**This specification remains recorded, but failed its complete development gate.** The new 48D masked-feature objective is a separate sequence-conditioned candidate, described in the [28 September runbook](EXECUTION_20260928.md); it has not yet passed all three initialization seeds.
+**This specification remains recorded, but failed its complete development gate.** The new 48D masked-feature objective is a separate sequence-conditioned candidate, described in the [28 September runbook](EXECUTION_20260928.md); it passes all three initialization seeds and is proceeding to fixed chromosome replication, without a final-superiority claim.
 
 | Part | Fixed choice |
 |---|---|
@@ -481,7 +482,7 @@ must never label inversions as deletions.
 
 **Completed:** disjoint event-level INS/DEL/INV labels, overlap
 handling, one-vs-rest AP and length-matched controls. The natural-frequency
-extension now passes smoke and is running its full matrix. Complex events are not
+extension is complete and replayed at all 30 fold/seed/context runs. Complex events are not
 automatically a mutually exclusive fourth class. The paper's broader complex-SV
 count is not a ready GRCh38 multiclass table.
 [HGSVC3 paper](https://www.nature.com/articles/s41586-025-09140-6),
@@ -522,9 +523,9 @@ removing queried links can support a standalone novelty claim.
 
 | Priority | Remaining work | Present status / concrete next action |
 |---|---|---|
-| 1 | Model transfer improvement | Junction gates remain failed. New masked-feature candidate beats random on both tasks in the first seed; remaining two seeds running, no chromosome promotion yet |
-| 2 | Chromosome replication and v2 task transfer | Not run; freeze protocol before additional label-informed choices |
-| 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | TraitGym probe matrix complete. Native-backbone GraphMAE-style objective with random/coordinate controls is running; official GraphMAE and stronger full sequence-embedding comparisons remain unrun |
+| 1 | Model transfer improvement | Junction gates remain failed. New masked-feature candidate beats matched random after H on both tasks at all three development seeds; chromosome replication launched |
+| 2 | Chromosome replication and v2 task transfer | Fixed protocol launched: four arms × five folds × three seeds; resource-waiting, no test results yet. Wider new-E task transfer remains unrun |
+| 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | TraitGym probe matrix complete. Native-backbone GraphMAE-style objective with random/coordinate controls completes its development gate; official GraphMAE and stronger full sequence-embedding comparisons remain unrun |
 | 4 | TraitGym | All three 60-run studies complete; all fixed-C outputs replay exactly and every topology contrast is retained. Official LOCO/full sequence-embedding comparison remains separate |
 | 5 | INV-containing SV type task | Matched study complete. Full natural-frequency cohort complete: 30 runs / 1,170 evaluations, all events retained after append-only chrY cache completion. DUP and complex classes remain unresolved |
 | 6 | DART-Eval | Task-3 source/coordinate/split audit complete; official processed-table download requires authenticated Synapse permission (403). No fabricated labels or task performance |
@@ -687,3 +688,5 @@ prediction equivalence; the nine targeted label/convergence tests also pass
 in the server environment. The label-integrity check accepts all 173,969
 historical INS/DEL examples (110,623 INS; 63,346 DEL). Cached manuscript AP
 regression checks pass; they are not retraining.
+
+[Scientific result review and remaining limitations](RESULT_REVIEW_20260928.md).

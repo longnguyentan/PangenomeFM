@@ -144,12 +144,30 @@ def summarize(frame: pd.DataFrame, plan: dict):
     return pd.DataFrame(absolute), differences, contrasts
 
 
+
+def verify_saved_probes(output: Path, metrics: pd.DataFrame) -> list[dict]:
+    """Require every declared fitted artifact, its exact bytes and writer replay."""
+    audit = json.loads((output / "audit.json").read_text())
+    artifacts = audit.get("fitted_probe_artifacts", {})
+    if set(artifacts) != set(metrics.feature_set):
+        raise ValueError("Missing or unexpected fitted probe artifacts")
+    rows = []
+    for feature, artifact in artifacts.items():
+        path = Path(artifact["path"])
+        if (path.resolve().parent != (output / "fitted_probes").resolve()
+                or not artifact.get("raw_predictions_exact_after_reload")
+                or fingerprint(path)["sha256"] != artifact["sha256"]):
+            raise ValueError("Fitted probe artifact changed or failed serialization replay")
+        rows.append(dict(feature_set=feature, **artifact))
+    return rows
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--root", type=Path, required=True)
     ap.add_argument("--out-dir", type=Path, required=True)
     args = ap.parse_args()
-    receipt = json.loads((args.root / "status.json").read_text())
+    receipt_bytes = (args.root / "status.json").read_bytes()
+    receipt = json.loads(receipt_bytes)
     plan = receipt["plan"]
     expected = {(f, s) for f, s in product(plan["folds"], plan["seeds"])}
     observed = [(j["fold"], j["seed"]) for j in receipt["completed_jobs"]]
@@ -159,7 +177,7 @@ def main():
         or set(observed) != expected
     ):
         raise ValueError("Incomplete replication execution")
-    rows = []
+    rows, artifacts = [], []
     for job in receipt["completed_jobs"]:
         source = Path(job["probes"])
         audit = json.loads((source / "status.json").read_text())
@@ -196,6 +214,8 @@ def main():
                 )
                 if not checked.checkpoint_sha256.eq(pre["checkpoint"]["sha256"]).all():
                     raise ValueError("Probe checkpoint differs")
+                artifacts.extend(dict(fold=job["fold"], seed=job["seed"], arm=arm, task=task, **r)
+                                 for r in verify_saved_probes(output, m))
                 rows.append(checked)
         if any(
             initial[k + "_trained"] != initial[k + "_random"]
@@ -207,6 +227,10 @@ def main():
     frame["embedding"] = np.where(frame.model.str.endswith("random"), "E_random", "E")
     absolute, paired, contrasts = summarize(frame, plan)
     args.out_dir.mkdir(parents=True, exist_ok=False)
+    # The driver later updates its live status; preserve the exact audited input.
+    source_snapshot = args.out_dir / "execution_receipt.json"
+    source_snapshot.write_bytes(receipt_bytes)
+    pd.DataFrame(artifacts).to_csv(args.out_dir / "fitted_probe_artifacts.csv", index=False)
     for name, data in [
         ("audited_per_run", frame),
         ("absolute", absolute),
@@ -224,7 +248,9 @@ def main():
             all_saved_predictions_replayed=True,
             all_probes_converged=True,
             scope=plan["scope"],
-            receipt=fingerprint(args.root / "status.json"),
+            n_verified_fitted_probe_artifacts=len(artifacts),
+            receipt=fingerprint(source_snapshot),
+            live_status_path=str((args.root / "status.json").resolve()),
             implementation=fingerprint(Path(__file__)),
         ),
     )

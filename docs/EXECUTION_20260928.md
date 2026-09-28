@@ -1,6 +1,6 @@
 # Model and downstream continuation — 28 September 2026
 
-Verified at 02:15 EDT; live jobs may have progressed beyond this snapshot. This is an execution record, not a manuscript revision.
+Verified at 02:24 EDT; live jobs may have progressed beyond this snapshot. This is an execution record, not a manuscript revision.
 The [central checklist](MODEL_AND_DOWNSTREAM_STATUS_20260927.md) retains the
 complete historical task inventory and all failed scientific gates.
 
@@ -13,8 +13,9 @@ complete historical task inventory and all failed scientific gates.
 | Missing chrY topology vectors | Fixed in all 30 caches; original values bitwise unchanged | [Completion receipt](../results/foundation_evidence_20260928/natural_sv_smoke/cache_completion.json), [all cache audits](../results/foundation_evidence_20260928/natural_sv_smoke/cache_extension_audits.json) |
 | Natural-cohort smoke | Complete: 39/39 converged evaluations, independent prediction replay | [Metrics](../results/foundation_evidence_20260928/natural_sv_smoke/per_run.csv), [local replay](../results/foundation_evidence_20260928/natural_sv_smoke/local_replay.json) |
 | Natural-cohort full matrix | Complete: 30/30 runs, 1,170 converged and replayed evaluations, zero exclusions | [Full audit](../results/foundation_evidence_20260928/sv_type_natural_full_analysis/audit.json) |
-| New masked-feature pretraining objective | 12/12 pretraining runs complete; two complete seeds replayed, final-seed probing running | [Protocol](../configs/masked_nt_objective_20260928.json) |
-| Whole-graph NT coverage | Missing 271,760 segments audited; completion queued after the model campaign | [Protocol](../configs/whole_graph_nt_completion_20260928.json) |
+| New masked-feature pretraining objective | Complete: 12 pretraining runs, 24 frozen probes / 96 feature evaluations; three-seed gate passes | [Protocol](../configs/masked_nt_objective_20260928.json) |
+| Whole-graph NT coverage | 271,760-segment completion running on four GPUs; original cache unchanged | [Protocol](../configs/whole_graph_nt_completion_20260928.json) |
+| Chromosome replication | Launched and waiting for cache completion/free GPUs: fixed 5 folds × 3 seeds × 4 arms | [Protocol](../configs/masked_nt_chromosome_replication_20260928.json) |
 | Alternative-component context | Complete: 14,786 components partly covered by benchmark-union cache | [Coverage](../results/foundation_evidence_20260928/reference_component_context_20260928/coverage.csv) |
 | DART-Eval accessibility task | Official schema/reference/split located; table download requires authentication | [Source audit](../results/foundation_evidence_20260928/dart_feasibility/source_audit.json), [403 receipt](../results/foundation_evidence_20260928/dart_feasibility/download.json) |
 
@@ -152,60 +153,72 @@ on one fold do not provide chromosome confidence intervals. The paired reporter
 checks actual saved predictions, baseline identity, convergence and checkpoint
 identity before summarizing any difference.
 
-### First completed biological comparison
+### Completed three-seed biological development comparison
 
-**Fold A validation, seed 42, one-hop only; no chromosome confidence intervals.**
-All 32 feature evaluations converge, predictions replay, target hashes match,
-and C+S / C+S+H predictions are bitwise identical across the four encoders.
-E denotes the sequence-conditioned representation; the native `cst`/`csht`
-CSV keys are compatibility aliases, not a claim that E is topology-only T.
+**Fold-A validation, one-hop; 12 pretraining runs, 24 frozen probe runs and all
+96 feature evaluations completed.** All fits converge and saved metrics replay.
+Targets, split sizes and baseline C+S / C+S+H predictions match across arms.
+Random encoders preserve their initial weights exactly. E denotes the
+sequence-conditioned masked-feature representation; native `cst`/`csht` are
+compatibility keys, not a claim that this is topology-only T.
 
-| Task | C+S+H | + random E | + trained E | Trained minus random | Full trained minus coordinate-only trained |
-|---|---:|---:|---:|---:|---:|
-| INS versus DEL | 0.896261 | 0.900934 | 0.906437 | +0.005503 | +0.004536 |
-| cCRE | 0.914653 | 0.919353 | 0.920763 | +0.001411 | +0.002730 |
+| Seed | SV trained − random after C+S+H | cCRE trained − random after C+S+H | SV full − coordinate trained | cCRE full − coordinate trained |
+|---|---:|---:|---:|---:|
+| 42 | +0.005503 | +0.001411 | +0.004536 | +0.002730 |
+| 314159 | +0.006468 | +0.002178 | +0.007598 | +0.002027 |
+| 20260806 | +0.004855 | +0.001920 | +0.006302 | +0.002359 |
+| Descriptive mean | +0.005609 | +0.001836 | +0.006145 | +0.002372 |
 
-The supplemental comparison against the original same-width junction-trained Q
-also uses identical examples and bitwise C+S / C+S+H baselines. After H, the new
-objective changes AP by **+0.000768 for SV and +0.000144 for cCRE**. Without H,
-the corresponding changes are +0.004041 and -0.000006. This is not a comparison
-against the 96D T+Q composite, and the 20-epoch versus 10-epoch budget is not
-compute matched. All four arms, not only the best one, are included in the CSV.
+The originally declared trained-minus-random gate passes all six checks. The
+separate full-versus-coordinate contrasts are also positive at every seed.
+This is development evidence for learned sequence-conditioned representations;
+seeds are not independent genomic replicates, so **no chromosome CI** is supplied.
+Removing a stream also removes capacity; this is not an exact equal-capacity
+edge-rewiring ablation. F1 and balanced accuracy are not uniformly better in
+every seed, and all secondary metrics remain in the tables.
 
-The first supplemental report correctly stopped at a metadata identity check.
-Inspection found a one-ULP difference (5.55e-17) in a previously serialized cCRE
-prevalence, with identical target hashes, counts and baseline predictions. The
-repair permits only 1e-15 absolute proportion roundoff; exact target and score
-hash checks remain. No labels, predictions or metric values were changed.
+The supplemental same-width junction-Q comparison verifies bitwise identical
+C+S / C+S+H scores and targets. Masked-feature E minus Q after H averages
+**+0.001877 SV / +0.000099 cCRE**. Without H, it averages
+**+0.006154 SV / -0.000145 cCRE**. Thus it does not uniformly dominate Q.
+The 20-epoch versus 10-epoch budgets are not compute matched, and this is not a
+comparison against the 96D T+Q composite. Every arm and seed is retained.
+The initial prevalence identity check failed at a one-ULP serialization
+roundoff (5.55e-17); only a 1e-15 absolute proportion tolerance was added, with
+exact target/count/baseline-score checks preserved. No scores or labels changed.
 
-[First-seed audited metrics](../results/foundation_evidence_20260928/masked_feature_seed42_analysis/audited_per_run.csv),
-[all control differences](../results/foundation_evidence_20260928/masked_feature_seed42_analysis/paired_differences.csv),
-[junction comparison](../results/foundation_evidence_20260928/masked_junction_seed42_reference/paired_per_seed.csv),
-[control figure](../results/foundation_evidence_20260928/masked_feature_seed42_analysis/masked_feature_controls.pdf).
-This is promising development evidence; the prespecified gate still requires
-both tasks at all three seeds. The partial report explicitly says not promoted.
+[Completed audit](../results/foundation_evidence_20260928/masked_feature_full_analysis/audit.json),
+[per-run metrics](../results/foundation_evidence_20260928/masked_feature_full_analysis/audited_per_run.csv),
+[all paired controls](../results/foundation_evidence_20260928/masked_feature_full_analysis/paired_differences.csv),
+[control figure](../results/foundation_evidence_20260928/masked_feature_full_analysis/masked_feature_controls.pdf),
+[all junction comparisons](../results/foundation_evidence_20260928/masked_junction_full_reference/paired_per_seed.csv).
 
-### Fixed chromosome-replication follow-up, not launched yet
+### Fixed chromosome replication: launched, waiting for GPUs
 
 The [replication protocol](../configs/masked_nt_chromosome_replication_20260928.json)
-and its runner/reporter are implemented and tested. Launch requires manual review
-of the completed three-seed development audit, including a supplied SHA-256 of
-that reviewed report; a partial, nonfinite or failed gate is rejected.
+was committed before any new chromosome-test results. After reviewing the
+completed gate and full-versus-coordinate results, the detached
+`masked_chromosome` job was launched. It waits for the active whole-graph NT
+completion and all four GPUs to become free. The explicit
+[review receipt](../results/foundation_evidence_20260928/masked_chromosome_replication_driver/development_review.json)
+pins development audit SHA-256
+`3e05b7840c26b328300db07b758eb70a979f677626b17cff771a0218eaf8d6a2`.
+This authorizes an experiment, not an architecture superiority claim.
 
-The planned matrix retains all four arms across five original folds and three
-seeds: 60 encoder instances (12 existing fold-A encoders reused, 48 trained from
-scratch), 120 frozen biological probe runs and 480 feature evaluations. Model
-width, objectives, optimizer, input cache, feature sets and convergence budget
-remain fixed. Other folds receive architecture metadata without transferred
-weights. Current whole-graph cache completion is separate from this experiment.
+The fixed matrix retains all four arms across five original folds and three
+seeds: **60 encoder instances** (12 existing fold-A encoders reused, 48 new
+pretraining runs), **120 frozen biological probe runs / 480 feature evaluations**.
+Model width, objective, optimizer, input cache, features and convergence budget
+remain fixed. New folds receive architecture metadata only, never trained
+weights. The new whole-graph cache is not substituted into this experiment.
+Saved classifier/scaler/calibration artifacts are enabled for future reuse.
 
-Fold-A development validation used the chromosomes that form **fold B's test
-set**. The primary follow-up summary therefore excludes fold B and uses the other
-four folds; fold B and the full five-fold matrix remain separate, fully reported
-sensitivity scopes. This does not erase exposure to historical v1 results on
-these chromosomes, so no untouched-external-validation claim is justified.
-The same paired hierarchical bootstrap, fold sign-flip and BH routines are reused.
-No additional chromosome test results have been generated by this implementation.
+Fold-A development validation used the chromosomes in **fold B's test set**.
+The primary follow-up summary therefore uses folds A/C/D/E; fold B and the
+full five-fold matrix are separate sensitivity scopes. This does not erase
+historical v1 label exposure, so no untouched-external-validation claim is made.
+The existing paired hierarchical bootstrap, fold sign-flip and BH routines are
+reused. No chromosome results exist yet; the driver is resource-waiting.
 
 ## 3. Correct the graph denominator and enable broader contexts
 
@@ -239,7 +252,7 @@ coverage. Components are **not** directed bubbles or phased haplotype alleles.
 A future context builder must retain orientation, check reference-anchor spans
 and bound computation before making those claims.
 
-Whole-graph NT completion is queued in a separate output directory, after the
+Whole-graph NT completion is running in a separate output directory, following the
 current GPU campaign finishes. It adds **271,760** sequences using the exact
 frozen model and manuscript preprocessing, offline. Estimated capped sequence
 input is 112.6 million bases; raw output is 1.54 GB, with 679 GB free at audit.
@@ -356,18 +369,18 @@ server resources remain prerequisites; launchers do not download replacements.
 
 ## Tests and remaining checklist
 
-- [x] Full local suite: **435 passed**, including cached manuscript checks, replication gates and exact saved-probe replay; 14 known warnings. Targeted Ruff passes.
-- [x] Initial eleven server tests, then nine cache/report tests and two context tests pass; Ruff and compile checks pass.
+- [x] Full local suite: **436 passed**, including cached manuscript checks, replication gates and exact saved-probe replay; 14 known warnings. Targeted Ruff passes.
+- [x] Server: latest 19 probe/persistence/replication tests pass, in addition to earlier cache/context checks; Ruff and compile checks pass.
 - [x] Real natural-SV smoke independently replayed: all 39 evaluations.
 - [x] Existing manuscript regression checks remain in the passing suite.
 - [x] Complete natural-SV fitting, full replay, paired uncertainty and plots: 30 runs, 1,170 evaluations, zero exclusions.
-- [x] Complete and independently replay the first seed of masked-feature biological controls and the supplemental junction-Q comparison.
+- [x] Complete and independently replay all three seeds of masked-feature biological controls and the supplemental junction-Q comparison.
 - [x] Audit whole-graph scope, alternative-component coverage and NT completion cost.
-- [ ] Complete the queued full-graph frozen NT cache and verify preserved values.
-- [ ] Complete all three seeds of masked-feature trained/random/coordinate comparisons. Retain failed
-  gates if any; do not choose only favorable tasks or seeds.
+- [ ] Complete the active full-graph frozen NT cache and verify preserved values.
+- [x] Complete all three seeds of masked-feature trained/random/coordinate comparisons; all six original development gates pass.
 - [x] Freeze/test the chromosome-replication protocol before observing new chromosome-test scores.
-- [ ] Launch only after the completed development report passes its original gate and is reviewed. Current v2 has not established a universally better final model.
+- [x] Review the completed gate and launch fixed chromosome replication in tmux, queued behind cache completion.
+- [ ] Complete/replay all 120 chromosome-test probes, then assess improvement. Current v2 has not established a universally better final model.
 - [ ] Obtain authorized DART rows, verify labels/coordinates/coverage, then
   prespecify an appropriately labelled comparison.
 - [ ] Official graph-SSL architecture and stronger complete sequence-embedding
@@ -395,3 +408,5 @@ original command lines. Two tests show bitwise equality of all default/opt-in
 metrics and predictions, plus exact raw/calibrated/classification replay after
 reload. This prevents repeating the historical missing-probe external-replay
 blocker; it does not retrospectively recover lost historical classifiers.
+
+[Scientific result review and remaining limitations](RESULT_REVIEW_20260928.md).

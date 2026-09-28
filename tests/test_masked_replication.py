@@ -117,3 +117,22 @@ def test_replication_reports_all_folds_but_excludes_development_fold_in_primary(
         validate_matrix(broken, plan)
     with pytest.raises(ValueError, match="Development-exposed"):
         validate_matrix(frame, dict(plan, primary_summary_folds=plan["folds"]))
+
+
+def test_saved_probe_audit_rejects_missing_and_modified_artifacts(tmp_path):
+    from tasks.entex.prepare import fingerprint
+    from tasks.transfer.masked_replication import verify_saved_probes
+    folder = tmp_path / 'fitted_probes'
+    folder.mkdir()
+    artifact = folder / 'cs.joblib'
+    artifact.write_bytes(b'serialized-own-model-fixture')
+    record = {'path': str(artifact), 'sha256': fingerprint(artifact)['sha256'],
+              'raw_predictions_exact_after_reload': True}
+    audit = tmp_path / 'audit.json'
+    audit.write_text(json.dumps({'fitted_probe_artifacts': {'cs': record}}))
+    assert len(verify_saved_probes(tmp_path, pd.DataFrame({'feature_set': ['cs']}))) == 1
+    with pytest.raises(ValueError, match='Missing'):
+        verify_saved_probes(tmp_path, pd.DataFrame({'feature_set': ['cs', 'csh']}))
+    artifact.write_bytes(b'changed-model')
+    with pytest.raises(ValueError, match='changed'):
+        verify_saved_probes(tmp_path, pd.DataFrame({'feature_set': ['cs']}))

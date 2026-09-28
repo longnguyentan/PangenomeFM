@@ -1,0 +1,9 @@
+{
+  "decision": "launch_fixed_chromosome_replication",
+  "reviewed_at_utc": "2026-09-28T06:19:00Z",
+  "development_audit_sha256": "3e05b7840c26b328300db07b758eb70a979f677626b17cff771a0218eaf8d6a2",
+  "paired_differences_sha256": "e66d8584241078317cf62b241d62f4fbb0012f29d2cffc64fa7f41d48057ef26",
+  "evidence": "All 96 feature evaluations converge and replay. Six trained-vs-random and six full-vs-coordinate contrasts after C+S+H are positive. Same initialization and baseline identities pass.",
+  "interpretation": "Passes the originally fixed development gate. Does not establish held-out chromosome superiority. Same-width junction comparison improves SV but cCRE without H is slightly worse; no universal dominance.",
+  "action": "Run the unchanged all-arm/fold/seed protocol after whole-graph NT completion releases GPUs. Retain all results and save fitted probes. No test-guided model modification."
+}
