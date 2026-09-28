@@ -70,6 +70,8 @@ def _namespace_from_checkpoint(ckpt: Dict, seed: int) -> argparse.Namespace:
         "graph_message_direction": "incoming",
         "use_edge_features": False,
         "window_k": None,
+        "coordinate_attention_mode": "legacy",
+        "attention_chunk_size": 512,
     }
     defaults.update(train_args)
     defaults["seed"] = seed
@@ -90,6 +92,8 @@ def _build_model_from_checkpoint(ckpt: Dict, args: argparse.Namespace, device):
         use_rope=not args.no_rope,
         use_fusion_gate=not args.no_fusion_gate,
         window_k=window_k,
+        coordinate_attention_mode=getattr(args, "coordinate_attention_mode", "legacy"),
+        attention_chunk_size=getattr(args, "attention_chunk_size", 512),
         use_multiscale_rope=args.multiscale_rope,
         n_rope_scales=args.n_rope_scales,
         use_orientation=args.orientation_rope,

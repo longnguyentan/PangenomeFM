@@ -283,6 +283,8 @@ if TORCH_AVAILABLE:
             window_k: Optional[int] = None,
             use_multiscale_rope: bool = False,  # Tier 1-A
             n_rope_scales: int = 3,
+            coordinate_attention_mode: str = "legacy",
+            attention_chunk_size: int = 512,
         ) -> None:
             super().__init__()
             assert dim % n_heads == 0
@@ -293,6 +295,16 @@ if TORCH_AVAILABLE:
             self.use_rope = use_rope
             self.dropout_p = dropout
             self.window_k = window_k
+            if coordinate_attention_mode not in {"legacy", "chunked_exact", "chunked_window"}:
+                raise ValueError("Unknown coordinate attention mode")
+            if attention_chunk_size < 1:
+                raise ValueError("attention_chunk_size must be positive")
+            if coordinate_attention_mode == "chunked_exact" and window_k is not None:
+                raise ValueError("chunked_exact is global attention; do not supply window_k")
+            if coordinate_attention_mode == "chunked_window" and (window_k is None or window_k < 1):
+                raise ValueError("chunked_window requires a positive window_k")
+            self.coordinate_attention_mode = coordinate_attention_mode
+            self.attention_chunk_size = attention_chunk_size
 
             self.W_q = nn.Linear(dim, dim, bias=False)
             self.W_k = nn.Linear(dim, dim, bias=False)
@@ -388,6 +400,15 @@ if TORCH_AVAILABLE:
                 # Passes orient through to GenomicRoPE or MultiScaleGenomicRoPE
                 q, k = self.rope(q, k, so, orient=orient)
 
+            if self.coordinate_attention_mode != "legacy":
+                from models.coordinate_attention import coordinate_attention
+                # Keep full/global versus local semantics explicit in checkpoints.
+                if self.coordinate_attention_mode == "chunked_exact" and self.window_k is not None:
+                    raise ValueError("Adaptive windows cannot modify chunked_exact attention")
+                out = coordinate_attention(q, k, v, chunk_size=self.attention_chunk_size,
+                    dropout_p=self.dropout_p if self.training else 0., positions=so,
+                    window_k=self.window_k if self.coordinate_attention_mode == "chunked_window" else None)
+                return self.W_o(out.reshape(N, H * D))
             use_window = (self.window_k is not None) and (N > self.window_k)
             if use_window:
                 out = self._sparse_windowed_attention(q, k, v, so, N, H, D)
@@ -676,6 +697,8 @@ if TORCH_AVAILABLE:
             # -- ablations --
             stream_mode: str = "full",
             graph_message_direction: str = "incoming",
+            coordinate_attention_mode: str = "legacy",
+            attention_chunk_size: int = 512,
         ) -> None:
             super().__init__()
             if stream_mode not in {"full", "coordinate", "graph"}:
@@ -720,6 +743,8 @@ if TORCH_AVAILABLE:
                         window_k=window_k,
                         use_multiscale_rope=use_multiscale_rope,  # Tier 1-A
                         n_rope_scales=n_rope_scales,
+                        coordinate_attention_mode=coordinate_attention_mode,
+                        attention_chunk_size=attention_chunk_size,
                     )
                     for _ in range(n_layers)
                 ]

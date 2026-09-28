@@ -1221,6 +1221,9 @@ def main():
     ap.add_argument("--adaptive_window_alpha", type=float, default=4.0)
     ap.add_argument("--auto_window", action="store_true", default=False)
     ap.add_argument("--window_k", type=int, default=None)
+    ap.add_argument("--coordinate_attention_mode", choices=["legacy", "chunked_exact", "chunked_window"],
+        default="legacy", help="Explicit opt-in attention implementation; historical checkpoints remain legacy")
+    ap.add_argument("--attention_chunk_size", type=int, default=512)
 
     # ── NEW: Shared training settings ────────────────────────────────────────
     ap.add_argument("--epochs", type=int, default=100)
@@ -1727,6 +1730,8 @@ def main():
             use_rope=not args.no_rope,
             use_fusion_gate=not args.no_fusion_gate,
             window_k=effective_window_k,
+            coordinate_attention_mode=args.coordinate_attention_mode,
+            attention_chunk_size=args.attention_chunk_size,
             use_multiscale_rope=args.multiscale_rope,
             n_rope_scales=args.n_rope_scales,
             use_orientation=args.orientation_rope,
