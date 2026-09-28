@@ -1,0 +1,98 @@
+import json
+
+import numpy as np
+import pandas as pd
+import pytest
+
+from evaluation.modality_factorial import build_modality_factorial
+from scripts.server.audit_traitgym_coverage import normalize
+from scripts.server.run_ccre_frozen_probe_fold import evaluate_feature_sets
+from tasks.entex.prepare import fingerprint
+from tasks.transfer.traitgym import align_component, validate_examples, weighted_chromosome_ap
+from tasks.transfer.traitgym_report import METRICS, replay_run, summarize
+
+
+def fixture():
+    source = pd.DataFrame([dict(chrom=f"chr{c}", pos=100 + i, ref="A", alt="C", label=int(i == 0),
+                                match_group=f"group{c}") for c in range(1, 6) for i in range(10)])
+    examples = normalize(source)
+    overlaps = examples[["locus_id"]].assign(segid=np.arange(len(examples)), overlap_bp=1)
+    folds = [dict(name=f"fold_{c}", test=[f"chr{c}"], validation=[f"chr{c % 5 + 1}"])
+             for c in range(1, 6)]
+    return source, examples, overlaps, folds
+
+
+def test_original_variants_groups_and_split_guards():
+    source, examples, overlaps, folds = fixture()
+    assert validate_examples(examples, source, overlaps, folds)["n"] == 50
+    with pytest.raises(AssertionError):
+        validate_examples(examples.iloc[1:], source, overlaps, folds)
+    bad = source.copy()
+    bad.loc[0, "chrom"] = "chr2"
+    bad.loc[0, "pos"] = 300
+    with pytest.raises(ValueError, match="single-chromosome"):
+        validate_examples(normalize(bad), bad, overlaps, folds)
+    with pytest.raises(ValueError, match="exactly one"):
+        validate_examples(examples, source, overlaps.iloc[1:], folds)
+    with pytest.raises(ValueError, match="overlap"):
+        validate_examples(examples, source, overlaps, [dict(test=["chr1"], validation=["chr1"]), *folds[1:]])
+
+
+def test_alleles_share_features_without_collapsing_variants():
+    _, examples, overlaps, _ = fixture()
+    extra = examples.iloc[[0]].copy()
+    extra["variant_id"] = extra.variant_id.str.replace(":A:C", ":A:G")
+    extra["alt"] = "G"
+    repeated = pd.concat([examples, extra], ignore_index=True)
+    values = np.arange(100).reshape(50, 2)
+    aligned = align_component(repeated, overlaps, np.arange(50), values)
+    assert aligned.shape == (51, 2)
+    np.testing.assert_array_equal(aligned[0], aligned[-1])
+    # Reversing cache row order must not change feature alignment.
+    np.testing.assert_array_equal(aligned, align_component(repeated, overlaps, np.arange(50)[::-1], values[::-1]))
+    with pytest.raises(ValueError, match="Missing segment"):
+        align_component(repeated, overlaps, np.arange(49), values[:-1])
+
+
+def test_chromosome_weighting_has_explicit_denominator():
+    frame = pd.DataFrame(dict(chromosome=["chr1", "chr2"], n=[10, 30], auprc=[.2, .6]))
+    assert weighted_chromosome_ap(frame) == pytest.approx(.5)
+    with pytest.raises(ValueError, match="defined"):
+        weighted_chromosome_ap(frame.assign(auprc=[np.nan, .6]))
+
+
+def test_native_probe_replay_and_tamper_detection(tmp_path):
+    _, examples, _, _ = fixture()
+    plan = json.loads(open("configs/traitgym_locus_prior_20260927.json").read())
+    rng = np.random.default_rng(19)
+    components = {k: rng.normal(size=(50, 3)) for k in
+                  ["coordinate", "sequence_kmer", "frozen_sequence_fm", "frozen_pangenomefm", "topology_control"]}
+    features = build_modality_factorial(components, include_external_sequence=True, include_topology_control=True)
+    metrics, per_chr, predictions = evaluate_feature_sets(segids=np.arange(50), chromosomes=examples.chrom,
+        labels=examples.label.to_numpy(), features={k: features[k] for k in plan["feature_sets"]},
+        test_chrs={"chr1"}, val_chrs={"chr2"}, seed=42, probe_max_iter=4000)
+    from sklearn.metrics import balanced_accuracy_score
+    metrics["balanced_accuracy"] = [balanced_accuracy_score(p.y_true, p.y_pred) for f in metrics.feature_set
+        for p in [predictions.loc[predictions.feature_set.eq(f)]]]
+    metrics["chromosome_weighted_auprc"] = [weighted_chromosome_ap(per_chr.loc[per_chr.feature_set.eq(f)])
+                                           for f in metrics.feature_set]
+    metrics["normalized_ap"] = (metrics.auprc - metrics.positive_fraction) / (1 - metrics.positive_fraction)
+    predictions = predictions.merge(examples.assign(segid=np.arange(50)), on="segid", validate="many_to_one")
+    for f in [metrics, predictions]:
+        for k, v in dict(dataset="complex_traits", context="strict", fold="fold_a", seed=42,
+                         task="traitgym_locus_prior").items():
+            f[k] = v
+    metrics.to_csv(tmp_path / "metrics.csv", index=False)
+    predictions.to_parquet(tmp_path / "predictions.parquet", index=False)
+    (tmp_path / "audit.json").write_text(json.dumps(dict(status="complete", n_excluded=0,
+        predictions=fingerprint(tmp_path / "predictions.parquet"))))
+    checked, identity = replay_run(tmp_path, plan, ["chr1"])
+    assert len(checked) == 9 and len(identity) == 10
+    absolute, contrasts, paired = summarize(checked, plan)
+    assert len(absolute) == len(METRICS) * 9 and len(paired) == 12
+    assert contrasts.ci95_low.isna().all()  # A smoke fold does not provide a fold CI.
+    assert checked.probe_converged.all()
+    metrics.loc[0, "auprc"] += .1
+    metrics.to_csv(tmp_path / "metrics.csv", index=False)
+    with pytest.raises(ValueError, match="differs from replay"):
+        replay_run(tmp_path, plan, ["chr1"])
