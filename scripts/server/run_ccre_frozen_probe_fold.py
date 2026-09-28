@@ -66,10 +66,15 @@ def validate_checkpoint_holdout(
     closure: str,
     seed: int,
     val_chrs: set[str] | None = None,
+    validation_only: bool = False,
+    exclude_test_extraction: bool = False,
 ) -> dict[str, object]:
     """Verify that checkpoint metadata encodes the requested upstream holdout."""
 
     payload = torch.load(checkpoint, map_location="cpu", weights_only=False)
+    if 'component_pilot' in payload.get('plan', {}):
+        from training.component_pilot import guard_probe_scope
+        guard_probe_scope(payload, validation_only=validation_only, exclude_test_extraction=exclude_test_extraction)
     arguments = payload.get("args", {})
     checkpoint_test = {_canonical_chrom(value) for value in arguments.get("test_chrs", [])}
     requested_test = {_canonical_chrom(value) for value in test_chrs}
@@ -189,13 +194,20 @@ def evaluate_feature_sets(
     is_test = np.isin(chromosome_norm, sorted(test_chrs))
     is_val = np.isin(chromosome_norm, sorted(val_chrs))
     is_train = ~(is_test | is_val)
-    if not is_train.any() or not is_val.any() or not is_test.any():
+    if not is_train.any() or not is_val.any() or (not validation_only and not is_test.any()):
         raise ValueError(
             f"Empty downstream split: train={is_train.sum()}, val={is_val.sum()}, test={is_test.sum()}"
         )
     if any(len(np.unique(labels[mask])) < 2 for mask in (is_train, is_val)):
         raise ValueError("Training and validation splits must each contain both classes.")
     is_evaluation = is_val if validation_only else is_test
+    population = pd.DataFrame(dict(identity=segids, chromosome=chromosome_norm, target=labels))
+    population_hashes = {
+        name + '_targets_sha256': hashlib.sha256(
+            population.loc[mask].sort_values('identity').to_csv(index=False).encode()
+        ).hexdigest()
+        for name, mask in [('train', is_train), ('validation', is_val)]
+    }
 
     access = FEATURE_ACCESS if feature_access is None else feature_access
     metrics_rows: list[dict[str, object]] = []
@@ -235,6 +247,7 @@ def evaluate_feature_sets(
                              "calibration_partition": "validation", **optimization},
             }
         common = {
+            **population_hashes,
             **optimization,
             "feature_set": feature_name,
             "feature_access": access[feature_name],
@@ -308,15 +321,25 @@ def run_probe(
     companion_checkpoints: list[Path] | None = None,
     probe_max_iter: int | None = None,
     save_probes: bool = False,
+    component_context_manifest: Path | None = None,
+    exclude_test_extraction: bool = False,
 ) -> dict[str, object]:
     if (out_dir / "audit.json").exists():
         raise FileExistsError(f"Refusing to overwrite completed output: {out_dir}")
+    if exclude_test_extraction and not validation_only:
+        raise ValueError('Excluding test extraction requires validation-only evaluation')
+    extraction_chromosomes = None
+    if exclude_test_extraction:
+        extraction_chromosomes = set(pd.read_csv(manifest).target_sn.map(_canonical_chrom)) - {_canonical_chrom(c) for c in test_chrs}
     started = time.monotonic()
     checkpoint_validation = validate_checkpoint_holdout(
         checkpoint,
         test_chrs=test_chrs,
         closure=closure,
         seed=seed,
+        validation_only=validation_only,
+        exclude_test_extraction=exclude_test_extraction,
+        val_chrs=val_chrs if exclude_test_extraction else None,
     )
     companion_validation = [validate_checkpoint_holdout(path, test_chrs=test_chrs, closure=closure, seed=seed)
                             for path in companion_checkpoints or []]
@@ -329,6 +352,8 @@ def run_probe(
     if labels_frame["segid"].duplicated().any():
         raise ValueError("node_labels contains duplicate segid values")
 
+    if exclude_test_extraction:
+        labels_frame = labels_frame.loc[~labels_frame.chrom.isin({_canonical_chrom(c) for c in test_chrs})].copy()
     labeled_segids = set(labels_frame["segid"].astype(int))
     embedding_map, occurrence_map, canonical_candidate_audit = _extract_embeddings(
         checkpoint=checkpoint,
@@ -343,6 +368,8 @@ def run_probe(
         return_canonical_audit=True,
         extraction_candidate_policy=extraction_candidate_policy,
         companion_checkpoints=companion_checkpoints,
+        component_context_manifest=component_context_manifest,
+        target_chrs=extraction_chromosomes,
     )
     keep = labels_frame["segid"].astype(int).isin(embedding_map)
     labels_frame = labels_frame.loc[keep].sort_values("segid").reset_index(drop=True)
@@ -470,6 +497,8 @@ def run_probe(
         "fitted_probe_artifacts": probe_artifacts,
         "evaluation_partition": "development_validation" if validation_only else "test",
         "heldout_predictions_produced": not validation_only,
+        "test_extraction_excluded": exclude_test_extraction,
+        "component_context_manifest": str(component_context_manifest.resolve()) if component_context_manifest else None,
         "validation_metrics_note": "Calibration and threshold also use validation; these development scores are not independent performance estimates" if validation_only else None,
         "fold": fold,
         "seed": seed,
@@ -537,11 +566,13 @@ def main() -> int:
     parser.add_argument("--fold", required=True)
     parser.add_argument("--test-chrs", nargs="+", required=True)
     parser.add_argument("--val-chrs", nargs="+", required=True)
-    parser.add_argument("--closure", choices=["strict", "1hop"], required=True)
+    parser.add_argument("--closure", choices=["strict", "1hop", "component"], required=True)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--max-slices", type=int)
     parser.add_argument("--validation-only", action="store_true")
+    parser.add_argument("--component-context-manifest", type=Path)
+    parser.add_argument("--exclude-test-extraction", action="store_true")
     parser.add_argument("--save-probes", action="store_true", help="Save and replay fitted classifiers, scalers and calibration for future frozen reuse")
     parser.add_argument("--probe-max-iter", type=int, help="Optional convergence sensitivity; default preserves manuscript 800")
     parser.add_argument("--extraction-candidate-policy", choices=["checkpoint", "manuscript"], default="checkpoint")
@@ -583,6 +614,8 @@ def main() -> int:
         probe_max_iter=args.probe_max_iter,
         save_probes=args.save_probes,
         extraction_candidate_policy=args.extraction_candidate_policy,
+        component_context_manifest=args.component_context_manifest,
+        exclude_test_extraction=args.exclude_test_extraction,
     )
     return 0
 

@@ -1,6 +1,8 @@
 # Model and downstream continuation — 28 September 2026
 
-Verified at 03:27 EDT; live jobs may have progressed beyond this snapshot. This is an execution record, not a manuscript revision.
+Latest live server check: 03:41 EDT, 38/120 probes complete with no active
+biological failures. SSH subsequently expired; current progress requires
+reauthentication. Later local implementation/manuscript work is recorded below.
 The [central checklist](MODEL_AND_DOWNSTREAM_STATUS_20260927.md) retains the
 complete historical task inventory and all failed scientific gates.
 
@@ -15,7 +17,7 @@ complete historical task inventory and all failed scientific gates.
 | Natural-cohort full matrix | Complete: 30/30 runs, 1,170 converged and replayed evaluations, zero exclusions | [Full audit](../results/foundation_evidence_20260928/sv_type_natural_full_analysis/audit.json) |
 | New masked-feature pretraining objective | Complete: 12 pretraining runs, 24 frozen probes / 96 feature evaluations; three-seed gate passes | [Protocol](../configs/masked_nt_objective_20260928.json) |
 | Whole-graph NT coverage | Complete: all 751,237 graph segments, original 479,477 rows byte-identical | [Protocol](../configs/whole_graph_nt_completion_20260928.json) |
-| Chromosome replication | Running: 32/120 probes complete; fold B / seed 314159 pretraining active | [Protocol](../configs/masked_nt_chromosome_replication_20260928.json) |
+| Chromosome replication | Last contact: 38/120 probes complete; fold B / seed 314159 test probes active | [Protocol](../configs/masked_nt_chromosome_replication_20260928.json) |
 | Alternative-component context | Complete: 14,786 components partly covered by benchmark-union cache | [Coverage](../results/foundation_evidence_20260928/reference_component_context_20260928/coverage.csv) |
 | DART-Eval accessibility task | Official schema/reference/split located; table download requires authentication | [Source audit](../results/foundation_evidence_20260928/dart_feasibility/source_audit.json), [403 receipt](../results/foundation_evidence_20260928/dart_feasibility/download.json) |
 
@@ -513,3 +515,104 @@ PYTHONPATH=src:. python scripts/server/profile_component_attention.py \
   --out-dir results/foundation_evidence_20260927/component_attention_exact_gpu
 # Then repeat with --mode chunked_window and a new output root.
 ```
+
+## Independently reviewed continuation: context pilot and manuscript
+
+### Completed now
+
+- Repaired the context verifier's coverage gap. It previously checked the
+  induced graph of supplied IDs but could accept an incomplete supplied ID set.
+  The new verifier reconstructs the expected complete components, original
+  interval universe, counts and fold membership from original inputs. All
+  **608/608 real contexts pass**, with no change to the prepared data.
+- Retained the earlier receipt and added
+  `component_contexts/materialization_replay_v2.json`, SHA-256
+  `ba79afb6bb63b83965f0abd84b67f80c2b162bfe200dc6246ad956e22a33545f`.
+- Bound the final chromosome table to its audit. The original-v1 comparison
+  reads and hashes the same bytes, rejects modified/unbound reports and permits
+  intact relocation. Both audit repairs were synchronized to the server before
+  SSH expired; they change validation, not biological fitting.
+- Implemented the fixed matched-context pilot, native extraction support,
+  development-only entry-point guards, population checks, prediction/model
+  replay and a CPU-only preflight. Old model/probe behavior remains the default.
+- Final complete local suite: **481 passed**, 14 known warnings, 30.09 seconds.
+  Targeted Ruff and complete diff checks pass, including the final scope and
+  mandatory-preflight guards. These are software checks, not a completed real
+  wider-context experiment.
+- Updated the manuscript from completed source tables and receipts. All six
+  new tables are generated with hash and paired-arithmetic checks. The existing
+  local LaTeX installation compiled 31 pages with no warnings, undefined
+  references or overflowing boxes; page/table layouts were inspected.
+
+### Fixed pilot specification and status
+
+[Protocol](../configs/masked_nt_component_pilot_20260928.json): fold A,
+three original seeds, one-hop versus complete components, four encoder arms,
+**24 pretraining runs / 48 frozen probes / 192 feature evaluations**. Both
+contexts use exact-global chunked attention. Original target segment IDs,
+train-only moments, mask banks and oriented-handle pooling occurrences remain
+identical. New nodes contribute visible context only. Test windows must not
+be loaded or encoded by the pilot, including through direct probe commands.
+The run preserves all arms regardless of the result and cannot promote an
+architecture automatically.
+
+This compares complete context pipelines: native per-slice SO, LN, SR and degree
+features can rescale, and graph-decoder neighborhoods also expand. Equal epoch
+budgets do not imply equal compute. Three development seeds do not support a
+chromosome confidence interval. No new biological score is available from this
+pilot yet.
+
+**Not launched.** The real all-window CPU preflight and server synchronization
+of the pilot await the user's direct SSH authentication. The already detached
+chromosome/reference/profile jobs are independent of the expired connection;
+their newer state remains unverified. An authentication window has been reopened.
+No password was transmitted or stored.
+
+### Reproduction after reconnecting
+
+Use a fresh output root if these paths already exist. Preserve any failed run
+and its logs before creating a new recovery output. From the dedicated server
+checkout, after updating to this branch:
+
+```bash
+cd /home/tuv43532/PangenomeFM_evidence_report_20260927
+export PYTHONPATH=src:.
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2
+PFM_PY=/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python
+PFM_SW=/home/tuv43532/PangenomeFM/server_workspace
+PFM_OUT=results/foundation_evidence_20260927
+PFM_TEMPLATE="$PFM_OUT/frozen_branch_seed_replication/seed_314159/sequence_trained/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_maskedq_jrbranching16_geommatch1.25_visdeg_xcache_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt"
+
+"$PFM_PY" scripts/server/preflight_component_pilot.py \
+  --config configs/masked_nt_component_pilot_20260928.json \
+  --template-checkpoint "$PFM_TEMPLATE" \
+  --manifest "$PFM_SW/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv" \
+  --full-segments "$PFM_SW/data/processed/hprc_r2_sv/full_segments.csv.gz" \
+  --nt-cache "$PFM_OUT/whole_graph_nt_completion_20260928/whole_graph_nt.npz" \
+  --component-contexts "$PFM_OUT/component_contexts_20260928" \
+  --out-dir "$PFM_OUT/component_context_pilot_preflight_20260928"
+
+# Run detached in tmux after reviewing the preflight receipt.
+"$PFM_PY" scripts/server/run_component_context_pilot.py \
+  --config configs/masked_nt_component_pilot_20260928.json \
+  --template-checkpoint "$PFM_TEMPLATE" \
+  --main-checkout /home/tuv43532/PangenomeFM \
+  --component-contexts "$PFM_OUT/component_contexts_20260928" \
+  --nt-cache "$PFM_OUT/whole_graph_nt_completion_20260928/whole_graph_nt.npz" \
+  --topology-control-cache /home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz \
+  --out-root "$PFM_OUT/component_context_pilot_20260928" \
+  --after-preflight "$PFM_OUT/component_context_pilot_preflight_20260928/status.json" \
+  --after-replication "$PFM_OUT/masked_chromosome_replication/status.json" \
+  --after-v1-reference "$PFM_OUT/masked_v1_reference/status.json" \
+  --after-exact-gpu "$PFM_OUT/component_attention_exact_gpu/status.json" \
+  --after-window-gpu "$PFM_OUT/component_attention_window_gpu/status.json" \
+  --gpus 0 1 2 3 --wait-hours 12
+```
+
+The runner requires successful preflight, completed existing matrices and both
+CUDA resource checks before GPU allocation. It checks health/readiness only,
+not performance values. An unsuccessful prerequisite stops execution.
+
+Manuscript sources, complete-evidence builder, PDF location and rebuild commands:
+[revision README](../manuscript/revision_20260924/README.md).
+[Scientific change/source audit](MANUSCRIPT_EVIDENCE_AUDIT_20260928.md).

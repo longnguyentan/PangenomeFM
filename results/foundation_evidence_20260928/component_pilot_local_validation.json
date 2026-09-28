@@ -1,0 +1,55 @@
+{
+  "observed_at_utc": "2026-09-28T09:28:58.128789+00:00",
+  "status": "implemented_and_locally_tested",
+  "full_test_command": "PYTHONPATH=src:. OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MPLCONFIGDIR=/private/tmp/pfm-mpl /opt/anaconda3/bin/python -m pytest -q tests",
+  "passed": 481,
+  "warnings": 14,
+  "seconds": 30.09,
+  "targeted_ruff": "pass",
+  "git_diff_check": "pass",
+  "real_pilot_preflight": "not_run_server_reauthentication_required",
+  "pilot_training": "not_launched",
+  "biological_pilot_results": null,
+  "files": [
+    {
+      "path": "configs/masked_nt_component_pilot_20260928.json",
+      "sha256": "4a496186579a021ac0e4fd2e2d7e2c002de9fbb4bb71bb4127778d7a51c36e21"
+    },
+    {
+      "path": "src/training/component_pilot.py",
+      "sha256": "3b1300cafb6a16b17a50234a8ada661bc654bcd00384a7115ce079d6383b08d8"
+    },
+    {
+      "path": "src/training/pretrain_masked_features.py",
+      "sha256": "b1d6d261e433c7693c5d80629f47ffbfb0a3c7b2620824e6087b689732c20033"
+    },
+    {
+      "path": "src/tasks/ccre/embedding_baseline.py",
+      "sha256": "e2139b09a4fe72684bbd0878be480cd01601f32f38285378454e386140224453"
+    },
+    {
+      "path": "src/tasks/transfer/component_pilot_report.py",
+      "sha256": "2503205b34cdae74c15fdd008e2ab8b74dc512ebe26c8615e66d668b3f7d8514"
+    },
+    {
+      "path": "scripts/server/run_ccre_frozen_probe_fold.py",
+      "sha256": "78d0e12bbf71f136d75d91c2b0bd30981c6716a0daa1f7907744c002f2af94f9"
+    },
+    {
+      "path": "scripts/server/run_sv_frozen_probe_fold.py",
+      "sha256": "498a62826f71bcef9ce8679dda90132ee32b0eb957e0fa7a4f2c2b21215d372d"
+    },
+    {
+      "path": "scripts/server/preflight_component_pilot.py",
+      "sha256": "40781c49e1487a68a77680ba1e5f33f01b2703910d1a35a77aa472d6c48b865c"
+    },
+    {
+      "path": "scripts/server/run_component_context_pilot.py",
+      "sha256": "db3a7ef40fcd6c22c5aea63b78fa5c722b560536288b043cc1c19dd63cc34451"
+    },
+    {
+      "path": "tests/test_component_pilot.py",
+      "sha256": "4a156c66880f722d66580888591db7c609a6d6510550519f6486b2d328f745df"
+    }
+  ]
+}

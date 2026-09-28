@@ -188,15 +188,25 @@ def run_probe(
     companion_checkpoints: list[Path] | None = None,
     probe_max_iter: int | None = None,
     save_probes: bool = False,
+    component_context_manifest: Path | None = None,
+    exclude_test_extraction: bool = False,
 ) -> dict[str, object]:
     if out_dir.exists():
         raise FileExistsError(f"Refusing to overwrite output: {out_dir}")
+    if exclude_test_extraction and not validation_only:
+        raise ValueError('Excluding test extraction requires validation-only evaluation')
+    extraction_chromosomes = None
+    if exclude_test_extraction:
+        extraction_chromosomes = set(pd.read_csv(manifest).target_sn.map(_canonical_chrom)) - {_canonical_chrom(c) for c in test_chrs}
     started = time.monotonic()
     checkpoint_validation = validate_checkpoint_holdout(
         checkpoint,
         test_chrs=test_chrs,
         closure=closure,
         seed=seed,
+        validation_only=validation_only,
+        exclude_test_extraction=exclude_test_extraction,
+        val_chrs=val_chrs if exclude_test_extraction else None,
     )
     companion_validation = [validate_checkpoint_holdout(path, test_chrs=test_chrs, closure=closure, seed=seed)
                             for path in companion_checkpoints or []]
@@ -206,6 +216,8 @@ def run_probe(
     examples = pd.read_csv(examples_path, compression="infer")
     validate_binary_sv_examples(examples)
     examples["chrom"] = examples["chrom"].map(_canonical_chrom)
+    if exclude_test_extraction:
+        examples = examples.loc[~examples.chrom.isin({_canonical_chrom(c) for c in test_chrs})].copy()
     required_nodes = set(examples["start_segid"].astype(int)) | set(examples["end_segid"].astype(int))
     embeddings, occurrences, canonical_candidate_audit = _extract_embeddings(
         checkpoint=checkpoint,
@@ -220,6 +232,8 @@ def run_probe(
         return_canonical_audit=True,
         extraction_candidate_policy=extraction_candidate_policy,
         companion_checkpoints=companion_checkpoints,
+        component_context_manifest=component_context_manifest,
+        target_chrs=extraction_chromosomes,
     )
     external_values: np.ndarray | None = None
     external_positions: dict[int, int] = {}
@@ -350,6 +364,8 @@ def run_probe(
         "fitted_probe_artifacts": probe_artifacts,
         "evaluation_partition": "development_validation" if validation_only else "test",
         "heldout_predictions_produced": not validation_only,
+        "test_extraction_excluded": exclude_test_extraction,
+        "component_context_manifest": str(component_context_manifest.resolve()) if component_context_manifest else None,
         "validation_metrics_note": "Calibration and threshold also use validation; these development scores are not independent performance estimates" if validation_only else None,
         "fold": fold,
         "seed": seed,
@@ -417,11 +433,13 @@ def main() -> int:
     parser.add_argument("--fold", required=True)
     parser.add_argument("--test-chrs", nargs="+", required=True)
     parser.add_argument("--val-chrs", nargs="+", required=True)
-    parser.add_argument("--closure", choices=["strict", "1hop"], required=True)
+    parser.add_argument("--closure", choices=["strict", "1hop", "component"], required=True)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--max-slices", type=int)
     parser.add_argument("--validation-only", action="store_true")
+    parser.add_argument("--component-context-manifest", type=Path)
+    parser.add_argument("--exclude-test-extraction", action="store_true")
     parser.add_argument("--save-probes", action="store_true", help="Save and replay fitted classifiers, scalers and calibration for future frozen reuse")
     parser.add_argument("--probe-max-iter", type=int, help="Optional convergence sensitivity; default preserves manuscript 800")
     parser.add_argument("--extraction-candidate-policy", choices=["checkpoint", "manuscript"], default="checkpoint")
@@ -463,6 +481,8 @@ def main() -> int:
         probe_max_iter=args.probe_max_iter,
         save_probes=args.save_probes,
         extraction_candidate_policy=args.extraction_candidate_policy,
+        component_context_manifest=args.component_context_manifest,
+        exclude_test_extraction=args.exclude_test_extraction,
     )
     return 0
 

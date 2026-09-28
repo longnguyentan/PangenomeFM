@@ -1,6 +1,9 @@
 # PangenomeFM: model and downstream evidence status
 
-Last verified 28 September 2026, 03:27 EDT. Technical work only; no manuscript edits.
+Updated 28 September 2026. Last live server check: 03:41 EDT (38/120 chromosome
+probes complete, no active failures). SSH subsequently expired; newer server
+outcomes are unverified until authentication resumes. Scientific manuscript
+updates are included following the latest user request.
 Branch: `codex/v2-evidence-review-20260927`.
 
 ## Active continuation, 28 September
@@ -17,10 +20,10 @@ Branch: `codex/v2-evidence-review-20260927`.
 - [x] Audit graph-wide reference-contig separation: no direct cross-contig reference link or multi-contig alternative component.
 - [x] Inspect the actual 1,218-genome SV release header/inventory: INS/DEL plus genotypes/frequencies, not the missing measured genotyping-concordance or DUP/complex labels.
 - [x] Identify DART-Eval task 3's official GRCh38 coordinates, five cell labels, original split and processed-table version. Anonymous data download returns **HTTP 403**; actual-table QC/fitting awaits an authorized copy.
-- [x] Full local suite **456 passed**; targeted Ruff/diff checks pass. Existing manuscript checks remain included.
+- [x] Final full local suite **481 passed**, 14 known warnings, including the pilot entry-point, validation-split and mandatory-preflight guards. Targeted Ruff and diff checks pass; existing manuscript checks remain included.
 - [x] Repair fitted-probe persistence: opt-in saved scaler/classifier/calibration with exact reload replay; frozen chromosome replication will retain its classifiers.
 - [x] Implement/test the gated, fixed chromosome-replication runner/reporter; review the completed gate and launch the detached job. All controls retained; fold B reported separately due to development exposure.
-- [ ] Complete **120 chromosome-test probe runs / 480 evaluations**. **32/120 probes complete** at 03:27 EDT; fold B / seed 314159 pretraining active. Full-matrix inference remains pending.
+- [ ] Complete **120 chromosome-test probe runs / 480 evaluations**. Last contact: **38/120 probes complete** at 03:41 EDT, fold B / seed 314159 test probes active. Full-matrix inference remains pending; current progress cannot be inferred from elapsed time.
 - [x] Correct graph-scope denominator: 751,237 total segments, 303,425 downstream cache rows, 479,477 benchmark NT rows. Audit 14,786 partly covered alternative components; no new graph release.
 - [x] Complete the **271,760-segment frozen NT extension**: all 751,237 graph segments covered; all original 479,477 rows byte-identical, all values finite. Separate output; replication retains the original cache.
 
@@ -28,7 +31,15 @@ Branch: `codex/v2-evidence-review-20260927`.
 - [x] Repair coordinate-attention semantics through explicit opt-in modes; verify new outputs/gradients against dense equations and checkpoint reload. Historical default outputs and gradients remain bitwise identical to the previous Git module.
 - [x] Complete largest-context CPU forward/backward checks for exact global chunks and corrected local chunks: 28,287 handles, finite gradients, unchanged weights.
 - [ ] Complete the queued two-mode CUDA resource check after the primary matrix and v1 reference finish.
-- [ ] Fix a separate wider-context training protocol and complete its biological comparison. Context preparation and resource checks alone do not establish improvement.
+- [x] Strengthen and rerun the independent context verifier: all **608/608** contexts pass reconstructed complete membership, original interval universe, row counts and actual fold separation. Retain the earlier narrower receipt.
+- [x] Bind the chromosome result table to its completed audit with SHA-256/byte count; the v1 comparison rejects altered or unbound tables.
+- [x] Implement the separately fixed wider-context development pilot: matched targets, original handle pooling, four controls, three seeds and identical exact-chunked attention in both contexts. Test extraction is prohibited for these checkpoints.
+- [ ] Run the new all-window CPU preflight and launch **24 pilot pretrains / 48 frozen validation probes** after the existing matrices and CUDA checks complete. Not yet launched: server reconnection required.
+- [x] Update and compile the scientific manuscript from completed results only: **31 pages**, six generated evidence tables, verified sources, resolved citations/references and visually checked layouts. No partial replication scores imported.
+
+[Reviewed manuscript PDF](../manuscript/revision_20260924/output/pdf/PangenomeFM_working_revision_20260928.pdf)
+· [Editable source and rebuild](../manuscript/revision_20260924/README.md)
+· [Scientific evidence audit](MANUSCRIPT_EVIDENCE_AUDIT_20260928.md).
 
 [Context/attention implementation, real-data checks and commands](COMPLETE_CONTEXT_AND_ATTENTION_20260928.md).
 

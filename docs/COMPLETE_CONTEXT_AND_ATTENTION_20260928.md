@@ -116,7 +116,7 @@ PY=/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python
 
 "$PY" scripts/server/verify_component_contexts.py \
   --contexts results/component_contexts_reproduction \
-  --out results/component_contexts_reproduction/materialization_replay.json
+  --out results/component_contexts_reproduction/materialization_replay_v2.json
 
 "$PY" scripts/server/profile_component_attention.py \
   --contexts results/component_contexts_reproduction \
@@ -128,14 +128,19 @@ PY=/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python
 
 Native completed graph tables and membership NPZ stay on the server under
 `results/foundation_evidence_20260927/component_contexts_20260928/`.
-Only compact audits/tables are versioned. The completed [608-window replay](../results/foundation_evidence_20260928/component_contexts/materialization_replay.json) verifies every materialized
-segment row and every induced oriented edge against the original graph before
-future training; changing an orientation is covered by a rejection test.
+Only compact audits/tables are versioned. The strengthened [608-window replay](../results/foundation_evidence_20260928/component_contexts/materialization_replay_v2.json)
+reconstructs expected complete-component memberships from the pinned original
+graph and interval manifest. It verifies every materialized row, oriented edge,
+summary count and original interval, and independently recomputes all fold-ID
+overlaps. All 608 passed. The earlier narrower receipt is retained. Rejection
+tests cover changed orientations, internally consistent incomplete subgraphs,
+omitted intervals, changed coordinates/counts and altered split evidence.
 
 ## Verification status
 
-Full local suite: **456 passed**, 14 known warnings. Server targeted tests:
-**25 passed**. New-module Ruff, compilation and diff checks pass. All 608 saved
+Latest full local suite: **481 passed**, 14 known warnings. Prior server targeted tests:
+**25 passed**; the newly implemented pilot still awaits server execution. New-module Ruff,
+compilation and diff checks pass. All 608 saved
 contexts independently match original segment metadata and oriented induced
 edges. An intentional changed-orientation test is rejected. Neither synthetic
 tests nor resource-profile losses are reported as biological performance.
@@ -144,7 +149,16 @@ tests nor resource-profile losses are reported as biological performance.
 
 Finish the already fixed trained/random chromosome comparison and original-v1
 reference. The new input preparation and optional attention modes do not change
-those protocols or select from partial test scores. A wider-context experiment
-must fix its training population, target weighting, contexts, controls and compute
-budget separately. Better alternative-node coverage and a successful memory smoke
-are prerequisites, not proof of a biological improvement or a finalized model.
+those protocols or select from partial test scores. The separately fixed
+[component pilot](../configs/masked_nt_component_pilot_20260928.json) now specifies
+the same original target/mask population, target moments and downstream pooling
+occurrences in one-hop and complete-component contexts. Four controls and three
+seeds use identical exact-chunked attention. A CPU-only preflight must verify
+all eligible train/validation windows before training; test extraction is
+forbidden for pilot checkpoints. Added nodes are visible context only.
+
+Native per-slice SO/LN/SR scaling and degree features can change with expansion;
+the decoder also sees the larger neighborhood. This is a context-pipeline
+comparison. The code is implemented and tested; real-data preflight/launch await
+server reconnection. Better alternative-node coverage and successful resource
+checks alone do not establish biological improvement or finalize the model.

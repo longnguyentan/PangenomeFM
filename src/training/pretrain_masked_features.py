@@ -20,7 +20,11 @@ from graph.slicing import build_global_index
 from models.dual_stream_gat import DualStreamPangenomeGAT
 from tasks.entex.prepare import fingerprint
 from tasks.transfer.traitgym import verified_fingerprint, write_json
-from training.masked_features import MaskedFeatureObjective, segment_mask, segment_target_statistics
+from training.masked_features import MaskedFeatureObjective
+from training.component_pilot import (
+    load_matched_slices, readiness_receipts, reconstruction_mask, target_statistics,
+    validate_plan, verified_context_manifest,
+)
 from training.pretrain import encoder_parameter_digest, load_slice, seed_everything, tensorize_slice
 
 
@@ -45,7 +49,7 @@ def validation(objective, slices, args, plan):
         for raw in slices:
             sd = tensorize_slice(raw, torch.device(args.device), args)
             for view in range(3):
-                mask = segment_mask(sd['node_oids'], plan['mask_rate'], mask_seed(args.seed, raw['name'], 0, view))
+                mask = reconstruction_mask(raw, sd['node_oids'], plan['mask_rate'], mask_seed(args.seed, raw['name'], 0, view))
                 loss, n = objective(sd, mask)
                 rows.append(dict(window=raw['name'], view=view, n_masked_segments=n, loss=float(loss)))
     frame = pd.DataFrame(rows)
@@ -62,10 +66,26 @@ def main() -> None:
     ap.add_argument('--seed', type=int, required=True)
     ap.add_argument('--arm', required=True)
     ap.add_argument('--device', default='cuda')
+    ap.add_argument('--context', choices=['1hop', 'component'])
+    ap.add_argument('--component-contexts', type=Path)
+    ap.add_argument('--pilot-readiness', type=Path)
     cli = ap.parse_args()
     plan = json.loads(cli.config.read_text())
     if cli.seed not in plan['seeds'] or cli.arm not in plan['arms']:
         raise ValueError('Undeclared initialization or arm')
+    pilot = 'component_pilot' in plan
+    if pilot:
+        validate_plan(plan)
+        if cli.context is None or cli.component_contexts is None or cli.pilot_readiness is None:
+            raise ValueError('Pilot requires explicit context, verified materialization and readiness receipt')
+        receipt = json.loads(cli.pilot_readiness.read_text())
+        verified_fingerprint(cli.config, receipt['config']['sha256'])
+        for source in receipt['dependencies'].values():
+            verified_fingerprint(Path(source['path']), source['sha256'])
+        readiness_receipts({k: Path(v['path']) for k, v in receipt['dependencies'].items()}, plan,
+            config_sha256=fingerprint(cli.config)['sha256'])
+    elif cli.context or cli.component_contexts or cli.pilot_readiness:
+        raise ValueError('Context overrides require a separately fixed component pilot plan')
     sources = [verified_fingerprint(cli.full_segments, plan['full_segments_sha256']),
         verified_fingerprint(cli.manifest, plan['manifest_sha256']),
         verified_fingerprint(cli.nt_cache, plan['nt_cache_sha256']), fingerprint(cli.template_checkpoint)]
@@ -94,6 +114,11 @@ def main() -> None:
     args.drop_edge, args.drop_edge_rate, args.mask_query_edges = False, 0., False
     args.linear_predictor, args.pair_geometry = False, False
     args.manifest, args.full_segments, args.out_dir = str(cli.manifest), str(cli.full_segments), str(cli.out_dir)
+    if pilot:
+        args.coordinate_attention_mode = plan['component_pilot']['coordinate_attention_mode']
+        args.attention_chunk_size = plan['component_pilot']['attention_chunk_size']
+        args.source_context = cli.context
+        args.component_context_manifest = str((cli.component_contexts / 'manifest.csv').resolve())
     for key, value in plan['optimization'].items():
         setattr(args, key, value)
     cli.out_dir.mkdir(parents=True, exist_ok=False)
@@ -101,6 +126,10 @@ def main() -> None:
         seed=cli.seed, arm=cli.arm, code_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
         biological_labels_used=False, test_windows_loaded=0, template_weights_loaded=False,
         source_implementation=fingerprint(Path(__file__)), started_at=time.time())
+    if pilot:
+        record.update(source_context=cli.context, readiness=fingerprint(cli.pilot_readiness),
+            component_manifest=fingerprint(cli.component_contexts/'manifest.csv'),
+            component_implementation=fingerprint(Path(__file__).with_name('component_pilot.py')))
     write_json(cli.out_dir/'status.json', record)
     try:
         manifest = pd.read_csv(cli.manifest)
@@ -109,16 +138,20 @@ def main() -> None:
         index, _ = build_global_index(segments)
         md = build_oid_metadata_from_segments(segments, index)
         train, val, audits = [], [], []
-        for _, row in selected.iterrows():
-            audit = dict(window=row['name'], chrom=normalize_chrom(row['target_sn']))
-            raw = load_slice(row, index, md, segments, args, audit)
-            audits.append(audit)
-            if raw is not None:
-                (val if audit['chrom'] in args.val_chrs else train).append(raw)
+        if pilot:
+            components = verified_context_manifest(cli.component_contexts, plan, manifest)
+            train, val, audits = load_matched_slices(selected, components, index, md, segments, args, cli.context)
+        else:
+            for _, row in selected.iterrows():
+                audit = dict(window=row['name'], chrom=normalize_chrom(row['target_sn']))
+                raw = load_slice(row, index, md, segments, args, audit)
+                audits.append(audit)
+                if raw is not None:
+                    (val if audit['chrom'] in args.val_chrs else train).append(raw)
         pd.DataFrame(audits).to_csv(cli.out_dir/'windows.csv', index=False)
         if not train or not val:
             raise ValueError('Empty pretraining partition')
-        ids, mean, scale = segment_target_statistics(train)
+        ids, mean, scale = target_statistics(train)
         val_ids = np.unique(np.concatenate([r['nodes']//2 for r in val]))
         if np.intersect1d(ids, val_ids).size:
             raise ValueError('A segment occurs in both train and validation windows')
@@ -144,7 +177,7 @@ def main() -> None:
             for position, idx in enumerate(order):
                 raw = train[idx]
                 sd = tensorize_slice(raw, torch.device(cli.device), args)
-                mask = segment_mask(sd['node_oids'], plan['mask_rate'], mask_seed(cli.seed, raw['name'], epoch))
+                mask = reconstruction_mask(raw, sd['node_oids'], plan['mask_rate'], mask_seed(cli.seed, raw['name'], epoch))
                 loss, _ = objective(sd, mask)
                 if not torch.isfinite(loss):
                     raise ValueError('Nonfinite training loss')
@@ -165,7 +198,7 @@ def main() -> None:
                 saved_args = copy.copy(args)
                 saved_args.objective = 'masked_nt_features'
                 payload = dict(model_state=encoder.state_dict(), predictor_state=None, in_dim=519, edge_feat_dim=0,
-                    args=vars(saved_args), closure='1hop', stream_mode=args.stream_mode,
+                    args=vars(saved_args), closure=cli.context if pilot else '1hop', stream_mode=args.stream_mode,
                     pretraining_objective='segment-grouped standardized frozen NT reconstruction',
                     best_validation_loss=best, epochs_run=epoch, initial_encoder_sha256=initial,
                     final_encoder_sha256=encoder_parameter_digest(encoder), plan=plan)

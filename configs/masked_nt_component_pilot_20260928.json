@@ -1,0 +1,101 @@
+{
+  "artifact_type": "analysis_plan",
+  "version": 1,
+  "recorded_before_first_fit": true,
+  "objective": "Estimate the effect of complete attached-component context with matched original reconstruction targets, initialized encoders, exact chunked global attention and frozen biological probes.",
+  "name": "Matched one-hop versus complete-component context pilot",
+  "official_GraphMAE_reproduction": false,
+  "reference": "https://arxiv.org/abs/2205.10803",
+  "reference_implementation": "https://github.com/THUDM/GraphMAE/blob/main/graphmae/models/edcoder.py",
+  "fold": "fold_a",
+  "seeds": [
+    42,
+    314159,
+    20260806
+  ],
+  "contexts": [
+    "1hop",
+    "component"
+  ],
+  "arms": [
+    "full_trained",
+    "full_random",
+    "coordinate_trained",
+    "coordinate_random"
+  ],
+  "encoder": {
+    "hidden_dim": 48,
+    "n_layers": 2,
+    "n_heads": 4,
+    "dropout": 0.1,
+    "graph_message_direction": "bidirectional",
+    "multiscale_rope": true,
+    "orientation_rope": true
+  },
+  "full_segments_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+  "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+  "nt_cache_sha256": "5c07f9bd8b46e4104c7c787fd96dae7cdf14ab8207807a87495e3e0365d257f3",
+  "input_policy": "Native 7 structural features with component ID removed, plus the complete frozen 512D NT cache. Same raw values and coordinate/orientation covariates as the Q branch. Frozen NT is never trained.",
+  "window_policy": "Eligibility fixed by the original one-hop junction loader, split_seed=20260806; use identical retained fold-A train/validation windows in both contexts. Never load test windows in pretraining. No new eligibility, size filtering or reconstruction targets from component expansion.",
+  "mask_rate": 0.3,
+  "masking": "All 519 input columns replaced by a learned token for a sampled set of biological segment IDs; both oriented handles always hidden together. No random feature replacement. Fresh deterministic mask per training epoch/window; three fixed validation masks.",
+  "target_policy": "The same original one-hop biological segment IDs in both contexts; train-only unique target moments. Added component nodes are visible context only. Hide every handle of each sampled target segment, including any newly present reverse handle.",
+  "decoder": "48D linear projection, zero all masked latent rows, one native bidirectional graph-attention layer and a 512D linear output. No latent residual/copy; full structural graph retained, no edge prediction loss.",
+  "loss": "Scaled cosine error alpha=2, equal weight per biological segment within a window; training averages windows. Validation weights masked segment counts across the fixed window/mask bank.",
+  "optimization": {
+    "epochs": 20,
+    "patience": 5,
+    "lr": 0.0005,
+    "weight_decay": 0.0001,
+    "accum_steps": 4,
+    "gradient_clip": 1.0
+  },
+  "selection": "Minimum self-supervised validation reconstruction loss only. Random encoder receives identical initialization and decoder optimization; its encoder weights must remain bitwise unchanged.",
+  "downstream": "Frozen native cCRE and historical INS/DEL probes on fold-A train/validation only. Original manuscript one-hop window eligibility and original oriented-handle pooling occurrences in both contexts. C+S / C+S+E / C+S+H / C+S+H+E, max_iter=4000, saved fitted probes and replay. No test extraction/scoring.",
+  "comparisons": [
+    "component minus 1hop within each arm",
+    "full_trained minus full_random within each context",
+    "coordinate_trained minus coordinate_random within each context",
+    "full_trained minus coordinate_trained within each context",
+    "(component full_trained minus full_random) minus (1hop full_trained minus full_random)"
+  ],
+  "decision": "Retain all seeds, arms and contexts; report paired development-validation differences without automated promotion, test access or significance/superiority gates. Checkpoints selected only by the reconstruction validation bank.",
+  "validity_gates": [
+    "Original graph/manifest/NT checksums",
+    "No training/validation segment overlap",
+    "Both orientations masked together",
+    "Train-only unique-segment target moments",
+    "Finite loss/gradients",
+    "Random backbone unchanged",
+    "Checkpoint reload reproduces selected reconstruction score",
+    "Downstream target and baseline score identities match"
+  ],
+  "limitations": [
+    "Exploratory follow-up after failed junction development gates; these remain recorded",
+    "Sequence-conditioned representation, not topology-only",
+    "Native backbone, grouped masks and standardized targets differ from official GraphMAE",
+    "Coordinate covariates remain visible; coordinate-only control required",
+    "One development fold cannot establish chromosome generalization",
+    "Equal nominal epoch budget does not imply compute equivalence to junction training",
+    "No automated promotion or claim of NMI acceptance",
+    "Added component nodes remain visible, so the mask fraction among all context nodes is smaller; the target mask fraction is identical.",
+    "Context changes encoder/decoder neighborhoods and native per-slice SO/LN scaling, SR min/max and degree normalization; this is a context-pipeline comparison, not an isolated adjacency effect.",
+    "Original target population excludes newly represented component-only nodes from reconstruction and biological probes.",
+    "Validation also fits probe calibration and thresholds; its scores are exploratory development descriptions."
+  ],
+  "component_pilot": {
+    "target_population": "original_one_hop_segments",
+    "training_window_policy": "original_junction_eligible",
+    "added_nodes": "visible_context_only",
+    "coordinate_attention_mode": "chunked_exact",
+    "attention_chunk_size": 512,
+    "validation_masks": 3,
+    "downstream_partition": "development_validation",
+    "probe_max_iter": 4000,
+    "context_audit_sha256": "65cf096c5b5dccc0fffa00c2a243d96f46d20b2fde8abb41e123b09830c918c9",
+    "materialization_replay_sha256": "ba79afb6bb63b83965f0abd84b67f80c2b162bfe200dc6246ad956e22a33545f"
+  },
+  "timing": "Fixed before the first wider-context fit; existing chromosome matrix outcomes are not inputs to this design or its execution readiness checks.",
+  "compute_budget": "24 pretraining runs: 2 contexts x 4 controls x 3 seeds; maximum 20 epochs and patience 5 per run. 48 frozen biological probes. All runs retained; same window/optimizer budget is not equal wall-clock compute.",
+  "dependency_policy": "Require a successful CPU all-window preflight for this exact config, the full 120-probe chromosome matrix, 30-probe original-v1 reference, and both largest-context CUDA profile receipts complete before any pilot GPU allocation. Read dependency health/completion only."
+}

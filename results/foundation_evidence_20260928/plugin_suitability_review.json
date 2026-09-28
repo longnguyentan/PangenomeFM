@@ -1,0 +1,26 @@
+{
+  "status": "catalog_and_reference_viewer_review_complete",
+  "observed_date": "2026-09-28",
+  "genomic_intelligence": {
+    "task": "enhancer",
+    "default_model": "g0-deepstarr",
+    "models": [
+      {"id": "g0-deepstarr", "organism": "drosophila", "context_window_bp": 249, "training_data": "Drosophila enhancers from DeepSTARR dataset"},
+      {"id": "dnabert-deepstarr", "organism": "drosophila", "context_window_bp": 249, "training_data": "Drosophila enhancers from DeepSTARR dataset"}
+    ],
+    "predictions_requested": false,
+    "decision": "Not a suitable primary human EN-TEx enhancer baseline. No model predictions were substituted for experimental labels. Prior human chromatin/expression catalog remains separately recorded."
+  },
+  "sequence_viewer": {
+    "source": "results/foundation_evidence_20260927/traitgym_reference_audit/reference_spot_checks.fasta",
+    "provenance": "Previously verified GRCh38 graph reference windows for first-encountered complex-trait and Mendelian examples, selected independently of labels and scores.",
+    "acknowledged_action": "Selected the complex-traits example's central variant base at 1-based record position 101.",
+    "interpretation": "Reference sequence inspection, not model performance or an allele-specific graph representation."
+  },
+  "ngs_workbench": {
+    "guidance": "understand-ngs-results",
+    "native_runs_registered_with_workbench": false,
+    "review": "docs/RESULT_REVIEW_20260928.md",
+    "interpretation": "Evidence-based review of native repository outputs; no synthetic Workbench lifecycle records were created."
+  }
+}

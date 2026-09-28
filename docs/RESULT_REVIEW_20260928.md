@@ -19,7 +19,7 @@ unchanged; no replacement graph or biological fine-tuning is used.
 |---|---|---|
 | Natural-frequency SV type | 30 runs / 1,170 feature-class evaluations | One-versus-rest AP; 110,623 INS, 63,346 DEL, 298 INV, all retained |
 | Masked-feature development | 12 pretraining runs / 24 probes / 96 evaluations | Fold-A biological validation; four arms, three seeds, one-hop |
-| Fixed chromosome replication | 32/120 probes complete at 03:27 EDT | 480 evaluations planned; full-matrix result pending |
+| Fixed chromosome replication | 38/120 probes complete at last contact, 03:41 EDT | 480 evaluations planned; full-matrix result pending; SSH reconnection needed for newer status |
 | Whole-graph NT completion | Complete and verified | All 751,237 segments; 271,760 added, original vectors unchanged |
 
 These are native repository/tmux experiments, not registered Workbench runs.
@@ -95,7 +95,10 @@ receipts directly, avoiding this live-status provenance ambiguity.
    alternative-component contexts, 742,607 segments, preserved orientation and
    no shared IDs across chromosome partitions. The largest-context CPU forward/
    backward check passes for both new attention implementations. CUDA profiling
-   is queued; wider-context training and biological comparisons remain pending.
+   is queued. The matched wider-context pilot is implemented and tested, with
+   four controls, three seeds and the same original reconstruction targets in
+   both contexts. Its real-data CPU preflight and launch await server reconnection;
+   wider-context biological comparisons remain pending.
    These components are not verified directed bubbles or haplotype paths. See
    [the implementation and resource report](COMPLETE_CONTEXT_AND_ATTENTION_20260928.md).
 3. DART-Eval still requires an authorized copy of the official processed table;
@@ -117,3 +120,26 @@ new test scores, with every candidate arm retained. Its purpose is to test actua
 old/new pipeline improvement rather than infer it from beating a random encoder.
 Single-fold B summaries remain descriptive and receive no genomic confidence
 interval. This reference experiment has no completed performance result yet.
+
+## Review and implementation follow-up
+
+The revised verifier independently rebuilt complete membership, interval identity,
+counts and fold separation for all 608 contexts. Every context passed. Regression
+fixtures now reject internally consistent but incomplete subgraphs, omitted
+windows, changed coordinates/counts and altered split evidence. The replication
+report also binds its metric table to the audit, and the v1 reference checks the
+exact bytes before comparing it. These repairs do not change biological labels,
+embeddings or completed performance estimates.
+
+The wider-context comparison preserves native feature meanings. Expansion can
+rescale SO, LN and SR as well as degree features; it also changes the decoder
+neighborhood. Its interpretation is a complete-context pipeline comparison,
+not an isolated causal estimate of adding graph edges. Original target identities,
+mask banks, target moments and pooling occurrences must remain matched.
+
+The [scientific manuscript revision](../manuscript/revision_20260924/README.md)
+now reflects the completed evidence, including all null findings and outstanding
+comparisons. The requested plugins were checked for biological suitability:
+Genomic Intelligence's enhancer models are Drosophila-trained and are not a
+human EN-TEx comparator; the sequence viewer inspected existing verified human
+reference windows. [Plugin review](../results/foundation_evidence_20260928/plugin_suitability_review.json).

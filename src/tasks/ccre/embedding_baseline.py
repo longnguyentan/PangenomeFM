@@ -8,6 +8,7 @@ simple logistic or MLP classifier on the resulting fixed embeddings.
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 from collections import defaultdict
 from pathlib import Path
@@ -127,10 +128,13 @@ def _extract_embeddings(
     return_canonical_audit: bool = False,
     extraction_candidate_policy: str = "checkpoint",
     companion_checkpoints: list[Path] | None = None,
+    component_context_manifest: Path | None = None,
 ):
     if not TORCH_AVAILABLE:
         raise ImportError("PyTorch is required for frozen embedding extraction.")
     if companion_checkpoints:
+        if component_context_manifest is not None:
+            raise ValueError('Complete-context pilot uses one frozen branch per arm')
         paths = [checkpoint, *companion_checkpoints]
         if len(paths) != 2 or len({p.resolve() for p in paths}) != len(paths):
             raise ValueError('Use exactly two distinct frozen branch checkpoints')
@@ -143,6 +147,9 @@ def _extract_embeddings(
         return result if return_canonical_audit else result[:2]
     device = torch.device(device_name)
     ckpt = torch.load(checkpoint, map_location=device)
+    if 'component_pilot' in ckpt.get('plan', {}):
+        from training.component_pilot import guard_extraction_scope
+        guard_extraction_scope(ckpt, target_chrs, closure, extraction_candidate_policy, max_slices)
     eval_args = _namespace_from_checkpoint(ckpt, seed=seed)
     if canonical_conflict_policy not in {"error", "exclude"}:
         raise ValueError("canonical_conflict_policy must be 'error' or 'exclude'")
@@ -165,8 +172,21 @@ def _extract_embeddings(
         eval_args.objective = "edge_masking"
 
     manifest_df = pd.read_csv(manifest)
+    components = None
+    if closure == 'component':
+        from training.component_pilot import validate_plan, verified_context_manifest
+        if component_context_manifest is None or extraction_candidate_policy != 'manuscript':
+            raise ValueError('Component extraction requires explicit context manifest and original manuscript eligibility')
+        if component_context_manifest.name != 'manifest.csv':
+            raise ValueError('Use the independently verified component manifest')
+        validate_plan(ckpt['plan'])
+        components = verified_context_manifest(component_context_manifest.parent, ckpt['plan'], manifest_df)
+        component_records = components.attrs['verified_records']
+        components = components.set_index('name', drop=False)
+    elif component_context_manifest is not None:
+        raise ValueError('Component manifest requires explicit component source context')
     if closure != "all":
-        manifest_df = manifest_df[manifest_df["closure"].astype(str) == closure]
+        manifest_df = manifest_df[manifest_df["closure"].astype(str) == ('1hop' if components is not None else closure)]
     if target_chrs is not None:
         normalized_targets = {_manifest_target_chromosome(chrom) for chrom in target_chrs}
         manifest_df = manifest_df[
@@ -191,6 +211,10 @@ def _extract_embeddings(
         "orientation_equivalent_conflicting_pairs": 0,
         "conflicting_candidate_rows_excluded": 0,
         "same_label_equivalent_rows_collapsed": 0,
+        "source_context": closure,
+        "component_context_manifest": str(component_context_manifest) if component_context_manifest else None,
+        "pooling_occurrences": "original_one_hop_oriented_handles" if components is not None else "native",
+        "extracted_chromosomes": sorted(set(manifest_df.target_sn.map(_manifest_target_chromosome))),
     }
     for i, row in manifest_df.iterrows():
         sd_raw = load_slice(row, seg_index, md, segments, eval_args)
@@ -208,6 +232,20 @@ def _extract_embeddings(
             "same_label_equivalent_rows_collapsed",
         ):
             canonical_audit[key] += int(slice_audit.get(key, 0))
+        pooling_oids = None
+        if components is not None:
+            from tasks.transfer.traitgym import verified_fingerprint
+            from training.component_pilot import pair_slice
+            pooling_oids = set(map(int, sd_raw['nodes']))
+            component_row = components.loc[row['name']]
+            for key in ['segments', 'links']:
+                verified_fingerprint(Path(component_row[key + '_path']), component_records[row['name']][key]['sha256'])
+            context_args = copy.copy(eval_args)
+            context_args.objective, context_args.extraction_mode = 'masked_nt_features', True
+            complete_raw = load_slice(component_row, seg_index, md, segments, context_args)
+            if complete_raw is None:
+                raise ValueError('Original eligible extraction window lost in complete context')
+            sd_raw = pair_slice(sd_raw, complete_raw)
         sd = tensorize_slice(sd_raw, device, eval_args)
         if eval_args.adaptive_window:
             from training.pretrain import _compute_adaptive_window_k
@@ -231,6 +269,8 @@ def _extract_embeddings(
             sd["pop_ids"],
         ).cpu().numpy()
         for local_idx, oid in enumerate(sd_raw["nodes"].tolist()):
+            if pooling_oids is not None and int(oid) not in pooling_oids:
+                continue
             segid = int(oid) // 2
             if segid not in labeled_segids:
                 continue
