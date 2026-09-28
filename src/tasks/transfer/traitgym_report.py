@@ -103,6 +103,15 @@ def expected_test_support(qc: dict, chromosomes: list[str]) -> tuple[list[str], 
     return observed, sum(counts[chrom] for chrom in observed)
 
 
+def markdown_contrasts(frame: pd.DataFrame) -> str:
+    lines = ["| Dataset | Context | Comparison | ΔAP | 95% CI | Fold p | BH q |",
+             "|---|---|---|---:|---|---:|---:|"]
+    for r in frame.loc[frame.metric.eq("auprc")].itertuples():
+        lines.append(f"| {r.dataset} | {r.context} | {r.contrast} | {r.mean:+.6f} | "
+                     f"[{r.ci95_low:+.6f}, {r.ci95_high:+.6f}] | {r.sign_flip_p:.4f} | {r.bh_q_within_metric:.4f} |")
+    return "\n".join(lines)
+
+
 def figures(absolute: pd.DataFrame, contrasts: pd.DataFrame, out: Path) -> None:
     import matplotlib
     matplotlib.use("Agg")
@@ -183,17 +192,17 @@ def main() -> None:
     for name, frame in [("per_run", metrics), ("absolute", absolute), ("contrasts", contrasts), ("paired", paired)]:
         frame.to_csv(args.out_dir / (name + ".csv"), index=False)
     figures(absolute, contrasts, args.out_dir)
+    (args.out_dir / "README.md").write_text(
+        "# TraitGym frozen locus-prior results\n\n" + plan["interpretation"] + "\n\n"
+        + f"Completed {len(rows)} declared runs; {len(metrics)} fits. All converged: {bool(metrics.probe_converged.all())}.\n\n"
+        + "## All primary and handcrafted-control AUPRC contrasts\n\n"
+        + markdown_contrasts(contrasts) + "\n\n"
+        + "Intervals are pointwise hierarchical fold/seed bootstrap. Exact fold sign-flip p-values and BH-adjusted q-values are also supplied; five folds limit inferential resolution.\n")
     write_json(args.out_dir / "audit.json", dict(status="complete", scope=receipt["scope"],
         all_probes_converged=bool(metrics.probe_converged.all()), n_runs=len(rows), n_fits=len(metrics),
         numerical_gate="pass" if metrics.probe_converged.all() else "optimization_incomplete",
         source_root=str(args.root), sources=sources, plan=plan,
         interpretation="Exploratory pointwise fold/seed intervals; seed repetitions are not independent biological samples. No performance-based subset selection."))
-    (args.out_dir / "README.md").write_text(
-        "# TraitGym frozen locus-prior results\n\n" + plan["interpretation"] + "\n\n"
-        + f"Completed {len(rows)} declared runs; {len(metrics)} fits. All converged: {bool(metrics.probe_converged.all())}.\n\n"
-        + "## All primary and handcrafted-control AUPRC contrasts\n\n"
-        + contrasts.loc[contrasts.metric.eq("auprc")].to_markdown(index=False) + "\n\n"
-        + "Intervals are pointwise hierarchical fold/seed bootstrap. Exact fold sign-flip p-values and BH-adjusted q-values are also supplied; five folds limit inferential resolution.\n")
 
 
 if __name__ == "__main__":

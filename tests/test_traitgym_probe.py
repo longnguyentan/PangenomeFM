@@ -9,7 +9,7 @@ from scripts.server.audit_traitgym_coverage import normalize
 from scripts.server.run_ccre_frozen_probe_fold import evaluate_feature_sets
 from tasks.entex.prepare import fingerprint
 from tasks.transfer.traitgym import align_component, validate_examples, validate_nt_provenance, weighted_chromosome_ap
-from tasks.transfer.traitgym_report import METRICS, expected_test_support, replay_run, summarize
+from tasks.transfer.traitgym_report import METRICS, expected_test_support, markdown_contrasts, replay_run, summarize
 
 
 def fixture():
@@ -114,6 +114,7 @@ def test_native_probe_replay_and_tamper_detection(tmp_path):
     absolute, contrasts, paired = summarize(checked, plan)
     assert len(absolute) == len(METRICS) * 9 and len(paired) == 12
     assert contrasts.ci95_low.isna().all()  # A smoke fold does not provide a fold CI.
+    assert "T_given_CSH" in markdown_contrasts(contrasts)
     assert checked.probe_converged.all()
     metrics.loc[0, "auprc"] += .1
     metrics.to_csv(tmp_path / "metrics.csv", index=False)
