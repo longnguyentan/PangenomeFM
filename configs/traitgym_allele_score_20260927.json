@@ -1,0 +1,144 @@
+{
+  "artifact_type": "analysis_plan",
+  "version": 1,
+  "task": "traitgym_allele_score_sensitivity",
+  "objective": "Evaluate publisher-provided frozen NT-2.5B allele likelihood scores with the existing locus priors, retaining all original variants and comparisons.",
+  "recorded_before_first_probe": true,
+  "dataset_revision": "1fde19555fe8c0a55b1382bdf4c6f7082209f566",
+  "datasets": [
+    "complex_traits",
+    "mendelian_traits"
+  ],
+  "reference_config": "configs/entex_v1.json",
+  "partition": "All five existing manuscript chromosome folds, three seeds, strict and one-hop; original test and validation chromosomes also excluded from graph encoder training",
+  "unit": "Original variant row; repeated positions with different alleles remain together by chromosome. Preserve all original match groups, each containing one positive and nine negatives on one chromosome.",
+  "encoder": "Existing v1 frozen checkpoint for each fold/seed/context; no new pretraining, tuning or checkpoint selection on TraitGym",
+  "sequence": "Unmodified manuscript segment-level NT-v2 50M cache; not reference-minus-alternate embeddings",
+  "mapping": "Previously audited GRCh38 [pos-1,pos) containing reference segment; no nearest fallback and no row exclusions",
+  "probe": "Existing standardized class-balanced logistic regression; max_iter=4000 for every arm, unchanged solver, regularization and tolerance; calibration and threshold from validation chromosomes only",
+  "feature_sets": [
+    "variant_llr",
+    "coordinate_plus_variant_llr",
+    "coordinate_plus_frozen_sequence_fm",
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control",
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm",
+    "coordinate_plus_frozen_pangenomefm"
+  ],
+  "probe_max_iter": 4000,
+  "primary": "AUPRC(C+S+V+T) minus AUPRC(C+S+V), separately for both datasets and contexts",
+  "controls": [
+    "C+S+V+H+T minus C+S+V+H",
+    "C+S+V minus C+S",
+    "C+S+V+T minus C+T"
+  ],
+  "secondary_metrics": [
+    "chromosome-size-weighted AUPRC",
+    "AUROC",
+    "prevalence-normalized AP",
+    "balanced accuracy",
+    "F1",
+    "precision",
+    "recall"
+  ],
+  "inference": "Existing hierarchical fold/seed bootstrap with 10000 draws; paired exact fold sign-flip and BH correction over all dataset/context/contrast comparisons within each metric. Overlapping training folds limit independence.",
+  "n_bootstrap": 10000,
+  "statistics_seed": 20260927,
+  "validity_gates": [
+    "100% original row and match-group retention",
+    "Both classes in every train/validation/test partition",
+    "Exact graph, NT, checkpoint and actual topology-cache provenance",
+    "No PIP, trait, OMIM, consequence, MAF, LD, TSS distance, match-group identity or supplied labels in feature matrices",
+    "All compared probes converge",
+    "Identical evaluated identities and labels for every feature",
+    "No tuning or assay/subset selection based on these test results",
+    "Pinned score-file SHA-256 and original source row/index identity",
+    "No replacing any original C/K/S/T feature meaning"
+  ],
+  "interpretation": "Five-fold locus-prior adaptation, not the official leave-one-chromosome-out TraitGym leaderboard. Static T and S cannot distinguish alternate alleles at the same segment. Favorable T gains do not establish learned-weights superiority without random-encoder controls. Report all null and negative outcomes. V is an author-provided allele-aware sequence score, not newly trained PangenomeFM or a reproduction of the complete official NT benchmark. Previously observed test results motivated this sensitivity; any gain is exploratory.",
+  "references": [
+    "https://github.com/songlab-cal/TraitGym",
+    "https://huggingface.co/datasets/songlab/TraitGym"
+  ],
+  "development_status": "Exploratory sensitivity specified after inspecting the original locus-prior test results; not independent confirmation. No architecture or hyperparameter selection on this extension.",
+  "variant_score_definition": "V contains signed LLR and its absolute value, fixed before fitting. The original author NT-2.5B masked-allele score averages forward and reverse sequences; this is not its full embedding-based benchmark.",
+  "custom_feature_sets": {
+    "variant_llr": [
+      "variant_llr"
+    ],
+    "coordinate_plus_variant_llr": [
+      "coordinate",
+      "variant_llr"
+    ],
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "variant_llr"
+    ],
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "variant_llr",
+      "frozen_pangenomefm"
+    ],
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "variant_llr",
+      "topology_control"
+    ],
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "variant_llr",
+      "topology_control",
+      "frozen_pangenomefm"
+    ]
+  },
+  "feature_labels": {
+    "variant_llr": "V (NT-2.5B allele scores)",
+    "coordinate_plus_variant_llr": "C+V",
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr": "C+S+V",
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm": "C+S+V+T",
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control": "C+S+V+H",
+    "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm": "C+S+V+H+T"
+  },
+  "comparisons": [
+    [
+      "V_given_CS",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+      "coordinate_plus_frozen_sequence_fm"
+    ],
+    [
+      "T_given_CSV",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+    ],
+    [
+      "T_given_CSVH",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+    ],
+    [
+      "SV_given_CT",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_pangenomefm"
+    ]
+  ],
+  "variant_scores": {
+    "complex_traits": {
+      "filename": "complex_traits_nt_llr.parquet",
+      "sha256": "b7180623654f41961c6997b1ff8d1002091cc62ddb4c264acac26ddab73d5187",
+      "publisher_path": "complex_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+    },
+    "mendelian_traits": {
+      "filename": "mendelian_traits_nt_llr.parquet",
+      "sha256": "8c88e183115bbe05c7dec777a1155d62531985f60b481acbc4e914970446f3fd",
+      "publisher_path": "mendelian_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+    }
+  },
+  "author_code_commit": "4d80fe889415ffc02d45c7cb5446a326288819bd",
+  "author_model": "InstaDeepAI/nucleotide-transformer-2.5b-multi-species",
+  "score_provenance": "Exact published score files pinned by dataset revision and LFS SHA-256. Source rule reads original test.parquet and writes predictions in source order. Files have positional indices, not genomic IDs; alignment relies on this published contract. Model-weight revision and exact original runtime are not recorded by the author code."
+}

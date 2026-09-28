@@ -82,8 +82,9 @@ def summarize(metrics: pd.DataFrame, plan: dict) -> tuple[pd.DataFrame, pd.DataF
             wide = group.pivot(index=["fold", "seed"], columns="feature_set", values=metric)
             if wide.isna().any().any():
                 raise ValueError("Missing paired result")
-            for name, left, right in [("T_given_CS", FULL, BASE), ("T_given_CSH", CSHT, CSH),
-                                      ("S_given_CT", FULL, CT)]:
+            comparisons = plan.get("comparisons", [("T_given_CS", FULL, BASE), ("T_given_CSH", CSHT, CSH),
+                                                    ("S_given_CT", FULL, CT)])
+            for name, left, right in comparisons:
                 paired.append((wide[left] - wide[right]).rename("gain").reset_index().assign(
                     dataset=dataset, context=context, metric=metric, contrast=name))
     paired = pd.concat(paired, ignore_index=True)
@@ -112,7 +113,7 @@ def markdown_contrasts(frame: pd.DataFrame) -> str:
     return "\n".join(lines)
 
 
-def figures(absolute: pd.DataFrame, contrasts: pd.DataFrame, out: Path) -> None:
+def figures(absolute: pd.DataFrame, contrasts: pd.DataFrame, out: Path, plan: dict) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -122,7 +123,7 @@ def figures(absolute: pd.DataFrame, contrasts: pd.DataFrame, out: Path) -> None:
     colors = {"strict": "#245a81", "1hop": "#be6831"}
     for ax, dataset in zip(axes, ["complex_traits", "mendelian_traits"]):
         subset = absolute.loc[absolute.dataset.eq(dataset) & absolute.metric.eq("auprc")]
-        features = list(dict.fromkeys([*LABELS, CSH, CSHT]))
+        features = plan["feature_sets"]
         for i, (context, color) in enumerate(colors.items()):
             indexed = subset.loc[subset.context.eq(context)].set_index("feature_set")
             for j, feature in enumerate(features):
@@ -132,7 +133,7 @@ def figures(absolute: pd.DataFrame, contrasts: pd.DataFrame, out: Path) -> None:
                 y = j + (i - .5) * .18
                 ax.plot(r["mean"], y, "o", color=color, label=context if j == 0 else None)
                 ax.hlines(y, r.ci95_low, r.ci95_high, color=color)
-        names = {**LABELS, CSH: "C+S+H", CSHT: "C+S+H+T"}
+        names = {**LABELS, CSH: "C+S+H", CSHT: "C+S+H+T", **plan.get("feature_labels", {})}
         ax.set(yticks=range(len(features)), yticklabels=[names[f] for f in features], xlim=(0, 1),
                xlabel="Mean fold AUPRC (95% bootstrap interval)", title=dataset.replace("_", " "))
         ax.axvline(.1, color=".6", ls=":", label="prevalence 0.10")
@@ -142,7 +143,7 @@ def figures(absolute: pd.DataFrame, contrasts: pd.DataFrame, out: Path) -> None:
     save_figure(fig, out, "traitgym_feature_ap")
     plt.close(fig)
     fig, ax = plt.subplots(figsize=(8, 4), layout="constrained")
-    data = contrasts.loc[contrasts.metric.eq("auprc") & contrasts.contrast.isin(["T_given_CS", "T_given_CSH"])]
+    data = contrasts.loc[contrasts.metric.eq("auprc") & contrasts.contrast.str.startswith("T_given_")]
     for i, (_, r) in enumerate(data.iterrows()):
         ax.plot(r["mean"], i, "o", color=colors[r.context])
         ax.hlines(i, r.ci95_low, r.ci95_high, color=colors[r.context])
@@ -191,7 +192,7 @@ def main() -> None:
     args.out_dir.mkdir(parents=True, exist_ok=False)
     for name, frame in [("per_run", metrics), ("absolute", absolute), ("contrasts", contrasts), ("paired", paired)]:
         frame.to_csv(args.out_dir / (name + ".csv"), index=False)
-    figures(absolute, contrasts, args.out_dir)
+    figures(absolute, contrasts, args.out_dir, plan)
     (args.out_dir / "README.md").write_text(
         "# TraitGym frozen locus-prior results\n\n" + plan["interpretation"] + "\n\n"
         + f"Completed {len(rows)} declared runs; {len(metrics)} fits. All converged: {bool(metrics.probe_converged.all())}.\n\n"

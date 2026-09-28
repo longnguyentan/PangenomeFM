@@ -11,7 +11,8 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import balanced_accuracy_score
 
-from evaluation.modality_factorial import build_modality_factorial, load_frozen_node_embedding_cache
+from evaluation.modality_factorial import (build_modality_factorial, concatenate_modalities,
+    factorial_feature_access, load_frozen_node_embedding_cache)
 from scripts.server.audit_traitgym_coverage import normalize
 from scripts.server.run_ccre_frozen_probe_fold import evaluate_feature_sets, validate_checkpoint_holdout
 from scripts.server.run_ccre_frozen_probe_matrix import build_jobs, checkpoint_for
@@ -110,6 +111,23 @@ def validate_nt_provenance(path: Path, audit: dict, config: dict, output_sha256:
     return sources
 
 
+def author_variant_scores(path: Path, expected_sha256: str, original: pd.DataFrame,
+                          prepared: pd.DataFrame) -> tuple[np.ndarray, dict]:
+    """Honor the pinned publisher's positional score contract, then join by variant."""
+    receipt = verified_fingerprint(path, expected_sha256)
+    scores = pd.read_parquet(path)
+    if (list(scores) != ["score"] or len(scores) != len(original)
+            or not scores.index.equals(pd.RangeIndex(len(original)))
+            or not original.index.equals(scores.index) or not np.isfinite(scores.score).all()):
+        raise ValueError("Author scores do not follow the original finite row-order contract")
+    source = normalize(original)
+    indexed = pd.Series(scores.score.to_numpy(), index=source.variant_id)
+    ordered = prepared.variant_id.map(indexed).to_numpy()
+    if not np.isfinite(ordered).all() or set(prepared.variant_id) != set(source.variant_id):
+        raise ValueError("Author score join changed the original variant universe")
+    return np.column_stack([ordered, np.abs(ordered)]).astype(np.float32), receipt
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--config", type=Path, default=Path("configs/traitgym_locus_prior_20260927.json"))
@@ -119,6 +137,7 @@ def main() -> None:
     ap.add_argument("--folds", nargs="+")
     ap.add_argument("--seeds", nargs="+", type=int)
     ap.add_argument("--contexts", nargs="+", choices=["strict", "1hop"])
+    ap.add_argument("--variant-score-dir", type=Path)
     args = ap.parse_args()
     plan = json.loads(args.config.read_text())
     config = json.loads(Path(plan["reference_config"]).read_text())
@@ -159,6 +178,17 @@ def main() -> None:
     sources.append(verified_fingerprint(args.feature_cache, ck_audit["output_sha256"]))
     sources.append(fingerprint(Path(str(args.feature_cache) + ".audit.json")))
     static = {name: {} for name in datasets}
+    if plan.get("variant_scores"):
+        if args.variant_score_dir is None:
+            raise ValueError("This secondary plan requires its pinned author allele scores")
+        for name, (examples, _) in datasets.items():
+            spec = plan["variant_scores"][name]
+            matrix, score_source = author_variant_scores(args.variant_score_dir / spec["filename"],
+                spec["sha256"], pd.read_parquet(args.source_dir / (name + "_matched_9.parquet")), examples)
+            static[name]["variant_llr"] = matrix
+            sources.append(score_source)
+    elif args.variant_score_dir is not None:
+        raise ValueError("Allele scores require an explicitly separate analysis plan")
     with np.load(args.feature_cache, allow_pickle=False) as cache:
         for key in ["coordinate", "sequence_kmer"]:
             for name, (examples, overlaps) in datasets.items():
@@ -209,11 +239,16 @@ def main() -> None:
                 components = dict(static[name], frozen_pangenomefm=align_component(examples, overlaps, ids, values))
                 matrices = build_modality_factorial(components, include_external_sequence=True,
                                                      include_topology_control=True)
+                custom = plan.get("custom_feature_sets", {})
+                if set(custom) & set(matrices):
+                    raise ValueError("Custom features must not replace manuscript feature meanings")
+                matrices.update({k: concatenate_modalities(components, names) for k, names in custom.items()})
+                access = {**factorial_feature_access(), **{k: " + ".join(names) for k, names in custom.items()}}
                 metrics, per_chromosome, predictions = evaluate_feature_sets(
                     segids=examples.example_id.to_numpy(), chromosomes=examples.chrom.to_numpy(),
                     labels=examples.label.to_numpy(), features={k: matrices[k] for k in plan["feature_sets"]},
                     test_chrs=set(job.test), val_chrs=set(job.validation), seed=job.seed,
-                    probe_max_iter=plan["probe_max_iter"])
+                    probe_max_iter=plan["probe_max_iter"], feature_access=access)
                 metrics["balanced_accuracy"] = [balanced_accuracy_score(p.y_true, p.y_pred)
                     for feature in metrics.feature_set for p in [predictions.loc[predictions.feature_set.eq(feature)]]]
                 metrics["chromosome_weighted_auprc"] = [weighted_chromosome_ap(

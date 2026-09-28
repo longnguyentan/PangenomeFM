@@ -8,7 +8,8 @@ from evaluation.modality_factorial import build_modality_factorial
 from scripts.server.audit_traitgym_coverage import normalize
 from scripts.server.run_ccre_frozen_probe_fold import evaluate_feature_sets
 from tasks.entex.prepare import fingerprint
-from tasks.transfer.traitgym import align_component, validate_examples, validate_nt_provenance, weighted_chromosome_ap
+from tasks.transfer.traitgym import (align_component, author_variant_scores, validate_examples,
+    validate_nt_provenance, weighted_chromosome_ap)
 from tasks.transfer.traitgym_report import METRICS, expected_test_support, markdown_contrasts, replay_run, summarize
 
 
@@ -82,6 +83,21 @@ def test_merged_nt_cache_shard_provenance(tmp_path):
     audit["source_shards"][0]["audit_sha256"] = fingerprint(sidecar)["sha256"]
     with pytest.raises(ValueError, match="provenance"):
         validate_nt_provenance(tmp_path / "merged.npz", audit, cfg, "test")
+
+
+def test_author_scores_require_pinned_hash_and_join_original_variant_identity(tmp_path):
+    original, examples, _, _ = fixture()
+    path = tmp_path / "scores.parquet"
+    score = np.arange(len(original), dtype=float) - 20
+    pd.DataFrame({"score": score}).to_parquet(path, index=False)
+    digest = fingerprint(path)["sha256"]
+    matrix, _ = author_variant_scores(path, digest, original, examples.iloc[::-1])
+    np.testing.assert_array_equal(matrix[:, 0], score[::-1])
+    np.testing.assert_array_equal(matrix[:, 1], abs(score[::-1]))
+    with pytest.raises(ValueError, match="Stale"):
+        author_variant_scores(path, "not-the-pinned-source", original, examples)
+    with pytest.raises(ValueError, match="row-order"):
+        author_variant_scores(path, digest, original.iloc[::-1], examples)
 
 
 def test_native_probe_replay_and_tamper_detection(tmp_path):
