@@ -1,0 +1,125 @@
+{
+  "scope": "Completed studies only; summaries copied without refitting or recomputing intervals. No pending chromosome-test metrics read.",
+  "sources": {
+    "downstream_scorecard.csv": {
+      "source": "results/foundation_evidence_20260927/task_scorecard/completed_downstream_tasks.csv",
+      "source_sha256": "686fe9b0ee3939407af37e6b5f8066930a4775f15e6948adfc9d8b1c08a276b8",
+      "selection": "all rows",
+      "n_rows": 52,
+      "snapshot_sha256": "686fe9b0ee3939407af37e6b5f8066930a4775f15e6948adfc9d8b1c08a276b8"
+    },
+    "hr_ap.csv": {
+      "source": "results/foundation_evidence_20260927/hr_analysis/paired_gains.csv",
+      "source_sha256": "17b37d0b481ce705f7d05d79096ee5fbe71fcfa3f9cefe42a9f4507b6cab714d",
+      "selection": "metric == 'auprc'",
+      "n_rows": 24,
+      "snapshot_sha256": "362f17aebe7b64d31f9b314be0140ea790d8f6333c612b436b3111570f44da67"
+    },
+    "sv_matched_ap.csv": {
+      "source": "results/foundation_evidence_20260927/sv_type_full_analysis/contrasts.csv",
+      "source_sha256": "036193710723193087ba82fd0e0296513cdeac1c3d44d85d097b8bc063471b38",
+      "selection": "metric == 'auprc'",
+      "n_rows": 32,
+      "snapshot_sha256": "6243b8f4611c53e10fabc8fab0c09650c19f2357010cd2b410696ef74c3f6ef2"
+    },
+    "sv_natural_ap.csv": {
+      "source": "results/foundation_evidence_20260928/sv_type_natural_full_analysis/contrasts.csv",
+      "source_sha256": "c89e80ec0decdc886aea6273ba833caf3c23810d4d4997fdbd8429e4ea3ce9a1",
+      "selection": "metric == 'auprc'",
+      "n_rows": 32,
+      "snapshot_sha256": "3b712f219c6701c131b3e4f24e96a98a67cecbf03a275abb2beb5112d4ff5263"
+    },
+    "sv_natural_absolute_ap.csv": {
+      "source": "results/foundation_evidence_20260928/sv_type_natural_full_analysis/absolute.csv",
+      "source_sha256": "9c28bbb50700bc0112f41e4e321682ac20b42cf587ce569ea14f211c06a21feb",
+      "selection": "metric == 'auprc'",
+      "n_rows": 104,
+      "snapshot_sha256": "1a16c1bac311db4e0612187f60c938054d343a8b18389cafd35a68d3468e956f"
+    },
+    "development_ap.csv": {
+      "source": "results/foundation_evidence_20260928/masked_feature_full_analysis/paired_differences.csv",
+      "source_sha256": "e66d8584241078317cf62b241d62f4fbb0012f29d2cffc64fa7f41d48057ef26",
+      "selection": "metric == 'auprc'",
+      "n_rows": 36,
+      "snapshot_sha256": "86419b5307aece6d35f641ade7ef0e04a9f6b80a24c324eeda1bd714180e31c3"
+    },
+    "traitgym_primary_ap.csv": {
+      "source": "results/foundation_evidence_20260927/traitgym_full_analysis/contrasts.csv",
+      "source_sha256": "61852ea01d9894bddf63c21b0e4c3ac6f241c52c01004d3522cade130b80fa1d",
+      "selection": "metric == 'auprc'",
+      "n_rows": 12,
+      "snapshot_sha256": "9a412dcdf8ed404ae59123b02205f7cddc11bf8a0369cc6290c58980f091d552"
+    },
+    "cosigt_primary_mae.csv": {
+      "source": "results/foundation_evidence_20260927/cosigt_quality_full_analysis/contrasts.csv",
+      "source_sha256": "c3f8d2e3314f4a0bae6b6843b4c6d469bcd5b0454e48f67b72bd053850a7761d",
+      "selection": "metric == 'mae' and target == 'mean_qv_fraction'",
+      "n_rows": 8,
+      "snapshot_sha256": "660a21c95b089bc479190ee8187b3d53d006188b8b379af34a85b2c9c100f5a6"
+    },
+    "sv_natural_audit.json": {
+      "source": "results/foundation_evidence_20260928/sv_type_natural_full_analysis/audit.json",
+      "source_sha256": "eea37a4157111bc4618cb9dcc1e65aba483fd76a6c41af0ee27b588d9c6cc3fa",
+      "snapshot_sha256": "eea37a4157111bc4618cb9dcc1e65aba483fd76a6c41af0ee27b588d9c6cc3fa"
+    },
+    "development_audit.json": {
+      "source": "results/foundation_evidence_20260928/masked_feature_full_analysis/audit.json",
+      "source_sha256": "3e05b7840c26b328300db07b758eb70a979f677626b17cff771a0218eaf8d6a2",
+      "snapshot_sha256": "3e05b7840c26b328300db07b758eb70a979f677626b17cff771a0218eaf8d6a2"
+    },
+    "hr_audit.json": {
+      "source": "results/foundation_evidence_20260927/hr_analysis/audit.json",
+      "source_sha256": "dd2b88e9a99259187058a92018fe4ad940fd1c012e51be51c0914802c32101cd",
+      "snapshot_sha256": "dd2b88e9a99259187058a92018fe4ad940fd1c012e51be51c0914802c32101cd"
+    },
+    "traitgym_probe_ap.csv": {
+      "source": "results/foundation_evidence_20260927/traitgym_probe_float64_full_analysis/contrasts.csv",
+      "source_sha256": "cd60760a610ac2f0d1d1eb7a4648c4cd2cfca229888f8881a2d0c1c368dd978e",
+      "selection": "metric == 'auprc'",
+      "n_rows": 112,
+      "snapshot_sha256": "1c1eee96ac9cbf7513500a8be06e82617d0eccdcc5122ceac07edfa3f2e6b55e"
+    },
+    "traitgym_probe_absolute_ap.csv": {
+      "source": "results/foundation_evidence_20260927/traitgym_probe_float64_full_analysis/absolute.csv",
+      "source_sha256": "25d3c5b180d96d0b1dc4cdd3d585f6b139d35c1a584827a4b4f8d2b869df02cd",
+      "selection": "metric == 'auprc'",
+      "n_rows": 100,
+      "snapshot_sha256": "ddbf75686804327090eeb0b3b755c128c9751b807e09ea530f797c3ce96c9da6"
+    },
+    "traitgym_allele_ap.csv": {
+      "source": "results/foundation_evidence_20260927/traitgym_allele_full_analysis/contrasts.csv",
+      "source_sha256": "16d6a1c0f90329b8b4e310bf9cc7f34f09b88c6ea2bab4362dd1ea79e827fe82",
+      "selection": "metric == 'auprc'",
+      "n_rows": 16,
+      "snapshot_sha256": "5209bd8e0199f250362bc0d10e121004bc8b514f367a14a8d596f988755a8765"
+    },
+    "cosigt_absolute_mae.csv": {
+      "source": "results/foundation_evidence_20260927/cosigt_quality_full_analysis/absolute.csv",
+      "source_sha256": "58bdb5c2a1cf06f6f052e0304a63199a0001d6acb49e13cb3a6c5ffa573f79fd",
+      "selection": "metric == 'mae' and target == 'mean_qv_fraction'",
+      "n_rows": 30,
+      "snapshot_sha256": "7e4ea0fb12733308966159341a07363bccbb76913b4d938df1c5d7d7be965bf0"
+    },
+    "cosigt_fallback_mae.csv": {
+      "source": "results/foundation_evidence_20260927/cosigt_fallback_full/absolute.csv",
+      "source_sha256": "6a70afd5dec5f1cbcfff97c9b6d07f6ed32698f330682d628bebd3864bf2f2ac",
+      "selection": "metric == 'mae' and target == 'mean_qv_fraction'",
+      "n_rows": 58,
+      "snapshot_sha256": "cd6341467c94f33cee4b65a9910c70e50da35a779ebaa1d9856752f7b26e2118"
+    },
+    "masked_junction_reference.csv": {
+      "source": "results/foundation_evidence_20260928/masked_junction_full_reference/paired_per_seed.csv",
+      "source_sha256": "c5d3ff463a529e712e6198b03046ddb6cbbba179375cc97ec67209e0fc068dbd",
+      "selection": "all rows",
+      "n_rows": 240,
+      "snapshot_sha256": "cbaee1338b241f1ff0d2fd3d50dba7ae8535f9d3ad71f11e65e1df860ef6b71c"
+    },
+    "traitgym_sequence_visibility.csv": {
+      "source": "results/foundation_evidence_20260927/traitgym_sequence_visibility/visibility.csv",
+      "source_sha256": "2abfdb27303515d8a58b904148cac56a548c14921d4e150316c7072c026754d8",
+      "selection": "all rows",
+      "n_rows": 6,
+      "snapshot_sha256": "2abfdb27303515d8a58b904148cac56a548c14921d4e150316c7072c026754d8"
+    }
+  }
+}

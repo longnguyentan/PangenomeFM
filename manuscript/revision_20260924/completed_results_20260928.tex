@@ -1,0 +1,39 @@
+% Completed evidence only; source table snapshots and hashes accompany this file.
+\subsection{Three-class SV results depend on the evaluation population and controls}
+\label{sec:sv-type-extension}
+
+We extended known-event classification to INS, DEL and INV using a common first-affected-base anchor, separate from the historical two-endpoint INS/DEL representation. The natural-frequency analysis retained all 174,267 primary-chromosome events: 110,623 INS, 63,346 DEL and 298 INV. These are frequencies within the ascertained HGSVC3 callset, not population SV frequencies. All 30 fold/seed/context runs and 1,170 feature/class evaluations converged and their saved metrics replayed. The unchanged frozen v1 representation $T$ increased macro one-versus-rest AP from 0.406955 to 0.474012 under strict context and 0.458608 under one-hop context. After measured event log length $L$ and the 14 graph-statistic features $H$, the paired gains were 0.047664 (\CI 0.039885--0.055252) and 0.014988 (0.007719--0.021421), respectively (\cref{tab:sv-natural}).
+
+The macro result does not resolve the rare inversion endpoint. After $C+S+L+H$, INV gains were 0.015190 (\CI $-0.004323$ to 0.036473) strict and $-0.001538$ ($-0.019657$ to 0.011729) one-hop. Length was particularly informative for INV, and both adjusted intervals span zero. The macro contrasts had exact fold sign-flip $p=0.0625$ and within-metric Benjamini--Hochberg $q=0.0741$; positive pointwise bootstrap intervals are therefore not multiplicity-controlled confirmation.
+
+A separately completed common-support sensitivity retained 223 events per class, with equal one-versus-rest prevalence of one third. Its macro gains beyond $C+S$ were 0.023644 strict and 0.026716 one-hop, but $H$ was stronger than $T$ alone and both $T$-after-$H$ intervals spanned zero (\cref{tab:s-sv-matched}). Differences between these populations are not improvements in model weights. Neither SV-type experiment contains a matched random-encoder arm, performs SV discovery, or measures genotype accuracy.
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{Completed natural-frequency SV-type classification.} Mean AP and paired increments over 15 fold/seed runs per context. Macro averages the three one-versus-rest AP values equally. INV contains 298 events. Intervals are pointwise hierarchical bootstrap estimates; $L$ is event log length and $H$ contains graph statistics.}
+\label{tab:sv-natural}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lllrrrl@{}}
+\toprule
+Endpoint & Context & Baseline & Base AP & Base+$T$ AP & $\Delta_T$ & 95\% CI \\
+\midrule
+\csname @@input\endcsname sv_natural_rows.tex
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Additional transfer tasks retain negative and inconclusive findings}
+
+The prospective HG008 refit experiment completed all 30 planned evaluations on 69 clonal INS/DEL variants without training on HG008. Its gains beyond $C+S$ were 0.032525 (\CI $-0.053371$ to 0.110254) strict and 0.064863 ($-0.066739$ to 0.212115) one-hop. Both are inconclusive; a single external genome does not establish generalization across people. Six failed attempts to reproduce historical probes remain distinct from these successful prospective refits.
+
+TraitGym locus-prior prediction \citep{benegas2025traitgym} retained all 14,780 matched variants in the five-fold adaptation. Neither the original frozen-feature study nor the published NT-2.5B allele-score sensitivity established a positive topology interval. A subsequent completed 60-run probe study improved Mendelian $C+S+V$ AP from 0.102110 with the fixed linear classifier to 0.171056 with fixed shallow boosting, a paired difference of 0.068946 (\CI 0.017423--0.145067), where $V$ denotes published allele scores. This is a classifier improvement on previously inspected data; every topology AP interval remained nonpositive or inconclusive. The shared segment representation is a locus prior, not an allele-specific embedding, and its end-sampled sequence input omits most tested variant bases.
+
+Prediction of measured COSIGT locus quality \citep{bolognini2026cosigt} retained all 265 loci across 30 runs and 900 evaluations. Every original topology mean-absolute-error interval spanned zero. On the primary mean quality-value fraction, the constant training-median reference had lower mean error than every fitted feature model. A validation-only fallback to this constant reduced observed error but did not establish a topology benefit. These data concern quality conditional on released, evaluable sample--locus pairs; they do not demonstrate improved genotype calling or general callability. Detailed contrasts and the original negative results are retained in \hyperref[sec:s-transfer-boundaries]{Supplementary Information, external and measured-outcome transfer boundaries}.
+
+\subsection{Masked sequence-feature learning passes development controls; chromosome replication remains pending}
+\label{sec:masked-development}
+
+To test a different self-supervised target, we adapted GraphMAE-style masked-feature reconstruction \citep{hou2022graphmae} to the existing graph encoder. We denote this 48-dimensional, sequence-conditioned representation by $E$ to distinguish it from the original topology-pretrained $T$. Twelve pretraining runs and 24 frozen biological probes (96 feature evaluations) compared full and coordinate-only encoders with matched frozen random controls across three seeds. All development predictions replayed and all probes converged. On fold-A validation chromosomes, mean trained-minus-random AP after $C+S+H$ was 0.005609 for INS/DEL and 0.001836 for cCRE, positive at every seed. Full-trained minus coordinate-only-trained differences were also positive at every seed, averaging 0.006145 and 0.002372 (\cref{tab:s-development}). The coordinate-only ablation also removes model capacity, so this is not an isolated causal estimate of message passing.
+
+These three initializations share one development chromosome block and receive no chromosome confidence interval. The earlier junction candidate failed its full three-seed development gate and remains a failed comparison. The fixed 120-probe chromosome replication and separately prescribed 30-probe original-v1 reference comparison have no completed aggregate result at this evidence cutoff; no partial test metrics enter this manuscript. Fold B must be reported separately because its test chromosomes supplied fold-A development validation. The remaining folds also retain historical v1 label exposure. Development success therefore does not establish superiority to v1, independent external transfer, or a validated general-purpose foundation model.

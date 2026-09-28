@@ -1,0 +1,16 @@
+{
+  "status": "complete",
+  "n_runs": 30,
+  "n_evaluations": 1170,
+  "all_probes_converged": true,
+  "all_metrics_replayed": true,
+  "n_events": 174267,
+  "n_excluded": 0,
+  "population": "All 174,267 primary-chromosome INS/DEL/INV events from the pinned HGSVC3 annotation tables; ascertainment conditional on that callset, not population SV prevalence.",
+  "class_counts": {
+    "INS": 110623,
+    "DEL": 63346,
+    "INV": 298
+  },
+  "no_random_encoder_superiority_claim": true
+}

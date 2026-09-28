@@ -1,0 +1,106 @@
+{
+  "status": "complete",
+  "n_runs": 120,
+  "n_folds": 5,
+  "seeds": [
+    42,
+    314159,
+    20260806
+  ],
+  "source_receipts": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_a/seed_42/status.json",
+      "bytes": 17129,
+      "mtime_ns": 1790482930418318718,
+      "sha256": "0ea51b14c63bf0571135cfe8f0b0da49f11a28961fe4755aa275ad47f265d334"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_a/seed_314159/status.json",
+      "bytes": 17257,
+      "mtime_ns": 1790480549928080532,
+      "sha256": "fd46be450ac0eae3546b5dba078ac26b3e12b959f070394f0ccdabe523d72a3e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_a/seed_20260806/status.json",
+      "bytes": 17321,
+      "mtime_ns": 1790480554912028230,
+      "sha256": "96a245dbfa62f02fc75c49d6408f51af899b97fac225c6b8cd424d89ed0b4b7d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_b/seed_42/status.json",
+      "bytes": 17114,
+      "mtime_ns": 1790485446508058897,
+      "sha256": "0067d72b71222ba8c191b18deb4371fed9c99717ef18dc4acfd7b3a8aa5636f1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_b/seed_314159/status.json",
+      "bytes": 17242,
+      "mtime_ns": 1790485391764627837,
+      "sha256": "245e392f65de86587ac70363bf62337c7a5bfccdbad82669fe7b557e792e51e1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_b/seed_20260806/status.json",
+      "bytes": 17306,
+      "mtime_ns": 1790483023893352609,
+      "sha256": "1beb6cdd6d27d30361b87853dd83316d31d0c22743fc55d8856336bd7d622f79"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_c/seed_42/status.json",
+      "bytes": 17099,
+      "mtime_ns": 1790490669991043423,
+      "sha256": "8695d2c3bbcbaebacef8b2b252e8de06f2ae6182cc534f80c1fbe96f37bef848"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_c/seed_314159/status.json",
+      "bytes": 17227,
+      "mtime_ns": 1790488066471185578,
+      "sha256": "bd0931ccf1d5ba360adfa362f1e07b609a2ee870491ac0850fea1b237b800bae"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_c/seed_20260806/status.json",
+      "bytes": 17291,
+      "mtime_ns": 1790488031611568431,
+      "sha256": "0d7421e0a757f8436c5b9ccab9896c2e6a1cf9d47d6dfeff10d30fe7e16831f1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_d/seed_42/status.json",
+      "bytes": 16958,
+      "mtime_ns": 1790493401464032857,
+      "sha256": "01c783d42f1f007c76a6b2c4fec0f21074b1ae3109889a7c68a17b8d8cca1bc3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_d/seed_314159/status.json",
+      "bytes": 17086,
+      "mtime_ns": 1790493349944388303,
+      "sha256": "362af52da4642fdb0506c0c4440745d18c0a32afe4a7455a2cde5016ef3a75df"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_d/seed_20260806/status.json",
+      "bytes": 17150,
+      "mtime_ns": 1790490761670054696,
+      "sha256": "6e1432ae82dbfabe6bef0fd14a9a07522e650f2b384acbf6a5fc5abc3c461e77"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_e/seed_42/status.json",
+      "bytes": 16973,
+      "mtime_ns": 1790499269350011241,
+      "sha256": "f6d6e9d276440e3bb3606632031a6400aa3a3affbae497cd5a0d0781dd63e6b4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_e/seed_314159/status.json",
+      "bytes": 17101,
+      "mtime_ns": 1790496582638381502,
+      "sha256": "66cf50686842ce6d290a6cd0b1b4cf0f22a9eaac98acc3de14da4bbd5c8ff5f8"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_20260927/results/foundation_evidence_20260927/hr_controls/fold_e/seed_20260806/status.json",
+      "bytes": 17165,
+      "mtime_ns": 1790496486299320882,
+      "sha256": "c0d4d151a8eb179bb8714ad71ed470dd8accf04510a73eec008d419b15ad4eec"
+    }
+  ],
+  "prediction_identity_and_baseline_invariance": "passed",
+  "scope": "exploratory previously inspected chromosomes; no v2 or external confirmation",
+  "n_bootstrap": 10000,
+  "bootstrap_seed": 20260927
+}

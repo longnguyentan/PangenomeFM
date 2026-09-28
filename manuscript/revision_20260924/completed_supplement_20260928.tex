@@ -1,0 +1,77 @@
+\subsection{Completed controls for learned weights}
+
+The learned-versus-random comparison conditions on the same coordinates, sequence and graph-statistic features. Negative and inconclusive contrasts remain alongside the positive strict INS/DEL result (\cref{tab:s-hr}). The original $C+S+T$ versus $C+S$ contrasts answer a different question and cannot substitute for these controls.
+
+\begin{table}[H]
+\centering
+\caption{\textbf{Original-v1 trained-minus-random controls after $C+S+H$.} Each row uses 15 paired fold/seed runs. Exact sign flips use five seed-averaged fold differences; $q$ is the supplied within-metric BH adjustment. These are exploratory comparisons on previously inspected folds.}
+\label{tab:s-hr}
+\footnotesize
+\begin{tabular}{@{}llrlrr@{}}
+\toprule
+Task & Context & AP difference & 95\% CI & $p$ & $q$ \\
+\midrule
+\csname @@input\endcsname hr_completed_rows.tex
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Matched three-class SV sensitivity}
+
+The matched cohort contains 223 events of each type, restricted to equal chromosome/length-bin support. Its macro $C+S$ AP is 0.414145 and $C+S+H$ AP is 0.473760. The latter exceeds $C+S+T$ (0.437789 strict; 0.440860 one-hop), and adding $T$ after $H$ is inconclusive (\cref{tab:s-sv-matched}). This population excludes 75 primary-chromosome inversions lacking matched support; all 298 inversions remain included in the natural-frequency experiment. Absolute AP across these different prevalences and feature constructions should not be used to rank model versions.
+
+\begin{table}[H]
+\centering
+\caption{\textbf{Three-class common-support macro AP increments.} All 30 runs and 1,170 feature/class evaluations completed. Pointwise bootstrap intervals accompany exact fold sign-flip tests and the supplied within-metric BH adjustment.}
+\label{tab:s-sv-matched}
+\footnotesize
+\begin{tabular}{@{}llrlrr@{}}
+\toprule
+Conditioning features & Context & $\Delta_T$ & 95\% CI & $p$ & $q$ \\
+\midrule
+\csname @@input\endcsname sv_matched_rows.tex
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{External and measured-outcome transfer boundaries}
+\label{sec:s-transfer-boundaries}
+
+\begin{table}[H]
+\centering
+\caption{\textbf{Retained external-genome, variant-prior and measured-quality results.} Each contrast adds original frozen $T$ to $C+S$ in 15 paired fold/seed runs per context. HG008 uses prospective refits; TraitGym uses the original fixed linear locus-prior adaptation; COSIGT uses the primary continuous QV-fraction target. Positive values favor adding $T$, but AP gains and MAE reductions have different units and cannot be compared in magnitude.}
+\label{tab:s-transfer-boundaries}
+\footnotesize
+\begin{tabular}{@{}lllr l@{}}
+\toprule
+Endpoint & Context & Metric & Difference & 95\% CI \\
+\midrule
+\csname @@input\endcsname transfer_boundary_rows.tex
+\bottomrule
+\end{tabular}
+\end{table}
+
+The original TraitGym NT input retained only 22.95\% of tested complex-trait bases and 27.75\% of Mendelian bases before tokenization. This raw-sampling audit does not prove that every retained base survives tokenization or identify the cause of poor prediction. In the allele-score sensitivity, the published NT-2.5B score alone achieved Mendelian AP 0.160370, while $C+S+V$ achieved 0.102110 versus 0.120840 for $C+S$. Its paired $V$ increment was $-0.018730$ (\CI $-0.028974$ to $-0.008670$); the unsuccessful concatenation is retained alongside the later classifier sensitivity. No topology AP contrast in that sensitivity had a wholly positive interval.
+
+For COSIGT, the training-median primary-target MAE was 0.046169, compared with $C+S$ 0.053351 and $C+S+T$ 0.052699 strict/0.053824 one-hop. The later validation-only fallback yielded $C+S+T$ MAE 0.047911/0.047193 and retained the original constant reference. The paired reductions from this fallback were inconclusive in both contexts. Predicting published locus quality is distinct from altering COSIGT calls, measuring per-variant genotype concordance or establishing an all-callable denominator.
+
+\subsection{All-seed masked-feature development controls}
+
+\begin{table}[H]
+\centering
+\caption{\textbf{Sequence-conditioned $E$ development controls.} AP values and differences condition on $C+S+H$, using fold-A validation only. All four encoder arms and all three seeds were retained; the table gives the two contrasts discussed in Results. Coordinate-only models have less capacity. Seeds are initializations on the same genomic block, so no chromosome confidence interval is reported.}
+\label{tab:s-development}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Seed & Task & Full trained & Full random & Trained--random & Full--coordinate \\
+\midrule
+\csname @@input\endcsname development_rows.tex
+\bottomrule
+\end{tabular}
+\end{table}
+
+The same-width junction-$Q$ reference comparison is also retained: mean $E-Q$ AP after $C+S+H$ was 0.001877 INS/DEL and 0.000099 cCRE, whereas after $C+S$ it was 0.006154 INS/DEL and $-0.000145$ cCRE. The masked-feature and junction experiments used different epoch budgets (20 versus 10); these differences do not isolate the pretraining objective or establish universal improvement. F1 and balanced accuracy were not uniformly better at every seed. The frozen original-v1 comparison and full chromosome replication remain separate pending analyses.
+
+All numerical table rows in this update are generated from bundled completed-study CSV snapshots with recorded source paths and SHA-256 identities. The evidence bundle preserves the complete AP contrast families used here, original intervals and null results. It contains no partially completed chromosome-test scores.
