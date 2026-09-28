@@ -1,0 +1,92 @@
+{
+  "driver_commit": "d30521e",
+  "native_commit": "48ca40a91a19f107290d38d6bd6b13619a6dc98e",
+  "commands": [
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_driver/traitgym.py",
+      "--source-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195",
+      "--mapping-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit",
+      "--topology-audit",
+      "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/traitgym_topology_coverage/audit.json",
+      "--topology-cache-root",
+      "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference",
+      "--feature-cache",
+      "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+      "--sequence-cache",
+      "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+      "--topology-control-cache",
+      "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+      "--results-root",
+      "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806",
+      "--config",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_driver/traitgym_allele_score_20260927.json",
+      "--variant-score-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/author_features",
+      "--out-root",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_smoke",
+      "--folds",
+      "fold_a",
+      "--seeds",
+      "42",
+      "--contexts",
+      "strict"
+    ],
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_driver/traitgym_report.py",
+      "--root",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_smoke",
+      "--out-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_smoke_analysis"
+    ],
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "-c",
+      "import json; a=json.load(open('/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_smoke_analysis/audit.json')); assert a[\"status\"] == \"complete\" and a[\"numerical_gate\"] == \"pass\""
+    ],
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_driver/traitgym.py",
+      "--source-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195",
+      "--mapping-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit",
+      "--topology-audit",
+      "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/traitgym_topology_coverage/audit.json",
+      "--topology-cache-root",
+      "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference",
+      "--feature-cache",
+      "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+      "--sequence-cache",
+      "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+      "--topology-control-cache",
+      "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+      "--results-root",
+      "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806",
+      "--config",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_driver/traitgym_allele_score_20260927.json",
+      "--variant-score-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/author_features",
+      "--out-root",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full"
+    ],
+    [
+      "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_driver/traitgym_report.py",
+      "--root",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full",
+      "--out-dir",
+      "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full_analysis"
+    ]
+  ],
+  "files": {
+    "run.sh": "19dbcc202107b3c34928ac42c570070c74ccbdbe181d07553f4c88024f6f5148",
+    "traitgym_report.py": "2249acded1d185935819cebac3e40491b669d32e9a932abef4a678b64c70e43a",
+    "traitgym.py": "4906b8994e6cfd550da8d3de0392e86f5396ac461c2b6c8c5a5b806568ea4c9c",
+    "traitgym_allele_score_20260927.json": "6be76d8c38f3b47a10bfefa2c6f3a2916ebd6a3969bb5761593ba67f0d182063"
+  },
+  "no_selection_on_smoke_scores": true
+}

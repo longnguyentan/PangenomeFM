@@ -1,0 +1,231 @@
+{
+  "status": "complete",
+  "seeds": [
+    42,
+    314159,
+    20260806
+  ],
+  "fold": "fold_a",
+  "context": "1hop",
+  "scope": "Initialization stability on one already inspected development fold",
+  "confirmatory_ci": false,
+  "independent_chromosome_replication": false,
+  "source_gates": [
+    {
+      "seed": 42,
+      "status": "eligible_for_replication",
+      "checks": [
+        {
+          "task": "ccre",
+          "after_H_control_gains": {
+            "T_Rq": 0.0010244122953972923,
+            "Rt_Q": 0.0003089156653136582,
+            "Rt_Rq": 0.0012677807485106385
+          },
+          "difference_from_better_single_branch": {
+            "cst": 6.958070890761281e-05,
+            "csht": 9.322749033080502e-05
+          },
+          "passes": true
+        },
+        {
+          "task": "sv",
+          "after_H_control_gains": {
+            "T_Rq": 0.0018715448189595696,
+            "Rt_Q": 0.0030312984537768095,
+            "Rt_Rq": 0.005332213823765364
+          },
+          "difference_from_better_single_branch": {
+            "cst": 0.002714082015076391,
+            "csht": 0.001827147395283224
+          },
+          "passes": true
+        }
+      ],
+      "tolerance": 0.005,
+      "single_branch_tolerance_applied_to_both_feature_sets": true,
+      "limitation": "Adaptively motivated one-fold development; no confirmatory superiority claim",
+      "strict_context_eligible": false,
+      "test_predictions_produced": false,
+      "probe_optimization_fully_recorded": true,
+      "all_probes_converged": true,
+      "probe_max_iter": 4000
+    },
+    {
+      "seed": 314159,
+      "status": "not_promoted",
+      "checks": [
+        {
+          "task": "ccre",
+          "after_H_control_gains": {
+            "T_Rq": 0.0011882002423595495,
+            "Rt_Q": -0.00011702413526126776,
+            "Rt_Rq": 0.0010811058479411884
+          },
+          "difference_from_better_single_branch": {
+            "cst": 0.0002006669119529736,
+            "csht": 6.08134001414129e-05
+          },
+          "passes": false
+        },
+        {
+          "task": "sv",
+          "after_H_control_gains": {
+            "T_Rq": 0.0008188994331361776,
+            "Rt_Q": 0.001624509044826361,
+            "Rt_Rq": 0.003038691299028451
+          },
+          "difference_from_better_single_branch": {
+            "cst": 0.0013839012084200242,
+            "csht": 0.0011999991419695544
+          },
+          "passes": true
+        }
+      ],
+      "tolerance": 0.005,
+      "single_branch_tolerance_applied_to_both_feature_sets": true,
+      "limitation": "Adaptively motivated one-fold development; no confirmatory superiority claim",
+      "strict_context_eligible": false,
+      "test_predictions_produced": false,
+      "probe_optimization_fully_recorded": true,
+      "all_probes_converged": true,
+      "probe_max_iter": 4000
+    },
+    {
+      "seed": 20260806,
+      "status": "not_promoted",
+      "checks": [
+        {
+          "task": "ccre",
+          "after_H_control_gains": {
+            "T_Rq": 0.0009507612528756315,
+            "Rt_Q": 0.0001317642289128118,
+            "Rt_Rq": 0.0014961644870521429
+          },
+          "difference_from_better_single_branch": {
+            "cst": 0.0006990668214423845,
+            "csht": 0.0005370832746329768
+          },
+          "passes": true
+        },
+        {
+          "task": "sv",
+          "after_H_control_gains": {
+            "T_Rq": 0.0015151356692210127,
+            "Rt_Q": -2.3564224249761345e-05,
+            "Rt_Rq": 0.0023611849721445477
+          },
+          "difference_from_better_single_branch": {
+            "cst": 0.0022501955642961757,
+            "csht": 0.001562255848241434
+          },
+          "passes": false
+        }
+      ],
+      "tolerance": 0.005,
+      "single_branch_tolerance_applied_to_both_feature_sets": true,
+      "limitation": "Adaptively motivated one-fold development; no confirmatory superiority claim",
+      "strict_context_eligible": false,
+      "test_predictions_produced": false,
+      "probe_optimization_fully_recorded": true,
+      "all_probes_converged": true,
+      "probe_max_iter": 4000
+    }
+  ],
+  "all_seed_development_gates_pass": false,
+  "interpretation": "All seeds and contrasts retained; mean/SD/range describe seed variation, not chromosome uncertainty",
+  "probe_max_iter": 4000,
+  "all_probes_converged": true,
+  "sources": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000_analysis/audit.json",
+      "bytes": 3161,
+      "mtime_ns": 1790556789511491787,
+      "sha256": "4f8ec1ae23ceaaafb4bc7f999d4a70d5f1b960e109eb480bf7067a7b3819ae1f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000_analysis/audited_per_run.csv",
+      "bytes": 27948,
+      "mtime_ns": 1790556789507491830,
+      "sha256": "6e346d0d90274267cf15d28e6e79a40358108550111b6912d986fae1a2823b5b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000_analysis/paired_differences.csv",
+      "bytes": 12207,
+      "mtime_ns": 1790556789511491787,
+      "sha256": "8aedaf35151891736ba86b36a11ebd2ea1e968382f155c80cd9c0042774b1117"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000_analysis/development_gate.json",
+      "bytes": 1083,
+      "mtime_ns": 1790556789511491787,
+      "sha256": "dd0586996de96279751823b703fb1b966f2e40c4d36d6aaf40ee6faadaf70944"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000_analysis/probe_optimization.csv",
+      "bytes": 4410,
+      "mtime_ns": 1790556789511491787,
+      "sha256": "220146403853cf43d2810952575ab1f48ccab6f9b80185ccaf3f341be0023b25"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_314159_analysis/audit.json",
+      "bytes": 3194,
+      "mtime_ns": 1790558997895402035,
+      "sha256": "1e28af4ff6ff0ce988971206ccfeb31d12a0163db295ca33d9d5b4559a8196d5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_314159_analysis/audited_per_run.csv",
+      "bytes": 28663,
+      "mtime_ns": 1790558997895402035,
+      "sha256": "39c4744eee826cbdebf1b53d5596dcaeaf27630a1cb0981452703dbc2f88ccfb"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_314159_analysis/paired_differences.csv",
+      "bytes": 12188,
+      "mtime_ns": 1790558997895402035,
+      "sha256": "fc31ddd703240f66346d74ce651d1b63fd010e03918a9c0a29b7610e4a4d368e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_314159_analysis/development_gate.json",
+      "bytes": 1076,
+      "mtime_ns": 1790558997895402035,
+      "sha256": "f96a6480886ab561c51c7e6210d39d7fff235752dc68c732afab7c91b3cb7e4f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_314159_analysis/probe_optimization.csv",
+      "bytes": 4411,
+      "mtime_ns": 1790558997895402035,
+      "sha256": "7a8f32282ae88cf7d94d9fceaeac7179d98554a3159ccf5c95d80339925d59d0"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_20260806_analysis/audit.json",
+      "bytes": 3200,
+      "mtime_ns": 1790560644169378697,
+      "sha256": "5edf1e0419e3d8a27a8eff4bb135c736412f13592345dd41e534d7767de84804"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_20260806_analysis/audited_per_run.csv",
+      "bytes": 28851,
+      "mtime_ns": 1790560644169378697,
+      "sha256": "b29f18cc837d184899dfb959f753770535e3f1651ac728862b0e39d36bf2da57"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_20260806_analysis/paired_differences.csv",
+      "bytes": 12210,
+      "mtime_ns": 1790560644169378697,
+      "sha256": "299dc6df5bbb999036a2d4ebaed83cf40fc13119aba093fcb31b75fc01b10f53"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_20260806_analysis/development_gate.json",
+      "bytes": 1079,
+      "mtime_ns": 1790560644169378697,
+      "sha256": "d79f7d413eb9ef28b3b9c9052515a91a5e86ca7234b2a3eafbdddef880cd342d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/seed_20260806_analysis/probe_optimization.csv",
+      "bytes": 4411,
+      "mtime_ns": 1790560644169378697,
+      "sha256": "2a4c0c3fb7c3a4b5fd850664c966f57f69da97a1aede555cb1dac6ccdb3a4c6f"
+    }
+  ]
+}

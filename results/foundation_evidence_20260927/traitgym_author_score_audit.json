@@ -1,0 +1,162 @@
+{
+  "repository": "songlab/TraitGym",
+  "revision": "1fde19555fe8c0a55b1382bdf4c6f7082209f566",
+  "model_from_author_config": "InstaDeepAI/nucleotide-transformer-2.5b-multi-species",
+  "files": [
+    {
+      "dataset": "complex_traits",
+      "type": "file",
+      "oid": "371dc5839bdccfde9ffed505a4f18e44eb478c6d",
+      "size": 491481165,
+      "lfs": {
+        "oid": "01fb222b898259c536a79a3e6131ea682a24d47d36fbaf33c0fc93ab7c90a76b",
+        "size": 491481165,
+        "pointerSize": 134
+      },
+      "xetHash": "2b7ff3653038581856020dea2852f12bcfa26013845f5fb94198ac3cf3dfa8b8",
+      "path": "complex_traits_matched_9/features/NucleotideTransformer_Embeddings.parquet"
+    },
+    {
+      "dataset": "complex_traits",
+      "type": "file",
+      "oid": "8f8d26a6da41bcfc71f5519a88afcc182dce0bc4",
+      "size": 169423431,
+      "lfs": {
+        "oid": "0d60e56c4925758ff23727852af0433f38216c01f042a9c7d39e34d2609b3e3a",
+        "size": 169423431,
+        "pointerSize": 134
+      },
+      "xetHash": "db65f69294bb36b00a00bc89140cfd53318ea31e4fa0cfdd2145520041341296",
+      "path": "complex_traits_matched_9/features/NucleotideTransformer_InnerProducts.parquet"
+    },
+    {
+      "dataset": "complex_traits",
+      "type": "file",
+      "oid": "8663f3fb248e3ba94fdb5dab8b057bc3d4603920",
+      "size": 66021,
+      "lfs": {
+        "oid": "b7180623654f41961c6997b1ff8d1002091cc62ddb4c264acac26ddab73d5187",
+        "size": 66021,
+        "pointerSize": 130
+      },
+      "xetHash": "a0d38e91291fcac9abbe4f51f39542ace991940e227fa615a70c36cf7342297e",
+      "path": "complex_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+    },
+    {
+      "dataset": "complex_traits",
+      "type": "file",
+      "oid": "aea97eee672828a8b7e0ed984b82775dadc83e78",
+      "size": 65437,
+      "lfs": {
+        "oid": "f5638ff93bae5b8cf8e206d857ab7b2b27006ce8c995db574ff11c12c8fa5d6c",
+        "size": 65437,
+        "pointerSize": 130
+      },
+      "xetHash": "174eae31aac7c9314263eceda861268663c7126145335bac68eef840c8effc71",
+      "path": "complex_traits_matched_9/features/NucleotideTransformer_absLLR.parquet"
+    },
+    {
+      "dataset": "mendelian_traits",
+      "type": "file",
+      "oid": "05d926d4f92ddd46de75d9d39691ca03370e8e5f",
+      "size": 146582390,
+      "lfs": {
+        "oid": "a18683fd74d7b8b1964a6b5c56ba4ecee5973847e182fbf9348cc753c6c8d219",
+        "size": 146582390,
+        "pointerSize": 134
+      },
+      "xetHash": "d580a6c3dc535868eed06c469faf298f0a73872bcc47bed27881dd04700c1821",
+      "path": "mendelian_traits_matched_9/features/NucleotideTransformer_Embeddings.parquet"
+    },
+    {
+      "dataset": "mendelian_traits",
+      "type": "file",
+      "oid": "3eade1d2ca8f5f25968399e8a8f04ec2ff1dd90c",
+      "size": 19808,
+      "lfs": {
+        "oid": "6fb1bed99dc95912f0d6d461f75d63bc41212f3beccc226b148189cbd0866331",
+        "size": 19808,
+        "pointerSize": 130
+      },
+      "xetHash": "e51ab2666a273ecf7be0d0dbe2629a51733b9ec1daf3f020cf19701e6191d812",
+      "path": "mendelian_traits_matched_9/features/NucleotideTransformer_InnerProduct.parquet"
+    },
+    {
+      "dataset": "mendelian_traits",
+      "type": "file",
+      "oid": "26356d02171d6f161228eac95f2a852f0743729f",
+      "size": 49260539,
+      "lfs": {
+        "oid": "d82ba80c2d60daebfc8a7389982a8202353d932870b5c6402c6ca7b239be80c8",
+        "size": 49260539,
+        "pointerSize": 133
+      },
+      "xetHash": "d0026e06055a3123c1a5107dacaadf866fb43692def6c6e2ba9d910a499812d9",
+      "path": "mendelian_traits_matched_9/features/NucleotideTransformer_InnerProducts.parquet"
+    },
+    {
+      "dataset": "mendelian_traits",
+      "type": "file",
+      "oid": "2ae256d08f53f5b73e7c7c6f6443053f7ed2f771",
+      "size": 19740,
+      "lfs": {
+        "oid": "8c88e183115bbe05c7dec777a1155d62531985f60b481acbc4e914970446f3fd",
+        "size": 19740,
+        "pointerSize": 130
+      },
+      "xetHash": "5ec1045659f2e59e747e63d94940e4d8e27781d48822ca91211713701da2a297",
+      "path": "mendelian_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+    },
+    {
+      "dataset": "mendelian_traits",
+      "type": "file",
+      "oid": "1b127c5be8811f2fbf531ff0275b0da44be1e6de",
+      "size": 19672,
+      "lfs": {
+        "oid": "84bd0b71df9d184acaec3bf8da66dd54469c0bcf2920b26f97c2e613d0cfd445",
+        "size": 19672,
+        "pointerSize": 130
+      },
+      "xetHash": "5f2db0663dcaf918643b1a225a25987499e4827c2d58bb17ac938e90e74b77d8",
+      "path": "mendelian_traits_matched_9/features/NucleotideTransformer_absLLR.parquet"
+    }
+  ],
+  "no_probe_fitted": true,
+  "downloaded_files": [
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/data/external/traitgym_1fde195/author_features/complex_traits_nt_llr.parquet",
+      "bytes": 66021,
+      "mtime_ns": 1790560101700029444,
+      "sha256": "b7180623654f41961c6997b1ff8d1002091cc62ddb4c264acac26ddab73d5187"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/data/external/traitgym_1fde195/author_features/mendelian_traits_nt_llr.parquet",
+      "bytes": 19740,
+      "mtime_ns": 1790560102347359868,
+      "sha256": "8c88e183115bbe05c7dec777a1155d62531985f60b481acbc4e914970446f3fd"
+    }
+  ],
+  "alignment_contract": "Exact pinned test.parquet order and default RangeIndex; original author rule and prediction writer checked. Author score files do not contain genomic identifiers.",
+  "author_code_commit": "4d80fe889415ffc02d45c7cb5446a326288819bd",
+  "code_sources": [
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/data/external/traitgym_1fde195/author_code/config.yaml",
+      "bytes": 6298,
+      "mtime_ns": 1790551389851726314,
+      "sha256": "a98d3973587700b5f24ab41a181b30f6d2dcf3face35d51ce5cb8e6b973637c8"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/data/external/traitgym_1fde195/author_code/nucleotide_transformer.smk",
+      "bytes": 1831,
+      "mtime_ns": 1790560206359692789,
+      "sha256": "b517a2ba297173433118a25c3098079b31b59028c6f5c87868cd25a04c90efa3"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/data/external/traitgym_1fde195/author_code/run_vep_llr_nucleotide_transformer.py",
+      "bytes": 7153,
+      "mtime_ns": 1790560206513125965,
+      "sha256": "382ee50a85eea7df9c6f11431c86bc473cae8bfa07f6c7e17c0a8c438d8a2b8c"
+    }
+  ],
+  "weight_revision": "Not recorded by author code; these are checksum-pinned published scores, not freshly extracted model weights"
+}

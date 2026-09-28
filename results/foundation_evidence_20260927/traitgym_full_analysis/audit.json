@@ -1,0 +1,1155 @@
+{
+  "status": "complete",
+  "scope": "full_matrix",
+  "all_probes_converged": true,
+  "n_runs": 60,
+  "n_fits": 540,
+  "numerical_gate": "pass",
+  "source_root": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full",
+  "sources": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_42/strict/audit.json",
+      "bytes": 1892,
+      "mtime_ns": 1790559625436378268,
+      "sha256": "3830e60110efef5f8bafe14bbf4b863091f834a4dcee31a944d56761d98515ad"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_42/strict/metrics.csv",
+      "bytes": 5146,
+      "mtime_ns": 1790559625404378618,
+      "sha256": "e07b1cc80128ff5ec004fa536b37561959e145ab96413abf1ef378939b652f6c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_42/strict/predictions.parquet",
+      "bytes": 563212,
+      "mtime_ns": 1790559625432378312,
+      "sha256": "a332a2e5ffd9111ed5ce0e812f5f3b49ce16a0a5f66e18f3ad84bea5a96f638d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_42/strict/audit.json",
+      "bytes": 1894,
+      "mtime_ns": 1790559626972361478,
+      "sha256": "0163794aa86e1fea7370259df74e14a22084cf486a55eb53c7307685a492bb0e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_42/strict/metrics.csv",
+      "bytes": 4896,
+      "mtime_ns": 1790559626960361610,
+      "sha256": "efa192c93451e1ebbe130cdc48fba86a1b70932e525fa83060b186e5c9ee0954"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_42/strict/predictions.parquet",
+      "bytes": 135625,
+      "mtime_ns": 1790559626972361478,
+      "sha256": "15ff84716bac3a28eff8a0cf7ddb2c1bddd85e31752f0940251af44bfe358b67"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_42/1hop/audit.json",
+      "bytes": 1884,
+      "mtime_ns": 1790559632088305565,
+      "sha256": "ad30b554952f86ffd145e5b2058702394fa2f316b3b185c302f382a72960eaed"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_42/1hop/metrics.csv",
+      "bytes": 5130,
+      "mtime_ns": 1790559632060305871,
+      "sha256": "f21b856a1be1ed74c284185b388c6be7069e886bbd2c6168d38a8687dced9827"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_42/1hop/predictions.parquet",
+      "bytes": 563178,
+      "mtime_ns": 1790559632084305609,
+      "sha256": "1bc7bd9dd589122169dc889c36fdfab14508d176ac9635ae0eca3b091e287228"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_42/1hop/audit.json",
+      "bytes": 1886,
+      "mtime_ns": 1790559633660288387,
+      "sha256": "ff9e58e04b98e2c8a44398ab6acf47476c844b33310b909827518590eac994ca"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_42/1hop/metrics.csv",
+      "bytes": 4877,
+      "mtime_ns": 1790559633648288518,
+      "sha256": "5328f6b09ead000be4df60d699e3bd8bdb0661f43073bc3d5a640524d92a3331"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_42/1hop/predictions.parquet",
+      "bytes": 135493,
+      "mtime_ns": 1790559633660288387,
+      "sha256": "e495e87538c82a189f26a2d629b28d2aef26ccd9a17dbbf80ba9ac731a7c47ad"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_314159/strict/audit.json",
+      "bytes": 1908,
+      "mtime_ns": 1790559638492235594,
+      "sha256": "4074f6ac70724de43cadbbf237771063b82dbd4c051ac69cc93197be5b642ad6"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_314159/strict/metrics.csv",
+      "bytes": 5179,
+      "mtime_ns": 1790559638464235900,
+      "sha256": "fbf31158a6aae41722e62ba637b5afb7d5d4c6d25aeb8c6af752482e9021639d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_314159/strict/predictions.parquet",
+      "bytes": 563156,
+      "mtime_ns": 1790559638488235637,
+      "sha256": "4d50c86eed32ec2edfd121d732a674e90cb06d7d64092016bf1e4c4c99dcf109"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_314159/strict/audit.json",
+      "bytes": 1910,
+      "mtime_ns": 1790559640096218072,
+      "sha256": "18455655da71618a7479efb414f5f3b29ca17d05be238fbb934f62858391ef85"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_314159/strict/metrics.csv",
+      "bytes": 4848,
+      "mtime_ns": 1790559640084218203,
+      "sha256": "55e478c0454776ae2325fae386b726df64f8feda12037a1d7a35e2e94d036833"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_314159/strict/predictions.parquet",
+      "bytes": 135667,
+      "mtime_ns": 1790559640092218115,
+      "sha256": "cad84a7eb1696a5729efc96f2a18ff981c120e450089f8d7957c5b37646465f9"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_314159/1hop/audit.json",
+      "bytes": 1900,
+      "mtime_ns": 1790559644920165382,
+      "sha256": "f973d152e5831541601af2cbb8031cbcfc7927371ee952dc73308ac9b8f72b66"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_314159/1hop/metrics.csv",
+      "bytes": 5157,
+      "mtime_ns": 1790559644892165688,
+      "sha256": "c22c1fbc85201dddd5f3d48bf1920e0e24d5e841145dc006a5facf4ed9ca041e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_314159/1hop/predictions.parquet",
+      "bytes": 563232,
+      "mtime_ns": 1790559644916165425,
+      "sha256": "8c6cf71f1c6742fa6ee464486ba71ac79e6945466de5a57cfa53d43a408bb500"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_314159/1hop/audit.json",
+      "bytes": 1902,
+      "mtime_ns": 1790559646492148214,
+      "sha256": "4d8510ebc298cda974159b9c8512ea248c074aad1fe7f9dc640a7def82c6e973"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_314159/1hop/metrics.csv",
+      "bytes": 4921,
+      "mtime_ns": 1790559646480148346,
+      "sha256": "1cc8f46ab56e5551e3883a65d0cb240c31caacce5cceb9bb5c139e536a213bb3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_314159/1hop/predictions.parquet",
+      "bytes": 135381,
+      "mtime_ns": 1790559646492148214,
+      "sha256": "c3503bf8131273310786c6f13818292bec895a65f9e317493310dc34ada355c7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_20260806/strict/audit.json",
+      "bytes": 1916,
+      "mtime_ns": 1790559650972099296,
+      "sha256": "243f06448d043098e39fb56bedf169741666a24607e11cb72bd36eec6d06fdda"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_20260806/strict/metrics.csv",
+      "bytes": 5197,
+      "mtime_ns": 1790559650944099602,
+      "sha256": "2326cd0e44d9307b493c7740ed64dfafd562410e09914c44db45505821af166f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_20260806/strict/predictions.parquet",
+      "bytes": 563234,
+      "mtime_ns": 1790559650968099339,
+      "sha256": "415bbbb719b328ae2b9ba795742412083345e81e1c2b6cc0363e6e9ee6861dfd"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_20260806/strict/audit.json",
+      "bytes": 1918,
+      "mtime_ns": 1790559652688080561,
+      "sha256": "5a0fe48686a48e40ab0c8210c03b6156928e7ae74cf44346156e234a62b56573"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_20260806/strict/metrics.csv",
+      "bytes": 4942,
+      "mtime_ns": 1790559652672080736,
+      "sha256": "7a002b419fa43c2fac00b23046bef45645d01542ba677d851c0b77655cff2860"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_20260806/strict/predictions.parquet",
+      "bytes": 135801,
+      "mtime_ns": 1790559652688080561,
+      "sha256": "3e5ba41987ce54433ab549c68838a033142af9b751bcbdb6dc7bcd9b3f69b511"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_20260806/1hop/audit.json",
+      "bytes": 1908,
+      "mtime_ns": 1790559657624026680,
+      "sha256": "812360159605bc488069e75e8191123a0def438599640b836fa64135f3941662"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_20260806/1hop/metrics.csv",
+      "bytes": 5187,
+      "mtime_ns": 1790559657596026986,
+      "sha256": "a27fd43b896e9169d5826e426392e77296301c581b39840c44bdaa9575c0b3a0"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_a/seed_20260806/1hop/predictions.parquet",
+      "bytes": 563318,
+      "mtime_ns": 1790559657620026724,
+      "sha256": "5c51986831100a04312824814775c22be96e8841344d25492f53305c0cf1c1c5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_20260806/1hop/audit.json",
+      "bytes": 1910,
+      "mtime_ns": 1790559659108010483,
+      "sha256": "cc7e594fcd253f1a0282e88e3b34e434f65cdf81b88891b79bfca3fcbd9aeab5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_20260806/1hop/metrics.csv",
+      "bytes": 4920,
+      "mtime_ns": 1790559659100010570,
+      "sha256": "48d30f700138531b797ac5b132eb93dd0c6b13e28c0ae61fba27903749d548c8"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_a/seed_20260806/1hop/predictions.parquet",
+      "bytes": 135638,
+      "mtime_ns": 1790559659108010483,
+      "sha256": "5a13f8eed7554e6a932814dde15fc6d3abf6fa1ea27136d8483580f665217d97"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_42/strict/audit.json",
+      "bytes": 1891,
+      "mtime_ns": 1790559664527951336,
+      "sha256": "652966959d2a70aa5782941ad749404a8c7ae73ad52bd41c024f698b796474b3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_42/strict/metrics.csv",
+      "bytes": 5099,
+      "mtime_ns": 1790559664503951598,
+      "sha256": "3790ce40958f6d78c9ac5da30b3ebf498c1314c9cdd2fe0b9002ad5ab74d20fa"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_42/strict/predictions.parquet",
+      "bytes": 518391,
+      "mtime_ns": 1790559664523951379,
+      "sha256": "235b88ab38b575088f39747efb7f4f988394938ef119389a75f8a4a95cae0c8b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_42/strict/audit.json",
+      "bytes": 1892,
+      "mtime_ns": 1790559666103934140,
+      "sha256": "ff6530106f97ae237e8dc833052b5a2a21861ff338960d20a3264cb08f023e97"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_42/strict/metrics.csv",
+      "bytes": 5085,
+      "mtime_ns": 1790559666091934271,
+      "sha256": "cd453240b00913afab19ea51880ac187e04c98b8d7d2f6631ea5a6910a2d5684"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_42/strict/predictions.parquet",
+      "bytes": 93919,
+      "mtime_ns": 1790559666099934184,
+      "sha256": "ce1532b51f7463e65661ff11751a535670b8456ead744b27e0ef0dffc97e5842"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_42/1hop/audit.json",
+      "bytes": 1883,
+      "mtime_ns": 1790559671515875099,
+      "sha256": "9f801e4a4586bf199e3f59990a61ec4bf7f7ce18d94b8411b304fb691e44870c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_42/1hop/metrics.csv",
+      "bytes": 5100,
+      "mtime_ns": 1790559671487875404,
+      "sha256": "d70575c08306307ec40775551dd959be6f89c9c3c1baa2065ba83c759c521f20"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_42/1hop/predictions.parquet",
+      "bytes": 518637,
+      "mtime_ns": 1790559671511875142,
+      "sha256": "add1c2a37a49b2731d2b46399c03c5434838bf2df765a16dafd5f9ad20835e7e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_42/1hop/audit.json",
+      "bytes": 1884,
+      "mtime_ns": 1790559673111857690,
+      "sha256": "620fb2481c41ceae27bd82a7175facbbf66ca52d5a7983eeabce05385a9171cf"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_42/1hop/metrics.csv",
+      "bytes": 5055,
+      "mtime_ns": 1790559673099857822,
+      "sha256": "c7a4ea9ada2c351be47b93506d40f99b117922e4a96c5e4dfcc4c4dd0d86ef4f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_42/1hop/predictions.parquet",
+      "bytes": 93884,
+      "mtime_ns": 1790559673111857690,
+      "sha256": "0e682c899698d98ca2c61cba34a9acb8a61c2b9a201a13a7433976970060eab7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_314159/strict/audit.json",
+      "bytes": 1907,
+      "mtime_ns": 1790559678211802070,
+      "sha256": "aa5ecd0fba5fae4f9143f8a09a462c070283cd349b836bc7a02ee2019bb35479"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_314159/strict/metrics.csv",
+      "bytes": 5151,
+      "mtime_ns": 1790559678187802332,
+      "sha256": "50d272b4f8ae66dd6fbc7ebb44df89e94f5259d7c5c9ba4983546d3c624cbf81"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_314159/strict/predictions.parquet",
+      "bytes": 518726,
+      "mtime_ns": 1790559678207802114,
+      "sha256": "e56d30d66930b91442033a284fb299c0cbc49112e66c893d9cfef0e3dedd0088"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_314159/strict/audit.json",
+      "bytes": 1908,
+      "mtime_ns": 1790559679667786193,
+      "sha256": "45ee9f2b7504588829744845e1f2e43dd794a62e939d3209e29510fa40fd6dd5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_314159/strict/metrics.csv",
+      "bytes": 5166,
+      "mtime_ns": 1790559679659786280,
+      "sha256": "712ad8cd8c0ea967889dda6918e3209de3178cce28306837e95671f3efebd905"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_314159/strict/predictions.parquet",
+      "bytes": 93904,
+      "mtime_ns": 1790559679667786193,
+      "sha256": "c340323a6a2fa614e22227b711341d35e77afce6cdfd6aadf0829633d426f9e5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_314159/1hop/audit.json",
+      "bytes": 1899,
+      "mtime_ns": 1790559685099726970,
+      "sha256": "a483f06bd5603fcaaf4f27f77337e648351c31235c206048d2ceb7e796bc052e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_314159/1hop/metrics.csv",
+      "bytes": 5136,
+      "mtime_ns": 1790559685075727231,
+      "sha256": "793330237a5cc6b073cf4e8de00803c4b1cf55e41ef13a1e4af255b1e8f1f628"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_314159/1hop/predictions.parquet",
+      "bytes": 518610,
+      "mtime_ns": 1790559685095727013,
+      "sha256": "3b8cb017101251edfabe31dcb27c1c3cbf18d039baa2c7a176f202fd3e566079"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_314159/1hop/audit.json",
+      "bytes": 1900,
+      "mtime_ns": 1790559686711709397,
+      "sha256": "0050e8df40688fd1115ce5b88d811e7714f898391bc47a1a36deb2b5316377d4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_314159/1hop/metrics.csv",
+      "bytes": 5117,
+      "mtime_ns": 1790559686703709484,
+      "sha256": "39af4ddfa96a9082b8376d169bf16ed5ea57dcbb6d98a3d5ae006d1ebe67c8fa"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_314159/1hop/predictions.parquet",
+      "bytes": 93889,
+      "mtime_ns": 1790559686711709397,
+      "sha256": "db3825945946c1b9b2a3432107c009a3f6d08f14ec9453f59e5b7f5f8c0ecda9"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_20260806/strict/audit.json",
+      "bytes": 1915,
+      "mtime_ns": 1790559692007651672,
+      "sha256": "0740eae7372e62077a3ec58329d22412e4cda1520e5e065c36149bedf02bce1d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_20260806/strict/metrics.csv",
+      "bytes": 5178,
+      "mtime_ns": 1790559691983651934,
+      "sha256": "c27a942e63a7486c6f641b079ee0bc8430c63449dbde4b63de00c5cfead77170"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_20260806/strict/predictions.parquet",
+      "bytes": 518552,
+      "mtime_ns": 1790559692003651716,
+      "sha256": "21ab22122abf104eb8f5cca1954bf1a07e193253bbe635159eb67959ddbccc18"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_20260806/strict/audit.json",
+      "bytes": 1916,
+      "mtime_ns": 1790559693607634236,
+      "sha256": "3e9468d0474a3135dca3f903e63763b6ddbd7dcf8be3067071fadc9e167a501b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_20260806/strict/metrics.csv",
+      "bytes": 5171,
+      "mtime_ns": 1790559693599634324,
+      "sha256": "ed4782260f8189f4b312f3ba4cf051a2bc25205ddad93156d9a07cf2627efb42"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_20260806/strict/predictions.parquet",
+      "bytes": 93918,
+      "mtime_ns": 1790559693607634236,
+      "sha256": "872e9b8ff27e3c98a3c6288c8f23890996ca4f03ca7f47580b6994854528db8f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_20260806/1hop/audit.json",
+      "bytes": 1907,
+      "mtime_ns": 1790559699267572563,
+      "sha256": "740e2e35b28ae2b8644ebaf1b6d092c8f0de5c4fabeef9ab903208283e5fa869"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_20260806/1hop/metrics.csv",
+      "bytes": 5146,
+      "mtime_ns": 1790559699239572868,
+      "sha256": "d5d437567d7df031a53548a06ac0256404c5f8fd535149347d09bfcc7ca7d3e5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_b/seed_20260806/1hop/predictions.parquet",
+      "bytes": 519024,
+      "mtime_ns": 1790559699263572607,
+      "sha256": "c10ccb962862eee625ac4c2c11afce9b852f27e3d25d0527c74b359b0f5110ef"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_20260806/1hop/audit.json",
+      "bytes": 1908,
+      "mtime_ns": 1790559701179551734,
+      "sha256": "ce6458a6860c9926ff3416d6296463878be4a5ec3f0156710bacc6787ff8988a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_20260806/1hop/metrics.csv",
+      "bytes": 5011,
+      "mtime_ns": 1790559701171551820,
+      "sha256": "f7b7ecfbacd8bdd041f5d1aad7d456f0eb25096e30a94667fad8fe75a2990c36"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_b/seed_20260806/1hop/predictions.parquet",
+      "bytes": 93763,
+      "mtime_ns": 1790559701179551734,
+      "sha256": "693cf9338f75caa70339e168c95d9c6c5bfead55b81919014192b65650438f59"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_42/strict/audit.json",
+      "bytes": 1890,
+      "mtime_ns": 1790559706951488860,
+      "sha256": "ddd7d6a34874996089b77a9c341729f6fe083867174c94503b245809eeda45f6"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_42/strict/metrics.csv",
+      "bytes": 4899,
+      "mtime_ns": 1790559706931489078,
+      "sha256": "9b4f07b55bcad458d0d1004ce880754510f5e4cf9d5da11d00c6cc7602d5b7cd"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_42/strict/predictions.parquet",
+      "bytes": 258795,
+      "mtime_ns": 1790559706947488904,
+      "sha256": "c706ed9a27c579ce59f9dee56632a012e9b82e99d16720d7e3a12483069e7d21"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_42/strict/audit.json",
+      "bytes": 1892,
+      "mtime_ns": 1790559708439472655,
+      "sha256": "98f1ce81cb1746c828f8c6e96cf99fd118812f57d0eb65512eda06939652b268"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_42/strict/metrics.csv",
+      "bytes": 5051,
+      "mtime_ns": 1790559708423472829,
+      "sha256": "31ede635ed68dc7275675f46bfd584e5e8febd80ac3277380d66601593c3bdf3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_42/strict/predictions.parquet",
+      "bytes": 204422,
+      "mtime_ns": 1790559708435472698,
+      "sha256": "b5f0f7f3d8101eb905215e72eac6078771e19d492d21f215427a58dc044ece6b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_42/1hop/audit.json",
+      "bytes": 1882,
+      "mtime_ns": 1790559714823403137,
+      "sha256": "98271e12d03a469eab1c5785cbd0cc7367da93c44ec4906a0f5e0a045002326d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_42/1hop/metrics.csv",
+      "bytes": 4872,
+      "mtime_ns": 1790559714791403485,
+      "sha256": "2568c71b8f69c152e689359d583bfe5552a01fc491a4f04df1d6a3c33e0a12c1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_42/1hop/predictions.parquet",
+      "bytes": 258898,
+      "mtime_ns": 1790559714819403181,
+      "sha256": "efe384889da77b2322a87951744abcd5d32a97ba2bb7fdd0fb0c0acc3134ff69"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_42/1hop/audit.json",
+      "bytes": 1884,
+      "mtime_ns": 1790559716331386718,
+      "sha256": "7e935aa467041549b03420ee31a8a640d78b8b49c58533c788317d7cf2265000"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_42/1hop/metrics.csv",
+      "bytes": 5122,
+      "mtime_ns": 1790559716315386893,
+      "sha256": "77ca268175f56c5dc4877361a37b105b393844c61dada894a810ffc20398ba95"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_42/1hop/predictions.parquet",
+      "bytes": 204732,
+      "mtime_ns": 1790559716331386718,
+      "sha256": "cbd8c7ad96952fb5468ae2b08bf2c2d5a83d3a1300255077606082bb2700d62d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_314159/strict/audit.json",
+      "bytes": 1906,
+      "mtime_ns": 1790559721387331678,
+      "sha256": "8a8cba3760d1031d130f9341af91d449d2939e30e0c4fc7c6f6acac78d741a4c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_314159/strict/metrics.csv",
+      "bytes": 4948,
+      "mtime_ns": 1790559721371331853,
+      "sha256": "1b0617aaa2a9ea779b8339fd37e6b68e8cc37b6d17a64f5c72bb332b9519fc96"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_314159/strict/predictions.parquet",
+      "bytes": 258964,
+      "mtime_ns": 1790559721387331678,
+      "sha256": "03b3ad184701bd617236bb2fca49fe36904809bfcf1c0fac54deb5c493cf70fb"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_314159/strict/audit.json",
+      "bytes": 1908,
+      "mtime_ns": 1790559722715317223,
+      "sha256": "63c391435994877fd2a3a90388b3b32a0397ebfea8916712b85e532bbe2ad61f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_314159/strict/metrics.csv",
+      "bytes": 5166,
+      "mtime_ns": 1790559722703317354,
+      "sha256": "56e7b08e23432321e6085eca905bf32da5fdf473cb063af7eb582539f788ca42"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_314159/strict/predictions.parquet",
+      "bytes": 204815,
+      "mtime_ns": 1790559722715317223,
+      "sha256": "30714418d9428e0e923793aa1ea8e5d0427147d93d6ceb901980a733417adcd7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_314159/1hop/audit.json",
+      "bytes": 1898,
+      "mtime_ns": 1790559727683263155,
+      "sha256": "c32ffa26ca5df9b1a970b1c245ac207843c9d78d25a458a88889cccfaf181229"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_314159/1hop/metrics.csv",
+      "bytes": 4936,
+      "mtime_ns": 1790559727667263329,
+      "sha256": "7d69de876abb0b309f0cd854e0081320e555070dbed745c9e6c3bb1fc5c19da1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_314159/1hop/predictions.parquet",
+      "bytes": 258921,
+      "mtime_ns": 1790559727683263155,
+      "sha256": "a374cb0d23cfec4b2312b87a72bac2345f8ecea3e1fe2a710a66dd592e14b661"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_314159/1hop/audit.json",
+      "bytes": 1900,
+      "mtime_ns": 1790559729027248530,
+      "sha256": "4a1f98ed1f0671f0e71d8bfc27b5955e23611acacf34ac3a54a45f3b669c7453"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_314159/1hop/metrics.csv",
+      "bytes": 5166,
+      "mtime_ns": 1790559729015248660,
+      "sha256": "ef32c8c09507c372c1617ff3ed855540a1de875a895db6d5d86e71bf1bf5bdae"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_314159/1hop/predictions.parquet",
+      "bytes": 204826,
+      "mtime_ns": 1790559729027248530,
+      "sha256": "cec5f37bb5b43228eb4b00bf249da71cb1b396e97295ad7129c136f97939292a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_20260806/strict/audit.json",
+      "bytes": 1914,
+      "mtime_ns": 1790559734695186859,
+      "sha256": "2a972f79230d10b5fe7b19f928fec37558a317d92a05322f248b3cd8361fdf2c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_20260806/strict/metrics.csv",
+      "bytes": 4943,
+      "mtime_ns": 1790559734679187034,
+      "sha256": "1b849040eef2631483fb0707add92f4bda9da7c24c146b664b1bad034a291379"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_20260806/strict/predictions.parquet",
+      "bytes": 258927,
+      "mtime_ns": 1790559734691186903,
+      "sha256": "389b39765d311b7cc6350a106e6c00798165b25a9ab7b791f4a9c58e3e77c232"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_20260806/strict/audit.json",
+      "bytes": 1916,
+      "mtime_ns": 1790559736159170932,
+      "sha256": "d6d6bda90e9502fc222f685d280ad98cdeb8c18316e880e4d3ffb47932a8bc93"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_20260806/strict/metrics.csv",
+      "bytes": 5201,
+      "mtime_ns": 1790559736147171063,
+      "sha256": "387875752f66d971609b3b8771616cc41185b35db330ec51d0beb941ab24d5e1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_20260806/strict/predictions.parquet",
+      "bytes": 204738,
+      "mtime_ns": 1790559736159170932,
+      "sha256": "2980373ed58628903a13fcf7d62057eb5a05d60630c65e93f90ed06ce27c49d7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_20260806/1hop/audit.json",
+      "bytes": 1906,
+      "mtime_ns": 1790559742311104015,
+      "sha256": "5e04ee33ae0489306dcc88b1266e3cd9474838a6949b89e6e581b0546f99f2e7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_20260806/1hop/metrics.csv",
+      "bytes": 4941,
+      "mtime_ns": 1790559742287104276,
+      "sha256": "26ae5687400804786453fc2fe7147a1cc6bc668aa988bc0d517c45f867062e83"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_c/seed_20260806/1hop/predictions.parquet",
+      "bytes": 258876,
+      "mtime_ns": 1790559742311104015,
+      "sha256": "d6aa8565001702777e6baa1f954892a81c1bf5f34aa1652c08542b5888157272"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_20260806/1hop/audit.json",
+      "bytes": 1908,
+      "mtime_ns": 1790559744311082264,
+      "sha256": "b6995f1722b71e14b6010a4e51d055752119e9065f35c7214630ed70bde1685c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_20260806/1hop/metrics.csv",
+      "bytes": 5156,
+      "mtime_ns": 1790559744291082481,
+      "sha256": "efd268d38eb47e5d6bbd131acf5666e7fb349cc6a59b5f0e4be64b3152f710a7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_c/seed_20260806/1hop/predictions.parquet",
+      "bytes": 204601,
+      "mtime_ns": 1790559744311082264,
+      "sha256": "7b860afb0752836fe9f2ed0abca6acd030808def2ecd14418feab434cb6a73e9"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_42/strict/audit.json",
+      "bytes": 1877,
+      "mtime_ns": 1790559751451004625,
+      "sha256": "b318a06b8667cffe579d224f7822d771dc8460e84e75fdfae54ef3ef8c395827"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_42/strict/metrics.csv",
+      "bytes": 5093,
+      "mtime_ns": 1790559751423004931,
+      "sha256": "e199e8abacf5e07e9f2b9f2676829e2914a5a1fbd8ca2cef9e4cd9c23d7c61e4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_42/strict/predictions.parquet",
+      "bytes": 296206,
+      "mtime_ns": 1790559751447004669,
+      "sha256": "eae996e5a97bf6dfcbfc2d9be7b082ff4b1212bcd7c4e18d1b2068c4e6334be2"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_42/strict/audit.json",
+      "bytes": 1879,
+      "mtime_ns": 1790559753594981317,
+      "sha256": "9f0662faf5ce18fc6a816563b84baa4c8007fcacf8553b04f90dc356840b10ae"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_42/strict/metrics.csv",
+      "bytes": 5067,
+      "mtime_ns": 1790559753578981490,
+      "sha256": "ce8d90bee91c5db1a84ffa7396f6bd70c3aedbaaf286a0579e32098f1b901217"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_42/strict/predictions.parquet",
+      "bytes": 111867,
+      "mtime_ns": 1790559753590981360,
+      "sha256": "fc2b4468751726e36231f7a53fbd8e431fbc20128d932656de3c3a497ff241c6"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_42/1hop/audit.json",
+      "bytes": 1869,
+      "mtime_ns": 1790559760606905097,
+      "sha256": "9aa6df8407fa2d5e2659999d2ec2db740cfed4d669ffef77aedafc8c039acd26"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_42/1hop/metrics.csv",
+      "bytes": 5079,
+      "mtime_ns": 1790559760578905401,
+      "sha256": "9ff0a1f87809d4859615c72ad1b306696cef585053852827db4e1c4261a9a464"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_42/1hop/predictions.parquet",
+      "bytes": 296015,
+      "mtime_ns": 1790559760602905141,
+      "sha256": "9dff820f1776c1159e18acb657c83d2148b77db2cb1c20760d55df57841eab08"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_42/1hop/audit.json",
+      "bytes": 1871,
+      "mtime_ns": 1790559762782881448,
+      "sha256": "eb6d231b565c621ec318f705d6a591d65baba31ffe9b1e39bb3334372b45db7a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_42/1hop/metrics.csv",
+      "bytes": 5055,
+      "mtime_ns": 1790559762766881623,
+      "sha256": "81154864b50165e9307c911d9875541997c2a35f999d9653b627b10e7a4bef90"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_42/1hop/predictions.parquet",
+      "bytes": 111813,
+      "mtime_ns": 1790559762782881448,
+      "sha256": "a3f417bf045f4df6920a3a7fb823e047f4c38fb5b27652613408243fb3c4fbf4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_314159/strict/audit.json",
+      "bytes": 1893,
+      "mtime_ns": 1790559770170801169,
+      "sha256": "bba9c9c7aeae0d0cd586b0ce2ff8785bc2a4ba447957f7e7454a75d9491baf8d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_314159/strict/metrics.csv",
+      "bytes": 5123,
+      "mtime_ns": 1790559770142801474,
+      "sha256": "b871caf8389f7c8cc89f8e607e56d6ff9e30c0174b0c0b25009e8d514f27fd49"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_314159/strict/predictions.parquet",
+      "bytes": 296165,
+      "mtime_ns": 1790559770166801213,
+      "sha256": "cfb90bd30503dc178879a7566a0689fc8eaa5643e6456b2cfe9b973ded850d10"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_314159/strict/audit.json",
+      "bytes": 1895,
+      "mtime_ns": 1790559772358777399,
+      "sha256": "7cdb732bdb5cab1f12755686edb3d60dbb7149521a355b78cfb22dd5025b2bfc"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_314159/strict/metrics.csv",
+      "bytes": 5108,
+      "mtime_ns": 1790559772342777573,
+      "sha256": "b74258a3b24ec5cdbae4396b5ec3a2404591b667ce8ba7ce1ef8e5dece8eb708"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_314159/strict/predictions.parquet",
+      "bytes": 111866,
+      "mtime_ns": 1790559772354777443,
+      "sha256": "6ee5fb1071bc0deec09f6c11d9bde1f9ce284e7eeb7488c887a57bc9d59aa71f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_314159/1hop/audit.json",
+      "bytes": 1885,
+      "mtime_ns": 1790559779378701145,
+      "sha256": "99187a6dacda068c2dd6be202f85bcfc0f7739b1fe9352f6141d2614b536c41a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_314159/1hop/metrics.csv",
+      "bytes": 5102,
+      "mtime_ns": 1790559779350701449,
+      "sha256": "edcf7ab2a11c0a6dba6a4e214d8803c2c397862e782019abe165fc7a62e010c0"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_314159/1hop/predictions.parquet",
+      "bytes": 295727,
+      "mtime_ns": 1790559779374701189,
+      "sha256": "df4348a84551c61cd1b09606cebeff63672233a9b9770165bf3d1675c7e58b98"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_314159/1hop/audit.json",
+      "bytes": 1887,
+      "mtime_ns": 1790559781546677599,
+      "sha256": "d63ebe08a95a8979520870f49fe1bf6fdf069635ad7c27df7c027c25e72bdc2f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_314159/1hop/metrics.csv",
+      "bytes": 5051,
+      "mtime_ns": 1790559781530677773,
+      "sha256": "2e3e99f91294219758153691028297b0f487a527d7fff34cf61eb55c393a02cc"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_314159/1hop/predictions.parquet",
+      "bytes": 111808,
+      "mtime_ns": 1790559781546677599,
+      "sha256": "7b2267ab0ef26a74c153d04d817e7e653afe76001cc6026af75c95f3ed536929"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_20260806/strict/audit.json",
+      "bytes": 1901,
+      "mtime_ns": 1790559789462591643,
+      "sha256": "60380a3f4b566c32b798b73be41b1a7e14f2f96b4b114b72fad1f1eff7023ae0"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_20260806/strict/metrics.csv",
+      "bytes": 5148,
+      "mtime_ns": 1790559789430591990,
+      "sha256": "90f4101e654e4ad826ff157f12b6574917af33de77ae1ec0a0171ca3524b2f74"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_20260806/strict/predictions.parquet",
+      "bytes": 296206,
+      "mtime_ns": 1790559789458591687,
+      "sha256": "c136d6cb9abbe8c72e1d7e05c6ab10a0caa59fa292cc69aeefedd7b3ccb05889"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_20260806/strict/audit.json",
+      "bytes": 1903,
+      "mtime_ns": 1790559791770566586,
+      "sha256": "7a9b71d06d66339b1839f5490bdfd5bd4f2340d72863526c6f5ba7fe765a23c0"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_20260806/strict/metrics.csv",
+      "bytes": 5128,
+      "mtime_ns": 1790559791758566716,
+      "sha256": "78c6eba669996263b3f0319e27c73ef096e793e6d5998fe4eb3f7942ebda1d73"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_20260806/strict/predictions.parquet",
+      "bytes": 111845,
+      "mtime_ns": 1790559791770566586,
+      "sha256": "6cb4dabeecf8fe6054f1c851c414170585e4d5785a1f0614a38c9779bd19e649"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_20260806/1hop/audit.json",
+      "bytes": 1893,
+      "mtime_ns": 1790559798922488952,
+      "sha256": "95c4f133b363708efd5612a353a7156df18b572cd2673455e6bf926257ee62e4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_20260806/1hop/metrics.csv",
+      "bytes": 5114,
+      "mtime_ns": 1790559798906489126,
+      "sha256": "fd5265f53f89b0cdac16a2532728ea3f4143391974d60f3dcbc13ea3003d8634"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_d/seed_20260806/1hop/predictions.parquet",
+      "bytes": 296189,
+      "mtime_ns": 1790559798922488952,
+      "sha256": "de6ef0ce12cb0394c361925c9ada752912bd991bec758541580f6064711e061a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_20260806/1hop/audit.json",
+      "bytes": 1895,
+      "mtime_ns": 1790559800986466551,
+      "sha256": "d202fe7bf23d7090377a8998bbf45c7fcf72401d26b6dbb7d94f698df1374d6e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_20260806/1hop/metrics.csv",
+      "bytes": 5022,
+      "mtime_ns": 1790559800978466638,
+      "sha256": "b552b3cd9d1045925e479b4c43a34b07388167c068d732f78523eb28ccdff136"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_d/seed_20260806/1hop/predictions.parquet",
+      "bytes": 111786,
+      "mtime_ns": 1790559800986466551,
+      "sha256": "9a01f16c3db70246b3cd9f0d82f194d92f734c851b141e8512958565a0185898"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_42/strict/audit.json",
+      "bytes": 1878,
+      "mtime_ns": 1790559807090400314,
+      "sha256": "114805f6a85e8575011b8e8120043257c737914028edc4b9da5a564d01cee06d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_42/strict/metrics.csv",
+      "bytes": 5101,
+      "mtime_ns": 1790559807070400531,
+      "sha256": "0dd8c58c713d3f19f3281b2245a10183ce23117b3b81aedf04250841df70b011"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_42/strict/predictions.parquet",
+      "bytes": 319119,
+      "mtime_ns": 1790559807086400357,
+      "sha256": "235ecf48dfacac105fc2f7488a7db4c6b00b1e69ad92df40b3f5e17c0b6ea0ac"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_42/strict/audit.json",
+      "bytes": 1879,
+      "mtime_ns": 1790559808946380176,
+      "sha256": "08d4c300fa9111b7a96da619d33ab105b2d78acdfc01cd6799b7d477a66bb780"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_42/strict/metrics.csv",
+      "bytes": 4764,
+      "mtime_ns": 1790559808934380306,
+      "sha256": "469fb730f8db39351e1674836e4e9a21fd72ab9162b324da1d2bff5b62d3cd07"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_42/strict/predictions.parquet",
+      "bytes": 56217,
+      "mtime_ns": 1790559808942380219,
+      "sha256": "a81737223c856c6fed314617d8402b86c3a7d0c9a50a0973c3d5fb19cbfee51f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_42/1hop/audit.json",
+      "bytes": 1870,
+      "mtime_ns": 1790559815194312394,
+      "sha256": "77b11068c9f374bf98a68f504c2776e34094dff300d09fd368ed84602dc03d1b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_42/1hop/metrics.csv",
+      "bytes": 5099,
+      "mtime_ns": 1790559815174312612,
+      "sha256": "c5c8b64751e45a0880798ec3bca464b278f3b72e73b923daa40711be94d300c4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_42/1hop/predictions.parquet",
+      "bytes": 319274,
+      "mtime_ns": 1790559815194312394,
+      "sha256": "2e86ae53b0e8984d6f637e3e32df4cfa3cb4c8ed413532404e23b9c83f5c329f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_42/1hop/audit.json",
+      "bytes": 1871,
+      "mtime_ns": 1790559817106291655,
+      "sha256": "83b7c71b7b9e6188fadbee5e4b8ceca6ee8794f73a5c165dec9bd6f354305167"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_42/1hop/metrics.csv",
+      "bytes": 4760,
+      "mtime_ns": 1790559817098291742,
+      "sha256": "16d0989a4baa0dd5a157bbbf3d9d2c8ea96705d3b2f0d75a2c0433c43bb526c4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_42/1hop/predictions.parquet",
+      "bytes": 56269,
+      "mtime_ns": 1790559817106291655,
+      "sha256": "29a6b308d28d0c12705bcbda0447a1601274f4b53a28c6c0243631da4fa01c1a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_314159/strict/audit.json",
+      "bytes": 1894,
+      "mtime_ns": 1790559823258224932,
+      "sha256": "2811a7e18201d73d833dd7e078bb778f953c49e97e7a2ee56b8374f22695b073"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_314159/strict/metrics.csv",
+      "bytes": 5078,
+      "mtime_ns": 1790559823238225149,
+      "sha256": "8cdfbff6abedfe8be512d1d87ecdc280d93c62fbcd01841ad2f59f475effaebe"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_314159/strict/predictions.parquet",
+      "bytes": 319481,
+      "mtime_ns": 1790559823254224975,
+      "sha256": "13f0965b0da22f6b5df491f9308426b99428dfead4938adc742ba23a3a1201cc"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_314159/strict/audit.json",
+      "bytes": 1895,
+      "mtime_ns": 1790559825146204459,
+      "sha256": "7bc8b1758f78f0b6b4e3538ddcea78e7a4ebdd0764b063c33b86a84f412654ca"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_314159/strict/metrics.csv",
+      "bytes": 4796,
+      "mtime_ns": 1790559825138204546,
+      "sha256": "8f25eac4298134daa4fb8d1e291364664f2ccaf6cb11e4ff1b87adab89a7669f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_314159/strict/predictions.parquet",
+      "bytes": 56208,
+      "mtime_ns": 1790559825146204459,
+      "sha256": "38e440013b3234ad2040087412e2ce53641db71f7578ce6cb53a8d7c59dd2ec4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_314159/1hop/audit.json",
+      "bytes": 1886,
+      "mtime_ns": 1790559832410125699,
+      "sha256": "7e9a7af27d54ebfec807c9804f730356ad575e269bf465127e7dfa8bd5a05a3a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_314159/1hop/metrics.csv",
+      "bytes": 5136,
+      "mtime_ns": 1790559832382126003,
+      "sha256": "bf3ca89c53bb5d1a428c86582338e3a18e8ed507ed9e1eecdae411ee5d95c58b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_314159/1hop/predictions.parquet",
+      "bytes": 319779,
+      "mtime_ns": 1790559832406125742,
+      "sha256": "1e6a1286b6982a5c36a86b19542e82b3721da6e0c28affe7fe334146342ecad9"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_314159/1hop/audit.json",
+      "bytes": 1887,
+      "mtime_ns": 1790559834390104233,
+      "sha256": "5937ceb54378afeb4668ea9dfc825b83f6df8375e6b3b4057427a33a0811842c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_314159/1hop/metrics.csv",
+      "bytes": 4794,
+      "mtime_ns": 1790559834382104320,
+      "sha256": "02f578acb8437e62a3fcc3f256825344c29f6404ee21a0be65f9a7f489df59c5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_314159/1hop/predictions.parquet",
+      "bytes": 56256,
+      "mtime_ns": 1790559834390104233,
+      "sha256": "b0268c5e536b8948e518a1b41acf56136229bd2dd453d16ceb9f504a1311a295"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_20260806/strict/audit.json",
+      "bytes": 1902,
+      "mtime_ns": 1790559841902022810,
+      "sha256": "bb29423e6729d1df4cddafae22ac0f15cc0e5888d3d5ce4534aa99cc8285fec1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_20260806/strict/metrics.csv",
+      "bytes": 5066,
+      "mtime_ns": 1790559841870023156,
+      "sha256": "a33c5cf5c9af020956ade3054c7d80d785a8437d4c9a40c3351d63f422f5fad3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_20260806/strict/predictions.parquet",
+      "bytes": 318927,
+      "mtime_ns": 1790559841898022852,
+      "sha256": "abd632f77259f629400f1f12452ec1b77aba575913db8a30378734ea20c78e92"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_20260806/strict/audit.json",
+      "bytes": 1903,
+      "mtime_ns": 1790559845505983752,
+      "sha256": "0dfede4fca8964bab7c546d86a5fdd0fbe54dd1b52989e443b0e9371b93a643e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_20260806/strict/metrics.csv",
+      "bytes": 4833,
+      "mtime_ns": 1790559845493983881,
+      "sha256": "ad67746550e07b222b5cbdb6356eb03db4f311ae05e2b1e81a3347b58081c062"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_20260806/strict/predictions.parquet",
+      "bytes": 56250,
+      "mtime_ns": 1790559845501983796,
+      "sha256": "ffd2db196581272adba05a0d479db066a8b684f436c9e79d3b1bc1eae4c856ad"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_20260806/1hop/audit.json",
+      "bytes": 1894,
+      "mtime_ns": 1790559856717862272,
+      "sha256": "6fe0bf9e51f02520d753d2d4af51324504ae5ad03b75831e52dde7f70d51f221"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_20260806/1hop/metrics.csv",
+      "bytes": 5150,
+      "mtime_ns": 1790559856685862619,
+      "sha256": "c06711d243afa1c7ce1b49d52b4653fcd88ac1211469f099ac4c46f43e15ac91"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/complex_traits/fold_e/seed_20260806/1hop/predictions.parquet",
+      "bytes": 319392,
+      "mtime_ns": 1790559856713862316,
+      "sha256": "3baa5d4dbd35a111249cdb7cf7450efb965f442d3bdd5a58571a05673efd6373"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_20260806/1hop/audit.json",
+      "bytes": 1895,
+      "mtime_ns": 1790559859521831899,
+      "sha256": "a9a2cf8108dab96b2b48898bb58e4c6c867f995c1c1b9c4b88e40a38ab15cf10"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_20260806/1hop/metrics.csv",
+      "bytes": 4816,
+      "mtime_ns": 1790559859505832071,
+      "sha256": "5707f70a6d77a411b6e3e021518f0e19efeb87a10bdf445392307592a850d9d7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_full/mendelian_traits/fold_e/seed_20260806/1hop/predictions.parquet",
+      "bytes": 56235,
+      "mtime_ns": 1790559859517831942,
+      "sha256": "9bd0710185f2e04f86298033cf6c8166edbf1971e94090ab57fb070d61fad778"
+    }
+  ],
+  "plan": {
+    "artifact_type": "analysis_plan",
+    "version": 1,
+    "task": "traitgym_locus_prior",
+    "objective": "Test frozen graph locus priors for supplied causal regulatory variants versus the original nine matched controls, beyond coordinates, frozen NT and handcrafted graph statistics.",
+    "recorded_before_first_probe": true,
+    "dataset_revision": "1fde19555fe8c0a55b1382bdf4c6f7082209f566",
+    "datasets": [
+      "complex_traits",
+      "mendelian_traits"
+    ],
+    "reference_config": "configs/entex_v1.json",
+    "partition": "All five existing manuscript chromosome folds, three seeds, strict and one-hop; original test and validation chromosomes also excluded from graph encoder training",
+    "unit": "Original variant row; repeated positions with different alleles remain together by chromosome. Preserve all original match groups, each containing one positive and nine negatives on one chromosome.",
+    "encoder": "Existing v1 frozen checkpoint for each fold/seed/context; no new pretraining, tuning or checkpoint selection on TraitGym",
+    "sequence": "Unmodified manuscript segment-level NT-v2 50M cache; not reference-minus-alternate embeddings",
+    "mapping": "Previously audited GRCh38 [pos-1,pos) containing reference segment; no nearest fallback and no row exclusions",
+    "probe": "Existing standardized class-balanced logistic regression; max_iter=4000 for every arm, unchanged solver, regularization and tolerance; calibration and threshold from validation chromosomes only",
+    "feature_sets": [
+      "coordinate",
+      "sequence_kmer",
+      "frozen_sequence_fm",
+      "frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm",
+      "coordinate_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+      "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm"
+    ],
+    "probe_max_iter": 4000,
+    "primary": "Run-paired AUPRC(C+S+T) minus AUPRC(C+S), separately for both datasets and contexts",
+    "controls": [
+      "C+S+H+T minus C+S+H",
+      "C+S+T minus C+T",
+      "Segment-level label collisions and within-match-group segment diversity"
+    ],
+    "secondary_metrics": [
+      "chromosome-size-weighted AUPRC",
+      "AUROC",
+      "prevalence-normalized AP",
+      "balanced accuracy",
+      "F1",
+      "precision",
+      "recall"
+    ],
+    "inference": "Existing hierarchical fold/seed bootstrap with 10000 draws; paired exact fold sign-flip and BH correction over all dataset/context/contrast comparisons within each metric. Overlapping training folds limit independence.",
+    "n_bootstrap": 10000,
+    "statistics_seed": 20260927,
+    "validity_gates": [
+      "100% original row and match-group retention",
+      "Both classes in every train/validation/test partition",
+      "Exact graph, NT, checkpoint and actual topology-cache provenance",
+      "No PIP, trait, OMIM, consequence, MAF, LD, TSS distance, match-group identity or supplied labels in feature matrices",
+      "All compared probes converge",
+      "Identical evaluated identities and labels for every feature",
+      "No tuning or assay/subset selection based on these test results"
+    ],
+    "interpretation": "Five-fold locus-prior adaptation, not the official leave-one-chromosome-out TraitGym leaderboard. Static T and S cannot distinguish alternate alleles at the same segment. Favorable T gains do not establish learned-weights superiority without random-encoder controls. Report all null and negative outcomes.",
+    "references": [
+      "https://github.com/songlab-cal/TraitGym",
+      "https://huggingface.co/datasets/songlab/TraitGym"
+    ]
+  },
+  "interpretation": "Exploratory pointwise fold/seed intervals; seed repetitions are not independent biological samples. No performance-based subset selection."
+}

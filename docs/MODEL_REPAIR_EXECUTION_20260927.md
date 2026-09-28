@@ -50,7 +50,7 @@ results, and the other implementation worktree are preserved.
   T and Q outperform their random controls on identical candidates at every seed.
 - [x] Complete seed-42 fixed 4,000-iteration sensitivity: 48 compared feature
   fits converge; learned-versus-random advantages persist after C+S+H.
-- [ ] Finish the same sensitivity across all three seeds after detecting SV
+- [x] Finish the same sensitivity across all three seeds after detecting SV
   logistic convergence warnings at the manuscript's 800-iteration cap.
   Defaults are preserved; per-feature convergence/iteration receipts added.
   The same sensitivity now covers all three seeds after the first additional
@@ -819,3 +819,43 @@ verified. No TraitGym classifier has been fitted. The full suite now has
 374 passing tests. The latest overview includes all 52 historical context rows,
 the fixed candidate diagram, and primary-source prior art on topology-only
 pretraining, degree-corrected link prediction and connectivity-shift controls.
+
+
+## Continuation: full convergence, TraitGym and fixed weak-head diagnostic
+
+27 September 2026, 22:07 EDT. SSH remained authenticated; no passwords were
+read, transmitted or stored by these tools.
+
+- Completed the uniform 4,000-iteration repair at all three seeds. All 144
+  compared fits converge. The cCRE learned-T increment is −0.000117 at seed
+  314159; the SV increment is −0.000024 at seed 20260806. Both failed gates
+  remain recorded. Three aggregate CSVs replay exactly on the laptop.
+- Implemented and completed TraitGym locus-prior evaluation: two datasets ×
+  five folds × three seeds × two contexts, nine feature combinations, 540
+  converged fits. All 14,780 variants and original matched controls retained.
+  Prediction replay, scalar metrics, paired arithmetic and bootstrap summaries
+  match independently between server and laptop.
+- No positive topology interval appears in this new task. Strict complex-trait
+  ΔT has a slightly negative bootstrap interval. All results are retained.
+- Traced a concrete input limitation: inherited terminal NT sampling excludes
+  the tested base for 77.1% of complex-trait and 72.2% of Mendelian variants
+  before tokenization. This is a raw-coverage audit, not a causal attribution
+  or proof that all retained bases survive tokenization.
+- Fixed merged NT shard provenance, empty-source-chromosome replay handling
+  and a missing optional Markdown dependency. No data were dropped or feature
+  meanings changed to clear a smoke test.
+- Implemented a separate, prespecified allele-score sensitivity using pinned
+  published NT-2.5B likelihood ratios. Both smoke tasks pass; full matrix
+  running. The author score alignment and unrecorded weight-revision caveats
+  are explicit. This is a reuse of published scores, not a local NT-2.5B run.
+- Launched a bounded weak-head transfer diagnostic after GPU convergence work:
+  existing linear-head topology checkpoint and matched random control,
+  unchanged Q branch, six model combinations, two biological tasks, four
+  primary feature sets. Native checkpoints/probes remain frozen and only
+  development validation is scored. This is a new exploratory diagnostic,
+  not a retroactive replacement of the original architecture selection.
+- Full local suite: 383 tests passed (15 known warnings); targeted Ruff and
+  diff checks pass. The eight initial TraitGym tests also passed on server.
+
+Details and reproducible artifacts: [TraitGym team report](TRAITGYM_DOWNSTREAM_20260927.md)
+and [current model/task checklist](MODEL_AND_DOWNSTREAM_STATUS_20260927.md).

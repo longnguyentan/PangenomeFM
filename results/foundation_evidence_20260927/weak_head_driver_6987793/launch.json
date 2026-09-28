@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_driver_6987793/run_frozen_head_transfer.py",
+    "--main-checkout",
+    "/home/tuv43532/PangenomeFM",
+    "--native-checkout",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927",
+    "--old-probes",
+    "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000",
+    "--old-analysis",
+    "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/probe_convergence_4000_analysis",
+    "--trained-root",
+    "/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/geometry_pilot",
+    "--random-root",
+    "/home/tuv43532/PangenomeFM_model_repair_20260927/results/foundation_evidence_20260927/geometry_random_controls",
+    "--wait-for",
+    "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/seed_convergence_4000/status.json",
+    "--out-root",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_transfer",
+    "--config",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/weak_head_driver_6987793/frozen_head_transfer_20260927.json"
+  ],
+  "driver_commit": "6987793",
+  "native_commit": "48ca40a91a19f107290d38d6bd6b13619a6dc98e",
+  "driver_sha256": "ac14b6f5956dcbaea0ebc3c4271468893516ea5e9ff3f4861f54f760e3f77750"
+}

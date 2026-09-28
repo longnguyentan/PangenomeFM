@@ -1,0 +1,7 @@
+dataset,group,n,raw_base_retained,raw_base_excluded,raw_retention_fraction,median_segment_length
+complex_traits,all,11400,2616,8784,0.2294736842105263,42671.0
+complex_traits,label=0,10260,2346,7914,0.22865497076023392,42329.0
+complex_traits,label=1,1140,270,870,0.23684210526315788,46716.0
+mendelian_traits,all,3380,938,2442,0.2775147928994083,42443.5
+mendelian_traits,label=0,3042,766,2276,0.2518080210387903,42728.0
+mendelian_traits,label=1,338,172,166,0.5088757396449705,37349.0
