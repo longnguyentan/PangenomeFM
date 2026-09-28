@@ -1,0 +1,888 @@
+{
+  "status": "complete",
+  "plan": {
+    "artifact_type": "analysis_plan",
+    "version": 1,
+    "task": "traitgym_allele_score_sensitivity",
+    "objective": "Evaluate publisher-provided frozen NT-2.5B allele likelihood scores with the existing locus priors, retaining all original variants and comparisons.",
+    "recorded_before_first_probe": true,
+    "dataset_revision": "1fde19555fe8c0a55b1382bdf4c6f7082209f566",
+    "datasets": [
+      "complex_traits",
+      "mendelian_traits"
+    ],
+    "reference_config": "configs/entex_v1.json",
+    "partition": "All five existing manuscript chromosome folds, three seeds, strict and one-hop; original test and validation chromosomes also excluded from graph encoder training",
+    "unit": "Original variant row; repeated positions with different alleles remain together by chromosome. Preserve all original match groups, each containing one positive and nine negatives on one chromosome.",
+    "encoder": "Existing v1 frozen checkpoint for each fold/seed/context; no new pretraining, tuning or checkpoint selection on TraitGym",
+    "sequence": "Unmodified manuscript segment-level NT-v2 50M cache; not reference-minus-alternate embeddings",
+    "mapping": "Previously audited GRCh38 [pos-1,pos) containing reference segment; no nearest fallback and no row exclusions",
+    "probe": "Existing standardized class-balanced logistic regression; max_iter=4000 for every arm, unchanged solver, regularization and tolerance; calibration and threshold from validation chromosomes only",
+    "feature_sets": [
+      "variant_llr",
+      "coordinate_plus_variant_llr",
+      "coordinate_plus_frozen_sequence_fm",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_pangenomefm"
+    ],
+    "probe_max_iter": 4000,
+    "primary": "AUPRC(C+S+V+T) minus AUPRC(C+S+V), separately for both datasets and contexts",
+    "controls": [
+      "C+S+V+H+T minus C+S+V+H",
+      "C+S+V minus C+S",
+      "C+S+V+T minus C+T"
+    ],
+    "secondary_metrics": [
+      "chromosome-size-weighted AUPRC",
+      "AUROC",
+      "prevalence-normalized AP",
+      "balanced accuracy",
+      "F1",
+      "precision",
+      "recall"
+    ],
+    "inference": "Existing hierarchical fold/seed bootstrap with 10000 draws; paired exact fold sign-flip and BH correction over all dataset/context/contrast comparisons within each metric. Overlapping training folds limit independence.",
+    "n_bootstrap": 10000,
+    "statistics_seed": 20260927,
+    "validity_gates": [
+      "100% original row and match-group retention",
+      "Both classes in every train/validation/test partition",
+      "Exact graph, NT, checkpoint and actual topology-cache provenance",
+      "No PIP, trait, OMIM, consequence, MAF, LD, TSS distance, match-group identity or supplied labels in feature matrices",
+      "All compared probes converge",
+      "Identical evaluated identities and labels for every feature",
+      "No tuning or assay/subset selection based on these test results",
+      "Pinned score-file SHA-256 and original source row/index identity",
+      "No replacing any original C/K/S/T feature meaning"
+    ],
+    "interpretation": "Five-fold locus-prior adaptation, not the official leave-one-chromosome-out TraitGym leaderboard. Static T and S cannot distinguish alternate alleles at the same segment. Favorable T gains do not establish learned-weights superiority without random-encoder controls. Report all null and negative outcomes. V is an author-provided allele-aware sequence score, not newly trained PangenomeFM or a reproduction of the complete official NT benchmark. Previously observed test results motivated this sensitivity; any gain is exploratory.",
+    "references": [
+      "https://github.com/songlab-cal/TraitGym",
+      "https://huggingface.co/datasets/songlab/TraitGym"
+    ],
+    "development_status": "Exploratory sensitivity specified after inspecting the original locus-prior test results; not independent confirmation. No architecture or hyperparameter selection on this extension.",
+    "variant_score_definition": "V contains signed LLR and its absolute value, fixed before fitting. The original author NT-2.5B masked-allele score averages forward and reverse sequences; this is not its full embedding-based benchmark.",
+    "custom_feature_sets": {
+      "variant_llr": [
+        "variant_llr"
+      ],
+      "coordinate_plus_variant_llr": [
+        "coordinate",
+        "variant_llr"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "frozen_pangenomefm"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "topology_control"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "topology_control",
+        "frozen_pangenomefm"
+      ]
+    },
+    "feature_labels": {
+      "variant_llr": "V (NT-2.5B allele scores)",
+      "coordinate_plus_variant_llr": "C+V",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr": "C+S+V",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm": "C+S+V+T",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control": "C+S+V+H",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm": "C+S+V+H+T"
+    },
+    "comparisons": [
+      [
+        "V_given_CS",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+        "coordinate_plus_frozen_sequence_fm"
+      ],
+      [
+        "T_given_CSV",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+      ],
+      [
+        "T_given_CSVH",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+      ],
+      [
+        "SV_given_CT",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_pangenomefm"
+      ]
+    ],
+    "variant_scores": {
+      "complex_traits": {
+        "filename": "complex_traits_nt_llr.parquet",
+        "sha256": "b7180623654f41961c6997b1ff8d1002091cc62ddb4c264acac26ddab73d5187",
+        "publisher_path": "complex_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+      },
+      "mendelian_traits": {
+        "filename": "mendelian_traits_nt_llr.parquet",
+        "sha256": "8c88e183115bbe05c7dec777a1155d62531985f60b481acbc4e914970446f3fd",
+        "publisher_path": "mendelian_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+      }
+    },
+    "author_code_commit": "4d80fe889415ffc02d45c7cb5446a326288819bd",
+    "author_model": "InstaDeepAI/nucleotide-transformer-2.5b-multi-species",
+    "score_provenance": "Exact published score files pinned by dataset revision and LFS SHA-256. Source rule reads original test.parquet and writes predictions in source order. Files have positional indices, not genomic IDs; alignment relies on this published contract. Model-weight revision and exact original runtime are not recorded by the author code."
+  },
+  "sources": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_driver/traitgym_allele_score_20260927.json",
+      "bytes": 7574,
+      "mtime_ns": 1790560548000000000,
+      "sha256": "6be76d8c38f3b47a10bfefa2c6f3a2916ebd6a3969bb5761593ba67f0d182063"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/traitgym_topology_coverage/audit.json",
+      "bytes": 43356,
+      "mtime_ns": 1790557117963955986,
+      "sha256": "bcac132f0343bb202d723574b78dfc2ae8ea4329ab6852d70c5bcea4e55a7ec2"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/server_full_multicohort_20260806.json",
+      "bytes": 10951,
+      "mtime_ns": 1790478318571167524,
+      "sha256": "5cec5e982fdcfe1a3620bf257835b70ef702b606cde9a66026fec2531e6ee96d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/source.json",
+      "bytes": 203,
+      "mtime_ns": 1790551326000000000,
+      "sha256": "adb8bb9423ea618e132fcd2814768231664a7ca77ad40fb07508e89b0af6e9f7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/audit.json",
+      "bytes": 3201,
+      "mtime_ns": 1790559182889286572,
+      "sha256": "85054cd3fea38feb81805738bb6bf793ccfd4fd1627dbc617eb3f08219a85f4a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/complex_traits_examples.parquet",
+      "bytes": 828016,
+      "mtime_ns": 1790552097521114460,
+      "sha256": "d6f49dc719e04a612d03d6222ce8014c9e8e598649d343116d898baf4ab662c0"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/complex_traits_overlaps.parquet",
+      "bytes": 165649,
+      "mtime_ns": 1790552097525114416,
+      "sha256": "ab11ec9fca1dd86ab3660714c06b3c204e4dce19fe78dace971dd8a956102976"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/complex_traits_matched_9.parquet",
+      "bytes": 411336,
+      "mtime_ns": 1790551325000000000,
+      "sha256": "068940684e1e6f735a25a1a4418fb65390628023a96188af7f1a15dd17de7036"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/mendelian_traits_examples.parquet",
+      "bytes": 172683,
+      "mtime_ns": 1790552097889110410,
+      "sha256": "2a332c154ee2d4c8c56c7635a92c82dcbcf763f8e4cbc358b8c5e451cd2b8e53"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit/mendelian_traits_overlaps.parquet",
+      "bytes": 50055,
+      "mtime_ns": 1790552097893110365,
+      "sha256": "2c1a702607babb6b2d08c150ce8068b4de3307cc88df93fd003fad26cbc04c97"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/mendelian_traits_matched_9.parquet",
+      "bytes": 50205,
+      "mtime_ns": 1790551326000000000,
+      "sha256": "144db4bf965e3c2b8936cd675448bade96369b6546cfdadb5c7b2bca17389607"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+      "bytes": 37629106,
+      "mtime_ns": 1786349512365280119,
+      "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz.audit.json",
+      "bytes": 1560,
+      "mtime_ns": 1786349516673233045,
+      "sha256": "75de2b22f2a7fdf262c6aa37344e2be5a40b0d7db1266dbfa4c1422d94437333"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/author_features/complex_traits_nt_llr.parquet",
+      "bytes": 66021,
+      "mtime_ns": 1790560101000000000,
+      "sha256": "b7180623654f41961c6997b1ff8d1002091cc62ddb4c264acac26ddab73d5187"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/author_features/mendelian_traits_nt_llr.parquet",
+      "bytes": 19740,
+      "mtime_ns": 1790560102000000000,
+      "sha256": "8c88e183115bbe05c7dec777a1155d62531985f60b481acbc4e914970446f3fd"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+      "bytes": 573489289,
+      "mtime_ns": 1786930030728110426,
+      "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz.audit.json",
+      "bytes": 2699,
+      "mtime_ns": 1786930033504082368,
+      "sha256": "0bbc6c075c4105d9cbbef25521431415ec57a89a5240fa101fe4d0ae39e05399"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_0.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890258760027309,
+      "sha256": "48697d25c353dc38c97f72cf704a88310c0bdb1cfcc21ce4b4efea49110aa314"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_1.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890299839630026,
+      "sha256": "ab77707365a248f679c58e9d1522eb396068311af6017da64777ba2813b52ffe"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_2.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890294411682734,
+      "sha256": "81b635f7a0a356f9db0a40cd361ac5bea01cb254a81d369a729230343be8694a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_3.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890286575758712,
+      "sha256": "7b8e235d6a7d2641cb8e9e98fcf484cb5f08e5a0686b5cff1ccb53cd7a77ea34"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+      "bytes": 3834716,
+      "mtime_ns": 1790471724073996404,
+      "sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz.audit.json",
+      "bytes": 829,
+      "mtime_ns": 1790471725725979680,
+      "sha256": "0d6fabde5488b7ced332b37445982114957e42621deab356469e12b17e9709a0"
+    }
+  ],
+  "command": [
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_driver/traitgym.py",
+    "--source-dir",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195",
+    "--mapping-dir",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_reference_audit",
+    "--topology-audit",
+    "/home/tuv43532/PangenomeFM_readiness_20260927/results/foundation_evidence_20260927/traitgym_topology_coverage/audit.json",
+    "--topology-cache-root",
+    "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference",
+    "--feature-cache",
+    "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+    "--sequence-cache",
+    "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+    "--topology-control-cache",
+    "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+    "--results-root",
+    "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806",
+    "--config",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_driver/traitgym_allele_score_20260927.json",
+    "--variant-score-dir",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/data/external/traitgym_1fde195/author_features",
+    "--out-root",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full"
+  ],
+  "implementation": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_driver/traitgym.py",
+    "bytes": 18520,
+    "mtime_ns": 1790560495000000000,
+    "sha256": "4906b8994e6cfd550da8d3de0392e86f5396ac461c2b6c8c5a5b806568ea4c9c"
+  },
+  "jobs": [
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    }
+  ],
+  "datasets": [
+    "complex_traits",
+    "mendelian_traits"
+  ],
+  "completed_runs": 60,
+  "planned_runs": 60,
+  "encoder_training": false,
+  "evaluation_partition": "test",
+  "feature_coverage": "100% C/K/S/H required",
+  "scope": "full_matrix"
+}

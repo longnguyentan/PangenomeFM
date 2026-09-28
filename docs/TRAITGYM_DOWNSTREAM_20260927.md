@@ -11,7 +11,7 @@ Verified 27 September 2026. Code, data quality and measured performance; no manu
 - [x] Audit whether segment sampling retains the variant itself.
 - [x] Verify pinned author NT-2.5B allele-likelihood score files and their original row-order contract.
 - [x] Implement and pass the two-task allele-score smoke test: 16 fits, all converged.
-- [ ] Complete and replay the separate 60-run allele-score sensitivity (running).
+- [x] Complete and replay the separate 60-run allele-score sensitivity: 480 converged fits; retain the failed improvement.
 
 ## Biological question and protocol
 
@@ -51,11 +51,30 @@ Separately, 1,136 complex-trait variants and 155 Mendelian variants occur in seg
 
 ## Prespecified allele-score sensitivity
 
-The next comparison adds V = signed and absolute masked-allele log-likelihood ratio from the authors’ published NT-2.5B model scores. The two feature transforms are fixed before fitting. Primary comparison: C+S+V+T versus C+S+V; the H-controlled comparison is C+S+V+H+T versus C+S+V+H. C+S is retained to quantify the contribution of V on exactly the same examples.
+The separate comparison adds V = signed and absolute masked-allele log-likelihood ratio from the authors’ published NT-2.5B model scores. The two feature transforms are fixed before fitting. Primary comparison: C+S+V+T versus C+S+V; the H-controlled comparison is C+S+V+H+T versus C+S+V+H. C+S is retained to quantify the contribution of V on exactly the same examples.
 
 This follow-up was motivated by the observed original results and input audit, so it is exploratory. Neither PangenomeFM nor either NT model is trained on these labels. Only the existing logistic probe is fitted. There is no score-directed subset selection or alteration of original C/K/S/T meanings.
 
 The public score files are pinned to dataset revision `1fde19555fe8c0a55b1382bdf4c6f7082209f566` and verified against the published LFS SHA-256. The original code at `4d80fe889415ffc02d45c7cb5446a326288819bd` reads the corresponding `test.parquet`, predicts in order and writes a positional score column. We verify the original row/index contract, then join prepared examples by variant identity. The scores themselves have no genomic ID; underlying model-weight revision/runtime are not recorded by the authors. This is reuse of published allele scores, not locally rerunning NT-2.5B weights or reproducing its full embedding benchmark.
+
+## Completed allele-score sensitivity
+
+All 60 runs and 480 fits completed; every fit converges (maximum 560 iterations). The four summary tables replay exactly from predictions on the laptop. In addition, all 120 C+S/C+T comparisons have exactly identical original and follow-up predictions, thresholds, examples and labels.
+
+| Dataset | Context | C+S+V AP | C+S+V+T AP | ΔT [95% CI] | ΔV beyond C+S [95% CI] |
+|---|---|---:|---:|---|---|
+| complex_traits | strict | 0.117765 | 0.115593 | -0.002173 [-0.004831, +0.000003] | +0.000493 [-0.000429, +0.001362] |
+| complex_traits | 1hop | 0.117765 | 0.116712 | -0.001054 [-0.004027, +0.001481] | +0.000493 [-0.000429, +0.001362] |
+| mendelian_traits | strict | 0.102110 | 0.101008 | -0.001102 [-0.012369, +0.011257] | -0.018730 [-0.028974, -0.008670] |
+| mendelian_traits | 1hop | 0.102110 | 0.107100 | +0.004990 [-0.010788, +0.021374] | -0.018730 [-0.028974, -0.008670] |
+
+**This attempted improvement does not rescue the full representation.** V alone attains mean Mendelian AP 0.160370, but C+S+V is 0.102110 versus 0.120840 for C+S. Adding coordinates alone to V also reduces AP to 0.099046. Thus an informative allele score can be harmed by combination with the current locus features/probe. This is measured behavior, not an inferred cache or optimizer failure: source hashes, feature alignment, invariant baselines and convergence all pass.
+
+Complex-trait ΔV is +0.000493 with an interval crossing zero. No topology contrast, including after H, has a positive 95% interval in this extension. Do not present the larger model as a successful improvement to PangenomeFM or select the favorable Mendelian one-hop point estimate alone.
+
+A future probe-capacity/regularization study must use train/validation selection and retain an untouched evaluation endpoint. This result does not identify whether regularization, chromosome distribution shift, or input information is the dominant cause. The primary experiment remains the fixed manuscript-style probe.
+
+[All allele-score results](../results/foundation_evidence_20260927/traitgym_allele_full_analysis/per_run.csv) · [paired intervals](../results/foundation_evidence_20260927/traitgym_allele_full_analysis/contrasts.csv) · [baseline identity audit](../results/foundation_evidence_20260927/traitgym_cross_experiment_baseline_audit.json) · [feature figure](../results/foundation_evidence_20260927/traitgym_allele_full_analysis/traitgym_feature_ap.pdf).
 
 ## Reproduce
 

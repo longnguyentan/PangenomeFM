@@ -13,7 +13,7 @@ The uniform 4,000-iteration comparison is now complete at all three seeds;
 all 144 compared fits converge, but the same two scientific gates still fail.
 A controlled weak-head transfer diagnostic is running. TraitGym now has a
 completed 60-run locus-prior matrix and a separately specified allele-score
-sensitivity in progress. The candidate specification is fixed, but no final
+sensitivity completed; the additional allele scores did not rescue the combined model. The candidate specification is fixed, but no final
 superiority or NMI-readiness claim is supported.
 
 - [x] Complete eight new frozen biological probes: four branch combinations ×
@@ -45,8 +45,10 @@ superiority or NMI-readiness claim is supported.
 - [x] Complete the full TraitGym adaptation: 60 runs / 540 converged fits, with
   exact independent prediction replay. Retain negative/inconclusive topology gains.
 - [x] Audit the missing variant bases in inherited segment NT inputs.
-- [ ] Complete the fixed weak-head transfer diagnostic and the separate
-  TraitGym NT-2.5B allele-score sensitivity; both are running.
+- [x] Complete the TraitGym NT-2.5B allele-score sensitivity: 60 runs / 480
+  converged fits. No positive topology interval; C+S+V underperforms C+S for
+  Mendelian traits despite V being informative alone.
+- [ ] Complete the fixed weak-head transfer diagnostic; it is running.
 - [ ] Replicate across chromosome folds and run the selected candidate on new
   downstream endpoints; the full v2 matrix is not completed.
 
@@ -391,8 +393,8 @@ of complex and Mendelian variants, respectively. These results expose a
 representation limitation; they are not a failure to map the data.
 
 A separately specified allele-score sensitivity adds the authors' published,
-pinned NT-2.5B signed/absolute likelihood ratios. The smoke test passes and the
-full matrix is running. This does not replace S, retrain an encoder, or change
+pinned NT-2.5B signed/absolute likelihood ratios. All 60 runs and 480 fits completed and replayed. No topology interval is
+positive; the Mendelian combined model underperforms its original baseline. This does not replace S, retrain an encoder, or change
 the original results. Its prior observation of the original test results is
 explicitly disclosed.
 
@@ -465,7 +467,7 @@ removing queried links can support a standalone novelty claim.
 | 1 | Model transfer improvement | All three seeds numerically converged; mixed scientific gates persist. Prespecified weak-head diagnostic running |
 | 2 | Chromosome replication and v2 task transfer | Not run; freeze protocol before additional label-informed choices |
 | 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | Not completed; include GraphMAE/ToP-style controls, identical examples/input budgets and sequence truncation controls |
-| 4 | TraitGym | 60-run adapted benchmark complete; allele-score sensitivity running. Official LOCO and full embedding comparison remain separate |
+| 4 | TraitGym | Both 60-run adapted matrices complete; neither establishes a positive topology gain. Official LOCO and full embedding comparison remain separate |
 | 5 | INV-containing SV type task | 298 primary events pass mapping/NT coverage; multiclass probe/overlap controls still needed |
 | 6 | DART-Eval | Official suite identified; select coordinate-anchored tasks and audit coverage before claiming a comparable result |
 | 7 | Measured SV genotypability | Variant-level leave-one-out outcomes and callable denominators still missing; FILTER, SVR and self-genotyping are not valid replacements |

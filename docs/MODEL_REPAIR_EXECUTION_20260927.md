@@ -859,3 +859,13 @@ read, transmitted or stored by these tools.
 
 Details and reproducible artifacts: [TraitGym team report](TRAITGYM_DOWNSTREAM_20260927.md)
 and [current model/task checklist](MODEL_AND_DOWNSTREAM_STATUS_20260927.md).
+
+### Allele-score follow-up completed
+
+Both the original 60-run TraitGym matrix (540 fits) and allele-score 60-run
+matrix (480 fits) are complete, converged and independently replayed. All
+120 shared baseline comparisons are bitwise identical. The NT-2.5B allele
+score alone has Mendelian AP 0.160370, but adding it to C+S lowers AP from
+0.120840 to 0.102110. No positive topology interval appears in either study.
+This is a retained unsuccessful improvement, not a processing failure.
+The model-head transfer diagnostic continues separately on validation only.

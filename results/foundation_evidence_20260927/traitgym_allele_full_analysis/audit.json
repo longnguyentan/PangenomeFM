@@ -1,0 +1,1236 @@
+{
+  "status": "complete",
+  "scope": "full_matrix",
+  "all_probes_converged": true,
+  "n_runs": 60,
+  "n_fits": 480,
+  "numerical_gate": "pass",
+  "source_root": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full",
+  "sources": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_42/strict/audit.json",
+      "bytes": 2149,
+      "mtime_ns": 1790560709332671126,
+      "sha256": "e86228305c82470fb32258f57134b41bac990718fd329848078b98cfdb00caa3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_42/strict/metrics.csv",
+      "bytes": 4714,
+      "mtime_ns": 1790560709308671387,
+      "sha256": "a85bc5585251a1de9f45086acfd2a60cea25911419cc1126914e465000808234"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_42/strict/predictions.parquet",
+      "bytes": 603121,
+      "mtime_ns": 1790560709332671126,
+      "sha256": "9a7c6ce4a2535dd71f2da56d32086b17807cb86c6c1909b27780e4627cb30f75"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_42/strict/audit.json",
+      "bytes": 2151,
+      "mtime_ns": 1790560710928653813,
+      "sha256": "3a0c8f08edea3a60b336ff4486319de631c3919456a52efd6ede876940e38781"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_42/strict/metrics.csv",
+      "bytes": 4512,
+      "mtime_ns": 1790560710916653943,
+      "sha256": "e17db85074fe92694a5b6f6923b309be00d8bfc77d4e00582afa233c5b3d5af1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_42/strict/predictions.parquet",
+      "bytes": 141431,
+      "mtime_ns": 1790560710928653813,
+      "sha256": "57aac94180920d323f38936745190b5355eb6a53d2abbbbdc4bb93fa4768005e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_42/1hop/audit.json",
+      "bytes": 2141,
+      "mtime_ns": 1790560715688602184,
+      "sha256": "4e833258da69813b8dd3ca955f855d97b4316034d728779a3ae7a940ebd757f5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_42/1hop/metrics.csv",
+      "bytes": 4704,
+      "mtime_ns": 1790560715660602487,
+      "sha256": "2c5d2a38d3791e817ce9f3315646566e0aee312948a92ef91875c163d8c5c378"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_42/1hop/predictions.parquet",
+      "bytes": 603027,
+      "mtime_ns": 1790560715684602227,
+      "sha256": "b8e87f7b06ca0f9ceb00996187c974be917fc03bcffa3df95a3897d37b20a226"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_42/1hop/audit.json",
+      "bytes": 2143,
+      "mtime_ns": 1790560717296584745,
+      "sha256": "a01e8ad6478953e501e9371996284b53d831cf187ff735db6afd98198ccede89"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_42/1hop/metrics.csv",
+      "bytes": 4503,
+      "mtime_ns": 1790560717284584874,
+      "sha256": "c3d51ee21240921ac3e20e752bfd294594eef7562fed0c8bcf5e65d6a538372e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_42/1hop/predictions.parquet",
+      "bytes": 141269,
+      "mtime_ns": 1790560717296584745,
+      "sha256": "88fa683e8c101a7f55e25f94188a1536d1fcba33cbb8bc9f3310a4fbebc0f3a2"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_314159/strict/audit.json",
+      "bytes": 2165,
+      "mtime_ns": 1790560722164531953,
+      "sha256": "5d9158a41f8b4680c33758efeff658737225f62d69b3031499d1f7cd6c1ed13f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_314159/strict/metrics.csv",
+      "bytes": 4747,
+      "mtime_ns": 1790560722136532256,
+      "sha256": "e78b0d0f66ff9dc8a5f6191c1916b4db5666b68964c0a95feab4f16e34ced5e5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_314159/strict/predictions.parquet",
+      "bytes": 603015,
+      "mtime_ns": 1790560722160531996,
+      "sha256": "2f486c7c60c5f4452e49b5b0560095dce24fbeb9fec9e9c21368fcfcccba3827"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_314159/strict/audit.json",
+      "bytes": 2167,
+      "mtime_ns": 1790560723768514560,
+      "sha256": "31f0c6eac7d375cb1314e84d3d8dc997f9634f1fe1846825d10e6900d842cfe1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_314159/strict/metrics.csv",
+      "bytes": 4491,
+      "mtime_ns": 1790560723756514690,
+      "sha256": "e90d9bebfea6ef70027e7bf7bc7f0b6fa34284178d82069bb4a1633584f14c6d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_314159/strict/predictions.parquet",
+      "bytes": 141443,
+      "mtime_ns": 1790560723764514603,
+      "sha256": "5744439ef7ffecf048d38c7dd5075e5f6061ae49a8b890835ae2dc0553c1e20a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_314159/1hop/audit.json",
+      "bytes": 2157,
+      "mtime_ns": 1790560728552462689,
+      "sha256": "665038df5a6a490c9a85df810c42663d8f6ebd4f7dace6019d6964b93ce6533a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_314159/1hop/metrics.csv",
+      "bytes": 4729,
+      "mtime_ns": 1790560728524462994,
+      "sha256": "ba5f88b2e3b3aca59094c72678e9b238746ad1f2c8db70991c7bf66778bf5bc9"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_314159/1hop/predictions.parquet",
+      "bytes": 603068,
+      "mtime_ns": 1790560728548462733,
+      "sha256": "0bca5dfab8858dee8165e5b229d992571f5918c09045a8f9ea3cb1a1fd22249b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_314159/1hop/audit.json",
+      "bytes": 2159,
+      "mtime_ns": 1790560730160445255,
+      "sha256": "c3e1df0a3b5997ae24d2448861587efa984f7e616fc1154d82e085d78b725937"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_314159/1hop/metrics.csv",
+      "bytes": 4502,
+      "mtime_ns": 1790560730148445387,
+      "sha256": "b03982fd9cbcdabe5549901f5d08c808f6c461b76c5a8a5493f7d0dd63329fd5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_314159/1hop/predictions.parquet",
+      "bytes": 141225,
+      "mtime_ns": 1790560730156445300,
+      "sha256": "2d9823ea7daa5213022a80c3a293633293bd6ac3e4efb0f17be66317f4b5a04b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_20260806/strict/audit.json",
+      "bytes": 2173,
+      "mtime_ns": 1790560734804394911,
+      "sha256": "efa4ac0db6a5c81326740b5354ad6a1b10935883e469e3301322aaa0a5c8c1bf"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_20260806/strict/metrics.csv",
+      "bytes": 4770,
+      "mtime_ns": 1790560734780395172,
+      "sha256": "5e28a73b7e5156b83e0e06d0bacae54c6bb347a57d220e9ffe845272c51700c5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_20260806/strict/predictions.parquet",
+      "bytes": 603160,
+      "mtime_ns": 1790560734800394955,
+      "sha256": "34940923b5fe62cad87f0756822290e1ccdc54267accb96e219d0421fab5a808"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_20260806/strict/audit.json",
+      "bytes": 2175,
+      "mtime_ns": 1790560736392377698,
+      "sha256": "64a6da8f4114d02a2248aa9451352012ce607b31b8f72791d9ce0399c3213568"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_20260806/strict/metrics.csv",
+      "bytes": 4552,
+      "mtime_ns": 1790560736380377828,
+      "sha256": "69d217a52378e1e6506badd6bee995d211869a23ea9b82f1be22b18152a611ad"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_20260806/strict/predictions.parquet",
+      "bytes": 141475,
+      "mtime_ns": 1790560736392377698,
+      "sha256": "b9240d407c8d8072b5394fe74e546afa6e2fe60795907d2516956e2584f01b76"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_20260806/1hop/audit.json",
+      "bytes": 2165,
+      "mtime_ns": 1790560741072326972,
+      "sha256": "ab499d1b6fee568b1b1e3e120d8074a6a877c9adb54eafadd29d14fda4bc75a1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_20260806/1hop/metrics.csv",
+      "bytes": 4752,
+      "mtime_ns": 1790560741048327233,
+      "sha256": "661f814395504f8074ac113d11bb5de867b76ed3df63a785d465524f0cbc76fe"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_a/seed_20260806/1hop/predictions.parquet",
+      "bytes": 603118,
+      "mtime_ns": 1790560741068327015,
+      "sha256": "508879fc5017086c70883174a287f18c45749b0f754f21e03da2035a03c98dbf"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_20260806/1hop/audit.json",
+      "bytes": 2167,
+      "mtime_ns": 1790560742656309805,
+      "sha256": "398c2e9c8f4c9215dacfa623b8dc7fea42563e0a8296585db8803cb14463fb15"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_20260806/1hop/metrics.csv",
+      "bytes": 4545,
+      "mtime_ns": 1790560742648309892,
+      "sha256": "4482bbf68d8710af333177aab7793f14e52ff911d1ebfdb77ae32600014b4d9f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_a/seed_20260806/1hop/predictions.parquet",
+      "bytes": 141378,
+      "mtime_ns": 1790560742656309805,
+      "sha256": "227538d63a640693a883b7cb7797b0119bf1ec0d49829777a0cca46a53690d2d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_42/strict/audit.json",
+      "bytes": 2148,
+      "mtime_ns": 1790560748248249205,
+      "sha256": "ceb4566ff70121f4bcd50f7580f6efb620d6fe8e84d84ee5d0fb88dcecb639fc"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_42/strict/metrics.csv",
+      "bytes": 4703,
+      "mtime_ns": 1790560748224249466,
+      "sha256": "52c4e673e8125484fb78fdc21b0304df134d9ec5c3acb1f646685e971204330b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_42/strict/predictions.parquet",
+      "bytes": 545944,
+      "mtime_ns": 1790560748244249249,
+      "sha256": "3d6d65f8bfa641b40f626f6a3d72f138d8507a74745fa989672ffb4c56ee5773"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_42/strict/audit.json",
+      "bytes": 2150,
+      "mtime_ns": 1790560749904231261,
+      "sha256": "3fabba35d661f12af8db4219ca9b6315b3ee4dba8485f7b138fa2dd70a3ec3af"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_42/strict/metrics.csv",
+      "bytes": 4694,
+      "mtime_ns": 1790560749896231348,
+      "sha256": "72f65dfe6f170433bfeeda1a93cd2e9319c45e5cd7e6bc2a989e6d43d995c3e3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_42/strict/predictions.parquet",
+      "bytes": 103646,
+      "mtime_ns": 1790560749904231261,
+      "sha256": "f6602b86fbd69a549f49d932513b7001e98e32005ee6a862edb8ef526ff25ecb"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_42/1hop/audit.json",
+      "bytes": 2140,
+      "mtime_ns": 1790560755516170456,
+      "sha256": "755514b644a8300a89795129b937814dd9302056f485ec48ca413932e5555707"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_42/1hop/metrics.csv",
+      "bytes": 4693,
+      "mtime_ns": 1790560755492170717,
+      "sha256": "24f28411f4360d3a3a470b09ac7d7df234ab1fa517f0b821ae6d930ca4151af3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_42/1hop/predictions.parquet",
+      "bytes": 546069,
+      "mtime_ns": 1790560755512170500,
+      "sha256": "deb1bc67d02e8a32fc81ccd0568fe0f3a17c9d439e844f98892573870c2cce46"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_42/1hop/audit.json",
+      "bytes": 2142,
+      "mtime_ns": 1790560756988154509,
+      "sha256": "63ad71f9f3645b9c27eb5feaf0166b68f18e35c52d5bb44d844158ab4cf3a9fc"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_42/1hop/metrics.csv",
+      "bytes": 4630,
+      "mtime_ns": 1790560756980154596,
+      "sha256": "4738ef44b23dd714a9a2e8115b79988379e62d72d282329eeacfc9a10c3c764a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_42/1hop/predictions.parquet",
+      "bytes": 103636,
+      "mtime_ns": 1790560756988154509,
+      "sha256": "83498560032896a0ab1ee58edfcf7b6a67a3f7ea114aee72d01428b0d620eee1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_314159/strict/audit.json",
+      "bytes": 2164,
+      "mtime_ns": 1790560762124098872,
+      "sha256": "b1f5fa51523da91731ac942b14e91fc9c23a18082eb21306f69082184d53d3bd"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_314159/strict/metrics.csv",
+      "bytes": 4748,
+      "mtime_ns": 1790560762100099132,
+      "sha256": "e793fd23cd624abb4e70d2fe4ed48c172402a8b917146c689fc878333a978b00"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_314159/strict/predictions.parquet",
+      "bytes": 546015,
+      "mtime_ns": 1790560762124098872,
+      "sha256": "fd82b763621a0fc8e1aeeaa1b5614954ac75887cf017d5a05ae791a2b5ede9e6"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_314159/strict/audit.json",
+      "bytes": 2166,
+      "mtime_ns": 1790560763540083534,
+      "sha256": "0737bb790873a4b90714a282391e2f02d30731b73464594f96662e555a1dfa2a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_314159/strict/metrics.csv",
+      "bytes": 4745,
+      "mtime_ns": 1790560763528083664,
+      "sha256": "8263527c507d985a00f8ff3fb9f93a3a9d01e569efe7a0b41727d4582089f842"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_314159/strict/predictions.parquet",
+      "bytes": 103645,
+      "mtime_ns": 1790560763536083577,
+      "sha256": "2325bd16edfa3a451306edd9c8fc2548dc9689fc54552a34fcc9d3529b242462"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_314159/1hop/audit.json",
+      "bytes": 2156,
+      "mtime_ns": 1790560769876014910,
+      "sha256": "58a326bad2e6707ada463dc2ecf9c46802036192a98df358b696c0ab7f731c6f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_314159/1hop/metrics.csv",
+      "bytes": 4718,
+      "mtime_ns": 1790560769844015257,
+      "sha256": "fe95fafcbeecb9fe2666baf0da731b1d0c29939c7e5638cb00868d69c9b727ce"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_314159/1hop/predictions.parquet",
+      "bytes": 546015,
+      "mtime_ns": 1790560769872014954,
+      "sha256": "d732bd223eaca03c14407155137bc76d569973d24ef18e82f0ddce3f344b11db"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_314159/1hop/audit.json",
+      "bytes": 2158,
+      "mtime_ns": 1790560771575996499,
+      "sha256": "b40ee9508ba883e420393e8abaed4786cb8262c44692d313a2b6219ad9bfaef8"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_314159/1hop/metrics.csv",
+      "bytes": 4734,
+      "mtime_ns": 1790560771563996630,
+      "sha256": "da8ea9d271d46804e0af8f9422d78ef26264890a0c9bbd3f47f8b3787a531c44"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_314159/1hop/predictions.parquet",
+      "bytes": 103605,
+      "mtime_ns": 1790560771571996543,
+      "sha256": "cbf526088d0376a5b26ec7659cd24d51b3de47e7725156b7627c1b205137aba7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_20260806/strict/audit.json",
+      "bytes": 2172,
+      "mtime_ns": 1790560777259934950,
+      "sha256": "aacdb07177d736431689a10583dbe590ebd36ce74a9737f2e4820fb47c6cd9e9"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_20260806/strict/metrics.csv",
+      "bytes": 4766,
+      "mtime_ns": 1790560777235935210,
+      "sha256": "e9ed22be674ee18528007ac4663e258b18e050c1e44b8637e01df9d0eedc6a28"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_20260806/strict/predictions.parquet",
+      "bytes": 546008,
+      "mtime_ns": 1790560777255934993,
+      "sha256": "83a39b23dc6b86699fc21cff4022688180be47ecec44ef5ba04a0bce0aacfb92"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_20260806/strict/audit.json",
+      "bytes": 2174,
+      "mtime_ns": 1790560778911917062,
+      "sha256": "8d14478b4de6f04605e7eefbf44b789a2062d705499e1947ca5c22be38892328"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_20260806/strict/metrics.csv",
+      "bytes": 4755,
+      "mtime_ns": 1790560778903917149,
+      "sha256": "477094bdadfd8ffee676c30b3e6731da0b17f1d4c9f34839d2b363c77a0f031e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_20260806/strict/predictions.parquet",
+      "bytes": 103684,
+      "mtime_ns": 1790560778911917062,
+      "sha256": "7a545a28399dbd6591dc97bcc583e5a22cd3e0c5b0cdeb385659307e24beff14"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_20260806/1hop/audit.json",
+      "bytes": 2164,
+      "mtime_ns": 1790560784603855436,
+      "sha256": "c652dc961308e7ddd393027a45924f9c284b32262a2c4bd7f1255d14bdbcdfda"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_20260806/1hop/metrics.csv",
+      "bytes": 4743,
+      "mtime_ns": 1790560784579855696,
+      "sha256": "ad2482222a6191db39479c37d3e14f369478975b3edf9205c90231c3f610ff96"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_b/seed_20260806/1hop/predictions.parquet",
+      "bytes": 546354,
+      "mtime_ns": 1790560784603855436,
+      "sha256": "d2c7ab83147e9386f9eb0cfa2727e3809e41b479e9fc2329fa538923957096d2"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_20260806/1hop/audit.json",
+      "bytes": 2166,
+      "mtime_ns": 1790560786275837336,
+      "sha256": "1a0e0bdb1e34cb9583c306e1a602f1fd6ae16ed3666a0c9ffc785645ba4086e5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_20260806/1hop/metrics.csv",
+      "bytes": 4582,
+      "mtime_ns": 1790560786263837466,
+      "sha256": "2bd529135f530090c4c7878c9ed558fbd4a74999c92e574619f035445f2c16e5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_b/seed_20260806/1hop/predictions.parquet",
+      "bytes": 103501,
+      "mtime_ns": 1790560786271837380,
+      "sha256": "1f1ac44ca8d6928971d040477995b794aaff08966f82c73b4a10ab0814bc3eaa"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_42/strict/audit.json",
+      "bytes": 2147,
+      "mtime_ns": 1790560792971764855,
+      "sha256": "daf7219bfd37d6f8c9286e6a95b582c8aa167290cbc9611792ad0408fa7c8b87"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_42/strict/metrics.csv",
+      "bytes": 4513,
+      "mtime_ns": 1790560792955765028,
+      "sha256": "06a9145788c7ce853b37f17dc76f25c27d4bd1059534dfa902fe4160a6c0e781"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_42/strict/predictions.parquet",
+      "bytes": 277573,
+      "mtime_ns": 1790560792971764855,
+      "sha256": "57801ab0e104597d0a2588c72d55424706e743dcfade99122816328210412027"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_42/strict/audit.json",
+      "bytes": 2149,
+      "mtime_ns": 1790560794735745762,
+      "sha256": "a9623b338d6166a83c75f4ccbff655d30e474b5cca87b92927b84a3d0090f9f1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_42/strict/metrics.csv",
+      "bytes": 4689,
+      "mtime_ns": 1790560794715745979,
+      "sha256": "8e6ad4585acbecf1a0cff97fdc75c0b4b3af1614aa486d6d64c3ce560bee1e81"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_42/strict/predictions.parquet",
+      "bytes": 222573,
+      "mtime_ns": 1790560794731745806,
+      "sha256": "12acc33523f2e31f6ead223bde7a51673f726ec3d6e90dc2a118ed6547eef011"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_42/1hop/audit.json",
+      "bytes": 2139,
+      "mtime_ns": 1790560807443608242,
+      "sha256": "e2ff18977f8f0fc832d2689ae9a1c79fc9fa98c4bb8fefc7ecef44ae39863c77"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_42/1hop/metrics.csv",
+      "bytes": 4503,
+      "mtime_ns": 1790560807415608545,
+      "sha256": "4e3e225c070256ed9385204cd3bc766fb184a5aa73b652cc618cbca045cca877"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_42/1hop/predictions.parquet",
+      "bytes": 277711,
+      "mtime_ns": 1790560807439608286,
+      "sha256": "50e7d56d62b30c7da720988ed954f1a36d9f8b3887ae044f7e1548d54139ca0e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_42/1hop/audit.json",
+      "bytes": 2141,
+      "mtime_ns": 1790560812291555790,
+      "sha256": "29ed913b910bdf9047b22ac608a2d0dfeece56a929f9142ad73e906ba304431c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_42/1hop/metrics.csv",
+      "bytes": 4720,
+      "mtime_ns": 1790560812219556569,
+      "sha256": "283916507d78c0b2d05a9f9d4f7e5fe6851c00e93625224d8b5ea83cf570eb40"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_42/1hop/predictions.parquet",
+      "bytes": 222841,
+      "mtime_ns": 1790560812291555790,
+      "sha256": "e103443ae84ae853451efb682b4c1c2afbe75e22d76c96d3a4aa0f6e4221b371"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_314159/strict/audit.json",
+      "bytes": 2163,
+      "mtime_ns": 1790560836987288689,
+      "sha256": "75b3ecdff83b07496c2a3ccd9d0465cfba6fbe0632a96ae3cf488d40250ac159"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_314159/strict/metrics.csv",
+      "bytes": 4549,
+      "mtime_ns": 1790560836915289467,
+      "sha256": "135fde37a3bcfce7834673c32b31b652223db2c3a2a78b505d77ee9f2b4203cd"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_314159/strict/predictions.parquet",
+      "bytes": 277737,
+      "mtime_ns": 1790560836983288732,
+      "sha256": "0262f1d5eac25a1299e1d0f39c89d1792c27a5706995a61abf37bbd40ceaec17"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_314159/strict/audit.json",
+      "bytes": 2165,
+      "mtime_ns": 1790560842811225721,
+      "sha256": "152c173fc30b4298b90deac71093ace62b46735d747d9c51ea6f98554a26a592"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_314159/strict/metrics.csv",
+      "bytes": 4761,
+      "mtime_ns": 1790560842791225937,
+      "sha256": "58a5d7093be9d253589a8ebec1838e03dba991189d3d6b14b6843347bb49cd87"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_314159/strict/predictions.parquet",
+      "bytes": 222963,
+      "mtime_ns": 1790560842811225721,
+      "sha256": "e70acef0c033f474f256410309d5aacd96c60b70c83f9e67096135c687dc0ea8"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_314159/1hop/audit.json",
+      "bytes": 2155,
+      "mtime_ns": 1790560873554893455,
+      "sha256": "55479f6bf0293b44ad265a2b0904cdae6ecd7897ec5d8a2b019c7f124cd34ca3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_314159/1hop/metrics.csv",
+      "bytes": 4536,
+      "mtime_ns": 1790560873526893758,
+      "sha256": "bd7120da7b7610149646cf0f7dba4249ff74ac4fc937b7b5b89e03df5a07a42e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_314159/1hop/predictions.parquet",
+      "bytes": 277737,
+      "mtime_ns": 1790560873550893498,
+      "sha256": "33d16d1220706c5e77afd5ab7bd96919f35d50f1763359420e585085a19bdba1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_314159/1hop/audit.json",
+      "bytes": 2157,
+      "mtime_ns": 1790560878202843241,
+      "sha256": "5d178adb3f53d35cb108302f3cd72b7cc6d8ac253208d793c01b8a3a87d9368d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_314159/1hop/metrics.csv",
+      "bytes": 4752,
+      "mtime_ns": 1790560878178843500,
+      "sha256": "84be71374f35a26709acdda0cc524a6316f11308b3decf26702ee9a8acee6694"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_314159/1hop/predictions.parquet",
+      "bytes": 222851,
+      "mtime_ns": 1790560878198843284,
+      "sha256": "84914bb2859f535878738988d97ec828e70a7c330656dcba1fdeca3a1d545d3f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_20260806/strict/audit.json",
+      "bytes": 2171,
+      "mtime_ns": 1790560893214681092,
+      "sha256": "87757734a278189325d8fb01d3524857289ba969dc5a6c3ca3b14f0c591b70b6"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_20260806/strict/metrics.csv",
+      "bytes": 4569,
+      "mtime_ns": 1790560893186681394,
+      "sha256": "98adbae1dee3d3ede2a42b18b8dcd590e4ed7c983c7b280d2d474b60b63f8ade"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_20260806/strict/predictions.parquet",
+      "bytes": 277737,
+      "mtime_ns": 1790560893210681135,
+      "sha256": "026dabf2d685824aeff318908af9ae81bf7b2f95275f49531edd2650c2b5e3ff"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_20260806/strict/audit.json",
+      "bytes": 2173,
+      "mtime_ns": 1790560897854630984,
+      "sha256": "4a29e4d53a1675ab5cf6af65ff559e4c16e3fef4ec4e764640e80d8139b930fb"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_20260806/strict/metrics.csv",
+      "bytes": 4785,
+      "mtime_ns": 1790560897806631503,
+      "sha256": "14c74369d9f061bd540a67828b41a769eacfc2c845a0ca9bf998238fa8c8ea9e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_20260806/strict/predictions.parquet",
+      "bytes": 222699,
+      "mtime_ns": 1790560897854630984,
+      "sha256": "61d432b006f4d71fa84a54c1d202d698ce6a1d84d67cc3d4d6ba633a60d38324"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_20260806/1hop/audit.json",
+      "bytes": 2163,
+      "mtime_ns": 1790560923178357589,
+      "sha256": "91e44815153d8918e7da463cc0e868311502974c3da62cd047fa46e3051b4ddb"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_20260806/1hop/metrics.csv",
+      "bytes": 4547,
+      "mtime_ns": 1790560923094358495,
+      "sha256": "910ed2d1144e9ca1c6a2d4a811d31db76c9c4be9746d0000422b182020f3b572"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_c/seed_20260806/1hop/predictions.parquet",
+      "bytes": 277736,
+      "mtime_ns": 1790560923174357632,
+      "sha256": "9c239cbc65cc9146240f852f9aabc5a455423f6909b5c6336a1fb29114bccbb4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_20260806/1hop/audit.json",
+      "bytes": 2165,
+      "mtime_ns": 1790560928506300085,
+      "sha256": "633daa8a8f81d8999fe9454cc8b1aa30eb874ff6807d345215bfa878778744e3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_20260806/1hop/metrics.csv",
+      "bytes": 4758,
+      "mtime_ns": 1790560928486300301,
+      "sha256": "029301d262b5c4d885bb36bea97da8e11e0e3f4b6d5307739ea97b1d81b6199f"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_c/seed_20260806/1hop/predictions.parquet",
+      "bytes": 222690,
+      "mtime_ns": 1790560928502300128,
+      "sha256": "c91e8dac7b17c9a5d445c0b6e26b43f93d04dc9a47780083f3fe39bde8345901"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_42/strict/audit.json",
+      "bytes": 2134,
+      "mtime_ns": 1790560944998122128,
+      "sha256": "ed4c9005c6ab80ce82ee1123f5f09e40b8be9bff02294111519214999983659d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_42/strict/metrics.csv",
+      "bytes": 4694,
+      "mtime_ns": 1790560944970122430,
+      "sha256": "fce93bcbeba3c70ba0f147ab778302f0f0a5bb5f9bae52c65262074a90507fbb"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_42/strict/predictions.parquet",
+      "bytes": 320267,
+      "mtime_ns": 1790560944994122171,
+      "sha256": "5e70ffae04693114798c75fa202abeeec47c6aed8805adc4d54ed3802daa01ef"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_42/strict/audit.json",
+      "bytes": 2136,
+      "mtime_ns": 1790560948046089244,
+      "sha256": "f1d12257689adf9509d238cf639c4fd219cfc9fae0d46d5484b4be54a7e32ae1"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_42/strict/metrics.csv",
+      "bytes": 4606,
+      "mtime_ns": 1790560948030089417,
+      "sha256": "fe05b7e84e97db1abf2921037a12c9e52bd01bdc7436ae119bd1b5b762e28a9c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_42/strict/predictions.parquet",
+      "bytes": 121500,
+      "mtime_ns": 1790560948042089287,
+      "sha256": "0caf40bd7e81d2a4ce141519457e9ca1a8d016123d7d593e794261dbad978890"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_42/1hop/audit.json",
+      "bytes": 2126,
+      "mtime_ns": 1790560957413988188,
+      "sha256": "d817d9cbad99e2e19984d561c8c1604c4564a8429bfacb162be912216cb70606"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_42/1hop/metrics.csv",
+      "bytes": 4663,
+      "mtime_ns": 1790560957393988403,
+      "sha256": "d36163951182cf529723f397a9e66b594575f4e06cf64a69bd09d4f9053d5422"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_42/1hop/predictions.parquet",
+      "bytes": 320185,
+      "mtime_ns": 1790560957409988231,
+      "sha256": "e8c5561618235c4af1ce564ae5f2b771eae8c8259791d35da27086eee918a1a7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_42/1hop/audit.json",
+      "bytes": 2128,
+      "mtime_ns": 1790560959401966745,
+      "sha256": "2879b3378c28b2b52610d4425e0998d10d3988c7074807a040dcdadb4bfad65b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_42/1hop/metrics.csv",
+      "bytes": 4600,
+      "mtime_ns": 1790560959385966918,
+      "sha256": "d66f3ff7b320d927454eb05ad5daba8b24f139d83c6d23c88cecb353cb87df61"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_42/1hop/predictions.parquet",
+      "bytes": 121458,
+      "mtime_ns": 1790560959397966788,
+      "sha256": "5e6531d2084356a45498731a4f28f5b8e2146bdd100ff5abecb5c8cfb5dcac59"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_314159/strict/audit.json",
+      "bytes": 2150,
+      "mtime_ns": 1790560970341848756,
+      "sha256": "7b6c717bc190128e651134d5cf19aa9a3cb4abe9fb80853358790d35a61e5082"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_314159/strict/metrics.csv",
+      "bytes": 4724,
+      "mtime_ns": 1790560970317849015,
+      "sha256": "fd59de71b2a80b2a01e0082cc7a012e66f58c82ffcb38aeaa549515eefc5fde5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_314159/strict/predictions.parquet",
+      "bytes": 320278,
+      "mtime_ns": 1790560970341848756,
+      "sha256": "29b47c247281b2f08a137f179b386b9fdfd58b288329417908d34f9a7c9f6abd"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_314159/strict/audit.json",
+      "bytes": 2152,
+      "mtime_ns": 1790560973617813430,
+      "sha256": "3d2e4fa8aa7ce0e66dff73aa0556ebf61925e71dd8626dd569530c899aeceacf"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_314159/strict/metrics.csv",
+      "bytes": 4643,
+      "mtime_ns": 1790560973601813601,
+      "sha256": "4d4b8f451af74facea76de6b7f7f48dfc5a22b778ef7c351edb064a896f95717"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_314159/strict/predictions.parquet",
+      "bytes": 121486,
+      "mtime_ns": 1790560973613813472,
+      "sha256": "eb7eac5caece4cb2b2b80548c297c312db68c8ebf12513a2cc80fab2b25955c4"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_314159/1hop/audit.json",
+      "bytes": 2142,
+      "mtime_ns": 1790560982861713754,
+      "sha256": "5ab79c7b45ed13c96737350e84f254b2230bbba19139255d6e78347569ca54c6"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_314159/1hop/metrics.csv",
+      "bytes": 4711,
+      "mtime_ns": 1790560982845713927,
+      "sha256": "1794d52e3c51f6cfa355121b85cab728386becc34486f10efe69a2cc91f2b61b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_314159/1hop/predictions.parquet",
+      "bytes": 320085,
+      "mtime_ns": 1790560982861713754,
+      "sha256": "82a2a12bf2aa97e158d4c174fa585dcd59fe23caeab38f0a2ab701ba87ee6286"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_314159/1hop/audit.json",
+      "bytes": 2144,
+      "mtime_ns": 1790560984477696332,
+      "sha256": "cea2d9080b36cc8418576f8aa87ae63afde4e935b1dead7dc8428e07594743d7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_314159/1hop/metrics.csv",
+      "bytes": 4584,
+      "mtime_ns": 1790560984469696418,
+      "sha256": "d2f2592179a56974469100ff2be0a568440c9757e69a18fca786782364646e3b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_314159/1hop/predictions.parquet",
+      "bytes": 121468,
+      "mtime_ns": 1790560984477696332,
+      "sha256": "2b0270681c1a34f33108b660fb0cdeac7523d9e354f085d2d8481325d5648822"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_20260806/strict/audit.json",
+      "bytes": 2158,
+      "mtime_ns": 1790560994129592278,
+      "sha256": "407eb99a85b27c5bc21b38bfbd18f745c06dfe27e0c0c905bedf07c37cdf8100"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_20260806/strict/metrics.csv",
+      "bytes": 4738,
+      "mtime_ns": 1790560994097592622,
+      "sha256": "e4f77342719b00f481cd99446403807199b8893291ddec9e765279d947e03c3a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_20260806/strict/predictions.parquet",
+      "bytes": 320273,
+      "mtime_ns": 1790560994125592321,
+      "sha256": "54d69ae8179a5445f30c00271ec49ebfcf41c7845bc546fadc64568fbfd8fd5a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_20260806/strict/audit.json",
+      "bytes": 2160,
+      "mtime_ns": 1790560996637565243,
+      "sha256": "ce91ac8b0e243ebd1f5d51629b6367b9a42d41ce77d66ff27daaad3e0710da0b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_20260806/strict/metrics.csv",
+      "bytes": 4636,
+      "mtime_ns": 1790560996625565372,
+      "sha256": "5bc61c16eb25399bccd9b09164da16b09bbf82a0277b22311270ef8fc1d4979e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_20260806/strict/predictions.parquet",
+      "bytes": 121476,
+      "mtime_ns": 1790560996637565243,
+      "sha256": "a3ef0b5790a7e3ca24190feee6c3577b98f12f062a970085cc4980e621ebb3d3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_20260806/1hop/audit.json",
+      "bytes": 2150,
+      "mtime_ns": 1790561004557479877,
+      "sha256": "bc43f1c515597f0888be121438aff91427f5ef22a90dcbcce82fedd6465d9a44"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_20260806/1hop/metrics.csv",
+      "bytes": 4699,
+      "mtime_ns": 1790561004537480092,
+      "sha256": "79009aa9de16633462b2a5edcac31c9114fb1b344bb1000540158277a821c45b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_d/seed_20260806/1hop/predictions.parquet",
+      "bytes": 320310,
+      "mtime_ns": 1790561004553479920,
+      "sha256": "dfd6917fd28f0a5468c6dc9a240f01f19d8ab79ae865a8a6e47f15208bbc916b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_20260806/1hop/audit.json",
+      "bytes": 2152,
+      "mtime_ns": 1790561006129462934,
+      "sha256": "b10c1cbd38005202663c3318236af2594f4889bd20c7e217f8b1545983956703"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_20260806/1hop/metrics.csv",
+      "bytes": 4594,
+      "mtime_ns": 1790561006117463064,
+      "sha256": "b1c0c5e4740a8566949c2c22202516b4172b3b4b4205ca906dc69ebb7de5addc"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_d/seed_20260806/1hop/predictions.parquet",
+      "bytes": 121438,
+      "mtime_ns": 1790561006125462978,
+      "sha256": "6f29ec10493af845fe97fc5e6aadef24a6415814fd3b6c4d60b7c2934669b869"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_42/strict/audit.json",
+      "bytes": 2135,
+      "mtime_ns": 1790561011893400816,
+      "sha256": "012a8bdfe72bab6d609bb6817926efabc0deb4801105dc1160aff19383b8c303"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_42/strict/metrics.csv",
+      "bytes": 4709,
+      "mtime_ns": 1790561011873401031,
+      "sha256": "34e809250dc6f553fc9d7108625e39c383843425ee4f82ced3491accf02921ff"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_42/strict/predictions.parquet",
+      "bytes": 353708,
+      "mtime_ns": 1790561011893400816,
+      "sha256": "20750985f3213d6f00a7108957b71c9a452069073964c3ab9c74bb21a53a28fe"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_42/strict/audit.json",
+      "bytes": 2136,
+      "mtime_ns": 1790561013621382194,
+      "sha256": "527de42d9320d36213b5dd42f2df560a4c9817e5405314e40516a96a746bcd6c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_42/strict/metrics.csv",
+      "bytes": 4372,
+      "mtime_ns": 1790561013617382237,
+      "sha256": "ce3cb5fe2a615a088a9183a0acde7faef8b97505341998f16de9e8d57d272a4c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_42/strict/predictions.parquet",
+      "bytes": 56162,
+      "mtime_ns": 1790561013621382194,
+      "sha256": "050e1308bb8163523ba92f6731c4f4515f2325dbaac4bcbbdbfe2b1cff01c8b8"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_42/1hop/audit.json",
+      "bytes": 2127,
+      "mtime_ns": 1790561020501308057,
+      "sha256": "278dd39252b673bd76a7ca976509c535b6aae609a13a16cb992ddc3052d6f6d0"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_42/1hop/metrics.csv",
+      "bytes": 4668,
+      "mtime_ns": 1790561020481308272,
+      "sha256": "62fb6806f9a2a233a07c4f66d0c4eb70d9339e4d5448fd68003df64e47b697ac"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_42/1hop/predictions.parquet",
+      "bytes": 353340,
+      "mtime_ns": 1790561020497308100,
+      "sha256": "06f9b3cd0c5f3cebdc20f0bc29b2028cd49608bb4e0304cbcc0be779eee503d7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_42/1hop/audit.json",
+      "bytes": 2128,
+      "mtime_ns": 1790561021953292412,
+      "sha256": "4d7b1abd751d4a8d5c511e74d6d9c0bae467e7bf6ed487f788f24131bf5fbae5"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_42/1hop/metrics.csv",
+      "bytes": 4367,
+      "mtime_ns": 1790561021945292498,
+      "sha256": "735e03836ee2ca25454fa98aaec2f60dadfd07101caaacedc04cc7c77b9a6216"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_42/1hop/predictions.parquet",
+      "bytes": 56224,
+      "mtime_ns": 1790561021953292412,
+      "sha256": "50a75025922f2b7f3f2443defb2b57c9d71ede55380b9f143e7474c23d0b216d"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_314159/strict/audit.json",
+      "bytes": 2151,
+      "mtime_ns": 1790561028037226860,
+      "sha256": "de0dadeffb422f94a98d677a935cb60d457c1b0f575bbd44ca822d9bafabbdf2"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_314159/strict/metrics.csv",
+      "bytes": 4675,
+      "mtime_ns": 1790561028017227077,
+      "sha256": "3b90edfa80679d125caf15197b4f389d41d1364744b1fd926b37ce3964ea3817"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_314159/strict/predictions.parquet",
+      "bytes": 353677,
+      "mtime_ns": 1790561028037226860,
+      "sha256": "d7294b99d5f30f16114a217fc873f47875453229165a86217eb19c1877661312"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_314159/strict/audit.json",
+      "bytes": 2152,
+      "mtime_ns": 1790561029645209537,
+      "sha256": "38e6f387a1003bd9f65b4b4945cd0023d02bf4c1b9893f91e32558594ec8f7e3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_314159/strict/metrics.csv",
+      "bytes": 4408,
+      "mtime_ns": 1790561029641209580,
+      "sha256": "bcac3ffd42d078aa73e068393f5bd2d6b615742bd9e8606383fc42fe0c8f67db"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_314159/strict/predictions.parquet",
+      "bytes": 56185,
+      "mtime_ns": 1790561029645209537,
+      "sha256": "29b0fcd6f173e3492e4f5a206a197393486810aafa38c5cae9721b90da63633e"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_314159/1hop/audit.json",
+      "bytes": 2143,
+      "mtime_ns": 1790561036145139512,
+      "sha256": "08f2a145a632242ff3df754d04ee90a666b3fefd9d67c883fc48ea857dca0ef2"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_314159/1hop/metrics.csv",
+      "bytes": 4730,
+      "mtime_ns": 1790561036125139727,
+      "sha256": "2b49a9fd2889d4016ed278bfcf03c93b773998802b4e9f6f5dd9de06ee5a92db"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_314159/1hop/predictions.parquet",
+      "bytes": 353927,
+      "mtime_ns": 1790561036145139512,
+      "sha256": "9b1eb20f7508030fa744b48a9269688097a5aad9e28dee39236f5a9a6f3f9d31"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_314159/1hop/audit.json",
+      "bytes": 2144,
+      "mtime_ns": 1790561037769122019,
+      "sha256": "d593c47570d4657d113e538e6016e4eec066d23c2dc626cd0eeb77c56f34565a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_314159/1hop/metrics.csv",
+      "bytes": 4398,
+      "mtime_ns": 1790561037761122104,
+      "sha256": "045c6cd798400d466bf9bd179aa4ab6e1936b9b210e3cf3c4e22549aaad57868"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_314159/1hop/predictions.parquet",
+      "bytes": 56198,
+      "mtime_ns": 1790561037765122061,
+      "sha256": "b05bc6d43ea9ae7637fd5f0d36dfdb93e730ee7ca5cee5181c578127f2cce7dd"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_20260806/strict/audit.json",
+      "bytes": 2159,
+      "mtime_ns": 1790561045325040628,
+      "sha256": "57e9323aaaa0d7173f660d37d4d6ca8eca7269f8fe8651202d5289fa72b4c394"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_20260806/strict/metrics.csv",
+      "bytes": 4717,
+      "mtime_ns": 1790561045305040843,
+      "sha256": "2998ff11790b5fea4f93c41f45f758fc3cde08e85a411fff15ec68a618c4ec84"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_20260806/strict/predictions.parquet",
+      "bytes": 353199,
+      "mtime_ns": 1790561045325040628,
+      "sha256": "5ea9472090661fc1c73aaa3593dbafc8c5e53af7462ca5921a91f99258d06afe"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_20260806/strict/audit.json",
+      "bytes": 2160,
+      "mtime_ns": 1790561047057021972,
+      "sha256": "33f4728575ad929a38e308cc446b26d25de203b2c5d3e3d7b0618c66d719cd85"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_20260806/strict/metrics.csv",
+      "bytes": 4427,
+      "mtime_ns": 1790561047049022059,
+      "sha256": "053aee3e2fbe5debb83cddb283f9629c453ee9d64d335a0956f55cc44f65dc15"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_20260806/strict/predictions.parquet",
+      "bytes": 56209,
+      "mtime_ns": 1790561047057021972,
+      "sha256": "b679adc268f307f75e8b9fac836a9fd50f42d542f40778a38b02448d0184a684"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_20260806/1hop/audit.json",
+      "bytes": 2151,
+      "mtime_ns": 1790561053536952182,
+      "sha256": "aeb65bde2f737261ea61de0893439a67d432cce9f6ee36e69b8dc199fde9d9d8"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_20260806/1hop/metrics.csv",
+      "bytes": 4746,
+      "mtime_ns": 1790561053508952483,
+      "sha256": "2c40f4932c3a513bce23cb4974730f1f17f2a2ba98375e7db067a4063b5f23d6"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/complex_traits/fold_e/seed_20260806/1hop/predictions.parquet",
+      "bytes": 353546,
+      "mtime_ns": 1790561053536952182,
+      "sha256": "178cc1809c11cd45da9d26baab800425da988eac9952203fb8732a75bfa3fe71"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_20260806/1hop/audit.json",
+      "bytes": 2152,
+      "mtime_ns": 1790561054912937362,
+      "sha256": "53526c4b015ece5b17f1972f3076d701afa2b281980e58bdd16da2eb564bd7be"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_20260806/1hop/metrics.csv",
+      "bytes": 4428,
+      "mtime_ns": 1790561054908937405,
+      "sha256": "7a04dcb31073f5adfae2bed9af3c39fd81b467ed1975aa34c82f4ec8e759b787"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/traitgym_allele_full/mendelian_traits/fold_e/seed_20260806/1hop/predictions.parquet",
+      "bytes": 56243,
+      "mtime_ns": 1790561054912937362,
+      "sha256": "3fceb8f441d40790ac6bc28b00136f572bbeee37f9d6c465b903780c17eba934"
+    }
+  ],
+  "plan": {
+    "artifact_type": "analysis_plan",
+    "version": 1,
+    "task": "traitgym_allele_score_sensitivity",
+    "objective": "Evaluate publisher-provided frozen NT-2.5B allele likelihood scores with the existing locus priors, retaining all original variants and comparisons.",
+    "recorded_before_first_probe": true,
+    "dataset_revision": "1fde19555fe8c0a55b1382bdf4c6f7082209f566",
+    "datasets": [
+      "complex_traits",
+      "mendelian_traits"
+    ],
+    "reference_config": "configs/entex_v1.json",
+    "partition": "All five existing manuscript chromosome folds, three seeds, strict and one-hop; original test and validation chromosomes also excluded from graph encoder training",
+    "unit": "Original variant row; repeated positions with different alleles remain together by chromosome. Preserve all original match groups, each containing one positive and nine negatives on one chromosome.",
+    "encoder": "Existing v1 frozen checkpoint for each fold/seed/context; no new pretraining, tuning or checkpoint selection on TraitGym",
+    "sequence": "Unmodified manuscript segment-level NT-v2 50M cache; not reference-minus-alternate embeddings",
+    "mapping": "Previously audited GRCh38 [pos-1,pos) containing reference segment; no nearest fallback and no row exclusions",
+    "probe": "Existing standardized class-balanced logistic regression; max_iter=4000 for every arm, unchanged solver, regularization and tolerance; calibration and threshold from validation chromosomes only",
+    "feature_sets": [
+      "variant_llr",
+      "coordinate_plus_variant_llr",
+      "coordinate_plus_frozen_sequence_fm",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_pangenomefm"
+    ],
+    "probe_max_iter": 4000,
+    "primary": "AUPRC(C+S+V+T) minus AUPRC(C+S+V), separately for both datasets and contexts",
+    "controls": [
+      "C+S+V+H+T minus C+S+V+H",
+      "C+S+V minus C+S",
+      "C+S+V+T minus C+T"
+    ],
+    "secondary_metrics": [
+      "chromosome-size-weighted AUPRC",
+      "AUROC",
+      "prevalence-normalized AP",
+      "balanced accuracy",
+      "F1",
+      "precision",
+      "recall"
+    ],
+    "inference": "Existing hierarchical fold/seed bootstrap with 10000 draws; paired exact fold sign-flip and BH correction over all dataset/context/contrast comparisons within each metric. Overlapping training folds limit independence.",
+    "n_bootstrap": 10000,
+    "statistics_seed": 20260927,
+    "validity_gates": [
+      "100% original row and match-group retention",
+      "Both classes in every train/validation/test partition",
+      "Exact graph, NT, checkpoint and actual topology-cache provenance",
+      "No PIP, trait, OMIM, consequence, MAF, LD, TSS distance, match-group identity or supplied labels in feature matrices",
+      "All compared probes converge",
+      "Identical evaluated identities and labels for every feature",
+      "No tuning or assay/subset selection based on these test results",
+      "Pinned score-file SHA-256 and original source row/index identity",
+      "No replacing any original C/K/S/T feature meaning"
+    ],
+    "interpretation": "Five-fold locus-prior adaptation, not the official leave-one-chromosome-out TraitGym leaderboard. Static T and S cannot distinguish alternate alleles at the same segment. Favorable T gains do not establish learned-weights superiority without random-encoder controls. Report all null and negative outcomes. V is an author-provided allele-aware sequence score, not newly trained PangenomeFM or a reproduction of the complete official NT benchmark. Previously observed test results motivated this sensitivity; any gain is exploratory.",
+    "references": [
+      "https://github.com/songlab-cal/TraitGym",
+      "https://huggingface.co/datasets/songlab/TraitGym"
+    ],
+    "development_status": "Exploratory sensitivity specified after inspecting the original locus-prior test results; not independent confirmation. No architecture or hyperparameter selection on this extension.",
+    "variant_score_definition": "V contains signed LLR and its absolute value, fixed before fitting. The original author NT-2.5B masked-allele score averages forward and reverse sequences; this is not its full embedding-based benchmark.",
+    "custom_feature_sets": {
+      "variant_llr": [
+        "variant_llr"
+      ],
+      "coordinate_plus_variant_llr": [
+        "coordinate",
+        "variant_llr"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "frozen_pangenomefm"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "topology_control"
+      ],
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "variant_llr",
+        "topology_control",
+        "frozen_pangenomefm"
+      ]
+    },
+    "feature_labels": {
+      "variant_llr": "V (NT-2.5B allele scores)",
+      "coordinate_plus_variant_llr": "C+V",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr": "C+S+V",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm": "C+S+V+T",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control": "C+S+V+H",
+      "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm": "C+S+V+H+T"
+    },
+    "comparisons": [
+      [
+        "V_given_CS",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr",
+        "coordinate_plus_frozen_sequence_fm"
+      ],
+      [
+        "T_given_CSV",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr"
+      ],
+      [
+        "T_given_CSVH",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_topology_control"
+      ],
+      [
+        "SV_given_CT",
+        "coordinate_plus_frozen_sequence_fm_plus_variant_llr_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_pangenomefm"
+      ]
+    ],
+    "variant_scores": {
+      "complex_traits": {
+        "filename": "complex_traits_nt_llr.parquet",
+        "sha256": "b7180623654f41961c6997b1ff8d1002091cc62ddb4c264acac26ddab73d5187",
+        "publisher_path": "complex_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+      },
+      "mendelian_traits": {
+        "filename": "mendelian_traits_nt_llr.parquet",
+        "sha256": "8c88e183115bbe05c7dec777a1155d62531985f60b481acbc4e914970446f3fd",
+        "publisher_path": "mendelian_traits_matched_9/features/NucleotideTransformer_LLR.parquet"
+      }
+    },
+    "author_code_commit": "4d80fe889415ffc02d45c7cb5446a326288819bd",
+    "author_model": "InstaDeepAI/nucleotide-transformer-2.5b-multi-species",
+    "score_provenance": "Exact published score files pinned by dataset revision and LFS SHA-256. Source rule reads original test.parquet and writes predictions in source order. Files have positional indices, not genomic IDs; alignment relies on this published contract. Model-weight revision and exact original runtime are not recorded by the author code."
+  },
+  "interpretation": "Exploratory pointwise fold/seed intervals; seed repetitions are not independent biological samples. No performance-based subset selection."
+}
