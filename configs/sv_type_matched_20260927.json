@@ -1,0 +1,120 @@
+{
+  "artifact_type": "analysis_plan",
+  "version": 1,
+  "task": "hgsvc3_length_matched_sv_type",
+  "recorded_before_first_fit": true,
+  "objective": "Predict known SV class (INS/DEL/INV) from frozen first-affected-base reference-segment representations, controlling chromosome/length-bin distributions.",
+  "reference_config": "configs/entex_v1.json",
+  "examples_sha256": "2309ae6f48aa36976b592f1a8819bae55bdbfb9fe9ffb8b42905cb006bf7b59e",
+  "loci_sha256": "ac3624b284291543c0668a74705269ca6e430c07b69c417b5b4b9f6492384548",
+  "n_events": 669,
+  "class_counts": {
+    "DEL": 223,
+    "INS": 223,
+    "INV": 223
+  },
+  "topology_control_sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166",
+  "feature_sets": [
+    "coordinate",
+    "frozen_sequence_fm",
+    "frozen_pangenomefm",
+    "coordinate_plus_frozen_sequence_fm",
+    "coordinate_plus_frozen_pangenomefm",
+    "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+    "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+    "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+    "L",
+    "CSL",
+    "CSLT",
+    "CSLH",
+    "CSLHT"
+  ],
+  "custom_feature_sets": {
+    "L": [
+      "event_log_length"
+    ],
+    "CSL": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "event_log_length"
+    ],
+    "CSLT": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "event_log_length",
+      "frozen_pangenomefm"
+    ],
+    "CSLH": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "event_log_length",
+      "topology_control"
+    ],
+    "CSLHT": [
+      "coordinate",
+      "frozen_sequence_fm",
+      "event_log_length",
+      "topology_control",
+      "frozen_pangenomefm"
+    ]
+  },
+  "probe_max_iter": 4000,
+  "probe": "Separate native balanced logistic C=1 one-versus-rest probe for each class; frozen v1 T and NT S. Native train-only scaling, validation-only temperature/F1 threshold. No tuning on test.",
+  "partition": "All five original chromosome folds, three checkpoint seeds and both contexts; every event and repeated anchor remains chromosome grouped.",
+  "matching": "Fixed chromosome and length bins, equal class counts without replacement, seed 20260927, hash-ordered IDs. 223 events per class, 669 total. 75 primary-chromosome inversions outside common support are retained in natural_events.parquet.",
+  "representation": "One BED first-affected-base anchor per event for every class. No END/distance/ID/donor metadata in C/S/T. Event log length is explicitly labeled L and evaluated separately.",
+  "metrics": [
+    "auprc",
+    "auroc",
+    "normalized_ap",
+    "balanced_accuracy",
+    "f1",
+    "precision",
+    "recall"
+  ],
+  "comparisons": [
+    [
+      "T_given_CS",
+      "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm"
+    ],
+    [
+      "T_given_CSH",
+      "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+    ],
+    [
+      "T_given_CSL",
+      "CSLT",
+      "CSL"
+    ],
+    [
+      "T_given_CSLH",
+      "CSLHT",
+      "CSLH"
+    ]
+  ],
+  "n_bootstrap": 10000,
+  "statistics_seed": 20260927,
+  "inference": "Per-class one-versus-rest AP plus macro average over all three classes; paired hierarchical fold/seed bootstrap, exact fold sign-flip and BH within metric over all classes/macro, contexts and contrasts. Macro binary metrics are not joint multiclass accuracy.",
+  "validity_gates": [
+    "All declared 669 events retained",
+    "Complete C/S/T/H coverage and exact source/checkpoint identities",
+    "All OVR probes converge",
+    "Same test event identities in every arm/class",
+    "Full saved-prediction replay",
+    "No bin changes based on performance"
+  ],
+  "limitations": [
+    "Common-support matched population, not natural class prevalence or all 298 inversions",
+    "Known-SV type classification, not discovery, pathogenicity, or breakpoint detection",
+    "New anchor representation differs from original two-breakpoint INS/DEL benchmark",
+    "No DUP/complex labels in these input tables; no class relabeling",
+    "Graph donor overlap and v1 shortcut caveats remain",
+    "Static reference-segment vectors cannot distinguish events with identical features; no learned-versus-random claim"
+  ],
+  "references": [
+    "https://github.com/EichlerLab/svpop",
+    "https://www.nature.com/articles/s41586-025-09140-6"
+  ]
+}

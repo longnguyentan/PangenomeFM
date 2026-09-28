@@ -1,0 +1,61 @@
+# SV type extension: preparation and prespecified frozen experiment
+
+## Data and coordinate audit
+
+The two existing HGSVC3 GRCh38 annotation tables contain 176,231 INS/DEL events and 300 inversions. These are SV-Pop BED+6 tables. The parser validates integer half-open intervals, class-specific interval lengths, unique event IDs, and type/length agreement. The publisher documents this table format and versioned IDs in [SV-Pop](https://github.com/EichlerLab/svpop) and its [variant utilities](https://github.com/EichlerLab/svpop/blob/main/svpoplib/variant.py).
+
+A strict initial ID-position check exposed seven `.1` ID suffixes and 181 retained INS/DEL IDs whose encoded position equals BED POS rather than POS+1. Representative records agree with the existing padded-allele VCF at the BED coordinates. The parser retains these IDs, uses the coordinate columns, and counts discrepancies; it never changes a coordinate to fit an ID. A full VCF/annotation allele-length and coordinate audit is required before fitting.
+
+| Population | INS | DEL | INV | Total |
+|---|---:|---:|---:|---:|
+| Original annotation rows | 111,803 | 64,428 | 300 | 176,531 |
+| Original chromosome-fold universe | 110,623 | 63,346 | 298 | 174,267 |
+| Fixed chromosome/length-bin common support | 223 | 223 | 223 | 669 |
+
+The 2,264 non-primary-contig rows remain in `excluded_events.parquet` with their reason. No new graph release or labels are downloaded. All 298 primary-chromosome inversions remain in `natural_events.parquet`; 75 do not enter the matched sensitivity because their chromosome/length bin lacks equal support across the three classes. No bins or inclusion criteria depend on model performance.
+
+The natural population has 147,429 distinct anchors, including 2,588 anchors with more than one class. The matched population has 667 anchors, with no conflicting class labels at identical anchors. Distinct event IDs are preserved even when their input vectors will be identical. These limitations must not be disguised as allele-aware modeling.
+
+## Predeclared task
+
+[Protocol](../configs/sv_type_matched_20260927.json) records exact prepared-table hashes before fitting. The first completed experiment targets the **matched common-support population**, with prevalence 1/3 for each one-versus-rest task. It is not a result at natural prevalence, and it is not an evaluation of every inversion.
+
+Each event uses the graph segment containing its first affected base, consistently across INS, DEL and INV. This avoids directly revealing class-specific endpoint span conventions through feature assembly. Existing C/S/T definitions and graph/checkpoint versions remain unchanged. Explicit log event length L is reported as its own control; it is never silently added to C. This differs from the historical two-breakpoint INS/DEL task and must not replace its reported numbers.
+
+The experiment uses the original chromosome folds, three seeds and both contexts. Three separate native balanced logistic probes (C=1, uniform 4,000-iteration ceiling) predict DEL, INS and INV versus the other two types. Encoders remain frozen; scaling uses training chromosomes, calibration and thresholds use validation chromosomes. The original H control is included. All 13 declared feature arms are reported, producing 1,170 class/feature evaluations in 30 runs.
+
+Primary reports are per-type AUPRC and macro AUPRC, followed by AUROC, normalized AP and native binary metrics. Macro binary metrics are averages over the three one-versus-rest probes, not joint three-class accuracy. Four paired topology contrasts are evaluated with the existing hierarchical bootstrap, exact fold sign-flip tests and BH correction within metric across all classes/macro, contexts and contrasts.
+
+## Validity and limits
+
+- No relabeling inversions as deletions; the historical binary probe remains unchanged.
+- No random row split, donor-based duplication across partitions or nearest-segment fallback.
+- No source IDs, donor counts, variant type metadata or endpoint distances in learned features.
+- Complete mapped feature coverage required for every declared event.
+- Save every prediction, test identity and convergence record; replay metrics independently.
+- Known-event classification is distinct from SV discovery, genotyping, pathogenicity or breakpoint detection.
+- No DUP or complex-SV labels are supplied by these tables. Those classes remain a separate unresolved extension.
+- The graph-donor overlap and historical v1 shortcut caveats remain. This experiment cannot establish superiority over random encoders.
+
+## Reproduce
+
+```bash
+PYTHONPATH=src:. python -m tasks.transfer.sv_types \
+  --annotations <original-insdel-annotation.tsv.gz> <original-inversion-annotation.tsv.gz> \
+  --out-dir <fresh-preparation-dir>
+
+PYTHONPATH=src:. python -m tasks.entex.mapping \
+  --loci <preparation-dir>/length_matched_loci.parquet \
+  --full-segments <exact-manuscript-graph>/full_segments.csv.gz \
+  --out-dir <fresh-mapping-dir>
+
+PYTHONPATH=src:. python -m tasks.transfer.sv_type_probe --help
+PYTHONPATH=src:. python -m tasks.transfer.sv_type_report \
+  --root <completed-probe-root> \
+  --examples <preparation-dir>/length_matched_events.parquet \
+  --out-dir <fresh-report-dir>
+```
+
+[Preparation QC](../results/foundation_evidence_20260927/sv_type_preparation/qc.json) · [Split support](../results/foundation_evidence_20260927/sv_type_preparation/fold_support.csv) · [All matching strata](../results/foundation_evidence_20260927/sv_type_preparation/matching_strata.csv).
+
+Execution status: prepared and locally tested; server mapping/probing pending. Results will be recorded only after the complete declared run and replay.

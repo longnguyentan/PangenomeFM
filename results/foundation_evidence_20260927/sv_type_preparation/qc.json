@@ -1,0 +1,127 @@
+{
+  "status": "prepared",
+  "sources": [
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/data/external/hgsvc3_svtype_20260927/variants_GRCh38_sv_insdel_HGSVC2024v1.0.tsv.gz",
+      "bytes": 16505432,
+      "mtime_ns": 1786350801000000000,
+      "sha256": "8f32be379f8cadb5cc6c15b04552098dde80177da8a2aafb3881987f1e18f533"
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/data/external/hgsvc3_svtype_20260927/variants_GRCh38_sv_inv_HGSVC2024v1.0.tsv.gz",
+      "bytes": 74693,
+      "mtime_ns": 1786350803000000000,
+      "sha256": "2f4b09d858574c2674c6b94ca51ce532e70c70d5ba46bc01539f2e0118950fd2"
+    }
+  ],
+  "raw_rows": 176531,
+  "cohorts": {
+    "natural": {
+      "n": 174267,
+      "n_loci": 147429,
+      "classes": {
+        "INS": 110623,
+        "DEL": 63346,
+        "INV": 298
+      },
+      "class_prevalence": {
+        "INS": 0.6347902930560576,
+        "DEL": 0.363499687261501,
+        "INV": 0.0017100196824413113
+      },
+      "mixed_label_anchors": 2588
+    },
+    "length_matched": {
+      "n": 669,
+      "n_loci": 667,
+      "classes": {
+        "DEL": 223,
+        "INS": 223,
+        "INV": 223
+      },
+      "class_prevalence": {
+        "DEL": 0.3333333333333333,
+        "INS": 0.3333333333333333,
+        "INV": 0.3333333333333333
+      },
+      "mixed_label_anchors": 0
+    }
+  },
+  "id_position_minus_bed_start": {
+    "1": 176350,
+    "0": 181
+  },
+  "n_excluded": 2264,
+  "exclusion_chromosomes": {
+    "chr2_KI270715v1_random": 398,
+    "chr2_KI270716v1_random": 165,
+    "chr17_KI270729v1_random": 145,
+    "chr1_KI270712v1_random": 140,
+    "chr14_GL000225v1_random": 132,
+    "chrUn_KI270442v1": 126,
+    "chrUn_GL000216v2": 103,
+    "chr14_KI270722v1_random": 72,
+    "chr17_GL000205v2_random": 70,
+    "chrUn_KI270747v1": 66,
+    "chrUn_KI270744v1": 66,
+    "chrUn_GL000214v1": 64,
+    "chr22_KI270736v1_random": 55,
+    "chrUn_KI270751v1": 49,
+    "chrUn_KI270438v1": 48,
+    "chr5_GL000208v1_random": 47,
+    "chrUn_KI270538v1": 46,
+    "chrUn_KI270519v1": 34,
+    "chr14_KI270725v1_random": 32,
+    "chr22_KI270738v1_random": 31,
+    "chrUn_KI270749v1": 31,
+    "chrUn_GL000224v1": 29,
+    "chrUn_KI270757v1": 29,
+    "chr16_KI270728v1_random": 29,
+    "chr22_KI270737v1_random": 29,
+    "chrUn_GL000219v1": 23,
+    "chr22_KI270733v1_random": 21,
+    "chrUn_KI270742v1": 19,
+    "chrUn_KI270743v1": 19,
+    "chrUn_KI270435v1": 19,
+    "chr1_KI270709v1_random": 16,
+    "chr14_GL000009v2_random": 16,
+    "chr22_KI270732v1_random": 14,
+    "chr4_GL000008v2_random": 13,
+    "chr22_KI270735v1_random": 11,
+    "chrUn_GL000195v1": 10,
+    "chr1_KI270706v1_random": 10,
+    "chrUn_KI270748v1": 8,
+    "chr14_KI270723v1_random": 7,
+    "chrUn_GL000220v1": 7,
+    "chr14_GL000194v1_random": 5,
+    "chrUn_KI270512v1": 3,
+    "chr14_KI270724v1_random": 3,
+    "chr1_KI270708v1_random": 1,
+    "chr22_KI270731v1_random": 1,
+    "chr22_KI270734v1_random": 1,
+    "chr1_KI270711v1_random": 1
+  },
+  "matching_seed": 20260927,
+  "length_bins": [
+    50,
+    100,
+    500,
+    1000,
+    5000,
+    10000,
+    50000,
+    100000,
+    1000000,
+    "infinity"
+  ],
+  "class_definition": {
+    "DEL": 0,
+    "INS": 1,
+    "INV": 2
+  },
+  "representation": "One first-affected-base reference anchor for every class; SV length is a separate explicit control only.",
+  "matched_interpretation": "Exploratory equal-class chromosome/length-bin common-support task; prevalence is not natural. No performance-based subset selection.",
+  "mapping": "Pending existing interval mapper; no nearest fallback",
+  "no_model_fitted": true,
+  "coordinate_reference": "https://github.com/EichlerLab/svpop#sv-pop-pipeline"
+}
