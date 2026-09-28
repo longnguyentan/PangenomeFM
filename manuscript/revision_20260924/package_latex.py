@@ -15,6 +15,11 @@ Open `main.tex`. This is the revised manuscript, with four main figures, two mai
 tables, and a narrative supplement. Its supporting TeX files and figure PDFs are
 included. No compiled manuscript PDF is included.
 
+The abstract and Introduction state background, the method and study aims;
+findings appear in Results and Supplementary Results. The model description and
+architecture diagram are in Methods. Current figure order: paradigms (1), SV (2),
+cCRE (3), architecture (4).
+
 ## Compile
 
 Upload this entire ZIP to Overleaf, select `main.tex` and use pdfLaTeX. In a local

@@ -1,0 +1,58 @@
+{
+  "date": "2026-09-28",
+  "base_commit": "b72004087b6f0b715950a8debb4c7201fab1fc6f",
+  "scope": "Revise the existing open manuscript in place; separate study findings from background and procedures. No new experiments, metric changes, tab or manuscript PDF.",
+  "attachment": {
+    "path": "/Users/longnguyentan/.codex/attachments/6d41ecf4-e51d-4d37-b917-3b68897c6fe0/Pasted text.txt",
+    "sha256": "83c093f26c1b8e184da0b21ed9f8eef65c005550c166eee1bebebee047f72949",
+    "identical_to_original_reviewed_attachment": true
+  },
+  "source_sha256": {
+    "completed_methods_20260928.tex": "0de02497e016a55ce7698dff447ded50eaf0f1b70ac210ea0af55e95b50d0b48",
+    "completed_results_20260928.tex": "bc848e34da6d45d8c738020bd25d04eaf9d4e52572d8343e9ce8f859c6980a86",
+    "completed_supplement_20260928.tex": "4713671e5d17b912d9c4c9a13121920b08206dd92622709364992690879dbbac",
+    "development_rows.tex": "5d086c04d2b31ffdb3815421c97ae633bac493ada37fda92ffd0070561bd9bdd",
+    "editorial_comment_archive.tex": "ee9a48cdab3551d070602a088756d1f8fd3a96b9dd509cbee0af97aace0b96e1",
+    "entex_completed_rows.tex": "3690dea653c66fcb07b62ff87e1bc5185f1f6d99c7d943705711e18e4d63605a",
+    "entex_rows.tex": "6c5ea0fd7e19fbca6f03fd4ab9b30f782410d69ae6cea495ab4d11fc230650fc",
+    "hr_completed_rows.tex": "7c8580310e3d6d7b04f25c0556e4a497daebee20725d75927b8cf37485ea02c7",
+    "main.tex": "ac193e64c31fccd42106b32596ea7fa345f359f29bd00b93de067f6c2cafb7f9",
+    "sv_matched_rows.tex": "27cdd8e757db1efb2139492ef0b4573e8d2d89298510c94b9944aa3472286b28",
+    "sv_natural_rows.tex": "d10868e1ec089143d0ad25ad8ef69c228216aa0257b2622a8f1f9de778266102",
+    "transfer_boundary_rows.tex": "9d690a286f8f75d75dfa41293ab19d03e6771bbb2cbef76e921e433019509674"
+  },
+  "structure": {
+    "main": [
+      "Introduction",
+      "Results",
+      "Discussion",
+      "Methods"
+    ],
+    "results": [
+      "Known SV classification",
+      "Regulatory prediction and sequence coverage",
+      "Trained/random and reconstruction controls",
+      "External evaluation"
+    ],
+    "supplement": [
+      "Supplementary Results",
+      "Supplementary Methods"
+    ],
+    "main_figure_order": [
+      "Paradigms",
+      "SV",
+      "cCRE",
+      "Architecture"
+    ]
+  },
+  "validation": {
+    "comments": "Existing checker with pinned Git baseline passes; all pre-turn per-file comment multisets additionally preserved. All 118 original comments remain verbatim.",
+    "numbers": "Six numerical row files and all tracked figure assets unchanged.",
+    "source_boundary": "Manual independent reviews plus no-performance-estimate check for abstract/Introduction. Discussion is interpretive; audit/performance outcomes moved from Methods.",
+    "full_project": "pdfLaTeX draft-mode and both BibTeX bibliographies; final source reaches zero warnings, unresolved references and box warnings.",
+    "native_editor": "Compile attempted after final edits; cannot load editorial_comment_archive.tex because companion project files are unsupported.",
+    "visual": "Not rerendered in this turn; no separate PDF generated.",
+    "qa_directory": "qa/section_revision_20260928"
+  },
+  "editorial_status": "Latest five SECTION requests Done; earlier scientific evidence gaps and author-input items unchanged."
+}

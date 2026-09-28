@@ -3,6 +3,21 @@
 Updated 28 September 2026. Applies to the **existing open `main.tex`** in
 `manuscript/revision_20260924`; no replacement manuscript or tab was created.
 
+## Latest section-boundary revision
+
+- [x] Revise the existing six Introduction paragraphs; do not restore the old attachment's claims.
+- [x] Restrict the abstract and Introduction to background, the question, model and study design.
+- [x] Lead Results with SV classification, then regulatory activity, attribution controls and external evaluation.
+- [x] Keep the requested sequence-coverage Results heading.
+- [x] Move the architecture description and diagram to Methods; separate Supplementary Results and Supplementary Methods.
+- [x] Keep Discussion interpretive; move audit/performance outcomes out of Methods.
+- [x] Define biological/computational terms at first use; preserve all comments, numerical rows and figure assets.
+
+These changes follow the latest explicit request and supersede earlier requests
+for a model-description Results opening. Current main figure numbering is
+paradigms 1, SV 2, cCRE 3 and architecture 4. No scientific evidence-open item
+below changes status because of this writing revision.
+
 ## Status rules
 
 **Done** means the requested writing, figure, explanation or supported analysis is
@@ -23,16 +38,16 @@ manuscript text or a task.
 
 | ID | Excerpt lines | Status | Resolution in the saved source |
 |---|---:|---|---|
-| R01 | 5 | **Done** | Six Introduction paragraphs follow representation, biology, sequence models, graph context, prior work/gap and PangenomeFM with evidence. |
+| R01 | 5 | **Done** | Six Introduction paragraphs follow representation, biology, sequence models, graph context, prior work/gap and PangenomeFM study aims; findings are confined to Results. |
 | R02 | 9–10 | **Done** | Macias-Velasco et al. is cited; its functional-genomics and pipeline-dependent scope is now explained explicitly. |
 | R03 | 12 | **Done** | Opening starts with genome representation and coordinate systems before variation. |
-| R04 | 15 | **Done** | Four NMI examples reviewed; method-led Results, Discussion and Methods; four main figures/two main tables, with key controls retained. |
+| R04 | 15 | **Done** | Four NMI examples reviewed; clear Results, Discussion and method-first Methods; four main figures/two main tables, with key controls retained. |
 | R05 | 19 | **Done** | Introduction cites the paradigm figure and incorporates related work/background. |
 | R06 | 22–24 | **Done** | Redesigned Figure 1 uses concise parallel rows ending at learned representations; caption explains reuse. |
-| R07 | 40–47 | **Done** | Binary cCRE, PLS/pELS/dELS/CTCF-only and fixed complexity strata retained. The old first-Result ordering is superseded by the requested method-first organization. |
+| R07 | 40–47 | **Done** | Binary cCRE, PLS/pELS/dELS/CTCF-only and fixed complexity strata retained. Results now leads with SV findings under the latest section-boundary request. |
 | R08 | 52 | **Evidence open; question answered** | Completed COSIGT analysis and its negative result are explicit. Improving genotype calls, particularly complex/CNV calls, remains untested. |
 | R09 | 58 | **Done** | Heading changed to “Structural information and pretraining make different contributions.” Shortcut and trained/random controls remain visible. |
-| R10 | 68 | **Done** | First Results explains oriented segments and coupled neighborhoods. First Methods sections cover architecture, objective/optimization and frozen reuse. |
+| R10 | 68 | **Done** | Oriented segments, coupled neighborhoods and the architecture diagram now open Methods, followed by objective/optimization and frozen reuse. Latest author instructions supersede the old Results-design placement. |
 | R11 | 78 | **Done** | Exact focal loss, ordered scorer, class weighting, optimizer, learning-rate schedule, clipping and stopping are specified. |
 | R12 | 83–86 | **Done** | Dedicated sequence-coverage Results subsubsection explains 303,425 covered segments, zero missing features and 26.3% end sampling; detailed QC stays supplementary. |
 | R13 | 91 | **Done** | Supplement has narrative sections, figures, tables and separate references; S-prefixes match in text and bibliography. |

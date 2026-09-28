@@ -5,15 +5,17 @@ The learned-versus-random comparison conditions on the same coordinates, sequenc
 % Long Note: Example 4 places pretrained/random controls beside primary
 % benchmarks. The full H/R table now appears in the main Results; its values,
 % paired runs, intervals and multiplicity adjustment are unchanged.
-The complete trained-minus-random table is shown in the main Results (\cref{tab:s-hr}), because it directly qualifies the representation claim.
+The complete trained-minus-random table is shown in the main Results (\cref{tab:s-hr}), because it directly qualifies the representation claim. Across all 120 control runs, the paired examples, labels and baseline predictions were verified identical.
 
 % Long Note: Execution completeness and exact class counts moved from main text.
 \subsection{Matched three-class SV sensitivity}
 
+All 30 original $T$ caches lacked one terminal chrY segment used by 64 events. Append-only extensions from the original checkpoints supplied this segment without changing any existing vector. No event was dropped for missing features.
+
 The natural-frequency extension retained 110,623 INS, 63,346 DEL and 298 INV. All 30 fold/seed/context runs and 1,170 feature/class evaluations converged and their saved metrics replayed. The unchanged original $T$ had macro AP 0.474012 strict and 0.458608 one-hop, compared with $C+S$ 0.406955. Its $T$-after-$C+S+L+H$ increments were 0.047664 and 0.014988; the corresponding adjusted INV increments were 0.015190 (\CI $-0.004323$ to 0.036473) and $-0.001538$ ($-0.019657$ to 0.011729). The main table preserves the exact six-decimal estimates. Neither SV-type experiment contains a matched random-encoder arm.
 
 
-The matched cohort contains 223 events of each type, restricted to equal chromosome/length-bin support. Its macro $C+S$ AP is 0.414145 and $C+S+H$ AP is 0.473760. The latter exceeds $C+S+T$ (0.437789 strict; 0.440860 one-hop), and adding $T$ after $H$ is inconclusive (\cref{tab:s-sv-matched}). This population excludes 75 primary-chromosome inversions lacking matched support; all 298 inversions remain included in the natural-frequency experiment. Absolute AP across these different prevalences and feature constructions should not be used to rank model versions.
+The matched cohort contains 223 events of each type, restricted to equal chromosome/length-bin support. Its macro $C+S$ AP is 0.414145 and $C+S+H$ AP is 0.473760. The latter exceeds $C+S+T$ (0.437789 strict; 0.440860 one-hop), and adding $T$ after $H$ is inconclusive (\cref{tab:s-sv-matched}). This population excludes 75 primary-chromosome inversions lacking matched support; all 298 inversions remain included in the natural-frequency experiment. Absolute AP across these different prevalences and feature constructions should not be used to rank model versions. All 1,170 feature/class evaluations in the matched analysis also converged.
 
 \begin{table}[H]
 \centering
@@ -33,7 +35,7 @@ Conditioning features & Context & $\Delta_T$ & 95\% CI & $p$ & $q$ \\
 
 The prospective HG008 refit experiment completed all 30 planned evaluations on 69 clonal INS/DEL variants without training on HG008. Its gains beyond $C+S$ were 0.032525 (\CI $-0.053371$ to 0.110254) strict and 0.064863 ($-0.066739$ to 0.212115) one-hop. Both are inconclusive; a single external genome does not establish generalization across people. Six failed attempts to reproduce historical probes remain distinct from these successful prospective refits.
 
-TraitGym locus-prior prediction \citepS{supp__benegas2025traitgym} retained all 14,780 matched variants in the five-fold adaptation. Neither the original frozen-feature study nor the published NT-2.5B allele-score sensitivity established a positive topology interval. A subsequent completed 60-run probe study improved Mendelian $C+S+V$ AP from 0.102110 with the fixed linear classifier to 0.171056 with fixed shallow boosting, a paired difference of 0.068946 (\CI 0.017423--0.145067), where $V$ denotes published allele scores. This is a classifier improvement on previously inspected data; every topology AP interval remained nonpositive or inconclusive. The shared segment representation is a locus prior, not an allele-specific embedding, and its end-sampled sequence input omits most tested variant bases.
+TraitGym locus-prior prediction \citepS{supp__benegas2025traitgym} retained all 14,780 matched variants in the five-fold adaptation. Neither the original frozen-feature study nor the published NT-2.5B allele-score sensitivity established a positive topology interval. A subsequent completed 60-run probe study improved Mendelian $C+S+V$ AP from 0.102110 with the fixed linear classifier to 0.171056 with fixed shallow boosting, a paired difference of 0.068946 (\CI 0.017423--0.145067), where $V$ denotes published allele scores. Every original fixed-$C$ baseline prediction remained bitwise identical. This is a classifier improvement on previously inspected data; every topology AP interval remained nonpositive or inconclusive. The shared segment representation is a locus prior, not an allele-specific embedding, and its end-sampled sequence input omits most tested variant bases.
 
 Prediction of measured COSIGT locus quality \citepS{supp__bolognini2026cosigt} retained all 265 loci across 30 runs and 900 evaluations. Every original topology mean-absolute-error interval spanned zero. On the primary mean quality-value fraction, the constant training-median reference had lower mean error than every fitted feature model. A validation-only fallback to this constant reduced observed error but did not establish a topology benefit. These data concern quality conditional on released, evaluable sample--locus pairs; they do not demonstrate improved genotype calling or general callability. Detailed contrasts and the original negative results are retained in \hyperref[sec:s-transfer-boundaries]{Supplementary Information, external and measured-outcome transfer boundaries}.
 
@@ -84,5 +86,7 @@ Seed & Task & Full trained & Full random & Trained--random & Full--coordinate \\
 \end{table}
 
 The same-width junction-$Q$ reference comparison is also retained: mean $E-Q$ AP after $C+S+H$ was 0.001877 INS/DEL and 0.000099 cCRE, whereas after $C+S$ it was 0.006154 INS/DEL and $-0.000145$ cCRE. The masked-feature and junction experiments used different epoch budgets (20 versus 10); these differences do not isolate the pretraining objective or establish universal improvement. F1 and balanced accuracy were not uniformly better at every seed. The frozen original-v1 comparison and full chromosome replication remain separate pending analyses.
+
+The separate whole-graph NT extension covered all 751,237 segments and preserved all 479,477 benchmark rows byte-for-byte. This coverage result does not establish biological performance with wider graph context; the fixed replication continues to use its original benchmark cache.
 
 All numerical table rows in this update are generated from bundled completed-study CSV snapshots with recorded source paths and SHA-256 identities. The evidence bundle preserves the complete AP contrast families used here, original intervals and null results. It contains no partially completed chromosome-test scores.

@@ -5,6 +5,27 @@ no new experiments, metric recomputation or incomplete test results imported.
 Base: `3e1032c34c7ced0477b4fd40c28bf67f8166190f` on
 `codex/v2-evidence-review-20260927`.
 
+## Current organization: subsequent section-boundary revision
+
+The latest author request places this study's findings only in Results or
+Supplementary Results. The abstract states the problem, method and evaluation
+questions; the existing six Introduction paragraphs provide context and aims.
+An explicit Introduction heading is restored. Main Results now has four sections:
+known SV classification, regulatory prediction (including sequence coverage),
+trained/random attribution, and external evaluations. Discussion interprets the
+study without repeating numerical or task-by-task findings. The architecture
+and its diagram open Methods, followed by training and frozen reuse procedures.
+Audit and performance findings have moved from Methods into Supplementary Results;
+fixed chromosome partitions sit under Supplementary Methods.
+
+Main figures are now **1: paradigms; 2: SV; 3: cCRE; 4: architecture**. The two
+main tables remain SV types and trained/random controls. Numerical tables and
+figure assets are unchanged. Original comments remain verbatim; `Long Note:
+Done [SECTION-01]` through `[SECTION-05]` explain the changed placement.
+The earlier organization and rendered-PDF review below remain a historical record.
+This latest source receives draft-mode TeX/BibTeX checks, without a new PDF or
+visual-layout claim. The native editor still lacks support for companion files.
+
 ## What the four examples teach
 
 Page anchors below refer to the supplied PDFs, not printed journal page numbers.

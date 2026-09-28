@@ -6,6 +6,19 @@ meeting-note identities are in `method_revision_provenance.json`. Authors and
 affiliations are preserved. The requested general T2T acknowledgement is added;
 exact grant, consortium, contribution and release details remain author-confirmed.
 
+## Current section organization
+
+The abstract and Introduction contain background, model design and study aims,
+without this study's findings. Results leads with known SV classification, then
+regulatory prediction, trained/random controls and external evaluations. Discussion
+addresses interpretation and limits; Methods opens with the model and training.
+Supplementary Results and Supplementary Methods are explicitly separated.
+
+The current figure order is paradigms (1), SV (2), cCRE (3), architecture (4).
+Historical filenames and all vector assets are unchanged. Earlier editorial
+passes documented below precede this latest reorganization. The saved source
+and source ZIP are current; the existing manuscript PDF is an older snapshot.
+
 ## Scientific scope
 
 The original v1 cCRE and INS/DEL results remain identifiable. The update adds:
@@ -100,7 +113,7 @@ See `../../docs/MANUSCRIPT_EVIDENCE_AUDIT_20260928.md` for the change/evidence a
 ## NMI exemplar writing pass
 
 The current revision also uses the four supplied NMI papers as structural
-examples. Results now follow method rationale, known SV types, regulatory reuse,
+examples. At that revision, Results followed method rationale, known SV types, regulatory reuse,
 trained/random attribution and external limits. The complete H/random table is
 main Table 2; the original reconstruction plot is Supplementary Fig. S1. There
 are four main figures and two main tables. Numerical evidence and figure assets

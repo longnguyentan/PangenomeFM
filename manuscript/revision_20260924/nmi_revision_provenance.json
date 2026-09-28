@@ -73,5 +73,9 @@
   "subsequent_revision": {
     "record": "comment_resolution_provenance.json",
     "note": "Saved source now contains follow-up comment statuses, small prose clarifications and an engine guard. The output PDF above is the preceding fully rendered snapshot."
+  },
+  "latest_section_revision": {
+    "record": "section_revision_provenance.json",
+    "note": "Latest saved source separates findings from background/procedures. Existing PDF is an older snapshot; current source validated without generating a PDF."
   }
 }
