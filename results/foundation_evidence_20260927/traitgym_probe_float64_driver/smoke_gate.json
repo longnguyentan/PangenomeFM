@@ -1,0 +1,77 @@
+{
+  "status": "pass",
+  "comparisons": [
+    {
+      "dataset": "complex_traits",
+      "feature": "V_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "feature": "CS_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "feature": "CSV_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "feature": "CSVT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "feature": "CSVH_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "complex_traits",
+      "feature": "CSVHT_fixed",
+      "n": 3190,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "feature": "V_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "feature": "CS_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "feature": "CSV_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "feature": "CSVT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "feature": "CSVH_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    },
+    {
+      "dataset": "mendelian_traits",
+      "feature": "CSVHT_fixed",
+      "n": 800,
+      "bitwise_equal": true
+    }
+  ]
+}

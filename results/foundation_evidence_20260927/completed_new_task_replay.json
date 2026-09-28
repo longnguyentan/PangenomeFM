@@ -1,0 +1,71 @@
+{
+  "status": "pass",
+  "studies": [
+    {
+      "study": "cosigt_quality",
+      "checks": [
+        {
+          "table": "per_run",
+          "rows": 900,
+          "exact_numeric_equality": true,
+          "server_sha256": "77454e1b6466802fb94176911d75c1a488213bf050890a096972cd2fd296aff3",
+          "local_sha256": "77454e1b6466802fb94176911d75c1a488213bf050890a096972cd2fd296aff3"
+        },
+        {
+          "table": "absolute",
+          "rows": 240,
+          "exact_numeric_equality": true,
+          "server_sha256": "58bdb5c2a1cf06f6f052e0304a63199a0001d6acb49e13cb3a6c5ffa573f79fd",
+          "local_sha256": "58bdb5c2a1cf06f6f052e0304a63199a0001d6acb49e13cb3a6c5ffa573f79fd"
+        },
+        {
+          "table": "contrasts",
+          "rows": 64,
+          "exact_numeric_equality": true,
+          "server_sha256": "c3f8d2e3314f4a0bae6b6843b4c6d469bcd5b0454e48f67b72bd053850a7761d",
+          "local_sha256": "c3f8d2e3314f4a0bae6b6843b4c6d469bcd5b0454e48f67b72bd053850a7761d"
+        },
+        {
+          "table": "paired",
+          "rows": 960,
+          "exact_numeric_equality": true,
+          "server_sha256": "a52040a63b41c554e9b558ab1c1cf9fcf6ade596b682902b2c6afdb57fdb7dff",
+          "local_sha256": "a52040a63b41c554e9b558ab1c1cf9fcf6ade596b682902b2c6afdb57fdb7dff"
+        }
+      ]
+    },
+    {
+      "study": "sv_type",
+      "checks": [
+        {
+          "table": "per_run",
+          "rows": 1170,
+          "exact_numeric_equality": true,
+          "server_sha256": "edf548e8e5db3c86ec5393c3e06f39f86a308a8a8fe0d500a51415c0a8378429",
+          "local_sha256": "edf548e8e5db3c86ec5393c3e06f39f86a308a8a8fe0d500a51415c0a8378429"
+        },
+        {
+          "table": "absolute",
+          "rows": 728,
+          "exact_numeric_equality": true,
+          "server_sha256": "e4603ab030f67e73c8375f6284abeeba2107a01eb817fe38decca5f3549aa640",
+          "local_sha256": "e4603ab030f67e73c8375f6284abeeba2107a01eb817fe38decca5f3549aa640"
+        },
+        {
+          "table": "contrasts",
+          "rows": 96,
+          "exact_numeric_equality": true,
+          "server_sha256": "036193710723193087ba82fd0e0296513cdeac1c3d44d85d097b8bc063471b38",
+          "local_sha256": "036193710723193087ba82fd0e0296513cdeac1c3d44d85d097b8bc063471b38"
+        },
+        {
+          "table": "paired",
+          "rows": 1440,
+          "exact_numeric_equality": true,
+          "server_sha256": "c83d9365f3ab51bd22193704e01c229aaf6061478afc9f0cd42c3a8609303cd9",
+          "local_sha256": "c83d9365f3ab51bd22193704e01c229aaf6061478afc9f0cd42c3a8609303cd9"
+        }
+      ]
+    }
+  ]
+}

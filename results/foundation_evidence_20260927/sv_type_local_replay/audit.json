@@ -1,0 +1,10 @@
+{
+  "status": "complete",
+  "n_runs": 30,
+  "n_evaluations": 1170,
+  "all_probes_converged": true,
+  "all_metrics_replayed": true,
+  "n_events": 669,
+  "n_excluded": 0,
+  "population": "Chromosome/length-bin matched known events; not natural prevalence; no random-encoder superiority claim"
+}

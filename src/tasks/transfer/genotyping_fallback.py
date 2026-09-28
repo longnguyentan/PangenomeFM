@@ -11,6 +11,7 @@ import pandas as pd
 from tasks.entex.prepare import fingerprint
 from tasks.transfer.genotyping_report import replay, summarize
 from tasks.transfer.regression_probe import regression_metrics
+from tasks.transfer.report import save_figure
 from tasks.transfer.traitgym import verified_fingerprint, write_json
 
 
@@ -69,6 +70,36 @@ def comparison_plan(original: dict, followup: dict) -> dict:
     return dict(followup, comparisons=comparisons)
 
 
+def figure(absolute: pd.DataFrame, targets: list[str], out: Path) -> None:
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    plt.rcParams.update({'font.size': 9, 'svg.fonttype': 'none', 'pdf.fonttype': 42,
+                         'axes.spines.top': False, 'axes.spines.right': False})
+    cs = 'coordinate_plus_frozen_sequence_fm'
+    arms = [(cs, 'C+S'), (cs+'_plus_frozen_pangenomefm', 'C+S+T'),
+            (cs+'_plus_topology_control', 'C+S+H'),
+            (cs+'_plus_topology_control_plus_frozen_pangenomefm', 'C+S+H+T')]
+    arms = [('train_median', 'Training median'), *arms,
+            *[('fallback__'+name, label+' / fallback') for name, label in arms]]
+    fig, axes = plt.subplots(1, len(targets), figsize=(11, 5), layout='constrained')
+    for ax, target in zip(np.atleast_1d(axes), targets):
+        for context, offset, color in [('strict', -.13, '#245a81'), ('1hop', .13, '#be6831')]:
+            part = absolute.loc[absolute.metric.eq('mae') & absolute.target.eq(target)
+                                & absolute.context.eq(context)].set_index('feature_set')
+            values = part.loc[[name for name, _ in arms]]
+            y = np.arange(len(arms)) + offset
+            ax.hlines(y, values.ci95_low, values.ci95_high, color=color, lw=1)
+            ax.scatter(values['mean'], y, color=color, s=22, label=context)
+        ax.set(yticks=range(len(arms)), yticklabels=[label for _, label in arms],
+               title=target, xlabel='Test MAE (pointwise 95% CI; lower is better)')
+        ax.invert_yaxis()
+    axes[0].legend(frameon=False)
+    fig.suptitle('Validation-only fallback: 265 loci; horizontal scales differ')
+    save_figure(fig, out, 'genotyping_fallback')
+    plt.close(fig)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     for name in ['config', 'root', 'loci', 'out-dir']:
@@ -110,6 +141,7 @@ def main() -> None:
                         ('paired', paired), ('selection', selection)]:
         frame.to_csv(args.out_dir/(name + '.csv'), index=False)
     predictions.to_parquet(args.out_dir/'predictions.parquet', index=False)
+    figure(absolute, plan['targets'], args.out_dir)
     write_json(args.out_dir/'audit.json', dict(status='complete', n_runs=len(receipt['jobs']), n_loci=len(loci),
         n_evaluations=len(metrics), n_derived_evaluations=len(selection), new_fits=0,
         n_ridge_selected=int(selection.selected_ridge.sum()), n_median_selected=int((~selection.selected_ridge).sum()),

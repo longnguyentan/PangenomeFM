@@ -1,9 +1,32 @@
 # PangenomeFM: model and downstream evidence status
 
-Last verified 27 September 2026, 22:29 EDT. Technical work only; no manuscript edits.
+Last verified 28 September 2026, 00:01 EDT. Technical work only; no manuscript edits.
 Branch: `codex/v2-evidence-review-20260927`.
 
-## What changed in this execution
+## Latest execution: new results and numerical repairs
+
+- [x] Finish COSIGT measured-quality prediction: **30 runs / 900 evaluations**, all 265 loci retained. Independent replay matches all server tables. All topology MAE intervals cross zero; the training-median reference outperforms the fitted feature models on primary-outcome mean error.
+- [x] Finish a new INS/DEL/INV common-support task: **30 runs / 1,170 converged evaluations**, 223 events per class. All 669 events have complete frozen features; all predictions and result tables replay independently.
+- [x] Verify all 176,231 original INS/DEL annotations against VCF coordinates and padded allele lengths. Retain and audit 181 differing ID-position conventions and seven versioned IDs.
+- [x] Implement validation-selected regularization, fixed nonlinear probes and late fusion for TraitGym; pin the protocol before fitting. Repaired mixed-precision fusion and cross-platform calibration replay without changing labels or test scores.
+- [x] Pass the real-data TraitGym smoke: **50 evaluations**, all 12 original fixed-C comparisons bitwise identical; independent local metrics/summary tables match exactly.
+- [ ] Finish the full **60-run / 1,500-evaluation** TraitGym probe study. Five chromosome-fold jobs run in parallel; progress is recorded under `traitgym_probe_float64_driver/parallel_status.json`. Fitted classifier count is 3,600 because validation selection evaluates a fixed grid; output arms reuse those fits.
+- [x] Add and complete the predefined validation-only COSIGT fallback: 840 derived evaluations, unchanged original predictions. It reduces mean error but remains inconclusive against the constant reference; no topology superiority.
+- [x] Local suite: **413 tests pass**; targeted Ruff/diff checks pass. Server targeted probe/preparation tests pass.
+
+| New evidence | Strict | One-hop | Interpretation |
+|---|---:|---:|---|
+| Matched SV-type macro C+S AP | 0.414145 | 0.414145 | Equal class prevalence 1/3; a new common-support population |
+| Matched SV-type macro C+S+T AP | 0.437789 | 0.440860 | ΔT +0.023644 / +0.026716, positive pointwise bootstrap intervals |
+| Matched SV-type macro C+S+H AP | 0.473760 | 0.473760 | Cheap full-graph statistics outperform T alone |
+| Matched SV-type ΔT after C+S+H | +0.002470 | -0.001892 | Both intervals cross zero; no learned-representation superiority |
+| COSIGT primary MAE reduction after adding T to C+S | +0.000651 | -0.000473 | Both intervals cross zero; constant training median remains stronger |
+
+Exact fold sign-flip/BH tests do not establish significance for the new SV AP contrasts. Do not equate positive bootstrap intervals with multiplicity-controlled confirmation. The original full-graph H cache also has broader neighborhood access than windowed T; it is a practical cheap-structure comparator, not an exact matched-context architecture ablation. Identical-input random encoders remain necessary to isolate learning.
+
+Details: [SV-type report](SV_TYPE_EXTENSION_20260927.md), [genotyping-quality report](COSIGT_GENOTYPING_QUALITY_20260927.md), [TraitGym probe study](TRAITGYM_PROBE_STUDY_20260927.md).
+
+## Earlier model work retained
 
 The frozen two-branch candidate has completed the original-budget comparison
 at all three initialization seeds. It beats both-random in every seed on SVs
@@ -52,7 +75,7 @@ superiority or NMI-readiness claim is supported.
   All fits converge; joint SV/cCRE improvement fails and the change is not promoted.
 - [x] Locate and prepare measured COSIGT genotyping-quality outcomes: 265 loci,
   14,838 unique sample–locus measurements, 100% original C/K/S/H/T coverage.
-  This is preparation/mapping only; its prediction experiment is not run.
+  Its full prediction experiment is now complete; topology gains remain inconclusive.
 - [ ] Replicate across chromosome folds and run the selected candidate on new
   downstream endpoints; the full v2 matrix is not completed.
 
@@ -84,6 +107,10 @@ because its interval is much wider. Panel scales are explicitly marked.
 | Scaling | 120 intrinsic and 360 biological runs complete | More data helps strict SV and one-hop cCRE, but does not uniformly improve biological transfer. v1 reconstruction retains the documented shortcut limitation. |
 | Graph transfer | Historical cross-resource/release evaluations | Completed under v1; corrected-objective transfer has not been established. |
 | TraitGym locus priors | Complex and Mendelian traits; 60 runs, 540 converged fits | No positive topology interval; original segment NT sampling drops most tested bases. Five-fold adaptation, not the official leaderboard. |
+| TraitGym allele-score sensitivity | 60 runs, 480 converged fits | Published NT-2.5B scores are informative alone, but concatenation with C+S underperforms. Full probe repair study is running. |
+| HGSVC3 three-class matched SVs | 30 runs, 1,170 converged evaluations; 223 INS, DEL, INV each | Macro ΔT +0.023644 / +0.026716 versus C+S. H is stronger; T after H inconclusive. Equal-class common support, not natural prevalence. |
+| COSIGT measured locus quality | 30 runs, 900 evaluations; 265 loci | All original topology MAE intervals cross zero; primary-outcome constant reference beats the fitted feature models. |
+| COSIGT validation-only fallback | 840 derived evaluations; no new fits | Mean error decreases; main comparisons remain inconclusive and the constant reference stays stronger. |
 
 The complete EN-TEx primary/sensitivity/tissue/RNA/extension matrix contains
 450 runs. Completed does not mean a positive hypothesis test. Five-fold
@@ -470,11 +497,11 @@ removing queried links can support a standalone novelty claim.
 |---|---|---|
 | 1 | Model transfer improvement | All three seeds converged; mixed scientific gates persist. Weak head complete, improves SV only; not promoted |
 | 2 | Chromosome replication and v2 task transfer | Not run; freeze protocol before additional label-informed choices |
-| 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | Not completed; include GraphMAE/ToP-style controls, identical examples/input budgets and sequence truncation controls |
-| 4 | TraitGym | Both 60-run adapted matrices complete; neither establishes a positive topology gain. Official LOCO and full embedding comparison remain separate |
-| 5 | INV-containing SV type task | 298 primary events pass mapping/NT coverage; multiclass probe/overlap controls still needed |
+| 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | TraitGym nonlinear/regularization/fusion matrix running; established SSL and stronger full sequence-embedding comparisons remain unrun |
+| 4 | TraitGym | Original locus-prior and allele-score matrices complete; new 60-run probe-repair study running. Official LOCO/full sequence-embedding comparison remains separate |
+| 5 | INV-containing SV type task | Matched three-class study complete with length/H controls and exact replay. Natural-prevalence cohort (all 298 inversions), DUP and complex classes remain unrun/unresolved |
 | 6 | DART-Eval | Official suite identified; select coordinate-anchored tasks and audit coverage before claiming a comparable result |
-| 7 | Measured SV genotypability | New COSIGT locus-quality outcomes prepared/mapped with complete features; regression not run. Original per-variant PanGenie concordance and callable denominator remain unresolved |
+| 7 | Measured SV genotypability | COSIGT regression complete and null/inconclusive. Per-variant PanGenie concordance and independently callable denominator remain unresolved |
 | 8 | GTEx / SV-expression / trait links | Compact positive sets insufficient; obtain all-tested/callable universes before defining negatives |
 | 9 | Path-aware RNA/methylation, donor scaling | Need verified haplotype-to-canonical-segment correspondence and donor-excluded graph design |
 | 10 | Cross-graph correspondence / construction invariance | Need nontrivial sequence/assembly truth, coordinate controls and duplicate/sample-overlap audits |
@@ -527,16 +554,14 @@ single development fold nor the small SV increase establishes superiority.
 
 ## New measured genotyping-quality resource
 
-[The COSIGT preparation report](COSIGT_GENOTYPING_QUALITY_20260927.md) documents
+[The completed COSIGT report](COSIGT_GENOTYPING_QUALITY_20260927.md) documents
 14,862 source rows, 24 exact duplicates, 14,838 unique measured pairs, and 265
 GRCh38 intervals. All intervals map to the existing HPRC R2 graph, and all 11,070
 target segments have complete C/K/S/H and 30-cache T coverage. The 1,592 absent
-sample–locus combinations remain unmeasured. This is a feasible locus-quality
-regression starting point, not a completed predictive result or the original
-per-variant PanGenie benchmark. Donor exclusion in the publisher's genotyping
+sample–locus combinations remain unmeasured. The 30-run continuous regression is complete and independently replayed; its topology intervals cross zero. This endpoint differs from the original per-variant PanGenie benchmark. Donor exclusion in the publisher's genotyping
 panel does not establish donor exclusion in our frozen HPRC R2 representation.
 
-The final local suite passes **390 tests** (15 known warnings). All completed
+The current local suite passes **413 tests** (14 known warnings). All completed
 head and TraitGym prediction replays pass. Remaining unrun model/task extensions
 are listed explicitly above; a complete numerical run is not a positive result.
 

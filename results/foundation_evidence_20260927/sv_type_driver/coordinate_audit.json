@@ -1,0 +1,11 @@
+{
+  "status": "pass",
+  "n_events": 176231,
+  "source_vcf": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/downstream/sv/hgsvc3/1.0/GRCh38/variants_GRCh38_sv_insdel_alt_HGSVC2024v1.0.vcf.gz",
+    "bytes": 53014672,
+    "mtime_ns": 1786350797970894692,
+    "sha256": "cbdf253d1796b5cbcbaf17db072ebaa64a44204a263389522d64bc36292faac2"
+  },
+  "contract": "BED start0 equals the numeric 1-based VCF anchor position because the first affected base follows the common padding base; table POS is authoritative, ID positions are provenance only."
+}

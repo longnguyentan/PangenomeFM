@@ -895,3 +895,17 @@ fast-forwarded to `6d055a2`, preserving six differing generated artifacts in
 `pre_sync_48ca40a_to_6d055a2/` before checkout. Fourteen targeted tests pass in
 the server environment (nine sklearn `n_jobs` deprecation warnings). Native
 experiment receipts retain their original execution pins.
+
+
+## Completed new SV and genotyping-quality tasks, 27 September late evening
+
+- Completed COSIGT at native `ce75c6f`: 30 runs, 900 evaluations, 265 unchanged loci. Promoted float32 features to float64 for stable ridge solves; both numerical failures and their unchanged-parameter repairs are retained. Four independently replayed result tables match exactly. All primary/secondary MAE topology intervals cross zero. The primary-outcome training-median reference remains stronger than fitted feature models.
+- Predeclared and completed an additional validation-only median fallback (`cde3c8e` protocol; `cd6744d` implementation). All 840 derived arms reuse original predictions; no new model fits or label changes. Mean error improves on principal arms, but the paired improvement intervals include zero and the median reference still performs better.
+- Completed the HGSVC3 INS/DEL/INV matched extension at native `98a1935`: 669 events, 667 anchors, complete original feature coverage, 30 runs and 1,170 converged one-versus-rest evaluations. All 176,231 original INS/DEL records independently match the padded-allele VCF. Seven versioned IDs and 181 differing ID-position conventions are retained and audited, not silently dropped or repositioned.
+- Matched SV macro AUPRC improves from C+S 0.414145 to 0.437789 strict / 0.440860 one-hop. C+S+H is stronger at 0.473760; incremental T after H remains inconclusive. Full-graph H has more neighborhood access than windowed T, so this is a practical comparator rather than a matched-context pretraining ablation. All four local/server numerical tables match exactly; the natural-prevalence and DUP/complex tasks remain incomplete.
+- TraitGym probe study pinned before fitting at `a3ab10d`: validation-selected logistic regularization, fixed shallow boosting and validation-selected late fusion, all original variants/folds retained. Fixed-C real smoke predictions match all 12 original comparisons bitwise. The accepted native float64-fusion run uses `ee466cb`; 60-run matrix is running in five fold processes.
+- Preserved the first TraitGym smoke failure (mixed probability precision), repaired it without test-directed model choices, and verified independent smoke tables. Portable calibration replay checks saved probabilities, thresholds and validation NLL rather than optimizer parameter bits; no model predictions change. Local OpenMP thread capping prevents a mixed-runtime histogram-binning crash without changing the model budget.
+
+Details, outputs and commands are linked from the current [checklist](MODEL_AND_DOWNSTREAM_STATUS_20260927.md). Server access remained authenticated; no password was sent through tools or saved. Shared main/other-LLM worktrees were preserved.
+
+Current full local suite: **413 passed**, 14 known warnings. Targeted Ruff and source/config/document whitespace checks pass; untouched Matplotlib SVG output contains its generator whitespace.

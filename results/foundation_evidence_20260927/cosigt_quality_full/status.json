@@ -1,0 +1,824 @@
+{
+  "status": "complete",
+  "plan": {
+    "artifact_type": "analysis_plan",
+    "version": 1,
+    "task": "cosigt_genotyping_quality",
+    "recorded_before_first_fit": true,
+    "objective": "Predict measured genotyping quality among publisher-evaluable samples at chromosome-held-out loci; test incremental value of frozen topology.",
+    "reference_config": "configs/entex_v1.json",
+    "n_loci": 265,
+    "loci_sha256": "df8f268923ef3f7fadd56c9e4f34d79d59990c20952477900219f81a46d6d9d3",
+    "targets": [
+      "mean_qv_fraction",
+      "mean_qv_pred"
+    ],
+    "primary_target": "mean_qv_fraction",
+    "primary_metric": "mae",
+    "aggregation": "mean",
+    "unit": "One GRCh38 locus, equal weight; donor measurements aggregated once before splitting. No sample identity or observed-donor count enters features.",
+    "partition": "All five manuscript chromosome folds x three original checkpoint seeds x strict/1hop; encoders and probes exclude test/validation chromosomes during encoder training.",
+    "encoder": "Unchanged frozen manuscript v1 T and NT-v2 50M S; reconstruction-shortcut caveat retained. This does not compare learned versus random weights.",
+    "probe": "StandardScaler fit only on training chromosomes, Ridge with intercept and direct Cholesky solver, penalty selected by validation MAE; strongest penalty breaks exact ties. No refit on validation, no clipping, no test-directed choice.",
+    "ridge_alphas": [
+      0.001,
+      0.01,
+      0.1,
+      1,
+      10,
+      100,
+      1000
+    ],
+    "feature_sets": [
+      "train_median",
+      "coordinate",
+      "sequence_kmer",
+      "frozen_sequence_fm",
+      "frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm",
+      "coordinate_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+      "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+      "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+      "locus_length",
+      "C_S_L",
+      "C_S_L_T",
+      "C_S_L_H",
+      "C_S_L_H_T"
+    ],
+    "custom_feature_sets": {
+      "locus_length": [
+        "locus_log_length"
+      ],
+      "C_S_L": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "locus_log_length"
+      ],
+      "C_S_L_T": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "locus_log_length",
+        "frozen_pangenomefm"
+      ],
+      "C_S_L_H": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "locus_log_length",
+        "topology_control"
+      ],
+      "C_S_L_H_T": [
+        "coordinate",
+        "frozen_sequence_fm",
+        "locus_log_length",
+        "topology_control",
+        "frozen_pangenomefm"
+      ]
+    },
+    "comparisons": [
+      [
+        "T_given_CS",
+        "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm"
+      ],
+      [
+        "T_given_CSH",
+        "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+        "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+      ],
+      [
+        "T_given_CSL",
+        "C_S_L_T",
+        "C_S_L"
+      ],
+      [
+        "T_given_CSLH",
+        "C_S_L_H_T",
+        "C_S_L_H"
+      ]
+    ],
+    "metrics": [
+      "mae",
+      "rmse",
+      "spearman",
+      "r2"
+    ],
+    "n_bootstrap": 10000,
+    "statistics_seed": 20260927,
+    "inference": "Original paired hierarchical fold/seed bootstrap; positive gain means baseline minus full for error metrics and full minus baseline for correlations/R2. Exact fold sign-flip plus BH within metric across endpoints/contexts/contrasts. Five dependent training folds limit confidence; seeds are not independent biological samples.",
+    "validity_gates": [
+      "All 265 loci retained, complete mapped features",
+      "Same target/example identities for every model",
+      "No missing outcomes treated as failures",
+      "At least 10 loci and nonconstant outcome per train/validation/test partition",
+      "Every source/cache/checkpoint identity passes",
+      "Saved prediction replay and train/validation-only penalty selection"
+    ],
+    "limitations": [
+      "Only 265 regions, conditional on available assembled truth; no general callability inference",
+      "Predicts quality, does not improve genotyping calls directly",
+      "Publisher panel excludes tested donors; original HPRC2 FM graph may contain overlapping donors",
+      "Region graph differs from publisher locus graph",
+      "Static locus vector cannot predict individual donor-specific quality",
+      "No expected positive outcome or architecture selection using this test set"
+    ],
+    "references": [
+      "https://link.springer.com/article/10.1186/s13059-026-04242-4",
+      "https://github.com/davidebolo1993/cosigt_paper/tree/3d84bf8490bbff5ec33cf72706e713d1a41730ed"
+    ],
+    "topology_control_sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166",
+    "numerical_policy": "Double-precision ridge fit and prediction; ill-conditioned solver warnings fail the run. Original float32 feature values are promoted without changing their definitions."
+  },
+  "jobs": [
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_a",
+      "test": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "validation": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_b",
+      "test": [
+        "chr2",
+        "chr7",
+        "chr12",
+        "chr17",
+        "chr22"
+      ],
+      "validation": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_c",
+      "test": [
+        "chr3",
+        "chr8",
+        "chr13",
+        "chr18",
+        "chrX"
+      ],
+      "validation": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_d",
+      "test": [
+        "chr4",
+        "chr9",
+        "chr14",
+        "chr19",
+        "chrY"
+      ],
+      "validation": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 42,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 42,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 314159,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 314159,
+      "closure": "1hop"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 20260806,
+      "closure": "strict"
+    },
+    {
+      "fold": "fold_e",
+      "test": [
+        "chr5",
+        "chr10",
+        "chr15",
+        "chr20"
+      ],
+      "validation": [
+        "chr1",
+        "chr6",
+        "chr11",
+        "chr16",
+        "chr21"
+      ],
+      "seed": 20260806,
+      "closure": "1hop"
+    }
+  ],
+  "completed_runs": 30,
+  "command": [
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/genotyping_probe.py",
+    "--config",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/cosigt_quality_20260927.json",
+    "--preparation-dir",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_quality_preparation",
+    "--mapping-dir",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_quality_mapping",
+    "--manifest",
+    "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+    "--feature-cache",
+    "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+    "--sequence-cache",
+    "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+    "--topology-control-cache",
+    "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+    "--topology-cache-root",
+    "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference",
+    "--results-root",
+    "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806",
+    "--out-root",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_quality_full"
+  ],
+  "planned_runs": 30,
+  "encoder_training": false,
+  "sources": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_quality_preparation/loci.parquet",
+      "bytes": 28036,
+      "mtime_ns": 1790562070000000000,
+      "sha256": "df8f268923ef3f7fadd56c9e4f34d79d59990c20952477900219f81a46d6d9d3"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+      "bytes": 1044864,
+      "mtime_ns": 1786109265393977620,
+      "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz.audit.json",
+      "bytes": 1560,
+      "mtime_ns": 1786349516673233045,
+      "sha256": "75de2b22f2a7fdf262c6aa37344e2be5a40b0d7db1266dbfa4c1422d94437333"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+      "bytes": 37629106,
+      "mtime_ns": 1786349512365280119,
+      "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+      "bytes": 573489289,
+      "mtime_ns": 1786930030728110426,
+      "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz.audit.json",
+      "bytes": 2699,
+      "mtime_ns": 1786930033504082368,
+      "sha256": "0bbc6c075c4105d9cbbef25521431415ec57a89a5240fa101fe4d0ae39e05399"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_0.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890258760027309,
+      "sha256": "48697d25c353dc38c97f72cf704a88310c0bdb1cfcc21ce4b4efea49110aa314"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_1.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890299839630026,
+      "sha256": "ab77707365a248f679c58e9d1522eb396068311af6017da64777ba2813b52ffe"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_2.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890294411682734,
+      "sha256": "81b635f7a0a356f9db0a40cd361ac5bea01cb254a81d369a729230343be8694a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_3.npz.audit.json",
+      "bytes": 2316,
+      "mtime_ns": 1786890286575758712,
+      "sha256": "7b8e235d6a7d2641cb8e9e98fcf484cb5f08e5a0686b5cff1ccb53cd7a77ea34"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+      "bytes": 3834716,
+      "mtime_ns": 1790471724073996404,
+      "sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz.audit.json",
+      "bytes": 829,
+      "mtime_ns": 1790471725725979680,
+      "sha256": "0d6fabde5488b7ced332b37445982114957e42621deab356469e12b17e9709a0"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/cosigt_quality_20260927.json",
+      "bytes": 4872,
+      "mtime_ns": 1790563671778122807,
+      "sha256": "2bf7c8b116713c61640db90cc69cfc60587bdd3be6ba059522e191767cf8991b"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_quality_preparation/qc.json",
+      "bytes": 3453,
+      "mtime_ns": 1790562653171956595,
+      "sha256": "7ea36f3681cb90ef85bd078eed65d77d6ace8798fe93507cb6a8ce10d4d3952c"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_quality_mapping/mapping_qc.json",
+      "bytes": 750,
+      "mtime_ns": 1790562653167956630,
+      "sha256": "9e01751ef6f5770f6ed6790341a8b8c864714ac77d559f9ce4d14b23e5adae9a"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/cosigt_quality_mapping/overlaps.parquet",
+      "bytes": 110224,
+      "mtime_ns": 1790562166653017792,
+      "sha256": "f87ec4924101c153e4bc684f5c2f4bbac7f5cc003bf9480d7b90060dd959300a"
+    }
+  ],
+  "implementation": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/genotyping_probe.py",
+    "bytes": 7217,
+    "mtime_ns": 1790563671778122807,
+    "sha256": "840472f4b6994d3d9e654e3aa71f4a3afd1bf0f4ff1fb2d0f6f37b979fdabf0d"
+  },
+  "n_excluded": 0,
+  "no_test_selection": true
+}

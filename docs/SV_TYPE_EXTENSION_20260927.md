@@ -1,10 +1,10 @@
-# SV type extension: preparation and prespecified frozen experiment
+# SV type extension: completed matched frozen experiment
 
 ## Data and coordinate audit
 
 The two existing HGSVC3 GRCh38 annotation tables contain 176,231 INS/DEL events and 300 inversions. These are SV-Pop BED+6 tables. The parser validates integer half-open intervals, class-specific interval lengths, unique event IDs, and type/length agreement. The publisher documents this table format and versioned IDs in [SV-Pop](https://github.com/EichlerLab/svpop) and its [variant utilities](https://github.com/EichlerLab/svpop/blob/main/svpoplib/variant.py).
 
-A strict initial ID-position check exposed seven `.1` ID suffixes and 181 retained INS/DEL IDs whose encoded position equals BED POS rather than POS+1. Representative records agree with the existing padded-allele VCF at the BED coordinates. The parser retains these IDs, uses the coordinate columns, and counts discrepancies; it never changes a coordinate to fit an ID. A full VCF/annotation allele-length and coordinate audit is required before fitting.
+A strict initial ID-position check exposed seven `.1` ID suffixes and 181 retained INS/DEL IDs whose encoded position equals BED POS rather than POS+1. The full independent audit confirms all 176,231 INS/DEL events against the existing padded-allele VCF: coordinates, class, length and allele padding agree. The parser retains these IDs, uses the coordinate columns, and counts discrepancies; it never changes a coordinate to fit an ID. This audit passed before fitting; the original symbolic IDs remain unchanged.
 
 | Population | INS | DEL | INV | Total |
 |---|---:|---:|---:|---:|
@@ -58,4 +58,34 @@ PYTHONPATH=src:. python -m tasks.transfer.sv_type_report \
 
 [Preparation QC](../results/foundation_evidence_20260927/sv_type_preparation/qc.json) · [Split support](../results/foundation_evidence_20260927/sv_type_preparation/fold_support.csv) · [All matching strata](../results/foundation_evidence_20260927/sv_type_preparation/matching_strata.csv).
 
-Execution status: prepared and locally tested; server mapping/probing pending. Results will be recorded only after the complete declared run and replay.
+Execution status: **all 30 runs and 1,170 class/feature evaluations complete** at native commit `98a1935`. All probes converge. All 667 anchors map and all 669 declared events have complete frozen features. Independent local prediction replay passes, and all four server/local numerical result tables match exactly.
+
+## Actual results
+
+Class prevalence is 1/3 in every split by construction; these AUPRC values must not be compared numerically with the natural-prevalence historical binary task.
+
+| Class | C+S | C+S+T strict | Strict ΔT, 95% CI | C+S+T one-hop | One-hop ΔT, 95% CI |
+|---|---:|---:|---|---:|---|
+| DEL | 0.397108 | 0.425800 | +0.028692 [0.000098, 0.056152] | 0.443225 | +0.046117 [0.013368, 0.077370] |
+| INS | 0.448878 | 0.460745 | +0.011867 [-0.009647, 0.033599] | 0.464845 | +0.015967 [-0.012622, 0.049527] |
+| INV | 0.396448 | 0.426821 | +0.030374 [0.011325, 0.054520] | 0.414511 | +0.018063 [0.005267, 0.031607] |
+| Macro | 0.414145 | 0.437789 | +0.023644 [0.015802, 0.031968] | 0.440860 | +0.026716 [0.004101, 0.050809] |
+
+The length-adjusted macro comparison retains gains of +0.023226 strict and +0.027166 one-hop with positive pointwise bootstrap intervals. Fixed coarse matching does not make exact length identical: length alone still achieves macro AUPRC 0.367129. This is why the explicit L control is retained.
+
+**Handcrafted graph statistics are stronger than T alone in this task.** C+S+H reaches macro AUPRC 0.473760. Adding T after H gives +0.002470 strict (CI [-0.005189, 0.011544]) and -0.001892 one-hop (CI [-0.011793, 0.008245]); all class-level T-after-H intervals also cross zero. The result supports graph information beyond the C+S baseline in this population, but does not establish superior learned topology representations.
+
+No AP contrast survives the supplied BH correction on exact fold sign-flip p-values. The strict macro primary contrast has p=0.0625 and q=0.285714; one-hop p=0.1250 and q=0.363636. Five folds limit the resolution of these tests. Positive pointwise bootstrap intervals should be described alongside these results, not as unqualified confirmatory significance.
+
+## Auditable outputs
+
+- [Full-source VCF coordinate/allele audit](../results/foundation_evidence_20260927/sv_type_driver/coordinate_audit.json)
+- [Exact graph mapping](../results/foundation_evidence_20260927/sv_type_mapping/mapping_qc.json)
+- [Native command receipt](../results/foundation_evidence_20260927/sv_type_driver/launch.json)
+- [All per-run metrics](../results/foundation_evidence_20260927/sv_type_full_analysis/per_run.csv)
+- [All absolute metrics](../results/foundation_evidence_20260927/sv_type_full_analysis/absolute.csv)
+- [All paired contrasts, intervals and multiplicity checks](../results/foundation_evidence_20260927/sv_type_full_analysis/contrasts.csv)
+- [Figure PDF](../results/foundation_evidence_20260927/sv_type_full_analysis/sv_type_topology_gains.pdf)
+- [Independent local replay audit](../results/foundation_evidence_20260927/sv_type_local_replay/audit.json)
+
+Saved predictions remain in local/server `results/foundation_evidence_20260927/sv_type_full/`. The natural 174,267-event population is prepared but **not fitted**; DUP and complex-SV classes remain unresolved. No natural-population, all-inversion or best-model claim is made.

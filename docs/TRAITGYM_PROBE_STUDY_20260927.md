@@ -29,4 +29,10 @@ PYTHONPATH=src:. python -m tasks.transfer.traitgym_report \
   --root <completed-study-root> --out-dir <fresh-report-root>
 ```
 
-Status: implemented and tested locally; server smoke/full execution pending. This line will be updated from verified output evidence.
+Status: accepted smoke complete; **full 60-run matrix running in five independent chromosome-fold processes**. The smoke has 50 evaluations, all 12 fixed-C real-data comparisons are bitwise identical to the prior experiment, and all four numerical summary tables replay exactly on the laptop. No smoke performance was used to change model choices.
+
+The first real smoke exposed mixed float32/float64 fusion arithmetic (maximum discrepancy about 3e-8). Its outputs are retained but not used for the accepted full run. Commit `ee466cb` promotes native probabilities losslessly to float64 before blending. Another independent replay issue was platform-specific optimizer drift: refitted calibration temperatures differ by up to 1.04e-7, while stored probabilities replay within 2.3e-16 and validation NLL differs by at most 1.2e-16. Replay now validates saved probabilities/thresholds and optimal validation NLL, recording parameter drift rather than requiring an optimizer's final bits to match across library versions. Models and scores are unchanged by this reporting repair.
+
+[Exact launch protocol](../results/foundation_evidence_20260927/traitgym_probe_float64_driver/launch.json) · [Parallel runner and audited merge](../results/foundation_evidence_20260927/traitgym_probe_float64_driver/parallel_run.py) · [Fixed-C equality gate](../results/foundation_evidence_20260927/traitgym_probe_float64_driver/smoke_gate.json).
+
+Native fitting uses commit `ee466cb`; new SV modules were added subsequently without modifying the running TraitGym implementation. Shards retain exact source, runtime, checkpoint and feature identities. Full aggregation refuses incomplete, duplicate or inconsistent shards.

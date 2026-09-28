@@ -1,0 +1,10 @@
+{
+  "status": "complete",
+  "n_runs": 30,
+  "n_evaluations": 900,
+  "n_loci": 265,
+  "n_excluded": 0,
+  "all_metrics_replayed": true,
+  "all_selected_alphas_match_validation_minimum": true,
+  "scope": "five-fold exploratory evaluation; small number of loci; no random-encoder superiority claim"
+}
