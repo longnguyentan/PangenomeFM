@@ -162,3 +162,15 @@ def test_calibration_replay_allows_equivalent_optima_but_rejects_wrong_objective
         validate_calibration(y, raw, wrong, fitted*2, _choose_threshold(y, wrong))
     with pytest.raises(ValueError, match='does not replay'):
         validate_calibration(y, raw, p+.001, temperature, _choose_threshold(y, p))
+
+
+def test_test_fusion_must_reuse_validation_selected_weight():
+    from tasks.transfer.traitgym_report import validate_test_fusion
+    plan = fixture()['plan']
+    frame = pd.DataFrame([dict(variant_id='a', feature_set=f, p_raw=p)
+                          for f, p in [('V_linear', .2), ('CS_linear', .8), ('blend', .5)]])
+    metrics = pd.DataFrame([dict(feature_set='blend', selected_parameter=.5)])
+    validate_test_fusion(frame, metrics, plan)
+    frame.loc[frame.feature_set.eq('blend'), 'p_raw'] = .2
+    with pytest.raises(ValueError, match='validation-selected mixture'):
+        validate_test_fusion(frame, metrics, plan)

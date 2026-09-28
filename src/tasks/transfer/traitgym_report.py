@@ -40,6 +40,29 @@ def validate_calibration(y, raw, calibrated, temperature: float, threshold: floa
                 prediction_tolerance=1e-12, objective_tolerance=1e-12)
 
 
+def validate_test_fusion(frame: pd.DataFrame, metrics: pd.DataFrame, plan: dict) -> None:
+    """The test blend must reuse the validation-selected weight and component scores."""
+    outputs = plan['selected_probe']['outputs']
+    linear = {spec['input']: name for name, spec in outputs.items() if spec['estimator'] == 'linear'}
+    indexed = metrics.set_index('feature_set')
+    for name, spec in outputs.items():
+        if spec['estimator'] != 'fusion':
+            continue
+        parts = [frame.loc[frame.feature_set.eq(key)].sort_values('variant_id')
+                 for key in [name, linear[spec['variant_input']], linear[spec['locus_input']]]]
+        if any(p.variant_id.duplicated().any() or not len(p) for p in parts):
+            raise ValueError('Invalid test fusion identities')
+        for part in parts[1:]:
+            if not np.array_equal(parts[0].variant_id, part.variant_id):
+                raise ValueError('Test fusion component identities differ')
+        weight = indexed.loc[name, 'selected_parameter']
+        if weight not in plan['selected_probe']['mixture_weights']:
+            raise ValueError('Test fusion weight is outside the predefined grid')
+        expected = weight*parts[1].p_raw.to_numpy() + (1-weight)*parts[2].p_raw.to_numpy()
+        if not np.allclose(parts[0].p_raw, expected, atol=1e-12, rtol=0):
+            raise ValueError('Test fusion differs from validation-selected mixture')
+
+
 def replay_run(directory: Path, plan: dict, test_chromosomes: list[str],
                validation_chromosomes: list[str] | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
     audit = json.loads((directory / "audit.json").read_text())
@@ -59,6 +82,7 @@ def replay_run(directory: Path, plan: dict, test_chromosomes: list[str],
         selection = pd.read_csv(directory / "validation_selection.csv", float_precision="round_trip")
         validation = pd.read_parquet(directory / "validation_predictions.parquet")
         validate_selection(selection, validation, metrics, plan)
+        validate_test_fusion(frame, metrics, plan)
         if (set(validation.chromosome) & set(frame.chromosome)
                 or set(validation.variant_id) & set(frame.variant_id)
                 or (validation_chromosomes is not None and set(validation.chromosome) != set(validation_chromosomes))):
