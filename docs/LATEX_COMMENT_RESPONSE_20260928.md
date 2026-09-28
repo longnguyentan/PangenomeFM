@@ -17,9 +17,9 @@ moves. Quotations are short exact excerpts; ellipses omit text without changing
 the requested action. Repeated requests are cross-referenced, not discarded.
 
 Status below is checked against the **saved method-focused source**. Source integration
-is complete where stated; final compilation, supplementary-bibliography resolution
-and rendered layout are being verified by the lead editor and are not presumed
-complete by this audit. The original before-state is retained in Section F.
+is complete where stated. Final compilation and both bibliography lists pass
+without warnings or unresolved references; all 31 rendered pages were visually
+inspected. The original before-state is retained in Section F.
 
 Status terms:
 
@@ -83,7 +83,7 @@ is represented as completed by this audit.
 
 | ID | Original exact lines | Faithful excerpt / content | Disposition |
 |---|---|---|---|
-| T01 | **L3** | “Prevent pdflatex object-stream overflow with complex vector figures.” | **Retain technical setting.** `\pdfobjcompresslevel=0` remains. Local multi-file TeX compilation succeeded for the prior evidence revision; the current method-focused build is being checked separately. This is not a scientific TODO. |
+| T01 | **L3** | “Prevent pdflatex object-stream overflow with complex vector figures.” | **Retain technical setting.** `\pdfobjcompresslevel=0` remains. The final method-focused multi-file TeX build succeeds without warnings; all 31 rendered pages were inspected. This is not a scientific TODO. |
 | T02 | **L27–28** | “Uncomment if line numbers are required.”; commented `lineno` package | **Optional submission formatting.** Line numbering remains disabled. Enable only for the selected journal/submission format; its absence is not missing evidence. |
 | T03 | **L44–45** | Commented numbered section/subsection `\titleformat` commands | **Retained alternatives, not requests.** Active source deliberately uses unnumbered headings. No need to activate obsolete numbered-format lines merely because they are comments. |
 | T04 | **L58** | Trailing `%` in `\renewcommand{\maketitle}{%` | **Retain technical syntax.** Suppresses an unintended space in the macro; it contains no prose instruction. |
