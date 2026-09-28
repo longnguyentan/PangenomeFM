@@ -70,7 +70,7 @@ def main() -> None:
                 manifest_sha256=manifest_source['sha256'], seed=job.seed, closure=job.closure, canonical_conflict_policy='exclude')
             if audit['identity'] != expected:
                 raise ValueError('Original cache resource identity differs')
-            missing = sorted(set(required)-set(ids))
+            missing = sorted(map(int, set(required)-set(ids)))
             if not missing:
                 raise ValueError('Expected a coverage gap; do not silently rewrite complete caches')
             # Small-window recovery is deliberately restricted to reference targets.
