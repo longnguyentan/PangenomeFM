@@ -1,0 +1,17 @@
+{
+  "status": "partial_smoke_verified",
+  "observed_at_utc": "2026-09-28T06:36:27.573688+00:00",
+  "completed_probe_runs": 3,
+  "planned_probe_runs": 120,
+  "feature_evaluations_replayed": 12,
+  "fitted_probe_artifacts_verified": 12,
+  "all_completed_metrics_replayed": true,
+  "paired_baseline_and_target_identity": true,
+  "all_completed_probes_converged": true,
+  "sources": [
+    "results/foundation_evidence_20260927/masked_chromosome_replication/fold_a/seed_42/biological_test/probes/full_random/ccre/1hop",
+    "results/foundation_evidence_20260927/masked_chromosome_replication/fold_a/seed_42/biological_test/probes/full_trained/ccre/1hop",
+    "results/foundation_evidence_20260927/masked_chromosome_replication/fold_a/seed_42/biological_test/probes/full_trained/sv/1hop"
+  ],
+  "interpretation": "Operational verification of completed outputs only; no partial superiority decision and no model/protocol change."
+}

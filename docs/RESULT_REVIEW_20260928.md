@@ -2,7 +2,7 @@
 
 Takeaway: SV-type analysis is complete; masked-feature learning passes development controls and awaits chromosome replication.
 
-The current experiments test whether frozen graph representations add useful information to sequence and coordinate features. The natural-frequency structural-variant study completed all 30 runs, while the new sequence-conditioned encoder completed its three-seed development comparison. Topology improves macro SV-type AUPRC beyond the measured length and graph-statistic controls, and the new encoder beats its matched random version on both development tasks at every seed. These findings support further evaluation, but the inversion-specific adjusted gains remain uncertain and development performance is not an independent chromosome result. The original null EN-TEx, TraitGym and genotyping-quality contrasts remain part of the evidence. The next fixed chromosome experiment is launched and waiting for the separate NT cache job to release the GPUs.
+The current experiments test whether frozen graph representations add useful information to sequence and coordinate features. The natural-frequency structural-variant study completed all 30 runs, while the new sequence-conditioned encoder completed its three-seed development comparison. Topology improves macro SV-type AUPRC beyond the measured length and graph-statistic controls, and the new encoder beats its matched random version on both development tasks at every seed. These findings support further evaluation, but the inversion-specific adjusted gains remain uncertain and development performance is not an independent chromosome result. The original null EN-TEx, TraitGym and genotyping-quality contrasts remain part of the evidence. The fixed chromosome experiment is now running after the whole-graph NT cache completed with exact preservation of every original vector.
 
 ## Scientific context and question
 
@@ -19,8 +19,8 @@ unchanged; no replacement graph or biological fine-tuning is used.
 |---|---|---|
 | Natural-frequency SV type | 30 runs / 1,170 feature-class evaluations | One-versus-rest AP; 110,623 INS, 63,346 DEL, 298 INV, all retained |
 | Masked-feature development | 12 pretraining runs / 24 probes / 96 evaluations | Fold-A biological validation; four arms, three seeds, one-hop |
-| Fixed chromosome replication | Launched, resource-waiting | 120 probes / 480 evaluations planned; no chromosome result yet |
-| Whole-graph NT completion | Running on four GPUs | 271,760 missing segments; infrastructure, not a biological result |
+| Fixed chromosome replication | Running first fold-A test probes | 120 probes / 480 evaluations planned; full-matrix result pending |
+| Whole-graph NT completion | Complete and verified | All 751,237 segments; 271,760 added, original vectors unchanged |
 
 These are native repository/tmux experiments, not registered Workbench runs.
 The completed metrics were independently replayed from saved predictions; native
@@ -91,9 +91,9 @@ receipts directly, avoiding this live-status provenance ambiguity.
    A/C/D/E; fold B is separately reported because its test chromosomes were used
    for fold-A development validation. Historical v1 label exposure remains a
    limitation even for the four-fold summary. Save and verify all fitted probes.
-2. Finish the frozen whole-graph NT cache and verify every original row remains
-   byte-identical. This enables broader-context work but creates no paths or
-   verified directed bubbles by itself.
+2. The whole-graph NT cache is complete with exact preservation of original
+   values. Broader contexts still require a separate orientation/size/fold-safe
+   design; a complete cache creates no paths or verified directed bubbles.
 3. DART-Eval still requires an authorized copy of the official processed table;
    anonymous Synapse access returned 403. No task rows or labels were invented.
 4. DUP/complex SV classes, per-variant genotyping concordance with an all-callable

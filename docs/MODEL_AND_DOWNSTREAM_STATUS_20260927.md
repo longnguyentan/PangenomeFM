@@ -1,6 +1,6 @@
 # PangenomeFM: model and downstream evidence status
 
-Last verified 28 September 2026, 02:24 EDT. Technical work only; no manuscript edits.
+Last verified 28 September 2026, 02:37 EDT. Technical work only; no manuscript edits.
 Branch: `codex/v2-evidence-review-20260927`.
 
 ## Active continuation, 28 September
@@ -18,9 +18,9 @@ Branch: `codex/v2-evidence-review-20260927`.
 - [x] Full local suite **436 passed**; targeted Ruff/diff checks pass. Existing manuscript checks remain included.
 - [x] Repair fitted-probe persistence: opt-in saved scaler/classifier/calibration with exact reload replay; frozen chromosome replication will retain its classifiers.
 - [x] Implement/test the gated, fixed chromosome-replication runner/reporter; review the completed gate and launch the detached job. All controls retained; fold B reported separately due to development exposure.
-- [ ] Complete **120 chromosome-test probe runs / 480 evaluations**. The launched job waits for NT cache completion and free GPUs; no test results yet.
+- [ ] Complete **120 chromosome-test probe runs / 480 evaluations**. The job is running first fold-A test probes after NT completion. Full-matrix inference remains pending.
 - [x] Correct graph-scope denominator: 751,237 total segments, 303,425 downstream cache rows, 479,477 benchmark NT rows. Audit 14,786 partly covered alternative components; no new graph release.
-- [ ] Complete the separate, active **271,760-segment frozen NT extension** on four GPUs. Existing cache values must be byte-identical; no label-driven retraining.
+- [x] Complete the **271,760-segment frozen NT extension**: all 751,237 graph segments covered; all original 479,477 rows byte-identical, all values finite. Separate output; replication retains the original cache.
 
 [Current runbook, evidence and remaining gates](EXECUTION_20260928.md). The prior junction candidate
 remains failed; the new masked-feature candidate passes its own declared development gate. New pretraining
@@ -524,7 +524,7 @@ removing queried links can support a standalone novelty claim.
 | Priority | Remaining work | Present status / concrete next action |
 |---|---|---|
 | 1 | Model transfer improvement | Junction gates remain failed. New masked-feature candidate beats matched random after H on both tasks at all three development seeds; chromosome replication launched |
-| 2 | Chromosome replication and v2 task transfer | Fixed protocol launched: four arms × five folds × three seeds; resource-waiting, no test results yet. Wider new-E task transfer remains unrun |
+| 2 | Chromosome replication and v2 task transfer | Fixed protocol launched: four arms × five folds × three seeds; running first fold-A test probes, full matrix pending. Wider new-E task transfer remains unrun |
 | 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | TraitGym probe matrix complete. Native-backbone GraphMAE-style objective with random/coordinate controls completes its development gate; official GraphMAE and stronger full sequence-embedding comparisons remain unrun |
 | 4 | TraitGym | All three 60-run studies complete; all fixed-C outputs replay exactly and every topology contrast is retained. Official LOCO/full sequence-embedding comparison remains separate |
 | 5 | INV-containing SV type task | Matched study complete. Full natural-frequency cohort complete: 30 runs / 1,170 evaluations, all events retained after append-only chrY cache completion. DUP and complex classes remain unresolved |

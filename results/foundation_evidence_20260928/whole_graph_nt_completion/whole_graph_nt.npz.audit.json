@@ -1,0 +1,61 @@
+{
+  "model_name": "InstaDeepAI/nucleotide-transformer-v2-50m-multi-species",
+  "resolved_revision": "81b29e5786726d891dbf929404ef20adca5b36f1",
+  "full_segments_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+  "pooling": "mean final hidden state over non-special, non-padding tokens",
+  "maximum_token_length": 1000,
+  "maximum_raw_bases": 6000,
+  "raw_sequence_sampling": "long nodes retain balanced prefix and suffix separated by N before tokenizer truncation",
+  "truncation_policy": "tokenizer truncation at maximum_token_length; complete raw sequences remain in the source table",
+  "schema_version": 1,
+  "status": "complete",
+  "generated_at": "2026-09-28T06:29:46+0000",
+  "output": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/whole_graph_nt_completion_20260928/whole_graph_nt.npz",
+  "output_sha256": "5c07f9bd8b46e4104c7c787fd96dae7cdf14ab8207807a87495e3e0365d257f3",
+  "target_caches": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/whole_graph_nt_completion_20260928/all_targets.npz",
+      "sha256": "c9604f312bdde5b81818b1f9a2c26d537543c901fbbd2eacb4d768532502a496",
+      "segids": 751237,
+      "unique_segids": 751237,
+      "new_union_segids": 751237
+    }
+  ],
+  "target_union_nodes": 751237,
+  "embedded_nodes": 751237,
+  "coverage_fraction": 1.0,
+  "embedding_dimension": 512,
+  "source_shards": [
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/benchmark_nt.npz",
+      "sha256": "9f5015336bd1c0b9c5f81ed98e659e23f498ca28b57e5646d17ce411f93baabe",
+      "audit_sha256": "c53a1bff86d7b6fda028797c87417cfa54c85296cffa19d459a30df5cc0bcee7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/whole_graph_nt_completion_20260928/missing_nt_0.npz",
+      "sha256": "444159216df7b7252eda16a8446b5c797dae38cc19e08a92f2cd66f42c610d38",
+      "audit_sha256": "cf1ba22e01f67f3bf6d3c9f60028a74f93ec6756f591b8a2284ce2ddb5211b47"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/whole_graph_nt_completion_20260928/missing_nt_1.npz",
+      "sha256": "ba56decd6c8807077a361daa105cb57472bcb2d006b68eab3574ea6ed5d38ea6",
+      "audit_sha256": "d71bd005d0494e55de4c5039c7dfbbf5abffa51de8aa2b63ebfcbc831c5365b7"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/whole_graph_nt_completion_20260928/missing_nt_2.npz",
+      "sha256": "f322f62a4964543164c99b1cf7d657695fbb8a13c02ff00dfcca3e78afb31af8",
+      "audit_sha256": "016dc24f417ec0bd20abb0da8b604acd6c3deada3f900a43198f150c7e4edb23"
+    },
+    {
+      "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/whole_graph_nt_completion_20260928/missing_nt_3.npz",
+      "sha256": "bfd5b308152431df723db0ab078491ccc3793f6e94f379dc6b520de0ace979b1",
+      "audit_sha256": "c67c3c2269e2d634bff6d756e6b6d14cde0fc8631a113526decac89c762f02d5"
+    }
+  ],
+  "fine_tuned": false,
+  "model_parameters_frozen": true,
+  "downstream_label_access": "none",
+  "target_selection_note": "target caches contribute segid arrays only; no label or split array is read",
+  "scope": "complete_target_union",
+  "wall_seconds": 84.84922590479255
+}

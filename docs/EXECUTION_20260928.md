@@ -1,6 +1,6 @@
 # Model and downstream continuation — 28 September 2026
 
-Verified at 02:24 EDT; live jobs may have progressed beyond this snapshot. This is an execution record, not a manuscript revision.
+Verified at 02:37 EDT; live jobs may have progressed beyond this snapshot. This is an execution record, not a manuscript revision.
 The [central checklist](MODEL_AND_DOWNSTREAM_STATUS_20260927.md) retains the
 complete historical task inventory and all failed scientific gates.
 
@@ -14,8 +14,8 @@ complete historical task inventory and all failed scientific gates.
 | Natural-cohort smoke | Complete: 39/39 converged evaluations, independent prediction replay | [Metrics](../results/foundation_evidence_20260928/natural_sv_smoke/per_run.csv), [local replay](../results/foundation_evidence_20260928/natural_sv_smoke/local_replay.json) |
 | Natural-cohort full matrix | Complete: 30/30 runs, 1,170 converged and replayed evaluations, zero exclusions | [Full audit](../results/foundation_evidence_20260928/sv_type_natural_full_analysis/audit.json) |
 | New masked-feature pretraining objective | Complete: 12 pretraining runs, 24 frozen probes / 96 feature evaluations; three-seed gate passes | [Protocol](../configs/masked_nt_objective_20260928.json) |
-| Whole-graph NT coverage | 271,760-segment completion running on four GPUs; original cache unchanged | [Protocol](../configs/whole_graph_nt_completion_20260928.json) |
-| Chromosome replication | Launched and waiting for cache completion/free GPUs: fixed 5 folds × 3 seeds × 4 arms | [Protocol](../configs/masked_nt_chromosome_replication_20260928.json) |
+| Whole-graph NT coverage | Complete: all 751,237 graph segments, original 479,477 rows byte-identical | [Protocol](../configs/whole_graph_nt_completion_20260928.json) |
+| Chromosome replication | Running: first fold-A test probes; fixed 5 folds × 3 seeds × 4 arms | [Protocol](../configs/masked_nt_chromosome_replication_20260928.json) |
 | Alternative-component context | Complete: 14,786 components partly covered by benchmark-union cache | [Coverage](../results/foundation_evidence_20260928/reference_component_context_20260928/coverage.csv) |
 | DART-Eval accessibility task | Official schema/reference/split located; table download requires authentication | [Source audit](../results/foundation_evidence_20260928/dart_feasibility/source_audit.json), [403 receipt](../results/foundation_evidence_20260928/dart_feasibility/download.json) |
 
@@ -193,13 +193,13 @@ exact target/count/baseline-score checks preserved. No scores or labels changed.
 [control figure](../results/foundation_evidence_20260928/masked_feature_full_analysis/masked_feature_controls.pdf),
 [all junction comparisons](../results/foundation_evidence_20260928/masked_junction_full_reference/paired_per_seed.csv).
 
-### Fixed chromosome replication: launched, waiting for GPUs
+### Fixed chromosome replication: running
 
 The [replication protocol](../configs/masked_nt_chromosome_replication_20260928.json)
 was committed before any new chromosome-test results. After reviewing the
 completed gate and full-versus-coordinate results, the detached
-`masked_chromosome` job was launched. It waits for the active whole-graph NT
-completion and all four GPUs to become free. The explicit
+`masked_chromosome` job was launched. After whole-graph NT completion released
+the GPUs, it advanced into fold-A/seed-42 test probing. The explicit
 [review receipt](../results/foundation_evidence_20260928/masked_chromosome_replication_driver/development_review.json)
 pins development audit SHA-256
 `3e05b7840c26b328300db07b758eb70a979f677626b17cff771a0218eaf8d6a2`.
@@ -218,7 +218,8 @@ The primary follow-up summary therefore uses folds A/C/D/E; fold B and the
 full five-fold matrix are separate sensitivity scopes. This does not erase
 historical v1 label exposure, so no untouched-external-validation claim is made.
 The existing paired hierarchical bootstrap, fold sign-flip and BH routines are
-reused. No chromosome results exist yet; the driver is resource-waiting.
+reused. The matrix is still running; completed individual probes do not constitute a
+full chromosome-replication result. No partial test-driven model changes are made.
 
 ## 3. Correct the graph denominator and enable broader contexts
 
@@ -252,18 +253,23 @@ coverage. Components are **not** directed bubbles or phased haplotype alleles.
 A future context builder must retain orientation, check reference-anchor spans
 and bound computation before making those claims.
 
-Whole-graph NT completion is running in a separate output directory, following the
-current GPU campaign finishes. It adds **271,760** sequences using the exact
-frozen model and manuscript preprocessing, offline. Estimated capped sequence
-input is 112.6 million bases; raw output is 1.54 GB, with 679 GB free at audit.
-The scope includes 4,972 previously uncached sequences longer than the original
-6,000-base cap; their inherited end-sampling limitation remains explicit.
+Whole-graph NT completion is **complete** in a separate output directory:
+**751,237 × 512 finite float32 vectors**, including 271,760 appended segments.
+All 479,477 original serialized rows are byte-identical, with exact canonical
+ID coverage. The completed SHA-256 is
+`5c07f9bd8b46e4104c7c787fd96dae7cdf14ab8207807a87495e3e0365d257f3`.
 
-The job verifies graph/cache checksums, waits for free GPUs, checks disk space,
-refuses existing output directories, and reopens the merged output to verify
-exact IDs, finite values and byte-identical original vectors. It stops on a
-failed dependency or a twelve-hour readiness timeout. It does not replace the
-cache used by the active campaign or restore missing haplotype paths.
+The exact original frozen model, revision and preprocessing were reused offline.
+The inherited 6,000-base end-sampling/1,000-token limitation remains; 4,972 new
+segments exceed that raw sequence cap. This is representation infrastructure,
+not a biological result or a verified haplotype/bubble representation. No
+original cache was overwritten and the active replication still uses its
+prespecified benchmark-union cache. The four workers completed and the merged
+serialized cache passed the independent extension audit.
+
+[Completion and preservation receipt](../results/foundation_evidence_20260928/whole_graph_nt_completion/status.json),
+[cache provenance](../results/foundation_evidence_20260928/whole_graph_nt_completion/whole_graph_nt.npz.audit.json).
+Server output: `results/foundation_evidence_20260927/whole_graph_nt_completion_20260928/whole_graph_nt.npz`.
 
 [Graph scope audit](../results/foundation_evidence_20260928/graph_scope_20260928.json),
 [component audit](../results/foundation_evidence_20260928/reference_component_context_20260928/audit.json),
@@ -348,6 +354,10 @@ python -m tasks.transfer.masked_junction_reference \
 # Already queued on the server; use a fresh runtime/output root for replay.
 python results/foundation_evidence_20260927/post_campaign_driver/run.py
 
+# Fixed chromosome replication; the launch helper pins the reviewed gate SHA.
+# Already running; do not start a duplicate in its output directory.
+python results/foundation_evidence_20260927/masked_chromosome_replication_driver/launch.py
+
 # Read-only durable-job status:
 tmux -L evidence-20260927 list-sessions
 
@@ -356,6 +366,8 @@ python -m tasks.transfer.sv_type_report --root <natural-full-root> \
   --examples <preparation>/natural_events.parquet --out-dir <fresh-report>
 python -m tasks.transfer.masked_feature_report --root <masked-feature-root> \
   --out-dir <fresh-report>
+python -m tasks.transfer.masked_replication --root <completed-replication-root> \
+  --out-dir <fresh-replication-report>
 ```
 
 The natural-SV archived launcher pins native commit `113c2ce`; check it out for
@@ -376,10 +388,10 @@ server resources remain prerequisites; launchers do not download replacements.
 - [x] Complete natural-SV fitting, full replay, paired uncertainty and plots: 30 runs, 1,170 evaluations, zero exclusions.
 - [x] Complete and independently replay all three seeds of masked-feature biological controls and the supplemental junction-Q comparison.
 - [x] Audit whole-graph scope, alternative-component coverage and NT completion cost.
-- [ ] Complete the active full-graph frozen NT cache and verify preserved values.
+- [x] Complete the full-graph frozen NT cache: 751,237 rows, every original row byte-identical.
 - [x] Complete all three seeds of masked-feature trained/random/coordinate comparisons; all six original development gates pass.
 - [x] Freeze/test the chromosome-replication protocol before observing new chromosome-test scores.
-- [x] Review the completed gate and launch fixed chromosome replication in tmux, queued behind cache completion.
+- [x] Review the completed gate and launch fixed chromosome replication in tmux, now running after cache completion.
 - [ ] Complete/replay all 120 chromosome-test probes, then assess improvement. Current v2 has not established a universally better final model.
 - [ ] Obtain authorized DART rows, verify labels/coordinates/coverage, then
   prespecify an appropriately labelled comparison.
@@ -410,3 +422,12 @@ reload. This prevents repeating the historical missing-probe external-replay
 blocker; it does not retrospectively recover lost historical classifiers.
 
 [Scientific result review and remaining limitations](RESULT_REVIEW_20260928.md).
+
+The DART source audit also examined the official reconstruction route. Labels
+require replicate ATAC counts and differential-accessibility analysis; consensus
+peak membership is not an equivalent label. Neither local nor server Synapse
+configuration is present (existence-only check, no credentials inspected).
+The alternate route needs the exact BAM/count inputs and final label processing;
+an authorized processed table remains the smallest dependency to resolve.
+[Author workflow](https://github.com/kundajelab/DART-Eval/blob/af2a86d666c35304257c2fa7e15180e1fbcabb01/README.md#task-3-discriminating-cell-type-specific-elements),
+[reconstruction feasibility audit](../results/foundation_evidence_20260928/dart_feasibility/raw_reconstruction_audit.json).

@@ -1,0 +1,11 @@
+{
+  "observed_at_utc": "2026-09-28T06:34:37.476709+00:00",
+  "source": "https://raw.githubusercontent.com/kundajelab/DART-Eval/af2a86d666c35304257c2fa7e15180e1fbcabb01/src/dnalm_bench/task_2_5_single/dataset_generators/peak_classification/DESeqAtac.R",
+  "sha256": "84981bbb15b60bdd8ff392ca1ee321e209d503f33bf85e4c73b5580e3e0a0baf",
+  "local_existing_auth_configured": false,
+  "server_existing_auth_configured": false,
+  "public_reconstruction_route": "Author pipeline: consensus peaks -> replicate BAM counts -> merged count matrix -> DESeq differential accessibility -> uniquely assigned cell label -> data-loader reformat.",
+  "missing_inputs": "Exact replicate BAM/count inputs including the custom H1ESC peak set, or an authorized official processed table.",
+  "guard": "Do not label consensus peaks by peak-file membership alone or claim this recreates DART-Eval; differential-accessibility labels require measured counts.",
+  "status": "Alternative raw reconstruction identified but not ready; no new labels or experiment results generated"
+}
