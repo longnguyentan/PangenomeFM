@@ -103,3 +103,13 @@ receipts directly, avoiding this live-status provenance ambiguity.
 5. Official graph-SSL architecture comparisons, stronger full sequence embeddings
    and new-E biological transfer remain outstanding. No additional assays or
    architecture changes will be chosen from the pending chromosome-test scores.
+
+### Additional fixed reference check
+
+The [original-v1 comparison](../configs/masked_nt_v1_reference_20260928.json)
+adds 30 saved frozen probes at the same 4,000-iteration budget after primary
+replication. It is a separately disclosed supplement, recorded before inspecting
+new test scores, with every candidate arm retained. Its purpose is to test actual
+old/new pipeline improvement rather than infer it from beating a random encoder.
+Single-fold B summaries remain descriptive and receive no genomic confidence
+interval. This reference experiment has no completed performance result yet.

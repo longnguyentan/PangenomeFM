@@ -381,7 +381,7 @@ server resources remain prerequisites; launchers do not download replacements.
 
 ## Tests and remaining checklist
 
-- [x] Full local suite: **436 passed**, including cached manuscript checks, replication gates and exact saved-probe replay; 14 known warnings. Targeted Ruff passes.
+- [x] Full local suite: **438 passed**, including cached manuscript checks, replication gates and exact saved-probe replay; 14 known warnings. Targeted Ruff passes.
 - [x] Server: latest 19 probe/persistence/replication tests pass, in addition to earlier cache/context checks; Ruff and compile checks pass.
 - [x] Real natural-SV smoke independently replayed: all 39 evaluations.
 - [x] Existing manuscript regression checks remain in the passing suite.
@@ -431,3 +431,38 @@ The alternate route needs the exact BAM/count inputs and final label processing;
 an authorized processed table remains the smallest dependency to resolve.
 [Author workflow](https://github.com/kundajelab/DART-Eval/blob/af2a86d666c35304257c2fa7e15180e1fbcabb01/README.md#task-3-discriminating-cell-type-specific-elements),
 [reconstruction feasibility audit](../results/foundation_evidence_20260928/dart_feasibility/raw_reconstruction_audit.json).
+
+## Supplemental original-model comparison: fixed follow-up
+
+Passing the matched-random gate does not establish improvement over v1.
+The [supplemental protocol](../configs/masked_nt_v1_reference_20260928.json)
+therefore compares every new arm to the original frozen v1 checkpoint on the
+same five folds, three seeds, tasks, features and test examples. It was recorded
+while replication was running, before its test performance values were
+inspected; operational completion and artifact checks had been inspected.
+This supplement changes neither primary replication nor model selection.
+
+The follow-up refits **30 v1 probes / 120 feature evaluations**, uniformly at
+max_iter=4000, and saves the fitted classifiers. Historical 800-iteration
+results remain unchanged. The runner waits for the primary replication to
+complete and free the GPUs. It reuses the existing native probe runner; the
+reporter reuses paired identity checks, replay and fold/seed inference. A changed
+population, baseline score, missing model artifact or nonconvergence stops it.
+It compares pipelines with different representations/input access, not only
+pretraining objectives or compute-matched architectures.
+
+The development-exposed fold B receives descriptive means and seed standard
+deviations but **no genomic confidence interval**. Primary four-fold and all-five
+summaries retain the prespecified chromosome bootstrap. This implements the
+protocol's rule that initializations are not independent genomic replicates.
+
+```bash
+PYTHONPATH=src:. python scripts/server/run_masked_v1_reference.py \
+  --config configs/masked_nt_v1_reference_20260928.json \
+  --main-checkout /home/tuv43532/PangenomeFM \
+  --topology-control-cache /home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz \
+  --out-root results/foundation_evidence_20260927/masked_v1_reference
+```
+
+Use a fresh output root for reproduction. The dependency is the complete current
+chromosome replication; no new reference performance is available yet.

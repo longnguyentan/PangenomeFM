@@ -62,6 +62,15 @@ def validate_matrix(frame: pd.DataFrame, plan: dict) -> None:
                 raise ValueError("Non-embedding baseline changed")
 
 
+
+def chromosome_estimate(frame: pd.DataFrame, column: str, plan: dict) -> dict:
+    """A single development-exposed fold supports seed descriptions, not a genomic CI."""
+    result = estimate(frame, column, plan["n_bootstrap"], plan["statistics_seed"])
+    result["interval_scope"] = "exploratory_chromosome_bootstrap"
+    if frame.fold.nunique() < 2:
+        result.update(ci95_low=np.nan, ci95_high=np.nan, interval_scope="unavailable_single_fold")
+    return result
+
 def summarize(frame: pd.DataFrame, plan: dict):
     validate_matrix(frame, plan)
     absolute, paired = [], []
@@ -81,9 +90,7 @@ def summarize(frame: pd.DataFrame, plan: dict):
                         model=model,
                         feature=feature,
                         metric=metric,
-                        **estimate(
-                            group, metric, plan["n_bootstrap"], plan["statistics_seed"]
-                        ),
+                        **chromosome_estimate(group, metric, plan),
                     )
                 )
         for task in plan["tasks"]:
@@ -133,7 +140,7 @@ def summarize(frame: pd.DataFrame, plan: dict):
         rows.append(
             dict(
                 zip(names, key),
-                **estimate(group, "gain", plan["n_bootstrap"], plan["statistics_seed"]),
+                **chromosome_estimate(group, "gain", plan),
                 sign_flip_p=fold_sign_flip(group),
             )
         )

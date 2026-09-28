@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "question": "Does the fixed sequence-conditioned masked-feature candidate improve over the original frozen v1 topology encoder under the same converged probe budget?",
+  "timing": "Supplement recorded while chromosome replication is running, before inspecting any of its held-out performance values. Execution health and artifact counts have been inspected. This does not alter that study or select candidate weights.",
+  "replication_protocol": "configs/masked_nt_chromosome_replication_20260928.json",
+  "replication_root": "results/foundation_evidence_20260927/masked_chromosome_replication",
+  "reference_models": ["v1"],
+  "candidate_arms": ["full_trained", "full_random", "coordinate_trained", "coordinate_random"],
+  "folds": ["fold_a", "fold_b", "fold_c", "fold_d", "fold_e"],
+  "seeds": [42, 314159, 20260806],
+  "tasks": ["sv", "ccre"],
+  "context": "1hop",
+  "features": ["cst", "csht"],
+  "metrics": ["auprc", "auroc", "normalized_ap", "balanced_accuracy", "f1"],
+  "probe_max_iter": 4000,
+  "policy": "Original v1 checkpoint per fold/seed, frozen encoder and NT. Refit identical native logistic probes using only original training/validation chromosomes; retain all 30 probe runs and save fitted artifacts. No historical output is overwritten. Every arm is compared to v1, without a performance-dependent gate.",
+  "validity": "Replay every reference prediction and saved-model receipt; require convergence, original graph checks, identical target identities and bitwise C+S/C+S+H baseline predictions across old/new encoders. A mismatch is a blocker, not permission to silently filter examples.",
+  "inference": "Reuse fixed replication scopes: primary A/C/D/E, development-exposed B separately, all five as sensitivity. Paired hierarchical fold/seed bootstrap, fold sign flips, BH within metric/scope. No architecture selection from these scores.",
+  "limitations": ["Model inputs and pretraining differ; comparison is between pipelines, not the isolated effect of masked reconstruction", "The new representation E includes frozen sequence while original T is topology-native", "Nominal epoch/compute budgets are not matched", "Historical v1 biological results were previously inspected", "The supplemental timing is disclosed; it was not part of the original four-arm development gate"]
+}

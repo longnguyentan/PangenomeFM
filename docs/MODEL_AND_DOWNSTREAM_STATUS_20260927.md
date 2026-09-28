@@ -12,10 +12,12 @@ Branch: `codex/v2-evidence-review-20260927`.
 - [x] Complete and replay the **30-run natural-cohort matrix: 1,170 converged evaluations, no exclusions**. Macro ΔT after C+S is +0.067057 strict / +0.051653 one-hop; after C+S+L+H, +0.047664 / +0.014988. INV-specific intervals after length/structure cross zero; no random-encoder superiority claim.
 - [x] Prespecify, implement and test **segment-grouped masked NT reconstruction** on the existing encoder. This is a GraphMAE-style objective adaptation, with paired random encoders and coordinate-only controls, not an official GraphMAE reproduction or a novel masked-autoencoder claim.
 - [x] Complete **12 pretraining runs and 24 frozen validation probes / 96 feature evaluations** across three seeds. All metrics replay and fits converge; trained-minus-random after C+S+H is positive at every seed/task (mean +0.005609 SV / +0.001836 cCRE). Full-versus-coordinate trained contrasts also positive. One development fold; no chromosome CI.
+- [x] Prespecify/test a supplemental original-v1 comparison at the same converged probe budget, before inspecting new chromosome performance.
+- [ ] Complete the queued **30 v1 reference probes / 120 feature evaluations** after primary replication; no old/new superiority result yet.
 - [x] Audit graph-wide reference-contig separation: no direct cross-contig reference link or multi-contig alternative component.
 - [x] Inspect the actual 1,218-genome SV release header/inventory: INS/DEL plus genotypes/frequencies, not the missing measured genotyping-concordance or DUP/complex labels.
 - [x] Identify DART-Eval task 3's official GRCh38 coordinates, five cell labels, original split and processed-table version. Anonymous data download returns **HTTP 403**; actual-table QC/fitting awaits an authorized copy.
-- [x] Full local suite **436 passed**; targeted Ruff/diff checks pass. Existing manuscript checks remain included.
+- [x] Full local suite **438 passed**; targeted Ruff/diff checks pass. Existing manuscript checks remain included.
 - [x] Repair fitted-probe persistence: opt-in saved scaler/classifier/calibration with exact reload replay; frozen chromosome replication will retain its classifiers.
 - [x] Implement/test the gated, fixed chromosome-replication runner/reporter; review the completed gate and launch the detached job. All controls retained; fold B reported separately due to development exposure.
 - [ ] Complete **120 chromosome-test probe runs / 480 evaluations**. The job is running first fold-A test probes after NT completion. Full-matrix inference remains pending.
