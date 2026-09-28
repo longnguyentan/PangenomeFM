@@ -1,0 +1,33 @@
+{
+  "date": "2026-09-28",
+  "source_commit": "3d330c44e6661ae04a01131f24fde302362f9b49",
+  "latest_attachment": {
+    "path": "/Users/longnguyentan/.codex/attachments/d957a167-c683-4aa6-a683-cb2afd2ab712/Pasted text.txt",
+    "sha256": "83c093f26c1b8e184da0b21ed9f8eef65c005550c166eee1bebebee047f72949",
+    "identical_to_previously_reviewed_original": true
+  },
+  "entrypoint": "main.tex",
+  "main_tex_sha256": "98187a692394bd283b12d090f6c2ccc41e5460e60b9de2c9c036b65f0630f454",
+  "archive": {
+    "path": "output/source/PangenomeFM_NMI_revised_LaTeX.zip",
+    "bytes": 342054,
+    "files": 34,
+    "sha256": "bdbf96288da497fe0afb6be8ec63a99702c6ab06dbbab3c92362b6471be3f75f"
+  },
+  "checks": {
+    "zip_integrity": "passed",
+    "entry_bytes": "all equal corresponding current source",
+    "deterministic_rebuild": "identical archive SHA-256 on two builds",
+    "extracted_compile": "three draft-mode pdfLaTeX passes with BibTeX main and S; no final warnings, unresolved references or box warnings",
+    "comments": "preservation checker passes on extracted package",
+    "pdf_created": false,
+    "source_updated_this_delivery": false
+  },
+  "editorial_status": {
+    "original_comments_preserved": 118,
+    "latest_followup_requests_done": 12,
+    "latest_followup_request_count": 13,
+    "genotype_call_improvement": "evidence open",
+    "other_unresolved_items": "Exact training-graph donor provenance, optional locus vignette, consortium authorship, release destination/license and grant details; see included editorial checklist."
+  }
+}

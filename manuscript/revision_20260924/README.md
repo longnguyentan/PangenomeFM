@@ -132,3 +132,17 @@ current source was checked with full-project draft-mode TeX, producing no new PD
 The existing output PDF is the preceding NMI-writing snapshot; it is not a render
 of the subsequent small prose/comment edits. The current editor remains open.
 `comment_resolution_provenance.json` distinguishes these verification states.
+
+## Downloadable source package
+
+Run `python manuscript/revision_20260924/package_latex.py` from the repository
+root. It creates `output/source/PangenomeFM_NMI_revised_LaTeX.zip`, with `main.tex`
+at the ZIP root, all referenced vector figures, both bibliographies, supporting
+TeX files, preserved comments, checklists and a per-file SHA-256 manifest. Upload
+the ZIP to Overleaf and select pdfLaTeX/main.tex, or run `latexmk -pdf main.tex`
+after extraction. The archive contains no compiled manuscript PDF.
+
+`delivery_receipt_20260928.json` records the verified delivery. The latest pasted
+full manuscript is byte-identical to the original reviewed attachment. Extraction
+and a fresh draft-mode TeX/BibTeX build passed without creating a new PDF; the
+comment checker also passed within the extracted package.
