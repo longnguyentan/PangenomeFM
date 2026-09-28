@@ -117,8 +117,15 @@ def check(args: argparse.Namespace) -> int:
     if Counter(grouped_lines) != Counter(record["line"] for record in expected_followup):
         errors.append("Follow-up groups must cover each of the 25 comment lines exactly once")
 
-    archive_path = directory / manifest["archive_file"]
-    archive_text = read_text_exact(archive_path)
+    single_file = manifest.get("layout") == "single_file"
+    current_main = read_text_exact(directory / "main.tex")
+    if single_file:
+        begin, end = manifest["inline_archive_markers"]
+        if current_main.count(begin) != 1 or current_main.count(end) != 1:
+            raise ValueError("Expected exactly one preserved inline archive")
+        archive_text = current_main.split(begin, 1)[1].split(end, 1)[0]
+    else:
+        archive_text = read_text_exact(directory / manifest["archive_file"])
     archive_lines = archive_text.splitlines()
     for number, line in enumerate(archive_lines, 1):
         if line.strip() and not line.lstrip().startswith("%"):
@@ -145,7 +152,7 @@ def check(args: argparse.Namespace) -> int:
     response_pattern = re.compile(r"^% Long Note:\s*(.*?)\s*\[(R\d{2})\](?=\s|[.:;]|$)")
     for filename in response_files:
         responses = {}
-        for record in comment_records(read_text_exact(directory / filename)):
+        for record in comment_records(archive_text if single_file and filename == manifest["archive_file"] else read_text_exact(directory / filename)):
             match = response_pattern.match(record["comment"])
             if match:
                 status, response_id = match.groups()
@@ -164,7 +171,7 @@ def check(args: argparse.Namespace) -> int:
     note_count = 0
     prefix = manifest["editorial_note_prefix"]
     for baseline in manifest["baseline_files"]:
-        path = directory / baseline["path"]
+        path = directory / ("main.tex" if single_file else baseline["path"])
         expected = counts(baseline["comments"])
         total_baseline += sum(expected.values())
         if not path.is_file():
@@ -189,11 +196,21 @@ def check(args: argparse.Namespace) -> int:
             ):
                 errors.append(f"Pinned Git baseline differs from manifest: {baseline['path']}")
 
-    main_text = without_comments(read_text_exact(directory / "main.tex"))
-    archive_stem = re.escape(Path(manifest["archive_file"]).stem)
-    archive_input = re.compile(r"\\input\s*\{\s*" + archive_stem + r"(?:\.tex)?\s*\}")
-    if not archive_input.search(main_text):
-        errors.append("main.tex must include the comment-only editorial archive with an active \\input command")
+    main_text = without_comments(current_main)
+    if single_file:
+        if re.search(r"\\(?:input|include|externaldocument|bibliography)\s*\{", main_text):
+            errors.append("Single-file manuscript must not require external TeX or bibliography files")
+        for source_group in manifest.get("consolidation_comment_sets", []):
+            expected = counts(source_group["comments"])
+            for comment, missing in (expected - counts(comment_records(current_main))).items():
+                errors.append(f"{source_group['name']}: missing {missing} occurrence(s): {comment!r}")
+        total_current = len(comment_records(current_main))
+        note_count = sum(r["comment"].startswith(prefix) for r in comment_records(current_main))
+    else:
+        archive_stem = re.escape(Path(manifest["archive_file"]).stem)
+        archive_input = re.compile(r"\\input\s*\{\s*" + archive_stem + r"(?:\.tex)?\s*\}")
+        if not archive_input.search(main_text):
+            errors.append("main.tex must include the comment-only editorial archive with an active input command")
     if not note_count:
         errors.append("Current manuscript source needs at least one new % Long Note: editorial response outside the archive")
 
@@ -204,8 +221,8 @@ def check(args: argparse.Namespace) -> int:
     print(f"PASS: all {len(expected_original)} original comment occurrences preserved verbatim in the comment-only archive")
     print(f"PASS: all {len(expected_followup)} follow-up comment occurrences covered verbatim in the archive")
     print("PASS: R01–R13 responses present in main and archive; R08 remains Evidence open and the other twelve are Done")
-    print(f"PASS: all {total_baseline} baseline comments retained in their own {len(manifest['baseline_files'])} source files")
-    print(f"PASS: archive is included; {note_count} Long Note response lines among {total_current} current source comments")
+    print(f"PASS: all {total_baseline} baseline comments retained; layout: {manifest.get('layout', 'modular')}")
+    print(f"PASS: archive is preserved; {note_count} Long Note response lines among {total_current} current source comments")
     print(f"PASS: {source_status}")
     print(f"PASS: {followup_status}")
     if args.verify_git_baseline:

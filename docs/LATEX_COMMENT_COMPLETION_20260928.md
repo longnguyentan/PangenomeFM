@@ -3,20 +3,23 @@
 Updated 28 September 2026. Applies to the **existing open `main.tex`** in
 `manuscript/revision_20260924`; no replacement manuscript or tab was created.
 
-## Latest section-boundary revision
+## Latest consolidated-source revision
 
-- [x] Revise the existing six Introduction paragraphs; do not restore the old attachment's claims.
-- [x] Restrict the abstract and Introduction to background, the question, model and study design.
-- [x] Lead Results with SV classification, then regulatory activity, attribution controls and external evaluation.
-- [x] Keep the requested sequence-coverage Results heading.
-- [x] Move the architecture description and diagram to Methods; separate Supplementary Results and Supplementary Methods.
-- [x] Keep Discussion interpretive; move audit/performance outcomes out of Methods.
-- [x] Define biological/computational terms at first use; preserve all comments, numerical rows and figure assets.
+- [x] Review the supplied NMI rewrite against saved evidence and merge into the existing `main.tex`.
+- [x] Inline the article, supplement, tables, references and preserved comments; one active TeX file.
+- [x] Retain the six-paragraph Introduction and an aim-focused abstract without findings.
+- [x] Lead Results with known SV classification; retain sequence coverage and trained/untrained controls.
+- [x] Keep Methods beginning with representation, encoder, objective, loss and optimization.
+- [x] Keep four main figures and two tables; reconstruction controls remain supplementary.
+- [x] Correct Figure 2's repair annotation, Figure 4's missing d and the development figure's initialization legend.
+- [x] Verify added control/development measurements; exclude incomplete chromosome-level replication.
+- [x] Preserve original, earlier and supplied rewrite comments inside the single source.
 
-These changes follow the latest explicit request and supersede earlier requests
-for a model-description Results opening. Current main figure numbering is
-paradigms 1, SV 2, cCRE 3 and architecture 4. No scientific evidence-open item
-below changes status because of this writing revision.
+Main figures are paradigms 1, architecture 2, structural variants 3 and regulatory
+elements 4. The diagrams introduce the model before Results; methods and detailed
+specification are in Methods. See `manuscript/revision_20260924/REVISION_NOTES.md`
+for the current full review. Earlier dated placement notes remain in the comment
+archive for traceability. No evidence-open item changes status through editing.
 
 ## Status rules
 
@@ -46,10 +49,10 @@ manuscript text or a task.
 | R06 | 22–24 | **Done** | Redesigned Figure 1 uses concise parallel rows ending at learned representations; caption explains reuse. |
 | R07 | 40–47 | **Done** | Binary cCRE, PLS/pELS/dELS/CTCF-only and fixed complexity strata retained. Results now leads with SV findings under the latest section-boundary request. |
 | R08 | 52 | **Evidence open; question answered** | Completed COSIGT analysis and its negative result are explicit. Improving genotype calls, particularly complex/CNV calls, remains untested. |
-| R09 | 58 | **Done** | Heading changed to “Structural information and pretraining make different contributions.” Shortcut and trained/random controls remain visible. |
-| R10 | 68 | **Done** | Oriented segments, coupled neighborhoods and the architecture diagram now open Methods, followed by objective/optimization and frozen reuse. Latest author instructions supersede the old Results-design placement. |
+| R09 | 58 | **Done** | Heading changed to “Much of the graph contribution does not require pretraining.” Shortcut and trained/random controls remain visible. |
+| R10 | 68 | **Done** | Methods opens with oriented segments and the coupled encoder, followed by objective/optimization and frozen reuse; the conceptual architecture figure is introduced before Results. Latest author instructions supersede the old Results-design placement. |
 | R11 | 78 | **Done** | Exact focal loss, ordered scorer, class weighting, optimizer, learning-rate schedule, clipping and stopping are specified. |
-| R12 | 83–86 | **Done** | Dedicated sequence-coverage Results subsubsection explains 303,425 covered segments, zero missing features and 26.3% end sampling; detailed QC stays supplementary. |
+| R12 | 83–86 | **Done** | Dedicated sequence-coverage Results subsection explains 303,425 covered segments, zero missing features and 26.3% end sampling; detailed QC stays supplementary. |
 | R13 | 91 | **Done** | Supplement has narrative sections, figures, tables and separate references; S-prefixes match in text and bibliography. |
 
 Search `% Long Note: Done [R` in `main.tex` for the local resolutions, and

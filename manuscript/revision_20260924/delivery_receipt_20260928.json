@@ -1,36 +1,31 @@
 {
   "date": "2026-09-28",
-  "base_commit": "b72004087b6f0b715950a8debb4c7201fab1fc6f",
-  "source_revision_record": "section_revision_provenance.json",
-  "latest_attachment": {
-    "path": "/Users/longnguyentan/.codex/attachments/6d41ecf4-e51d-4d37-b917-3b68897c6fe0/Pasted text.txt",
-    "sha256": "83c093f26c1b8e184da0b21ed9f8eef65c005550c166eee1bebebee047f72949",
-    "identical_to_original_reviewed_attachment": true
-  },
+  "base_commit": "c8049161cbb2400998db2b969adf5210c53c2da7",
+  "source_revision_record": "consolidation_provenance.json",
   "entrypoint": "main.tex",
-  "main_tex_sha256": "ac193e64c31fccd42106b32596ea7fa345f359f29bd00b93de067f6c2cafb7f9",
+  "main_tex_sha256": "70190d7a3bce063390e247b91fa8ca3edb42033c2304b0c7dc34471ae0afa57e",
   "archive": {
     "path": "output/source/PangenomeFM_NMI_revised_LaTeX.zip",
-    "bytes": 345989,
-    "files": 35,
-    "sha256": "b8eba5d59f35ad9bdbad2e0daf56bc98ee694b9cf0acb67cde9e36569171ca1a"
+    "bytes": 356401,
+    "files": 17,
+    "tex_files": 1,
+    "sha256": "e094f9ef69a688b41d4d36b2f38403ff96b5008374bdab800631dd1425534afa"
   },
   "checks": {
     "zip_integrity": "passed",
-    "entry_bytes": "All TeX/Bib files equal current source; all entries match SHA-256 manifest.",
-    "deterministic_rebuild": "Identical archive SHA-256 on two builds.",
-    "full_project_compile": "Copied current source passed draft-mode pdfLaTeX with both BibTeX lists; no final warnings, unresolved references or box warnings. Source is byte-identical to packaged TeX/Bib files.",
-    "comments": "Preservation checker passes in extracted current package.",
+    "manifest_hashes": "all verified",
+    "deterministic_rebuild": "identical ZIP SHA-256",
+    "portable_project_compile": "Three pdfLaTeX draft-mode passes from isolated extracted package; no warnings, undefined citations/references, or box warnings",
+    "comments": "Checker passes in extracted bundle; deliberate original-comment deletion correctly fails",
     "pdf_created": false,
-    "source_updated_this_delivery": true,
-    "native_editor": "Cannot load companion project files; open document retained."
+    "native_editor": "Checked; cannot load companion figure PDFs; document kept open"
   },
   "editorial_status": {
     "original_comments_preserved": 118,
+    "followup_comment_occurrences_preserved": 25,
     "professor_followup_requests_done": 12,
     "professor_followup_request_count": 13,
-    "section_revision_requests_done": 5,
     "genotype_call_improvement": "evidence open",
-    "other_unresolved_items": "Exact training-graph donor provenance, optional locus vignette, consortium authorship, release destination/license and grant details; see included editorial checklist."
+    "open_author_items": "See REVISION_NOTES.md"
   }
 }

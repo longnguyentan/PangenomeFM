@@ -169,7 +169,7 @@ def paradigms():
     save(fig, "figure1_paradigms_methodfirst")
 
 
-def method():
+def method(stem="figure2_method_methodfirst"):
     fig, ax = canvas(6.8)
     txt(ax, 0.02, 0.971, "PangenomeFM: topology-pretrained representation", size=12,
         weight="bold", ha="left")
@@ -198,7 +198,6 @@ def method():
         bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
     txt(ax, 0.443, 0.781, "Exact directed query rows", size=7.3, color=RED)
     txt(ax, 0.443, 0.759, "Remove before message passing", size=7.1, color=RED)
-    txt(ax, 0.443, 0.726, "Reciprocal masking: later repair", size=7.0, color=MUTED)
 
     txt(ax, 0.78, 0.874, "Seven shared structural inputs", weight="bold", size=8.2)
     txt(ax, 0.781, 0.841, "Offset · length · source rank", size=8)
@@ -272,7 +271,7 @@ def method():
     for x, label, color, fill in (
         (0.513, "T\nGraph encoder", TEAL, "#EFF8F6"),
         (0.672, "S\nNT encoder", BLUE, "#F1F5FB"),
-        (0.831, "C\nCoordinates", ORANGE, "#FCF6EE"),
+        (0.831, "C\nGenomic inputs", ORANGE, "#FCF6EE"),
     ):
         box(ax, x, 0.203, 0.125, 0.057, label, color=color, fill=fill, size=7.5)
         if label[0] in ("T", "S"):
@@ -284,7 +283,7 @@ def method():
         fill="#F6F2FA", size=9, weight="bold")
     txt(ax, 0.7345, 0.071, "Fixed feature combinations", size=7.3, color=MUTED)
     txt(ax, 0.7345, 0.043, "cCRE classification · insertion / deletion", size=7.6)
-    save(fig, "figure2_method_methodfirst")
+    save(fig, stem)
 
 
 if __name__ == "__main__":
