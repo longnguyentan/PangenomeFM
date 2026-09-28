@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "stage": "cache_completion",
+  "started_at": 1790570734.5168412,
+  "native_commit": "a951144",
+  "error": "CalledProcessError(1, ['/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python', 'scripts/server/complete_reference_topology_cache.py', '--full-segments', '/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz', '--manifest', '/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv', '--cache-root', '/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference', '--results-root', '/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806', '--target-cache', '/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz', '--out-root', '/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion'])"
+}

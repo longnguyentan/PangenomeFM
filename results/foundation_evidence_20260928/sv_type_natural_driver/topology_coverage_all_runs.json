@@ -1,0 +1,212 @@
+[
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_20260806/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_20260806/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_314159/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_314159/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_42/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_42/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_20260806/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_20260806/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_314159/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_314159/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_42/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_42/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_20260806/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_20260806/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_314159/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_314159/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_42/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_42/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_20260806/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_20260806/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_314159/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_314159/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_42/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_42/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_20260806/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_20260806/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_314159/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_314159/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_42/1hop.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  },
+  {
+    "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_42/strict.npz",
+    "missing_events": 64,
+    "missing_segments": [
+      303424
+    ]
+  }
+]

@@ -1,0 +1,41 @@
+{
+  "status": "complete",
+  "graph": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+    "bytes": 870096546,
+    "mtime_ns": 1786041795869081191,
+    "sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347"
+  },
+  "links": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_links.csv.gz",
+    "bytes": 10729631,
+    "mtime_ns": 1786041795869081191,
+    "sha256": "7435ac55187d7bca464b961621aada6f8d46e0f7ef900ff7d59d0daee89e2f3b"
+  },
+  "cache": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/benchmark_nt.npz",
+    "bytes": 906437982,
+    "mtime_ns": 1790546325608455626,
+    "sha256": "9f5015336bd1c0b9c5f81ed98e659e23f498ca28b57e5646d17ce411f93baabe"
+  },
+  "n_segments": 751237,
+  "n_reference_segments": 305572,
+  "n_alternative_components": 135902,
+  "n_alternative_segments": 445665,
+  "component_size_quantiles": {
+    "0.0": 1.0,
+    "0.5": 1.0,
+    "0.9": 3.0,
+    "0.95": 6.0,
+    "0.99": 29.0,
+    "1.0": 20761.0
+  },
+  "n_partial_components": 14786,
+  "scope": "Undirected connected components after removing reference nodes; no biological labels; no graph/checkpoint changes.",
+  "limitations": [
+    "Connectivity is not directed reconvergence, a bubble call or a phased allele.",
+    "Cache membership audits the benchmark-union representation scope, not each individual window.",
+    "Single-anchor, unanchored, multichromosome and nonprimary cases require separate treatment before fold-safe context construction.",
+    "Even two reference anchors do not prove a single simple or oriented bubble."
+  ]
+}

@@ -1,0 +1,1712 @@
+[
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "21dfa088f30f85f1fdad5afe50e1184953e353502b0094a982f114f1a52055ad",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 314159,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "11eb52ac8620edc18f7be2dcdebac3f63c4e8b36133f2262c8048c8ce62ac9fd",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_314159/1hop.npz",
+        "bytes": 55157206,
+        "mtime_ns": 1789519404592885986,
+        "sha256": "c0bef97737375682d77f010f5f841c2df046e7b7c877594ed2c42b2aa79b6852"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "524f2e1b7b0cc185ce316a47def6026a9b4fc49d939e50883e0a9a6a1d486bf7",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 314159,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "6a91b057b72ccb0d51edab0a99616b3e1c9e76bd31a0818222fcb1cb6b601c24",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_314159/strict.npz",
+        "bytes": 54896241,
+        "mtime_ns": 1789519335845582529,
+        "sha256": "54eada78e638c85a69b45f6702436560f7a4416945bc50d9954761867ea63ea8"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "fab83659568b88c063e4ab9b95655cd2797a7bbe22a0d2954f8facd4152b2a3b",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 42,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "fe516a6d2766ccdefaaa8ac08ec17215d9feed8a6ddd05c4b26316027c834a8b",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_42/1hop.npz",
+        "bytes": 55372538,
+        "mtime_ns": 1789519338677553828,
+        "sha256": "f72d83b124b1c8b4d51ab8a3abf73d22320f40329fb23f005f45e8ecf062d26c"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "98a99bf0ae44ee033ae87004e4f94886ae1809ba002261fa4a174288843974bc",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 42,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "dd9902430ceb1bf19cd7d5025c490810dbd9c6feee4496bac1b6eba1c1994d62",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_42/strict.npz",
+        "bytes": 54894269,
+        "mtime_ns": 1789519168019284725,
+        "sha256": "23dcb4a8bc91ed3a791f5ebe1d75b94f95f912c4c6da472747bed1b5cec3833d"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "05640549a3c0c0eb456637eb39886a305f592109ac5238135fc40dc7646d2486",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 20260806,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "cd0a1c984db63b52071a1bd5d909017e9a77af552263411af19771787e17c995",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_20260806/1hop.npz",
+        "bytes": 55244024,
+        "mtime_ns": 1789519594550963025,
+        "sha256": "4e74b62cf773c44d6117b2614995fa424551d0dc9eee9a1f1fddc4a0533dcba8"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "d8203e022b0fcec09f75befb17e3e5ecb2aebb6a4f609bd2a768b39331594634",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 20260806,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "225a0a91782022f0af0127005526804345597f06cad9fdbdf0038fb47239dea3",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_c/seed_20260806/strict.npz",
+        "bytes": 54835050,
+        "mtime_ns": 1789519450344422630,
+        "sha256": "52dd1ffac2a736858ca768e040f9e2d570dfbae218d399b1a579b2ba6278a372"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "66583b6f856f29b23002435bd205d9898382e5bf31bc27088311f20dfb5f241c",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 314159,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "8267e60078c0b69112f45b86fde8d3f1b3fb1dba5c98a937552d71aade0c5f63",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_314159/1hop.npz",
+        "bytes": 55184402,
+        "mtime_ns": 1789519855076328596,
+        "sha256": "faa8495d3011fb38dc46e7f0bb5d9e04cfd2add3ee3bea0210e019dbe0f005c0"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "b52be2c3f34ea34d44f5d0973755915a3e18be34d2451016799db6afe7c1cb24",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 314159,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "25c45b6232490d5760cfd8dbe0ba96cc2bd361dae9dddcf9917a6b1252b841a6",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_314159/strict.npz",
+        "bytes": 54944956,
+        "mtime_ns": 1789519670846191240,
+        "sha256": "b708cc7a5c0a96a46a75a626919d640774cdf10347b5c9264f4c416e6ae16e4e"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "1cb14ff074110d4749ef38bd937596446300c53fe18b6a55cd873236c041479a",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 42,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "5a7c2794510510060f07454647f749fc80a461cce762bacf0dbf8f3ed68f3097",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_42/1hop.npz",
+        "bytes": 55033857,
+        "mtime_ns": 1789519651814383736,
+        "sha256": "bb4dbdfe26558febef80dc7b0fb85b22491f725ed326bf242ab7856c78ee499c"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "b467818963f3a868c525d5271a5b21d49a64f67af892446890eea8a1af44e986",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 42,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "68967c2266a190d887fd2ad5d4b9c1d22100ad7a18376c7a5e7ece125ccf19b8",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_42/strict.npz",
+        "bytes": 54982568,
+        "mtime_ns": 1789519592458984190,
+        "sha256": "a3acde45c10fa5db6c8d54e4a5ee4542b9d7fdbf4ff3f76fdaebacd0e54d6b88"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "d095cf09486c0c3fda333fd38a73a449cdbe1c44d986ffa3109d13b719123cc4",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 20260806,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "0cda27ac9523b483c99c823e8b1bbca37d6da02770e2360ec0b45e72e741a097",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_20260806/1hop.npz",
+        "bytes": 55074460,
+        "mtime_ns": 1789519956451304121,
+        "sha256": "b3254c8e0ae113e3238c0567728a35965454cbdf46afec838df064947908d2c8"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "2139eaae6d85fccce36f9c67524e84b59adbff16352e9b6d01421d6cbcff3adb",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 20260806,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "2afbdaf1168b3718413a0f7691a20a1296d0e44c39c89d36abcf1cd64cb4b403",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_d/seed_20260806/strict.npz",
+        "bytes": 54873503,
+        "mtime_ns": 1789519849460385358,
+        "sha256": "08762d250af748448874d7e25624094cb646b9c1ab092bf6d436722f1c71f68b"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "8e52ced31a97bc70b00279351dfa6fc7eeee7cc70593b1867077f27a81c334bb",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 314159,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "77629c605db281dbff9323574bfa3df4d5dd6279cb13e5f92821394050a28c7f",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_314159/1hop.npz",
+        "bytes": 55520734,
+        "mtime_ns": 1789520218700251361,
+        "sha256": "34a793a2e171e03b79802457741b3c6437f1ab21a20112936c3e7c7bb7915042"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "9e4591157ba13c78500b4903556bd1cf2167844942847519b621ed97e7874a6f",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 314159,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "4bd81d45699592da809a60f938738ac13ae56effc654bf37324cd4217d216390",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_314159/strict.npz",
+        "bytes": 54939000,
+        "mtime_ns": 1789520109677568398,
+        "sha256": "7d9461a6d8ea36d78feaa3b9de53e34205bf2e83877f2ae7664f00c848d035c3"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "4353803ecc81ee388a3828f496bbb3aee3325c164d2a7b4996dcb449ddf0c224",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 42,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "0781a2d82d01a2818778300377d1bdbc578c26aa76d4d8f0a8a036ad1b6350fb",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_42/1hop.npz",
+        "bytes": 55428137,
+        "mtime_ns": 1789520102597655356,
+        "sha256": "715b1c7a71001f2461309fcb3dc5228908b8a91667f53de56f464ad3976e5fe2"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "f34c6c25c1316b0d9229f7426dbf24fed64bede1f0cfb2da6e67e203be779f80",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 42,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "470344cb980ce7d15ac27b0fe55f4a8c953d2e25d1260bd34687d93bd708f2c8",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_42/strict.npz",
+        "bytes": 54934306,
+        "mtime_ns": 1789519972931137605,
+        "sha256": "b2322b5dde64f92e968014c8ced33a704df4be9aa5e8b3087a4067f405f1b0cc"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "ddbf70df69701bb738ba3146c13252635ae4c6f87c4c6fd807637703a7bff259",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 20260806,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "5dab86ea6ae0a856682c2de1cca34d5363308ebf0764d813d3721f151c693f8c",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_20260806/1hop.npz",
+        "bytes": 55286143,
+        "mtime_ns": 1789520363078561140,
+        "sha256": "3c828e47568e99b57fccefdafcb5c3c63daa38e2a7117ab28d77dd4235f997a6"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "649618713eb813ba1e7f0d2dc9925197f46eca344d9dd2a33f58a6b25c4b50f8",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 20260806,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "247516e5ce597975aed8a3abe90876de60ef9bf2fca5ccfa7907549fd1e926f9",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_e/seed_20260806/strict.npz",
+        "bytes": 54935737,
+        "mtime_ns": 1789520205992402886,
+        "sha256": "6a8b6221ee54cef0e0fa127862b88a111886f9d553180aa7244caf929767eaeb"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "038902eeb199a976554900d5249758e56be2c641c34d385971b52e156474c177",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 314159,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "3f3396b6af73ff2caf829bf74814c108d9e7deffed0af20170e8ca2356995aa3",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_314159/1hop.npz",
+        "bytes": 55151080,
+        "mtime_ns": 1789519063980341546,
+        "sha256": "0a3f17d7947256f0964bcf72d59634d2083fd3f28e66c8a2f355b4e1ca56e598"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "bf079e90e06de5cd650be2898ffaf14dee9fdb539e8ad308a0b78f889a15a391",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 314159,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "0c069b1b812703367af24c09d91ca6ad2d60390a192142b763a59a6354009a8e",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_314159/strict.npz",
+        "bytes": 54852254,
+        "mtime_ns": 1789518915801849504,
+        "sha256": "88672f8fff93aea3244379e0d3f3f30f9eb9cdc446bf05f08bee0f41edef2dce"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "0608dbddeca9557bee1bc017afc6b1650cc485384d0b0f018cb7ed758397e7e2",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 42,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "c2cf96c58d45c6c6d928a2cc939455ad45f05443d5582b00c02727fb9726a50c",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_42/1hop.npz",
+        "bytes": 55216045,
+        "mtime_ns": 1789518846890552153,
+        "sha256": "c4d1e039971dc200bfdc8bf9d253a6e22fc2e315fa49027a1442760a66bba834"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "461414f65644c0e151b38ff7bbef49e5a15a9fed59d12ae9950553951eccaf00",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 42,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "2ada1b20d8295713653fa375a41e95bbff7a6905f45cee51d3afab116bdaba24",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_42/strict.npz",
+        "bytes": 54910270,
+        "mtime_ns": 1789518821090815478,
+        "sha256": "8f62c883a35dbc03a3ed8382ee9db3dad11c01cbeb164ddedbed9b3d1dd7971a"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "e64a78ab73bcc00b5119de316cb58a162def07690c6a8fb36e546d6f4a7926cc",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 20260806,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "7f93367f9f616f0824050717665eae1465342ba20d3a28e2b3e4d8d58f2dcc6e",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_20260806/1hop.npz",
+        "bytes": 55111673,
+        "mtime_ns": 1789519120631765911,
+        "sha256": "df55ef60a17e7a79f25681c6015b8fe6f588caaa7e6ff840a84a1377c342899f"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "d61c3206b37a9f6cb6c2b302e62f5f769b6755770d35f45df39b38a3c11263c6",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 20260806,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "a33f4fd86f6aa294637e218064326378ff9323f799045fc05e670ac161f749f8",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_b/seed_20260806/strict.npz",
+        "bytes": 54971471,
+        "mtime_ns": 1789519065480326299,
+        "sha256": "fbf1af8992c58aabe8a981647b840fd05424561c49d2e31821fa653b52b20601"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "92fdb11e082b8dcea7c00bd9be9a955966b8984a4d167c879996bbb464a55607",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 314159,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "1f17b37398dbc1191e51b6a6a256e870d40a2ab40f7b05d5d29294cc8ae84bce",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_314159/1hop.npz",
+        "bytes": 55383066,
+        "mtime_ns": 1789518524381857131,
+        "sha256": "5b5a250284f333f8f1010142b6a3e658da7f76fbd205dd8af87f6306a47c784a"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "98a6ea5ea0eb32532ba98079f1b312c491c16e42f22555af9914308b67d8d08d",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 314159,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "adfe8153ecebd8cfb7588d19382c47a20d33165e77dc0aaa1e762d2645ef94c0",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_314159/strict.npz",
+        "bytes": 54874313,
+        "mtime_ns": 1789518514665957244,
+        "sha256": "828d071c21051852a2577ea41c93e2700876a1d5b61c23b982033c50bdd77b1c"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "de30051ceb3225c08da1c2b503e829a97773c73da9bb058962945f012c3c5b70",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 42,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "c6a6af289ae61c17de1e72cbce4b58653ef65056829a13e36a0f1e1de0d4ffa1",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_42/1hop.npz",
+        "bytes": 55034018,
+        "mtime_ns": 1789518520105901186,
+        "sha256": "0d3f73a25095af83833b666d4a58217b6b232dc7400fe0397dbc8f46255b9355"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "3216e2eb4fa22557c74cef4a0f60153a6e5da4f0a6193af9bacf99cb163ea610",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 42,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "44d930d71efc3938a45a1d0b64347ea542c9d7aeb7b10f4d0ba1de90c9664443",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_42/strict.npz",
+        "bytes": 54904209,
+        "mtime_ns": 1789518082682462216,
+        "sha256": "9085843e86152516d507dd9e784e631b8fafdaa62d9f8f2e8813eb727aee592b"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "0e35798cb0c158cd665635dd561d5b5d363b34d632ffd66e4c5a5b9a216888aa",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 20260806,
+      "closure": "1hop",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 18,
+      "orientation_equivalent_conflicting_pairs": 23,
+      "conflicting_candidate_rows_excluded": 46,
+      "same_label_equivalent_rows_collapsed": 13
+    },
+    "output_sha256": "37d97a024372b4bbb94bee76dff15dc34b67998de2cf5851bbe75697251e52c1",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_20260806/1hop.npz",
+        "bytes": 55253591,
+        "mtime_ns": 1789518811406914356,
+        "sha256": "d55192dddd7e0ac8d8c317d46730cb5be15b303208349e4b9b327761f358c4b0"
+      },
+      "appended_segments": [
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_1hop",
+          "covered": [
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_segments.csv.gz",
+            "bytes": 62736,
+            "mtime_ns": 1786109264801984339,
+            "sha256": "5a079e6fd771e3816e8352058cae23c769a1f7660ce55fd7028512554da427dd"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_1hop_links.csv.gz",
+            "bytes": 211,
+            "mtime_ns": 1786109264805984293,
+            "sha256": "5832beed12bb2b7a8ac0ec7a11f39ebb00d839d14a1abec0151a239760889b37"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  },
+  {
+    "status": "complete",
+    "schema_version": 1,
+    "downstream_label_access": "none",
+    "model_parameters_frozen": true,
+    "identity": {
+      "checkpoint_sha256": "be46903bc370227aaaaa5a60997498744860097e7299f5ac9dba8fc3f58025b6",
+      "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+      "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+      "seed": 20260806,
+      "closure": "strict",
+      "canonical_conflict_policy": "exclude"
+    },
+    "extraction": {
+      "canonical_conflict_policy": "exclude",
+      "slices_with_conflicting_pairs": 8,
+      "orientation_equivalent_conflicting_pairs": 9,
+      "conflicting_candidate_rows_excluded": 18,
+      "same_label_equivalent_rows_collapsed": 3
+    },
+    "output_sha256": "0d2965d674f692ffd60e85d9514e93036c5fb3be90b22e129a7ab629bb994793",
+    "coverage_extension": {
+      "parent_cache": {
+        "path": "/home/tuv43532/PangenomeFM/results/entex/v1/topology_cache_all_reference/fold_a/seed_20260806/strict.npz",
+        "bytes": 54882528,
+        "mtime_ns": 1789518641304655195,
+        "sha256": "c3afe1fc23a57c108e83fb4b73f8cfbc30fc238f1b727f841808fe8e3e19bb72"
+      },
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "original_vectors_bitwise_identical": true,
+      "loader_policy": "Original reference-overlapping structural windows; candidate-count eligibility bypassed only for missing targets",
+      "windows": [
+        {
+          "name": "slice_GRCh38_0_chrY_55000000_60000000_strict",
+          "covered": [
+            303423,
+            303424
+          ],
+          "segments": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_segments.csv.gz",
+            "bytes": 50818,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "f595535e430ddcdee4a10deaf25c9e08b4eaf5d966553533a9f88f4cc0ee3f2e"
+          },
+          "links": {
+            "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/slice_GRCh38_0_chrY_55000000_60000000_strict_links.csv.gz",
+            "bytes": 172,
+            "mtime_ns": 1786109202750689211,
+            "sha256": "ad89c84ded8d745fe8a3c2621cb207909f45ca900476f34521f17cfc7b493794"
+          }
+        }
+      ],
+      "encoder_training": false
+    }
+  }
+]

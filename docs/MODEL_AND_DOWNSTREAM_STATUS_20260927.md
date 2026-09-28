@@ -1,9 +1,27 @@
 # PangenomeFM: model and downstream evidence status
 
-Last verified 28 September 2026, 00:20 EDT. Technical work only; no manuscript edits.
+Last verified 28 September 2026, 01:37 EDT. Technical work only; no manuscript edits.
 Branch: `codex/v2-evidence-review-20260927`.
 
-## Latest execution: new results and numerical repairs
+## Active continuation, 28 September
+
+- [x] Map all **174,267 natural-frequency SV events / 147,429 anchors**, including all 298 primary-chromosome inversions. No event exclusions.
+- [x] Trace the coverage failure to a small terminal chrY window rejected by the historical reconstruction-candidate filter: 64 events shared one missing T segment. C/K/S/H were complete.
+- [x] Complete all **30 frozen topology caches** in a separate output root using the original windows/checkpoints. Existing vectors are verified bitwise unchanged; only missing reference targets are appended. Preserve the initial coverage failure and a repaired JSON-provenance serialization error.
+- [x] Complete the natural-cohort fold-A/42/strict smoke: **39 converged evaluations**, all events retained. All saved predictions and metrics replay independently on the laptop. No one-fold confidence intervals.
+- [ ] Complete and replay the **30-run natural-cohort matrix**. **15/30 runs complete** across five active chromosome shards; results cannot yet be described as a complete experiment.
+- [x] Prespecify, implement and test **segment-grouped masked NT reconstruction** on the existing encoder. This is a GraphMAE-style objective adaptation, with paired random encoders and coordinate-only controls, not an official GraphMAE reproduction or a novel masked-autoencoder claim.
+- [ ] Complete **12 pretraining runs and 24 frozen validation probes** across three seeds. **8/12 pretraining runs complete**, seed 314159 probes running. First-seed validation gains over random after C+S+H are +0.005503 SV / +0.001411 cCRE; this is preliminary, not chromosome replication.
+- [x] Identify DART-Eval task 3's official GRCh38 coordinates, five cell labels, original split and processed-table version. Anonymous data download returns **HTTP 403**; actual-table QC/fitting awaits an authorized copy.
+- [x] Full local suite **428 passed**, plus two subsequent context tests (430 unique tests); initial 11 server tests, then 9 cache/report and 2 context tests pass. Targeted Ruff/compile checks pass.
+- [x] Correct graph-scope denominator: 751,237 total segments, 303,425 downstream cache rows, 479,477 benchmark NT rows. Audit 14,786 partly covered alternative components; no new graph release.
+- [ ] Complete the separate, queued **271,760-segment frozen NT extension** after the model campaign. Existing cache values must be byte-identical; no label-driven retraining.
+
+[Current runbook, evidence and remaining gates](EXECUTION_20260928.md). The prior
+failed learned-versus-random development gate remains in force. New pretraining
+uses no biological labels; downstream encoders remain frozen.
+
+## Completed studies before the 28 September continuation
 
 - [x] Finish COSIGT measured-quality prediction: **30 runs / 900 evaluations**, all 265 loci retained. Independent replay matches all server tables. All topology MAE intervals cross zero; the training-median reference outperforms the fitted feature models on primary-outcome mean error.
 - [x] Finish a new INS/DEL/INV common-support task: **30 runs / 1,170 converged evaluations**, 223 events per class. All 669 events have complete frozen features; all predictions and result tables replay independently.
@@ -124,6 +142,7 @@ exact sign-flip significance; the latter has limited resolution.
 The attached suggestions contain useful directions and several stale or
 incorrect details. Actual code/data/results take precedence:
 
+- The processed graph has 751,237 segments and 1,097,658 links. Reference-only and benchmark-union cache sizes are different denominators; reference NT coverage is not whole-graph coverage.
 - The original server resources are accessible and the EN-TEx matrix is
   complete; this is no longer a missing-graph/data-preparation-only project.
 - The historical SV endpoint is INS versus DEL, not breakpoint detection.
@@ -145,9 +164,9 @@ incorrect details. Actual code/data/results take precedence:
 No supplied document instruction to change the graph, fine-tune NT with labels,
 or substitute a success threshold overrides the frozen, controlled evaluation.
 
-## Frozen architecture candidate
+## Earlier frozen junction architecture candidate
 
-**Candidate specification is fixed; scientific validation is incomplete.**
+**This specification remains recorded, but failed its complete development gate.** The new 48D masked-feature objective is a separate sequence-conditioned candidate, described in the [28 September runbook](EXECUTION_20260928.md); it has not yet passed all three initialization seeds.
 
 | Part | Fixed choice |
 |---|---|
@@ -455,8 +474,9 @@ must never label inversions as deletions.
 [Readiness audit](../results/foundation_evidence_20260927/inversion_readiness/audit.json)
 · [Fold support](../results/foundation_evidence_20260927/inversion_readiness/fold_support.csv).
 
-**Next implementation:** disjoint event-level INS/DEL/INV labels, overlap
-handling, one-vs-rest AP and length-matched controls. Complex events are not
+**Completed:** disjoint event-level INS/DEL/INV labels, overlap
+handling, one-vs-rest AP and length-matched controls. The natural-frequency
+extension now passes smoke and is running its full matrix. Complex events are not
 automatically a mutually exclusive fourth class. The paper's broader complex-SV
 count is not a ready GRCh38 multiclass table.
 [HGSVC3 paper](https://www.nature.com/articles/s41586-025-09140-6),
@@ -497,12 +517,12 @@ removing queried links can support a standalone novelty claim.
 
 | Priority | Remaining work | Present status / concrete next action |
 |---|---|---|
-| 1 | Model transfer improvement | All three seeds converged; mixed scientific gates persist. Weak head complete, improves SV only; not promoted |
+| 1 | Model transfer improvement | Junction gates remain failed. New masked-feature candidate beats random on both tasks in the first seed; remaining two seeds running, no chromosome promotion yet |
 | 2 | Chromosome replication and v2 task transfer | Not run; freeze protocol before additional label-informed choices |
-| 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | TraitGym nonlinear/regularization/fusion matrix complete; established SSL and stronger full sequence-embedding comparisons remain unrun |
+| 3 | Established graph SSL, stronger sequence and nonlinear probe comparisons | TraitGym probe matrix complete. Native-backbone GraphMAE-style objective with random/coordinate controls is running; official GraphMAE and stronger full sequence-embedding comparisons remain unrun |
 | 4 | TraitGym | All three 60-run studies complete; all fixed-C outputs replay exactly and every topology contrast is retained. Official LOCO/full sequence-embedding comparison remains separate |
-| 5 | INV-containing SV type task | Matched three-class study complete with length/H controls and exact replay. Natural-prevalence cohort (all 298 inversions), DUP and complex classes remain unrun/unresolved |
-| 6 | DART-Eval | Official suite identified; select coordinate-anchored tasks and audit coverage before claiming a comparable result |
+| 5 | INV-containing SV type task | Matched study complete. Full natural-frequency cohort smoke passes after append-only chrY cache completion; 30-run matrix running. DUP and complex classes remain unresolved |
+| 6 | DART-Eval | Task-3 source/coordinate/split audit complete; official processed-table download requires authenticated Synapse permission (403). No fabricated labels or task performance |
 | 7 | Measured SV genotypability | COSIGT regression and validation-only fallback complete; reduced mean error still falls short of the constant reference on the primary endpoint. Per-variant PanGenie concordance and independently callable denominator remain unresolved |
 | 8 | GTEx / SV-expression / trait links | Compact positive sets insufficient; obtain all-tested/callable universes before defining negatives |
 | 9 | Path-aware RNA/methylation, donor scaling | Need verified haplotype-to-canonical-segment correspondence and donor-excluded graph design |

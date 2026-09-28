@@ -1,0 +1,14 @@
+{
+  "missing_segments": 271760,
+  "total_missing_bases": 180803081,
+  "median_length": 83.0,
+  "p95_length": 2283.0,
+  "maximum_length": 536059,
+  "maximum_raw_bases_processed": 112639013,
+  "longer_than_6000": 4972,
+  "raw_float32_output_bytes": 1538533376,
+  "free_disk_bytes": 679335157760,
+  "model_revision": "81b29e5786726d891dbf929404ef20adca5b36f1",
+  "no_additional_model_or_graph_download": true,
+  "estimation": "Raw sequence cap, not an exact tokenizer/runtime estimate; all existing vectors will be preserved."
+}

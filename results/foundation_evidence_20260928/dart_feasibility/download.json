@@ -1,0 +1,7 @@
+{
+  "entity": "syn61788656",
+  "version": 1,
+  "status_code": 403,
+  "repository_commit": "af2a86d666c35304257c2fa7e15180e1fbcabb01",
+  "error": "{\"concreteType\":\"org.sagebionetworks.repo.model.ErrorResponse\",\"reason\":\"Anonymous users have only READ access permission.\"}"
+}

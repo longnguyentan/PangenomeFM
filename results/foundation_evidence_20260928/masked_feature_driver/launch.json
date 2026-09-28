@@ -1,0 +1,25 @@
+{
+  "native_commit": "ce9587ffad6439050f370313d62441e84e59f54a",
+  "command": [
+    "/home/tuv43532/miniconda3/envs/pangenomefm-server/bin/python",
+    "-u",
+    "scripts/server/run_masked_feature_campaign.py",
+    "--config",
+    "configs/masked_nt_objective_20260928.json",
+    "--template-checkpoint",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/frozen_branch_seed_replication/seed_314159/sequence_trained/bidirectional_linear/run_001/ckpt_1hop__shared_bidir_mscale3_orient_dedge0.1_linpred_valonly_maskedq_jrbranching16_geommatch1.25_visdeg_xcache_splitseed20260806_heldout_chr1_chr6_chr11_chr16_chr21_val_chr2_chr7_chr12_chr17_chr22_ep10_pat3.pt",
+    "--main-checkout",
+    "/home/tuv43532/PangenomeFM",
+    "--nt-cache",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/benchmark_nt_completion/benchmark_nt.npz",
+    "--topology-control-cache",
+    "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+    "--out-root",
+    "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/masked_feature_full",
+    "--gpus",
+    "0",
+    "1",
+    "2",
+    "3"
+  ]
+}

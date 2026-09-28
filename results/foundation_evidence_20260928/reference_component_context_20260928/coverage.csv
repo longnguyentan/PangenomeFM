@@ -1,0 +1,4 @@
+status,coverage,components,alternative_segments,cached_alternative_segments,alternative_bases
+multiple_anchors_one_primary_chromosome,complete,120257,129125,129125,95378207
+multiple_anchors_one_primary_chromosome,partial,14786,310057,46927,207309403
+nonprimary_reference_contig,absent,859,6483,0,3640887

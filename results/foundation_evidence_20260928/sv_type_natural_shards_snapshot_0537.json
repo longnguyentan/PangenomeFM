@@ -1,0 +1,1965 @@
+[
+  {
+    "native_path": "results/foundation_evidence_20260927/sv_type_natural_shards/fold_c/status.json",
+    "status": {
+      "status": "running",
+      "plan": {
+        "artifact_type": "analysis_plan",
+        "version": 2,
+        "task": "hgsvc3_natural_sv_type",
+        "recorded_before_first_fit": true,
+        "objective": "Predict INS/DEL/INV at the natural primary-chromosome event frequencies; compare to the completed length-matched sensitivity without changing its cohort.",
+        "reference_config": "configs/entex_v1.json",
+        "examples_sha256": "526fd8338ab1bb19009ca04586e3a11ded7f4aa0a724692b63e7f7faf0503b4f",
+        "loci_sha256": "3a1ef5e136671e75fb8dfd4a06cab364a394b3fa6a678a29912f714419d4087a",
+        "n_events": 174267,
+        "class_counts": {
+          "DEL": 63346,
+          "INS": 110623,
+          "INV": 298
+        },
+        "topology_control_sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166",
+        "feature_sets": [
+          "coordinate",
+          "frozen_sequence_fm",
+          "frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm",
+          "coordinate_plus_frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+          "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+          "L",
+          "CSL",
+          "CSLT",
+          "CSLH",
+          "CSLHT"
+        ],
+        "custom_feature_sets": {
+          "L": [
+            "event_log_length"
+          ],
+          "CSL": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length"
+          ],
+          "CSLT": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "frozen_pangenomefm"
+          ],
+          "CSLH": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "topology_control"
+          ],
+          "CSLHT": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "topology_control",
+            "frozen_pangenomefm"
+          ]
+        },
+        "probe_max_iter": 4000,
+        "probe": "Separate native balanced logistic C=1 one-versus-rest probe for each class; frozen v1 T and NT S. Native train-only scaling, validation-only temperature/F1 threshold. No tuning on test.",
+        "partition": "All five original chromosome folds, three checkpoint seeds and both contexts; every event and repeated anchor remains chromosome grouped.",
+        "matching": "No sampling or matching. Fixed L=log1p(event length) controls evaluated separately; all repeated and mixed-class anchors retained.",
+        "representation": "One BED first-affected-base anchor per event for every class. No END/distance/ID/donor metadata in C/S/T. Event log length is explicitly labeled L and evaluated separately.",
+        "metrics": [
+          "auprc",
+          "auroc",
+          "normalized_ap",
+          "balanced_accuracy",
+          "f1",
+          "precision",
+          "recall"
+        ],
+        "comparisons": [
+          [
+            "T_given_CS",
+            "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+            "coordinate_plus_frozen_sequence_fm"
+          ],
+          [
+            "T_given_CSH",
+            "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+            "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+          ],
+          [
+            "T_given_CSL",
+            "CSLT",
+            "CSL"
+          ],
+          [
+            "T_given_CSLH",
+            "CSLHT",
+            "CSLH"
+          ]
+        ],
+        "n_bootstrap": 10000,
+        "statistics_seed": 20260927,
+        "inference": "Per-class one-versus-rest AP plus macro average over all three classes; paired hierarchical fold/seed bootstrap, exact fold sign-flip and BH within metric over all classes/macro, contexts and contrasts. Macro binary metrics are not joint multiclass accuracy.",
+        "validity_gates": [
+          "All declared 174267 events retained; no class-dependent filtering",
+          "Complete C/S/T/H coverage and exact source/checkpoint identities",
+          "All OVR probes converge",
+          "Same test event identities in every arm/class",
+          "Full saved-prediction replay",
+          "No bin changes based on performance"
+        ],
+        "limitations": [
+          "Rare INV (298 events); AP must be reported with class prevalence, normalized AP and AUROC; no balanced-population interpretation",
+          "Known-SV type classification, not discovery, pathogenicity, or breakpoint detection",
+          "New anchor representation differs from original two-breakpoint INS/DEL benchmark",
+          "No DUP/complex labels in these input tables; no class relabeling",
+          "Graph donor overlap and v1 shortcut caveats remain",
+          "Static reference-segment vectors cannot distinguish events with identical features; no learned-versus-random claim"
+        ],
+        "references": [
+          "https://github.com/EichlerLab/svpop",
+          "https://www.nature.com/articles/s41586-025-09140-6"
+        ],
+        "population": "All 174,267 primary-chromosome INS/DEL/INV events from the pinned HGSVC3 annotation tables; ascertainment conditional on that callset, not population SV prevalence.",
+        "report_title": "Frozen SV type: natural callset frequencies",
+        "figure_title": "Known SV type at natural callset frequencies: frozen encoders",
+        "exploration": "Predeclared after the matched-cohort results were inspected; new event denominator, not an independent resource replication.",
+        "execution": "One fold/seed/context smoke checks mapping, complete C/S/T/H coverage and convergence only. Scores do not choose arms. Then five fold shards, each 3 seeds x 2 contexts, exact matrix merge and saved-prediction replay.",
+        "coverage_recovery": {
+          "recorded_before_first_fit": true,
+          "failed_smoke": "d5fb705; missing T for 64 events at terminal chrY segment 303424; no model fitted",
+          "policy": "Append only missing reference embeddings from original reference-overlapping manifest windows, bypassing candidate-count filtering during frozen inference. Every preexisting vector must remain bitwise identical; original caches retained. No graph/checkpoint/model change.",
+          "targets": "Full existing C/K target-segment universe, independently of event labels; both missing terminal reference segments completed in every fold/seed/context",
+          "full_original_denominator_retained": true
+        }
+      },
+      "jobs": [
+        {
+          "fold": "fold_c",
+          "test": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "validation": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "seed": 42,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_c",
+          "test": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "validation": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "seed": 42,
+          "closure": "1hop"
+        },
+        {
+          "fold": "fold_c",
+          "test": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "validation": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "seed": 314159,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_c",
+          "test": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "validation": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "seed": 314159,
+          "closure": "1hop"
+        },
+        {
+          "fold": "fold_c",
+          "test": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "validation": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "seed": 20260806,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_c",
+          "test": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "validation": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "seed": 20260806,
+          "closure": "1hop"
+        }
+      ],
+      "completed_runs": 3,
+      "planned_runs": 6,
+      "sources": [
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/natural_events.parquet",
+          "bytes": 6860369,
+          "mtime_ns": 1790570095180031109,
+          "sha256": "526fd8338ab1bb19009ca04586e3a11ded7f4aa0a724692b63e7f7faf0503b4f"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/loci.parquet",
+          "bytes": 3186942,
+          "mtime_ns": 1790570096120020686,
+          "sha256": "3a1ef5e136671e75fb8dfd4a06cab364a394b3fa6a678a29912f714419d4087a"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+          "bytes": 1044864,
+          "mtime_ns": 1786109265393977620,
+          "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz.audit.json",
+          "bytes": 1560,
+          "mtime_ns": 1786349516673233045,
+          "sha256": "75de2b22f2a7fdf262c6aa37344e2be5a40b0d7db1266dbfa4c1422d94437333"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+          "bytes": 37629106,
+          "mtime_ns": 1786349512365280119,
+          "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+          "bytes": 573489289,
+          "mtime_ns": 1786930030728110426,
+          "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz.audit.json",
+          "bytes": 2699,
+          "mtime_ns": 1786930033504082368,
+          "sha256": "0bbc6c075c4105d9cbbef25521431415ec57a89a5240fa101fe4d0ae39e05399"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_0.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890258760027309,
+          "sha256": "48697d25c353dc38c97f72cf704a88310c0bdb1cfcc21ce4b4efea49110aa314"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_1.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890299839630026,
+          "sha256": "ab77707365a248f679c58e9d1522eb396068311af6017da64777ba2813b52ffe"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_2.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890294411682734,
+          "sha256": "81b635f7a0a356f9db0a40cd361ac5bea01cb254a81d369a729230343be8694a"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_3.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890286575758712,
+          "sha256": "7b8e235d6a7d2641cb8e9e98fcf484cb5f08e5a0686b5cff1ccb53cd7a77ea34"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+          "bytes": 3834716,
+          "mtime_ns": 1790471724073996404,
+          "sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz.audit.json",
+          "bytes": 829,
+          "mtime_ns": 1790471725725979680,
+          "sha256": "0d6fabde5488b7ced332b37445982114957e42621deab356469e12b17e9709a0"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/sv_type_natural_20260928.json",
+          "bytes": 5836,
+          "mtime_ns": 1790570734444986623,
+          "sha256": "d225766f124c34088d31711950921028edfc3002ee56755fd8679e62c1e10606"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping/mapping_qc.json",
+          "bytes": 754,
+          "mtime_ns": 1790570138783547950,
+          "sha256": "48344587aa4b31799d4786e5303c435e118822c34fae0efa54a55b9fa1c0e735"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping/overlaps.parquet",
+          "bytes": 1880425,
+          "mtime_ns": 1790570136691571118,
+          "sha256": "22f0905a9bb9349abc4155e37a709131d1fd08754c8a2b1c69214d14563816bf"
+        }
+      ],
+      "command": [
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/sv_type_probe.py",
+        "--config",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/sv_type_natural_20260928.json",
+        "--examples",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/natural_events.parquet",
+        "--loci",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/loci.parquet",
+        "--mapping-dir",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping",
+        "--manifest",
+        "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+        "--feature-cache",
+        "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+        "--sequence-cache",
+        "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--topology-cache-root",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2",
+        "--results-root",
+        "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806",
+        "--out-root",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_shards/fold_c",
+        "--folds",
+        "fold_c"
+      ],
+      "implementation": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/sv_type_probe.py",
+        "bytes": 8704,
+        "mtime_ns": 1790570301433750072,
+        "sha256": "0b031a55440a8b88d491c5018bc864de1288e77ce663b28db9f91de4471c2c48"
+      },
+      "n_events": 174267,
+      "class_counts": {
+        "INS": 110623,
+        "DEL": 63346,
+        "INV": 298
+      },
+      "encoder_training": false,
+      "n_excluded": 0
+    }
+  },
+  {
+    "native_path": "results/foundation_evidence_20260927/sv_type_natural_shards/fold_d/status.json",
+    "status": {
+      "status": "running",
+      "plan": {
+        "artifact_type": "analysis_plan",
+        "version": 2,
+        "task": "hgsvc3_natural_sv_type",
+        "recorded_before_first_fit": true,
+        "objective": "Predict INS/DEL/INV at the natural primary-chromosome event frequencies; compare to the completed length-matched sensitivity without changing its cohort.",
+        "reference_config": "configs/entex_v1.json",
+        "examples_sha256": "526fd8338ab1bb19009ca04586e3a11ded7f4aa0a724692b63e7f7faf0503b4f",
+        "loci_sha256": "3a1ef5e136671e75fb8dfd4a06cab364a394b3fa6a678a29912f714419d4087a",
+        "n_events": 174267,
+        "class_counts": {
+          "DEL": 63346,
+          "INS": 110623,
+          "INV": 298
+        },
+        "topology_control_sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166",
+        "feature_sets": [
+          "coordinate",
+          "frozen_sequence_fm",
+          "frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm",
+          "coordinate_plus_frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+          "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+          "L",
+          "CSL",
+          "CSLT",
+          "CSLH",
+          "CSLHT"
+        ],
+        "custom_feature_sets": {
+          "L": [
+            "event_log_length"
+          ],
+          "CSL": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length"
+          ],
+          "CSLT": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "frozen_pangenomefm"
+          ],
+          "CSLH": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "topology_control"
+          ],
+          "CSLHT": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "topology_control",
+            "frozen_pangenomefm"
+          ]
+        },
+        "probe_max_iter": 4000,
+        "probe": "Separate native balanced logistic C=1 one-versus-rest probe for each class; frozen v1 T and NT S. Native train-only scaling, validation-only temperature/F1 threshold. No tuning on test.",
+        "partition": "All five original chromosome folds, three checkpoint seeds and both contexts; every event and repeated anchor remains chromosome grouped.",
+        "matching": "No sampling or matching. Fixed L=log1p(event length) controls evaluated separately; all repeated and mixed-class anchors retained.",
+        "representation": "One BED first-affected-base anchor per event for every class. No END/distance/ID/donor metadata in C/S/T. Event log length is explicitly labeled L and evaluated separately.",
+        "metrics": [
+          "auprc",
+          "auroc",
+          "normalized_ap",
+          "balanced_accuracy",
+          "f1",
+          "precision",
+          "recall"
+        ],
+        "comparisons": [
+          [
+            "T_given_CS",
+            "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+            "coordinate_plus_frozen_sequence_fm"
+          ],
+          [
+            "T_given_CSH",
+            "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+            "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+          ],
+          [
+            "T_given_CSL",
+            "CSLT",
+            "CSL"
+          ],
+          [
+            "T_given_CSLH",
+            "CSLHT",
+            "CSLH"
+          ]
+        ],
+        "n_bootstrap": 10000,
+        "statistics_seed": 20260927,
+        "inference": "Per-class one-versus-rest AP plus macro average over all three classes; paired hierarchical fold/seed bootstrap, exact fold sign-flip and BH within metric over all classes/macro, contexts and contrasts. Macro binary metrics are not joint multiclass accuracy.",
+        "validity_gates": [
+          "All declared 174267 events retained; no class-dependent filtering",
+          "Complete C/S/T/H coverage and exact source/checkpoint identities",
+          "All OVR probes converge",
+          "Same test event identities in every arm/class",
+          "Full saved-prediction replay",
+          "No bin changes based on performance"
+        ],
+        "limitations": [
+          "Rare INV (298 events); AP must be reported with class prevalence, normalized AP and AUROC; no balanced-population interpretation",
+          "Known-SV type classification, not discovery, pathogenicity, or breakpoint detection",
+          "New anchor representation differs from original two-breakpoint INS/DEL benchmark",
+          "No DUP/complex labels in these input tables; no class relabeling",
+          "Graph donor overlap and v1 shortcut caveats remain",
+          "Static reference-segment vectors cannot distinguish events with identical features; no learned-versus-random claim"
+        ],
+        "references": [
+          "https://github.com/EichlerLab/svpop",
+          "https://www.nature.com/articles/s41586-025-09140-6"
+        ],
+        "population": "All 174,267 primary-chromosome INS/DEL/INV events from the pinned HGSVC3 annotation tables; ascertainment conditional on that callset, not population SV prevalence.",
+        "report_title": "Frozen SV type: natural callset frequencies",
+        "figure_title": "Known SV type at natural callset frequencies: frozen encoders",
+        "exploration": "Predeclared after the matched-cohort results were inspected; new event denominator, not an independent resource replication.",
+        "execution": "One fold/seed/context smoke checks mapping, complete C/S/T/H coverage and convergence only. Scores do not choose arms. Then five fold shards, each 3 seeds x 2 contexts, exact matrix merge and saved-prediction replay.",
+        "coverage_recovery": {
+          "recorded_before_first_fit": true,
+          "failed_smoke": "d5fb705; missing T for 64 events at terminal chrY segment 303424; no model fitted",
+          "policy": "Append only missing reference embeddings from original reference-overlapping manifest windows, bypassing candidate-count filtering during frozen inference. Every preexisting vector must remain bitwise identical; original caches retained. No graph/checkpoint/model change.",
+          "targets": "Full existing C/K target-segment universe, independently of event labels; both missing terminal reference segments completed in every fold/seed/context",
+          "full_original_denominator_retained": true
+        }
+      },
+      "jobs": [
+        {
+          "fold": "fold_d",
+          "test": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "validation": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "seed": 42,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_d",
+          "test": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "validation": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "seed": 42,
+          "closure": "1hop"
+        },
+        {
+          "fold": "fold_d",
+          "test": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "validation": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "seed": 314159,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_d",
+          "test": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "validation": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "seed": 314159,
+          "closure": "1hop"
+        },
+        {
+          "fold": "fold_d",
+          "test": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "validation": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "seed": 20260806,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_d",
+          "test": [
+            "chr4",
+            "chr9",
+            "chr14",
+            "chr19",
+            "chrY"
+          ],
+          "validation": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "seed": 20260806,
+          "closure": "1hop"
+        }
+      ],
+      "completed_runs": 3,
+      "planned_runs": 6,
+      "sources": [
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/natural_events.parquet",
+          "bytes": 6860369,
+          "mtime_ns": 1790570095180031109,
+          "sha256": "526fd8338ab1bb19009ca04586e3a11ded7f4aa0a724692b63e7f7faf0503b4f"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/loci.parquet",
+          "bytes": 3186942,
+          "mtime_ns": 1790570096120020686,
+          "sha256": "3a1ef5e136671e75fb8dfd4a06cab364a394b3fa6a678a29912f714419d4087a"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+          "bytes": 1044864,
+          "mtime_ns": 1786109265393977620,
+          "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz.audit.json",
+          "bytes": 1560,
+          "mtime_ns": 1786349516673233045,
+          "sha256": "75de2b22f2a7fdf262c6aa37344e2be5a40b0d7db1266dbfa4c1422d94437333"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+          "bytes": 37629106,
+          "mtime_ns": 1786349512365280119,
+          "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+          "bytes": 573489289,
+          "mtime_ns": 1786930030728110426,
+          "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz.audit.json",
+          "bytes": 2699,
+          "mtime_ns": 1786930033504082368,
+          "sha256": "0bbc6c075c4105d9cbbef25521431415ec57a89a5240fa101fe4d0ae39e05399"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_0.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890258760027309,
+          "sha256": "48697d25c353dc38c97f72cf704a88310c0bdb1cfcc21ce4b4efea49110aa314"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_1.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890299839630026,
+          "sha256": "ab77707365a248f679c58e9d1522eb396068311af6017da64777ba2813b52ffe"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_2.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890294411682734,
+          "sha256": "81b635f7a0a356f9db0a40cd361ac5bea01cb254a81d369a729230343be8694a"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_3.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890286575758712,
+          "sha256": "7b8e235d6a7d2641cb8e9e98fcf484cb5f08e5a0686b5cff1ccb53cd7a77ea34"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+          "bytes": 3834716,
+          "mtime_ns": 1790471724073996404,
+          "sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz.audit.json",
+          "bytes": 829,
+          "mtime_ns": 1790471725725979680,
+          "sha256": "0d6fabde5488b7ced332b37445982114957e42621deab356469e12b17e9709a0"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/sv_type_natural_20260928.json",
+          "bytes": 5836,
+          "mtime_ns": 1790570734444986623,
+          "sha256": "d225766f124c34088d31711950921028edfc3002ee56755fd8679e62c1e10606"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping/mapping_qc.json",
+          "bytes": 754,
+          "mtime_ns": 1790570138783547950,
+          "sha256": "48344587aa4b31799d4786e5303c435e118822c34fae0efa54a55b9fa1c0e735"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping/overlaps.parquet",
+          "bytes": 1880425,
+          "mtime_ns": 1790570136691571118,
+          "sha256": "22f0905a9bb9349abc4155e37a709131d1fd08754c8a2b1c69214d14563816bf"
+        }
+      ],
+      "command": [
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/sv_type_probe.py",
+        "--config",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/sv_type_natural_20260928.json",
+        "--examples",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/natural_events.parquet",
+        "--loci",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/loci.parquet",
+        "--mapping-dir",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping",
+        "--manifest",
+        "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+        "--feature-cache",
+        "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+        "--sequence-cache",
+        "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--topology-cache-root",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2",
+        "--results-root",
+        "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806",
+        "--out-root",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_shards/fold_d",
+        "--folds",
+        "fold_d"
+      ],
+      "implementation": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/sv_type_probe.py",
+        "bytes": 8704,
+        "mtime_ns": 1790570301433750072,
+        "sha256": "0b031a55440a8b88d491c5018bc864de1288e77ce663b28db9f91de4471c2c48"
+      },
+      "n_events": 174267,
+      "class_counts": {
+        "INS": 110623,
+        "DEL": 63346,
+        "INV": 298
+      },
+      "encoder_training": false,
+      "n_excluded": 0
+    }
+  },
+  {
+    "native_path": "results/foundation_evidence_20260927/sv_type_natural_shards/fold_e/status.json",
+    "status": {
+      "status": "running",
+      "plan": {
+        "artifact_type": "analysis_plan",
+        "version": 2,
+        "task": "hgsvc3_natural_sv_type",
+        "recorded_before_first_fit": true,
+        "objective": "Predict INS/DEL/INV at the natural primary-chromosome event frequencies; compare to the completed length-matched sensitivity without changing its cohort.",
+        "reference_config": "configs/entex_v1.json",
+        "examples_sha256": "526fd8338ab1bb19009ca04586e3a11ded7f4aa0a724692b63e7f7faf0503b4f",
+        "loci_sha256": "3a1ef5e136671e75fb8dfd4a06cab364a394b3fa6a678a29912f714419d4087a",
+        "n_events": 174267,
+        "class_counts": {
+          "DEL": 63346,
+          "INS": 110623,
+          "INV": 298
+        },
+        "topology_control_sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166",
+        "feature_sets": [
+          "coordinate",
+          "frozen_sequence_fm",
+          "frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm",
+          "coordinate_plus_frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+          "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+          "L",
+          "CSL",
+          "CSLT",
+          "CSLH",
+          "CSLHT"
+        ],
+        "custom_feature_sets": {
+          "L": [
+            "event_log_length"
+          ],
+          "CSL": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length"
+          ],
+          "CSLT": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "frozen_pangenomefm"
+          ],
+          "CSLH": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "topology_control"
+          ],
+          "CSLHT": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "topology_control",
+            "frozen_pangenomefm"
+          ]
+        },
+        "probe_max_iter": 4000,
+        "probe": "Separate native balanced logistic C=1 one-versus-rest probe for each class; frozen v1 T and NT S. Native train-only scaling, validation-only temperature/F1 threshold. No tuning on test.",
+        "partition": "All five original chromosome folds, three checkpoint seeds and both contexts; every event and repeated anchor remains chromosome grouped.",
+        "matching": "No sampling or matching. Fixed L=log1p(event length) controls evaluated separately; all repeated and mixed-class anchors retained.",
+        "representation": "One BED first-affected-base anchor per event for every class. No END/distance/ID/donor metadata in C/S/T. Event log length is explicitly labeled L and evaluated separately.",
+        "metrics": [
+          "auprc",
+          "auroc",
+          "normalized_ap",
+          "balanced_accuracy",
+          "f1",
+          "precision",
+          "recall"
+        ],
+        "comparisons": [
+          [
+            "T_given_CS",
+            "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+            "coordinate_plus_frozen_sequence_fm"
+          ],
+          [
+            "T_given_CSH",
+            "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+            "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+          ],
+          [
+            "T_given_CSL",
+            "CSLT",
+            "CSL"
+          ],
+          [
+            "T_given_CSLH",
+            "CSLHT",
+            "CSLH"
+          ]
+        ],
+        "n_bootstrap": 10000,
+        "statistics_seed": 20260927,
+        "inference": "Per-class one-versus-rest AP plus macro average over all three classes; paired hierarchical fold/seed bootstrap, exact fold sign-flip and BH within metric over all classes/macro, contexts and contrasts. Macro binary metrics are not joint multiclass accuracy.",
+        "validity_gates": [
+          "All declared 174267 events retained; no class-dependent filtering",
+          "Complete C/S/T/H coverage and exact source/checkpoint identities",
+          "All OVR probes converge",
+          "Same test event identities in every arm/class",
+          "Full saved-prediction replay",
+          "No bin changes based on performance"
+        ],
+        "limitations": [
+          "Rare INV (298 events); AP must be reported with class prevalence, normalized AP and AUROC; no balanced-population interpretation",
+          "Known-SV type classification, not discovery, pathogenicity, or breakpoint detection",
+          "New anchor representation differs from original two-breakpoint INS/DEL benchmark",
+          "No DUP/complex labels in these input tables; no class relabeling",
+          "Graph donor overlap and v1 shortcut caveats remain",
+          "Static reference-segment vectors cannot distinguish events with identical features; no learned-versus-random claim"
+        ],
+        "references": [
+          "https://github.com/EichlerLab/svpop",
+          "https://www.nature.com/articles/s41586-025-09140-6"
+        ],
+        "population": "All 174,267 primary-chromosome INS/DEL/INV events from the pinned HGSVC3 annotation tables; ascertainment conditional on that callset, not population SV prevalence.",
+        "report_title": "Frozen SV type: natural callset frequencies",
+        "figure_title": "Known SV type at natural callset frequencies: frozen encoders",
+        "exploration": "Predeclared after the matched-cohort results were inspected; new event denominator, not an independent resource replication.",
+        "execution": "One fold/seed/context smoke checks mapping, complete C/S/T/H coverage and convergence only. Scores do not choose arms. Then five fold shards, each 3 seeds x 2 contexts, exact matrix merge and saved-prediction replay.",
+        "coverage_recovery": {
+          "recorded_before_first_fit": true,
+          "failed_smoke": "d5fb705; missing T for 64 events at terminal chrY segment 303424; no model fitted",
+          "policy": "Append only missing reference embeddings from original reference-overlapping manifest windows, bypassing candidate-count filtering during frozen inference. Every preexisting vector must remain bitwise identical; original caches retained. No graph/checkpoint/model change.",
+          "targets": "Full existing C/K target-segment universe, independently of event labels; both missing terminal reference segments completed in every fold/seed/context",
+          "full_original_denominator_retained": true
+        }
+      },
+      "jobs": [
+        {
+          "fold": "fold_e",
+          "test": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "validation": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "seed": 42,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_e",
+          "test": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "validation": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "seed": 42,
+          "closure": "1hop"
+        },
+        {
+          "fold": "fold_e",
+          "test": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "validation": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "seed": 314159,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_e",
+          "test": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "validation": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "seed": 314159,
+          "closure": "1hop"
+        },
+        {
+          "fold": "fold_e",
+          "test": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "validation": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "seed": 20260806,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_e",
+          "test": [
+            "chr5",
+            "chr10",
+            "chr15",
+            "chr20"
+          ],
+          "validation": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "seed": 20260806,
+          "closure": "1hop"
+        }
+      ],
+      "completed_runs": 3,
+      "planned_runs": 6,
+      "sources": [
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/natural_events.parquet",
+          "bytes": 6860369,
+          "mtime_ns": 1790570095180031109,
+          "sha256": "526fd8338ab1bb19009ca04586e3a11ded7f4aa0a724692b63e7f7faf0503b4f"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/loci.parquet",
+          "bytes": 3186942,
+          "mtime_ns": 1790570096120020686,
+          "sha256": "3a1ef5e136671e75fb8dfd4a06cab364a394b3fa6a678a29912f714419d4087a"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+          "bytes": 1044864,
+          "mtime_ns": 1786109265393977620,
+          "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz.audit.json",
+          "bytes": 1560,
+          "mtime_ns": 1786349516673233045,
+          "sha256": "75de2b22f2a7fdf262c6aa37344e2be5a40b0d7db1266dbfa4c1422d94437333"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+          "bytes": 37629106,
+          "mtime_ns": 1786349512365280119,
+          "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+          "bytes": 573489289,
+          "mtime_ns": 1786930030728110426,
+          "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz.audit.json",
+          "bytes": 2699,
+          "mtime_ns": 1786930033504082368,
+          "sha256": "0bbc6c075c4105d9cbbef25521431415ec57a89a5240fa101fe4d0ae39e05399"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_0.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890258760027309,
+          "sha256": "48697d25c353dc38c97f72cf704a88310c0bdb1cfcc21ce4b4efea49110aa314"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_1.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890299839630026,
+          "sha256": "ab77707365a248f679c58e9d1522eb396068311af6017da64777ba2813b52ffe"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_2.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890294411682734,
+          "sha256": "81b635f7a0a356f9db0a40cd361ac5bea01cb254a81d369a729230343be8694a"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_3.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890286575758712,
+          "sha256": "7b8e235d6a7d2641cb8e9e98fcf484cb5f08e5a0686b5cff1ccb53cd7a77ea34"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+          "bytes": 3834716,
+          "mtime_ns": 1790471724073996404,
+          "sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz.audit.json",
+          "bytes": 829,
+          "mtime_ns": 1790471725725979680,
+          "sha256": "0d6fabde5488b7ced332b37445982114957e42621deab356469e12b17e9709a0"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/sv_type_natural_20260928.json",
+          "bytes": 5836,
+          "mtime_ns": 1790570734444986623,
+          "sha256": "d225766f124c34088d31711950921028edfc3002ee56755fd8679e62c1e10606"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping/mapping_qc.json",
+          "bytes": 754,
+          "mtime_ns": 1790570138783547950,
+          "sha256": "48344587aa4b31799d4786e5303c435e118822c34fae0efa54a55b9fa1c0e735"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping/overlaps.parquet",
+          "bytes": 1880425,
+          "mtime_ns": 1790570136691571118,
+          "sha256": "22f0905a9bb9349abc4155e37a709131d1fd08754c8a2b1c69214d14563816bf"
+        }
+      ],
+      "command": [
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/sv_type_probe.py",
+        "--config",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/sv_type_natural_20260928.json",
+        "--examples",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/natural_events.parquet",
+        "--loci",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/loci.parquet",
+        "--mapping-dir",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping",
+        "--manifest",
+        "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+        "--feature-cache",
+        "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+        "--sequence-cache",
+        "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--topology-cache-root",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2",
+        "--results-root",
+        "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806",
+        "--out-root",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_shards/fold_e",
+        "--folds",
+        "fold_e"
+      ],
+      "implementation": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/sv_type_probe.py",
+        "bytes": 8704,
+        "mtime_ns": 1790570301433750072,
+        "sha256": "0b031a55440a8b88d491c5018bc864de1288e77ce663b28db9f91de4471c2c48"
+      },
+      "n_events": 174267,
+      "class_counts": {
+        "INS": 110623,
+        "DEL": 63346,
+        "INV": 298
+      },
+      "encoder_training": false,
+      "n_excluded": 0
+    }
+  },
+  {
+    "native_path": "results/foundation_evidence_20260927/sv_type_natural_shards/fold_b/status.json",
+    "status": {
+      "status": "running",
+      "plan": {
+        "artifact_type": "analysis_plan",
+        "version": 2,
+        "task": "hgsvc3_natural_sv_type",
+        "recorded_before_first_fit": true,
+        "objective": "Predict INS/DEL/INV at the natural primary-chromosome event frequencies; compare to the completed length-matched sensitivity without changing its cohort.",
+        "reference_config": "configs/entex_v1.json",
+        "examples_sha256": "526fd8338ab1bb19009ca04586e3a11ded7f4aa0a724692b63e7f7faf0503b4f",
+        "loci_sha256": "3a1ef5e136671e75fb8dfd4a06cab364a394b3fa6a678a29912f714419d4087a",
+        "n_events": 174267,
+        "class_counts": {
+          "DEL": 63346,
+          "INS": 110623,
+          "INV": 298
+        },
+        "topology_control_sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166",
+        "feature_sets": [
+          "coordinate",
+          "frozen_sequence_fm",
+          "frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm",
+          "coordinate_plus_frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+          "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+          "L",
+          "CSL",
+          "CSLT",
+          "CSLH",
+          "CSLHT"
+        ],
+        "custom_feature_sets": {
+          "L": [
+            "event_log_length"
+          ],
+          "CSL": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length"
+          ],
+          "CSLT": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "frozen_pangenomefm"
+          ],
+          "CSLH": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "topology_control"
+          ],
+          "CSLHT": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "topology_control",
+            "frozen_pangenomefm"
+          ]
+        },
+        "probe_max_iter": 4000,
+        "probe": "Separate native balanced logistic C=1 one-versus-rest probe for each class; frozen v1 T and NT S. Native train-only scaling, validation-only temperature/F1 threshold. No tuning on test.",
+        "partition": "All five original chromosome folds, three checkpoint seeds and both contexts; every event and repeated anchor remains chromosome grouped.",
+        "matching": "No sampling or matching. Fixed L=log1p(event length) controls evaluated separately; all repeated and mixed-class anchors retained.",
+        "representation": "One BED first-affected-base anchor per event for every class. No END/distance/ID/donor metadata in C/S/T. Event log length is explicitly labeled L and evaluated separately.",
+        "metrics": [
+          "auprc",
+          "auroc",
+          "normalized_ap",
+          "balanced_accuracy",
+          "f1",
+          "precision",
+          "recall"
+        ],
+        "comparisons": [
+          [
+            "T_given_CS",
+            "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+            "coordinate_plus_frozen_sequence_fm"
+          ],
+          [
+            "T_given_CSH",
+            "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+            "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+          ],
+          [
+            "T_given_CSL",
+            "CSLT",
+            "CSL"
+          ],
+          [
+            "T_given_CSLH",
+            "CSLHT",
+            "CSLH"
+          ]
+        ],
+        "n_bootstrap": 10000,
+        "statistics_seed": 20260927,
+        "inference": "Per-class one-versus-rest AP plus macro average over all three classes; paired hierarchical fold/seed bootstrap, exact fold sign-flip and BH within metric over all classes/macro, contexts and contrasts. Macro binary metrics are not joint multiclass accuracy.",
+        "validity_gates": [
+          "All declared 174267 events retained; no class-dependent filtering",
+          "Complete C/S/T/H coverage and exact source/checkpoint identities",
+          "All OVR probes converge",
+          "Same test event identities in every arm/class",
+          "Full saved-prediction replay",
+          "No bin changes based on performance"
+        ],
+        "limitations": [
+          "Rare INV (298 events); AP must be reported with class prevalence, normalized AP and AUROC; no balanced-population interpretation",
+          "Known-SV type classification, not discovery, pathogenicity, or breakpoint detection",
+          "New anchor representation differs from original two-breakpoint INS/DEL benchmark",
+          "No DUP/complex labels in these input tables; no class relabeling",
+          "Graph donor overlap and v1 shortcut caveats remain",
+          "Static reference-segment vectors cannot distinguish events with identical features; no learned-versus-random claim"
+        ],
+        "references": [
+          "https://github.com/EichlerLab/svpop",
+          "https://www.nature.com/articles/s41586-025-09140-6"
+        ],
+        "population": "All 174,267 primary-chromosome INS/DEL/INV events from the pinned HGSVC3 annotation tables; ascertainment conditional on that callset, not population SV prevalence.",
+        "report_title": "Frozen SV type: natural callset frequencies",
+        "figure_title": "Known SV type at natural callset frequencies: frozen encoders",
+        "exploration": "Predeclared after the matched-cohort results were inspected; new event denominator, not an independent resource replication.",
+        "execution": "One fold/seed/context smoke checks mapping, complete C/S/T/H coverage and convergence only. Scores do not choose arms. Then five fold shards, each 3 seeds x 2 contexts, exact matrix merge and saved-prediction replay.",
+        "coverage_recovery": {
+          "recorded_before_first_fit": true,
+          "failed_smoke": "d5fb705; missing T for 64 events at terminal chrY segment 303424; no model fitted",
+          "policy": "Append only missing reference embeddings from original reference-overlapping manifest windows, bypassing candidate-count filtering during frozen inference. Every preexisting vector must remain bitwise identical; original caches retained. No graph/checkpoint/model change.",
+          "targets": "Full existing C/K target-segment universe, independently of event labels; both missing terminal reference segments completed in every fold/seed/context",
+          "full_original_denominator_retained": true
+        }
+      },
+      "jobs": [
+        {
+          "fold": "fold_b",
+          "test": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "validation": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "seed": 42,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_b",
+          "test": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "validation": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "seed": 42,
+          "closure": "1hop"
+        },
+        {
+          "fold": "fold_b",
+          "test": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "validation": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "seed": 314159,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_b",
+          "test": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "validation": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "seed": 314159,
+          "closure": "1hop"
+        },
+        {
+          "fold": "fold_b",
+          "test": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "validation": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "seed": 20260806,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_b",
+          "test": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "validation": [
+            "chr3",
+            "chr8",
+            "chr13",
+            "chr18",
+            "chrX"
+          ],
+          "seed": 20260806,
+          "closure": "1hop"
+        }
+      ],
+      "completed_runs": 4,
+      "planned_runs": 6,
+      "sources": [
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/natural_events.parquet",
+          "bytes": 6860369,
+          "mtime_ns": 1790570095180031109,
+          "sha256": "526fd8338ab1bb19009ca04586e3a11ded7f4aa0a724692b63e7f7faf0503b4f"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/loci.parquet",
+          "bytes": 3186942,
+          "mtime_ns": 1790570096120020686,
+          "sha256": "3a1ef5e136671e75fb8dfd4a06cab364a394b3fa6a678a29912f714419d4087a"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+          "bytes": 1044864,
+          "mtime_ns": 1786109265393977620,
+          "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz.audit.json",
+          "bytes": 1560,
+          "mtime_ns": 1786349516673233045,
+          "sha256": "75de2b22f2a7fdf262c6aa37344e2be5a40b0d7db1266dbfa4c1422d94437333"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+          "bytes": 37629106,
+          "mtime_ns": 1786349512365280119,
+          "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+          "bytes": 573489289,
+          "mtime_ns": 1786930030728110426,
+          "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz.audit.json",
+          "bytes": 2699,
+          "mtime_ns": 1786930033504082368,
+          "sha256": "0bbc6c075c4105d9cbbef25521431415ec57a89a5240fa101fe4d0ae39e05399"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_0.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890258760027309,
+          "sha256": "48697d25c353dc38c97f72cf704a88310c0bdb1cfcc21ce4b4efea49110aa314"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_1.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890299839630026,
+          "sha256": "ab77707365a248f679c58e9d1522eb396068311af6017da64777ba2813b52ffe"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_2.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890294411682734,
+          "sha256": "81b635f7a0a356f9db0a40cd361ac5bea01cb254a81d369a729230343be8694a"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_3.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890286575758712,
+          "sha256": "7b8e235d6a7d2641cb8e9e98fcf484cb5f08e5a0686b5cff1ccb53cd7a77ea34"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+          "bytes": 3834716,
+          "mtime_ns": 1790471724073996404,
+          "sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz.audit.json",
+          "bytes": 829,
+          "mtime_ns": 1790471725725979680,
+          "sha256": "0d6fabde5488b7ced332b37445982114957e42621deab356469e12b17e9709a0"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/sv_type_natural_20260928.json",
+          "bytes": 5836,
+          "mtime_ns": 1790570734444986623,
+          "sha256": "d225766f124c34088d31711950921028edfc3002ee56755fd8679e62c1e10606"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping/mapping_qc.json",
+          "bytes": 754,
+          "mtime_ns": 1790570138783547950,
+          "sha256": "48344587aa4b31799d4786e5303c435e118822c34fae0efa54a55b9fa1c0e735"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping/overlaps.parquet",
+          "bytes": 1880425,
+          "mtime_ns": 1790570136691571118,
+          "sha256": "22f0905a9bb9349abc4155e37a709131d1fd08754c8a2b1c69214d14563816bf"
+        }
+      ],
+      "command": [
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/sv_type_probe.py",
+        "--config",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/sv_type_natural_20260928.json",
+        "--examples",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/natural_events.parquet",
+        "--loci",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/loci.parquet",
+        "--mapping-dir",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping",
+        "--manifest",
+        "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+        "--feature-cache",
+        "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+        "--sequence-cache",
+        "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--topology-cache-root",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2",
+        "--results-root",
+        "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806",
+        "--out-root",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_shards/fold_b",
+        "--folds",
+        "fold_b"
+      ],
+      "implementation": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/sv_type_probe.py",
+        "bytes": 8704,
+        "mtime_ns": 1790570301433750072,
+        "sha256": "0b031a55440a8b88d491c5018bc864de1288e77ce663b28db9f91de4471c2c48"
+      },
+      "n_events": 174267,
+      "class_counts": {
+        "INS": 110623,
+        "DEL": 63346,
+        "INV": 298
+      },
+      "encoder_training": false,
+      "n_excluded": 0
+    }
+  },
+  {
+    "native_path": "results/foundation_evidence_20260927/sv_type_natural_shards/fold_a/status.json",
+    "status": {
+      "status": "running",
+      "plan": {
+        "artifact_type": "analysis_plan",
+        "version": 2,
+        "task": "hgsvc3_natural_sv_type",
+        "recorded_before_first_fit": true,
+        "objective": "Predict INS/DEL/INV at the natural primary-chromosome event frequencies; compare to the completed length-matched sensitivity without changing its cohort.",
+        "reference_config": "configs/entex_v1.json",
+        "examples_sha256": "526fd8338ab1bb19009ca04586e3a11ded7f4aa0a724692b63e7f7faf0503b4f",
+        "loci_sha256": "3a1ef5e136671e75fb8dfd4a06cab364a394b3fa6a678a29912f714419d4087a",
+        "n_events": 174267,
+        "class_counts": {
+          "DEL": 63346,
+          "INS": 110623,
+          "INV": 298
+        },
+        "topology_control_sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166",
+        "feature_sets": [
+          "coordinate",
+          "frozen_sequence_fm",
+          "frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm",
+          "coordinate_plus_frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+          "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+          "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+          "L",
+          "CSL",
+          "CSLT",
+          "CSLH",
+          "CSLHT"
+        ],
+        "custom_feature_sets": {
+          "L": [
+            "event_log_length"
+          ],
+          "CSL": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length"
+          ],
+          "CSLT": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "frozen_pangenomefm"
+          ],
+          "CSLH": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "topology_control"
+          ],
+          "CSLHT": [
+            "coordinate",
+            "frozen_sequence_fm",
+            "event_log_length",
+            "topology_control",
+            "frozen_pangenomefm"
+          ]
+        },
+        "probe_max_iter": 4000,
+        "probe": "Separate native balanced logistic C=1 one-versus-rest probe for each class; frozen v1 T and NT S. Native train-only scaling, validation-only temperature/F1 threshold. No tuning on test.",
+        "partition": "All five original chromosome folds, three checkpoint seeds and both contexts; every event and repeated anchor remains chromosome grouped.",
+        "matching": "No sampling or matching. Fixed L=log1p(event length) controls evaluated separately; all repeated and mixed-class anchors retained.",
+        "representation": "One BED first-affected-base anchor per event for every class. No END/distance/ID/donor metadata in C/S/T. Event log length is explicitly labeled L and evaluated separately.",
+        "metrics": [
+          "auprc",
+          "auroc",
+          "normalized_ap",
+          "balanced_accuracy",
+          "f1",
+          "precision",
+          "recall"
+        ],
+        "comparisons": [
+          [
+            "T_given_CS",
+            "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+            "coordinate_plus_frozen_sequence_fm"
+          ],
+          [
+            "T_given_CSH",
+            "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+            "coordinate_plus_frozen_sequence_fm_plus_topology_control"
+          ],
+          [
+            "T_given_CSL",
+            "CSLT",
+            "CSL"
+          ],
+          [
+            "T_given_CSLH",
+            "CSLHT",
+            "CSLH"
+          ]
+        ],
+        "n_bootstrap": 10000,
+        "statistics_seed": 20260927,
+        "inference": "Per-class one-versus-rest AP plus macro average over all three classes; paired hierarchical fold/seed bootstrap, exact fold sign-flip and BH within metric over all classes/macro, contexts and contrasts. Macro binary metrics are not joint multiclass accuracy.",
+        "validity_gates": [
+          "All declared 174267 events retained; no class-dependent filtering",
+          "Complete C/S/T/H coverage and exact source/checkpoint identities",
+          "All OVR probes converge",
+          "Same test event identities in every arm/class",
+          "Full saved-prediction replay",
+          "No bin changes based on performance"
+        ],
+        "limitations": [
+          "Rare INV (298 events); AP must be reported with class prevalence, normalized AP and AUROC; no balanced-population interpretation",
+          "Known-SV type classification, not discovery, pathogenicity, or breakpoint detection",
+          "New anchor representation differs from original two-breakpoint INS/DEL benchmark",
+          "No DUP/complex labels in these input tables; no class relabeling",
+          "Graph donor overlap and v1 shortcut caveats remain",
+          "Static reference-segment vectors cannot distinguish events with identical features; no learned-versus-random claim"
+        ],
+        "references": [
+          "https://github.com/EichlerLab/svpop",
+          "https://www.nature.com/articles/s41586-025-09140-6"
+        ],
+        "population": "All 174,267 primary-chromosome INS/DEL/INV events from the pinned HGSVC3 annotation tables; ascertainment conditional on that callset, not population SV prevalence.",
+        "report_title": "Frozen SV type: natural callset frequencies",
+        "figure_title": "Known SV type at natural callset frequencies: frozen encoders",
+        "exploration": "Predeclared after the matched-cohort results were inspected; new event denominator, not an independent resource replication.",
+        "execution": "One fold/seed/context smoke checks mapping, complete C/S/T/H coverage and convergence only. Scores do not choose arms. Then five fold shards, each 3 seeds x 2 contexts, exact matrix merge and saved-prediction replay.",
+        "coverage_recovery": {
+          "recorded_before_first_fit": true,
+          "failed_smoke": "d5fb705; missing T for 64 events at terminal chrY segment 303424; no model fitted",
+          "policy": "Append only missing reference embeddings from original reference-overlapping manifest windows, bypassing candidate-count filtering during frozen inference. Every preexisting vector must remain bitwise identical; original caches retained. No graph/checkpoint/model change.",
+          "targets": "Full existing C/K target-segment universe, independently of event labels; both missing terminal reference segments completed in every fold/seed/context",
+          "full_original_denominator_retained": true
+        }
+      },
+      "jobs": [
+        {
+          "fold": "fold_a",
+          "test": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "validation": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "seed": 42,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_a",
+          "test": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "validation": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "seed": 42,
+          "closure": "1hop"
+        },
+        {
+          "fold": "fold_a",
+          "test": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "validation": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "seed": 314159,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_a",
+          "test": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "validation": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "seed": 314159,
+          "closure": "1hop"
+        },
+        {
+          "fold": "fold_a",
+          "test": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "validation": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "seed": 20260806,
+          "closure": "strict"
+        },
+        {
+          "fold": "fold_a",
+          "test": [
+            "chr1",
+            "chr6",
+            "chr11",
+            "chr16",
+            "chr21"
+          ],
+          "validation": [
+            "chr2",
+            "chr7",
+            "chr12",
+            "chr17",
+            "chr22"
+          ],
+          "seed": 20260806,
+          "closure": "1hop"
+        }
+      ],
+      "completed_runs": 3,
+      "planned_runs": 6,
+      "sources": [
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/natural_events.parquet",
+          "bytes": 6860369,
+          "mtime_ns": 1790570095180031109,
+          "sha256": "526fd8338ab1bb19009ca04586e3a11ded7f4aa0a724692b63e7f7faf0503b4f"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/loci.parquet",
+          "bytes": 3186942,
+          "mtime_ns": 1790570096120020686,
+          "sha256": "3a1ef5e136671e75fb8dfd4a06cab364a394b3fa6a678a29912f714419d4087a"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+          "bytes": 1044864,
+          "mtime_ns": 1786109265393977620,
+          "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz.audit.json",
+          "bytes": 1560,
+          "mtime_ns": 1786349516673233045,
+          "sha256": "75de2b22f2a7fdf262c6aa37344e2be5a40b0d7db1266dbfa4c1422d94437333"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+          "bytes": 37629106,
+          "mtime_ns": 1786349512365280119,
+          "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+          "bytes": 573489289,
+          "mtime_ns": 1786930030728110426,
+          "sha256": "80934eb12b6eb01b0e5de5132a36d35e3cab2f51f7d72c13a254b642c2f791de"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz.audit.json",
+          "bytes": 2699,
+          "mtime_ns": 1786930033504082368,
+          "sha256": "0bbc6c075c4105d9cbbef25521431415ec57a89a5240fa101fe4d0ae39e05399"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_0.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890258760027309,
+          "sha256": "48697d25c353dc38c97f72cf704a88310c0bdb1cfcc21ce4b4efea49110aa314"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_1.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890299839630026,
+          "sha256": "ab77707365a248f679c58e9d1522eb396068311af6017da64777ba2813b52ffe"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_2.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890294411682734,
+          "sha256": "81b635f7a0a356f9db0a40cd361ac5bea01cb254a81d369a729230343be8694a"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/shard_3.npz.audit.json",
+          "bytes": 2316,
+          "mtime_ns": 1786890286575758712,
+          "sha256": "7b8e235d6a7d2641cb8e9e98fcf484cb5f08e5a0686b5cff1ccb53cd7a77ea34"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+          "bytes": 3834716,
+          "mtime_ns": 1790471724073996404,
+          "sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz.audit.json",
+          "bytes": 829,
+          "mtime_ns": 1790471725725979680,
+          "sha256": "0d6fabde5488b7ced332b37445982114957e42621deab356469e12b17e9709a0"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/sv_type_natural_20260928.json",
+          "bytes": 5836,
+          "mtime_ns": 1790570734444986623,
+          "sha256": "d225766f124c34088d31711950921028edfc3002ee56755fd8679e62c1e10606"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping/mapping_qc.json",
+          "bytes": 754,
+          "mtime_ns": 1790570138783547950,
+          "sha256": "48344587aa4b31799d4786e5303c435e118822c34fae0efa54a55b9fa1c0e735"
+        },
+        {
+          "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping/overlaps.parquet",
+          "bytes": 1880425,
+          "mtime_ns": 1790570136691571118,
+          "sha256": "22f0905a9bb9349abc4155e37a709131d1fd08754c8a2b1c69214d14563816bf"
+        }
+      ],
+      "command": [
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/sv_type_probe.py",
+        "--config",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/configs/sv_type_natural_20260928.json",
+        "--examples",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/natural_events.parquet",
+        "--loci",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_preparation/loci.parquet",
+        "--mapping-dir",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_mapping",
+        "--manifest",
+        "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+        "--feature-cache",
+        "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+        "--sequence-cache",
+        "/home/tuv43532/PangenomeFM/server_workspace/results/frozen_sequence_fm_cache_20260815/hprc_target_union_sequence_fm.npz",
+        "--topology-control-cache",
+        "/home/tuv43532/PangenomeFM_review_20260927/results/v2_review_20260927/controls/topology_control.npz",
+        "--topology-cache-root",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2",
+        "--results-root",
+        "/home/tuv43532/PangenomeFM/server_workspace/results/full_multicohort_server_20260806",
+        "--out-root",
+        "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/sv_type_natural_shards/fold_a",
+        "--folds",
+        "fold_a"
+      ],
+      "implementation": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/src/tasks/transfer/sv_type_probe.py",
+        "bytes": 8704,
+        "mtime_ns": 1790570301433750072,
+        "sha256": "0b031a55440a8b88d491c5018bc864de1288e77ce663b28db9f91de4471c2c48"
+      },
+      "n_events": 174267,
+      "class_counts": {
+        "INS": 110623,
+        "DEL": 63346,
+        "INV": 298
+      },
+      "encoder_training": false,
+      "n_excluded": 0
+    }
+  }
+]

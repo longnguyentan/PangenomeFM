@@ -1,0 +1,9 @@
+{
+  "status": "complete",
+  "n_evaluations": 39,
+  "all_probes_converged": true,
+  "n_events": 174267,
+  "scores_unchanged": true,
+  "confidence_intervals_not_computed": "one smoke fold/seed",
+  "not_a_full_experiment": true
+}

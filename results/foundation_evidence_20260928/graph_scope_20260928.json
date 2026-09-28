@@ -1,0 +1,24 @@
+{
+  "status": "complete",
+  "graph_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+  "graph_hash_previously_verified": true,
+  "parser_summary": {
+    "lines_read": 1848895,
+    "segments": 751237,
+    "links": 1097658,
+    "paths": 0,
+    "walks": 0,
+    "segments_missing_sn": 0,
+    "segments_missing_so": 0,
+    "segments_missing_sr": 0
+  },
+  "independently_counted_segments": 751237,
+  "independently_counted_links": 1097658,
+  "grch38_reference_tagged_segments": 305572,
+  "downstream_reference_cache_segments": 303425,
+  "benchmark_nt_segments": 479477,
+  "benchmark_fraction_of_processed_graph": 0.6382499797001479,
+  "segments_outside_benchmark_nt": 271760,
+  "interpretation": "Whole graph, reference-feature cache, benchmark-window union and per-fold training corpus are different denominators. The original 99.5% reference coverage is not whole-graph NT coverage.",
+  "script_sha256": "f90eea5006a42abcf098399b7aaaa8a5add0681a305498f59b8cc3c9d28bfbfe"
+}

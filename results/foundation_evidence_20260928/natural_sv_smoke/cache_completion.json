@@ -1,0 +1,468 @@
+{
+  "status": "complete",
+  "completed_runs": 30,
+  "planned_runs": 30,
+  "graph": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+    "bytes": 870096546,
+    "mtime_ns": 1786041795869081191,
+    "sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347"
+  },
+  "manifest": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+    "bytes": 1044864,
+    "mtime_ns": 1786109265393977620,
+    "sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd"
+  },
+  "target_cache": {
+    "path": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_ccre_screen_v4_features.npz",
+    "bytes": 37629106,
+    "mtime_ns": 1786349512365280119,
+    "sha256": "c4d646f52bd86178689654138a34f700bea604e2f778d261327260c0c4a61c68"
+  },
+  "implementation": {
+    "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/scripts/server/complete_reference_topology_cache.py",
+    "bytes": 8320,
+    "mtime_ns": 1790571032574865456,
+    "sha256": "5236a294725ff609837f3b4ff65f785a8c5ca3940e701d98f085e7ac01de8de1"
+  },
+  "no_biological_labels": true,
+  "existing_vector_policy": "Bitwise unchanged; only missing reference segments appended",
+  "jobs": [
+    {
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_a/seed_42/strict.npz",
+        "bytes": 54445008,
+        "mtime_ns": 1790571080914506624,
+        "sha256": "44d930d71efc3938a45a1d0b64347ea542c9d7aeb7b10f4d0ba1de90c9664443"
+      }
+    },
+    {
+      "fold": "fold_a",
+      "seed": 42,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_a/seed_42/1hop.npz",
+        "bytes": 54574640,
+        "mtime_ns": 1790571084398480261,
+        "sha256": "c6a6af289ae61c17de1e72cbce4b58653ef65056829a13e36a0f1e1de0d4ffa1"
+      }
+    },
+    {
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_a/seed_314159/strict.npz",
+        "bytes": 54415114,
+        "mtime_ns": 1790571087902453682,
+        "sha256": "adfe8153ecebd8cfb7588d19382c47a20d33165e77dc0aaa1e762d2645ef94c0"
+      }
+    },
+    {
+      "fold": "fold_a",
+      "seed": 314159,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_a/seed_314159/1hop.npz",
+        "bytes": 54923691,
+        "mtime_ns": 1790571091310427768,
+        "sha256": "1f17b37398dbc1191e51b6a6a256e870d40a2ab40f7b05d5d29294cc8ae84bce"
+      }
+    },
+    {
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_a/seed_20260806/strict.npz",
+        "bytes": 54423328,
+        "mtime_ns": 1790571094798401183,
+        "sha256": "0d2965d674f692ffd60e85d9514e93036c5fb3be90b22e129a7ab629bb994793"
+      }
+    },
+    {
+      "fold": "fold_a",
+      "seed": 20260806,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_a/seed_20260806/1hop.npz",
+        "bytes": 54794216,
+        "mtime_ns": 1790571098190375267,
+        "sha256": "37d97a024372b4bbb94bee76dff15dc34b67998de2cf5851bbe75697251e52c1"
+      }
+    },
+    {
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_b/seed_42/strict.npz",
+        "bytes": 54451070,
+        "mtime_ns": 1790571101622348986,
+        "sha256": "2ada1b20d8295713653fa375a41e95bbff7a6905f45cee51d3afab116bdaba24"
+      }
+    },
+    {
+      "fold": "fold_b",
+      "seed": 42,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_b/seed_42/1hop.npz",
+        "bytes": 54756675,
+        "mtime_ns": 1790571105054322644,
+        "sha256": "c2cf96c58d45c6c6d928a2cc939455ad45f05443d5582b00c02727fb9726a50c"
+      }
+    },
+    {
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_b/seed_314159/strict.npz",
+        "bytes": 54393057,
+        "mtime_ns": 1790571109050291897,
+        "sha256": "0c069b1b812703367af24c09d91ca6ad2d60390a192142b763a59a6354009a8e"
+      }
+    },
+    {
+      "fold": "fold_b",
+      "seed": 314159,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_b/seed_314159/1hop.npz",
+        "bytes": 54691705,
+        "mtime_ns": 1790571112986261531,
+        "sha256": "3f3396b6af73ff2caf829bf74814c108d9e7deffed0af20170e8ca2356995aa3"
+      }
+    },
+    {
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_b/seed_20260806/strict.npz",
+        "bytes": 54512293,
+        "mtime_ns": 1790571116934230993,
+        "sha256": "a33f4fd86f6aa294637e218064326378ff9323f799045fc05e670ac161f749f8"
+      }
+    },
+    {
+      "fold": "fold_b",
+      "seed": 20260806,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_b/seed_20260806/1hop.npz",
+        "bytes": 54652294,
+        "mtime_ns": 1790571120898200254,
+        "sha256": "7f93367f9f616f0824050717665eae1465342ba20d3a28e2b3e4d8d58f2dcc6e"
+      }
+    },
+    {
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_c/seed_42/strict.npz",
+        "bytes": 54435072,
+        "mtime_ns": 1790571124878169313,
+        "sha256": "dd9902430ceb1bf19cd7d5025c490810dbd9c6feee4496bac1b6eba1c1994d62"
+      }
+    },
+    {
+      "fold": "fold_c",
+      "seed": 42,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_c/seed_42/1hop.npz",
+        "bytes": 54913161,
+        "mtime_ns": 1790571128802138729,
+        "sha256": "fe516a6d2766ccdefaaa8ac08ec17215d9feed8a6ddd05c4b26316027c834a8b"
+      }
+    },
+    {
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_c/seed_314159/strict.npz",
+        "bytes": 54437041,
+        "mtime_ns": 1790571132778107663,
+        "sha256": "6a91b057b72ccb0d51edab0a99616b3e1c9e76bd31a0818222fcb1cb6b601c24"
+      }
+    },
+    {
+      "fold": "fold_c",
+      "seed": 314159,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_c/seed_314159/1hop.npz",
+        "bytes": 54697829,
+        "mtime_ns": 1790571136722076772,
+        "sha256": "11eb52ac8620edc18f7be2dcdebac3f63c4e8b36133f2262c8048c8ce62ac9fd"
+      }
+    },
+    {
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_c/seed_20260806/strict.npz",
+        "bytes": 54375851,
+        "mtime_ns": 1790571140710045459,
+        "sha256": "225a0a91782022f0af0127005526804345597f06cad9fdbdf0038fb47239dea3"
+      }
+    },
+    {
+      "fold": "fold_c",
+      "seed": 20260806,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_c/seed_20260806/1hop.npz",
+        "bytes": 54784651,
+        "mtime_ns": 1790571144594014890,
+        "sha256": "cd0a1c984db63b52071a1bd5d909017e9a77af552263411af19771787e17c995"
+      }
+    },
+    {
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_d/seed_42/strict.npz",
+        "bytes": 54523371,
+        "mtime_ns": 1790571148577983459,
+        "sha256": "68967c2266a190d887fd2ad5d4b9c1d22100ad7a18376c7a5e7ece125ccf19b8"
+      }
+    },
+    {
+      "fold": "fold_d",
+      "seed": 42,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_d/seed_42/1hop.npz",
+        "bytes": 54574480,
+        "mtime_ns": 1790571152557951985,
+        "sha256": "5a7c2794510510060f07454647f749fc80a461cce762bacf0dbf8f3ed68f3097"
+      }
+    },
+    {
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_d/seed_314159/strict.npz",
+        "bytes": 54485756,
+        "mtime_ns": 1790571156525920531,
+        "sha256": "25c45b6232490d5760cfd8dbe0ba96cc2bd361dae9dddcf9917a6b1252b841a6"
+      }
+    },
+    {
+      "fold": "fold_d",
+      "seed": 314159,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_d/seed_314159/1hop.npz",
+        "bytes": 54725020,
+        "mtime_ns": 1790571160461889261,
+        "sha256": "8267e60078c0b69112f45b86fde8d3f1b3fb1dba5c98a937552d71aade0c5f63"
+      }
+    },
+    {
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_d/seed_20260806/strict.npz",
+        "bytes": 54414303,
+        "mtime_ns": 1790571164445857535,
+        "sha256": "2afbdaf1168b3718413a0f7691a20a1296d0e44c39c89d36abcf1cd64cb4b403"
+      }
+    },
+    {
+      "fold": "fold_d",
+      "seed": 20260806,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_d/seed_20260806/1hop.npz",
+        "bytes": 54615082,
+        "mtime_ns": 1790571168409825896,
+        "sha256": "0cda27ac9523b483c99c823e8b1bbca37d6da02770e2360ec0b45e72e741a097"
+      }
+    },
+    {
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_e/seed_42/strict.npz",
+        "bytes": 54475108,
+        "mtime_ns": 1790571172365794251,
+        "sha256": "470344cb980ce7d15ac27b0fe55f4a8c953d2e25d1260bd34687d93bd708f2c8"
+      }
+    },
+    {
+      "fold": "fold_e",
+      "seed": 42,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_e/seed_42/1hop.npz",
+        "bytes": 54968756,
+        "mtime_ns": 1790571176241763178,
+        "sha256": "0781a2d82d01a2818778300377d1bdbc578c26aa76d4d8f0a8a036ad1b6350fb"
+      }
+    },
+    {
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_e/seed_314159/strict.npz",
+        "bytes": 54479801,
+        "mtime_ns": 1790571180209731297,
+        "sha256": "4bd81d45699592da809a60f938738ac13ae56effc654bf37324cd4217d216390"
+      }
+    },
+    {
+      "fold": "fold_e",
+      "seed": 314159,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_e/seed_314159/1hop.npz",
+        "bytes": 55061358,
+        "mtime_ns": 1790571184057700313,
+        "sha256": "77629c605db281dbff9323574bfa3df4d5dd6279cb13e5f92821394050a28c7f"
+      }
+    },
+    {
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "strict",
+      "appended_segments": [
+        303423,
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_e/seed_20260806/strict.npz",
+        "bytes": 54476533,
+        "mtime_ns": 1790571188073667907,
+        "sha256": "247516e5ce597975aed8a3abe90876de60ef9bf2fca5ccfa7907549fd1e926f9"
+      }
+    },
+    {
+      "fold": "fold_e",
+      "seed": 20260806,
+      "context": "1hop",
+      "appended_segments": [
+        303424
+      ],
+      "output": {
+        "path": "/home/tuv43532/PangenomeFM_evidence_report_20260927/results/foundation_evidence_20260927/reference_topology_completion_v2/fold_e/seed_20260806/1hop.npz",
+        "bytes": 54826768,
+        "mtime_ns": 1790571192025635949,
+        "sha256": "5dab86ea6ae0a856682c2de1cca34d5363308ebf0764d813d3721f151c693f8c"
+      }
+    }
+  ]
+}
