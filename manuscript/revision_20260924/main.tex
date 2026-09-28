@@ -20,6 +20,8 @@
 \usepackage{placeins}
 \usepackage{titlesec}
 \usepackage[numbers,sort&compress]{natbib}
+\usepackage[resetlabels,labeled]{multibib}
+\newcites{S}{Supplementary references}
 \usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=blue!55!black]{hyperref}
 \usepackage[capitalise,noabbrev]{cleveref}
 \usepackage{xspace}
@@ -28,7 +30,7 @@
 % \usepackage[mathlines]{lineno}\linenumbers
 
 \hypersetup{
-  pdftitle={PangenomeFM: graph-native pretraining for reusable human pangenome representations},
+  pdftitle={PangenomeFM: topology-native self-supervision for reusable human pangenome representations},
   pdfauthor={Long Nguyen Tan, Tomoya Kanno, Yang Zhao, Matthew Jensen, Mark Gerstein, Yufeng Shen, Ting Wang, and Xinghua Shi},
   pdfsubject={Graph-native representation learning for human pangenomes},
   pdfkeywords={human pangenome, graph neural network, self-supervised learning, foundation model, structural variation, regulatory genomics}
@@ -53,6 +55,9 @@
 \setlength{\parindent}{0.20in}
 \setlength{\parskip}{1.5pt}
 \pagestyle{plain}
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
 
 \makeatletter
 \renewcommand{\maketitle}{%
@@ -71,7 +76,7 @@
 % Nature Machine Intelligence
 
 
-\title{PangenomeFM: graph-native pretraining for reusable human pangenome representations}
+\title{PangenomeFM: topology-native self-supervision for reusable human pangenome representations}
 % Pangenome Foundation Model capture
 % Need to add HGSVC and HPRC to the author list
 \author{
@@ -94,390 +99,225 @@ and Xinghua Shi$^{1,2,*}$\\[6pt]
 \small $^{8}$McDonnell Genome Institute, Washington University School of Medicine, Saint Louis, MO, USA\\[3pt]
 \small $^{*}$Correspondence: [mindyshi@temple.edu]
 }
-\date{Working revision: 26 September 2026}
+\date{Method-focused working revision: 28 September 2026}
 
 
 
-% NEW STRUCTURES
-
-% Title
-% Abstract
-
-% Introduction
-
-% Results
-%   1. Graph-native representations add complementary information to regulatory-element prediction
-%   2. Graph-native representations contribute strongly to structural-variant insertion/deletion classification
-%   3. Frozen graph representations generalize across chromosomes and transfer across pangenome resources
-%   4. Neighborhood context distinguishes learned graph representations from degree-based shortcuts
-
-% Discussion
-
-% Methods
-%   Pangenome resources and graph preparation
-%   Masked graph-connection pretraining
-%   PangenomeFM architecture
-%   Strict and one-hop graph context
-%   Chromosome-held-out evaluation
-%   Cross-resource and cross-release transfer
-%   Sequence embeddings and downstream classifiers
-%   Baselines, ablations and capacity
-%   Statistical analysis
-%   Exploratory path/QTL/GWAS analyses
-
-% Data availability
-% Code availability
-% Acknowledgements
-% Funding
-% Author contributions
-% References
-
-% Supplementary Information
-
-
-
-
-
+% Structure and comment dispositions: docs/LATEX_COMMENT_RESPONSE_20260928.md.
+% Standard architecture/loss components are attributed; contributions are scoped to
+% native pangenome representation and controlled frozen reuse, not invented novelty.
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-% Structure: biological representation problem --> graph-native idea --> cCRE --> SV --> generalization --> control --> scoped conclusion
-Human pangenome graphs preserve population variation through alternative sequence paths and their connections. We developed \method to learn frozen segment representations from genomic position and graph connectivity without downstream biological labels. The original topology-pretrained representation $T$ adds 0.0040/0.0034 AUPRC to coordinates and frozen Nucleotide Transformer features for candidate cis-regulatory element classification under strict/one-hop context, and 0.0342/0.0401 for insertion-versus-deletion classification among known variants. A completed three-class extension retains all 174,267 primary-chromosome INS/DEL/INV events. Macro gains remain positive after measured length and graph-statistic controls, while adjusted inversion-specific intervals include zero. These conditional classification results do not establish variant discovery or improved genotyping. EN-TEx, external-genome, TraitGym and measured-quality analyses retain substantial null and negative findings. Matched random encoders and handcrafted graph controls further limit attribution to learned weights: strict INS/DEL shows an increment, whereas one-hop INS/DEL and cCRE do not establish a consistent advantage. The original masked-connection objective also exposes a degree-related shortcut, limiting interpretation of reconstruction and cross-resource transfer. A separate sequence-conditioned masked-feature representation $E$ exceeds its matched random and coordinate-only controls on both development tasks at all three seeds, but chromosome replication and an original-v1 comparison remain incomplete. The evidence supports task-dependent reuse of pangenome representations, with broader learned-representation superiority still unresolved.
+Human pangenome graphs encode alternative sequence arrangements that are absent from a single linear reference. We introduce PangenomeFM, a topology-native self-supervised framework that couples coordinate attention and graph message passing to learn reusable segment representations. Masked-connection pretraining uses no downstream biological labels; frozen encoders are evaluated with chromosome-held-out probes and matched feature controls. Adding graph representations to coordinates and frozen nucleotide embeddings improves regulatory-element AUPRC by 0.0034--0.0040 and known insertion/deletion classification by 0.0342--0.0401. A three-class extension retains macro gains after event-length and graph-statistic controls, but inversion-specific effects remain uncertain. EN-TEx and external tasks delimit this reuse through modest, null and negative findings. Degree-shortcut and random-encoder audits further distinguish available graph information from benefits of learned weights. The framework establishes task-dependent complementarity between population graph structure and sequence, while identifying the controls needed to evaluate broader pangenome representation learning.
 \end{abstract}
 
-\noindent\textbf{Keywords:} human pangenome; graph neural network; self-supervised learning; foundation model; structural variation; regulatory genomics
+\noindent\textbf{Keywords:} human pangenome; graph representation learning; self-supervision; structural variation; regulatory genomics
 
-
-% Long and Tomoya, here are what I think about the layout of the introduction: representation of DNA sequences and human genomes (linear->graph - capturing diversity, complex variations and regions), existing DNA foundation models and their applications (this can be swapped to the beginning of this session), the need of non-linear/graph representation of genomes and foundation models  to capture information in graph genomes or pangnomes, previous efforts of building pangenome foundation models and what they lack of, -> introduce pangenomeFM, improvement over previous work, applications of using pangenomeFM for downstream tasks.
-
-
-
-% Long, the following paper should be cited (add other related papers if any) to stress the importance of using graph genomes for functional genomics analysis
-% https://www.nature.com/articles/s41467-026-73663-3
-
-
-% [LONG NOTE]
-% Para 1: linear to graph: what linear has, what it loses, and why graph could enable the diversity
-% Para 2: why the representation matters in biology
-% para 3: talks about the DNA foundation models (DNABERT,etc.)
-% para 4: talks about pangenome topology features which sequence tokens do not present/have
-% para 5: previous work & gaps (DeepGene, PangenomeX, etc.)
-% para 6: introduce PangenomeFM + evidence/result (main generalization, etc.)
-
-\section{Introduction}
 \label{sec:intro}
 
-% Intro should start with the representation of human genomes, genetic variation should be mentioned later
-Reference genomes provide the coordinate systems through which human genomic data are aligned, annotated, and compared. Linear references such as GRCh38 and the telomere-to-telomere CHM13 assembly \citep{schneider2017grch38,nurk2022complete} have enabled increasingly complete analyses of the human genome, but any single reference provides only one path through a much broader space of human genomic diversity. Genetic variants are inherited as haplotypes, and their biological consequences can depend on the combination of alleles and structural context along the same chromosome. A single linear reference cannot directly represent these alternative haplotypes. Population-enriched sequences, complex structural rearrangements, and other haplotype-specific configurations can only be described indirectly as deviations from that reference.
+Human genome representations determine which sequence relationships an analysis can express. Linear references, including GRCh38 and the telomere-to-telomere CHM13 assembly, provide indispensable coordinate systems \citep{schneider2017grch38,nurk2022complete}. A single path, however, cannot directly encode the alternative arrangements carried by different chromosomes. Human pangenome graphs represent shared segments together with connections through alternative sequences. Haplotype-resolved assemblies from HPRC and HGSVC make this population representation increasingly practical \citep{hprc2023draft,hgsvc2021,hgsvc32025}. Shared and alternative segments can then be considered within one data structure, while genomic coordinates still link those segments to existing annotations. Learning from this structure requires a model to handle orientation and connectivity as well as linear position.
 
-Human pangenome graphs address this limitation by representing shared sequence once while retaining multiple haplotype-resolved paths through a common graph. Segments shared among assemblies form common traversals, while alternative alleles and structural configurations produce diverging and rejoining paths. This representation preserves the sequence and structural context of alternative haplotypes without defining each as a deviation from one reference genome. The Human Pangenome Reference Consortium and Human Genome Structural Variation Consortium now provide population-scale collections of diverse haplotype-resolved assemblies that support this representation \citep{hprc2023draft,hgsvc2021,hgsvc32025}.
+This choice of representation matters beyond variant cataloguing. Assembly-based pangenomes improve access to structurally diverse loci and support variant discovery and genotyping \citep{hprc2023draft,hgsvc32025}. Genome choice also affects functional-genomics measurements and their interpretation \citep{maciasvelasco2026benchmarking}. These observations motivate representations that connect molecular sequence content to the population structures in which that sequence occurs. They do not imply that graph features will improve every functional prediction task. A useful representation must demonstrate that its additional information survives comparison with the sequence and coordinate features already available to an analyst. Regulatory and structural-variant tasks provide contrasting tests because their labels capture different aspects of genome organization.
 
-Structural variants (SVs) are a major source of human genomic diversity and remain a central use case for pangenome representation. Pangenome graphs constructed from assemblies of individual haplotypes reveal alleles at complex loci and improve SV discovery and genotyping compared with workflows based on GRCh38 \citep{hprc2023draft,hgsvc2021,hgsvc32025}. Accurate representation of genome sequence and structure also affects how functional genomics measurements are mapped and interpreted in regions with complex variation \citep{maciasvelasco2026benchmarking}. These advances establish pangenome graphs as a biologically meaningful representation of human genomic diversity rather than only a computational alternative to a linear reference.
+Genomic foundation models offer a complementary approach: self-supervised learning turns large sequence collections into reusable features. DNABERT and Nucleotide Transformer learn nucleotide context and support regulatory-element and variant-related prediction \citep{ji2021dnabert,dalla2025nucleotide}. Their input sequences can contain substantial population diversity, but individual sequence embeddings do not explicitly encode the graph relationships among alternative segments. Whether those relationships contribute predictive information after sequence is accounted for remains an empirical question. Freezing both representations during downstream evaluation makes this question more explicit: biological supervision trains the same probe, while each representation contributes information acquired before that task. Gains can then be attributed to the available feature sets, subject to matched-example and split controls.
 
-Representing this diversity also creates a modeling challenge. Genomic foundation models such as DNABERT and Nucleotide Transformer use self supervised learning to derive reusable representations from nucleotide sequence and support tasks including regulatory element and variant effect prediction \citep{ji2021dnabert,dalla2025nucleotide}. However, they model nucleotide content and context within individual input sequences rather than relationships among alternative segments across population haplotypes. Recent work has begun to bring pangenomes into learned genomic representations. DeepGene uses pangenome graphs as the source for foundation model training, although it converts information extracted from the graph into ordered sequence representations before learning \citep{zhang2025deepgene}. PangenomeX shows how graph learning can exploit population relationships for copy number analysis, but its graph model is trained for that specific supervised objective \citep{xue2025pangenomex}. These approaches demonstrate the value of pangenome-derived information but leave a distinct question unresolved: can native pangenome graph connectivity itself be learned without downstream biological labels and reused as a representation across genomic tasks? \Cref{fig:paradigms} summarizes these modeling choices.
+A pangenome graph exposes branching, reconvergence and connectivity between shared and alternative segments. Two segments with similar nucleotide composition may occupy different structural contexts; conversely, related graph neighborhoods may contain divergent sequences. These relations motivate learning directly from connectivity while retaining genomic position. Genomic proximity and graph adjacency also define different neighborhoods, providing a reason to model both rather than assuming one can replace the other. The aggregate SV-resolution graph used here does not preserve donor-specific paths, so neither haplotype frequency nor personal allelic effects can be assumed to be encoded by its node representations.
 
-\method addresses this question through graph-native self-supervised pretraining on human pangenome resources. During pretraining, an observed segment connection and its reverse-complement-equivalent relation are hidden before message passing, and the model reconstructs the relation from genomic position and the remaining graph neighborhood. The resulting graph representations are frozen before transfer or biological prediction (\cref{fig:method}). Across candidate regulatory-element and structural-variant type tasks, these representations provide information beyond genomic coordinates and nucleotide-sequence representations, with a substantially larger contribution for structural variation. Additional chromosome-held-out and cross-resource experiments test whether the learned signal generalizes beyond the graph regions used during training.
+Existing approaches use pangenomes in different ways (\cref{fig:paradigms}). DeepGene converts graph-derived information into sequence representations for foundation-model learning \citep{zhang2025deepgene}; PangenomeX learns a phylogeny-guided network of copy-number relationships for a supervised objective \citep{xue2025pangenomex}. These designs motivate a distinct evaluation of topology-native self-supervision: can representations learned from native connectivity, without biological labels, be frozen and reused across tasks? Answering this requires both biological transfer and controls for information already captured by coordinates, sequence and inexpensive graph summaries. A second distinction is equally important: an untrained graph encoder can already transform those inputs. Demonstrating graph utility therefore does not, by itself, demonstrate that self-supervision has learned a better representation.
 
-% Long, the layout looks more like a CS paper, we need to change it to the format of Nature Machine Intelligence or Nature Methods (check some recent papers in those journals and follow their layout)
+Here we introduce \method as a method for this controlled reuse. Oriented-segment inputs preserve native connections; a layerwise gate couples coordinate attention and graph message passing; masked-connection pretraining precedes frozen biological evaluation. The contribution is this pangenome representation and transfer framework, rather than a new attention operator or loss. We test regulatory annotations, known SV types and external outcomes under chromosome holdout. Paired feature comparisons quantify complementarity, while random encoders and shortcut audits test its origin. The resulting evidence supports task-dependent graph information and identifies limits on claims about learned-weight superiority.
 
-
-
-% Long, this figure should be cited in Introduction, where you can merge the current related work and background into Introduction
-\begin{figure}[ht]
+\begin{figure}[tbp]
   \centering
-  % TODO(figure): redesign with keyword-only labels. End each paradigm at
-  % its learned output; explain downstream reuse in the caption rather than a
-  % PangenomeFM-only output column.
-  \includegraphics[width=\linewidth]{figures/figure1_paradigms.pdf}
+  \includegraphics[width=\linewidth]{figures/figure1_paradigms_methodfirst.pdf}
   \caption{\textbf{From sequence-centric modeling to graph-native pangenome pretraining.}
   \textbf{a,} Linear genomic foundation models consume nucleotide sequence and produce sequence-derived embeddings; DNABERT and Nucleotide Transformer are representative examples.
   \textbf{b,} Pangenome-derived sequence learning starts from a pangenome graph but converts graph-derived sequence into an ordered sequence-like representation before learning; DeepGene illustrates this design.
-  \textbf{c,} Task-specific graph learning operates directly on graph structure while optimizing a supervised biological endpoint; PangenomeX illustrates this class of approach.
-  \textbf{d,} \method uses native population-scale pangenome connectivity as a self-supervised pretraining signal and outputs frozen graph embeddings that can be reused independently of the pretraining objective.
+  \textbf{c,} Task-specific graph learning optimizes a biological endpoint; PangenomeX uses a phylogeny-guided CNV relationship network. This is a different graph construction from native segment adjacency.
+  \textbf{d,} \method uses native population-scale pangenome connectivity as a self-supervised pretraining signal and produces segment representations. Each row ends at a learned representation; downstream reuse is evaluated separately and is not unique to one paradigm.
   The original v1 \method encoder illustrated here does not consume sequence embeddings during graph pretraining; the separately evaluated sequence-conditioned $E$ candidate is described in \hyperref[sec:masked-development]{the masked-feature development analysis}. The panels compare representation and learning paradigms and do not imply a direct performance ranking among the cited approaches.}
   \label{fig:paradigms}
 \end{figure}
 
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=\linewidth]{figures/figure2_method.pdf}
-\caption{\textbf{Topology-native pretraining converts an unlabeled population pangenome graph into reusable segment representations.}
-\textbf{a,} The input graph contains oriented genomic segments, their positions, and the connections that organize reference and alternate haplotype paths. Nucleotide sequences and biological annotations are not provided to \method during pretraining.
-\textbf{b,} Self-supervised training examples are constructed from pairs of segments within the same graph region. Connected pairs are positive examples, whereas non-adjacent pairs are negative examples matched to positives by genomic separation, limiting the ability of positional distance alone to distinguish the two classes.
-\textbf{c,} Before encoding each example, the queried connection and its reverse-complement-equivalent relation are removed from the message-passing graph. The model must therefore infer the hidden connection from the remaining regional organization rather than directly observing the target edge.
-\textbf{d,} Each segment is processed through two information branches. The coordinate branch represents genomic offset, relative position, segment length, reference-path relationship, and orientation. In parallel, the graph branch applies attention-based message passing over the remaining visible connections.
-\textbf{e,} A learned element-wise gate combines the coordinate and graph representations,
-\(
-\mathbf{h}_v =
-\mathbf{g}_v\odot\mathbf{h}^{\mathrm{coord}}_v
-+
-(1-\mathbf{g}_v)\odot\mathbf{h}^{\mathrm{graph}}_v,
-\)
-producing the final PangenomeFM representation for segment \(v\).
-\textbf{f,} The final representations of the two queried segments are concatenated and passed through a multilayer perceptron,
-\(
-\widehat{p}_{uv}
-=
-\sigma\!\left(
-\operatorname{MLP}
-\bigl[
-\mathbf{h}_u\Vert\mathbf{h}_v
-\bigr]
-\right),
-\)
-to reconstruct the masked connection. Training uses class-adaptive binary focal cross-entropy and requires no biological labels.
-\textbf{g,} After pretraining, the \method encoder is frozen. Its final segment representations, denoted \(T\), are reused for chromosome-held-out evaluation and cross-resource transfer without adaptation to the target pangenome resource.
-\textbf{h,} Downstream classifiers receive controlled combinations of genomic coordinates (\(C\)), sequence representations (\(S\)) from a separately pretrained and frozen Nucleotide Transformer, and frozen \method representations (\(T\)). The same framework is evaluated for candidate cis-regulatory element and structural-variant insertion/deletion classification. Conditional contributions are quantified as
-\(
-\Delta_{T\mid C,S}
-=
-\operatorname{AUPRC}(C+S+T)
--
-\operatorname{AUPRC}(C+S)
-\)
-and
-\(
-\Delta_{S\mid C,T}
-=
-\operatorname{AUPRC}(C+S+T)
--
-\operatorname{AUPRC}(C+T).
-\)
-This figure describes original v1 pretraining and its frozen representation $T$. Biological labels train only downstream classifiers; neither pretrained encoder is fine-tuned. The separate masked-feature candidate $E$ uses frozen sequence inputs and a different pretraining target (\hyperref[sec:masked-development]{the masked-feature development analysis}).}
-\label{fig:method}
-\end{figure}
-
-
-
-
-
-
-\FloatBarrier
-
-
 \section{Results}
 \label{sec:results}
 
-% Long, add results on predicting cCREs and ENCODE data?
-% add citation of this paper
-% https://www.nature.com/articles/s41467-026-73663-3
+\subsection{PangenomeFM couples genomic position and connectivity for frozen reuse}
+\label{sec:method-result}
 
-\subsection{Self-supervised graph pretraining yields frozen reusable segment representations}
+The method separates representation learning from biological supervision (\cref{fig:method}). Each oriented graph segment receives seven numeric features. Coordinate attention organizes context by genomic position, while graph attention follows visible connections; both branches update a shared hidden state through a learned gate, residual connection and normalization. Original v1 pretraining predicts masked connections with an ordered pair scorer. Afterward, the 48-dimensional segment vectors $T$ are fixed, and only downstream probes receive biological labels. $T$ therefore contains coordinate and structural information rather than adjacency alone.
 
-\method separates unlabeled representation learning from biological prediction. Its coordinate and graph-attention branches reconstruct query-masked connections in the fixed HPRC R2 graph, with reverse-complement-equivalent relations masked together. After chromosome-held-out pretraining, both PangenomeFM and the independent Nucleotide Transformer remain frozen. Only the same regularized logistic probe is trained with biological labels. Here $T$ denotes the original v1 fused coordinate/graph representation; $H$ denotes 14 label-free graph statistics, $R$ its random-encoder control, and $E$ a separate sequence-conditioned masked-feature candidate. The original comparison tests whether $T$ contributes information beyond coordinates and the evaluated sequence representation; it does not require biological-label adaptation of the encoders (\cref{fig:method}).
+Five rotating chromosome folds and three archived executions per fold evaluate strict regional and expanded one-hop contexts. Coordinates $C$, k-mer composition $K$ and independently pretrained sequence vectors $S$ supply matched baselines. The primary contrast, $\Delta_{T\mid C,S}$, measures the AUPRC change when $T$ is added to $C+S$. Handcrafted graph features $H$ and random encoders $R$ ask the separate question of whether learned weights contribute beyond cheap structural representations. These comparisons use identical examples within each contrast; neither pretrained encoder is fine-tuned with biological labels.
 
-\subsection{Graph-native representations add complementary information to regulatory-element prediction}
+\subsubsection{Sequence coverage is complete, but long-segment context is restricted}
+\label{sec:sequence-coverage-result}
+
+The pinned Nucleotide Transformer pipeline produced 512-dimensional vectors for all 303,425 segments required by the original cCRE and INS/DEL probes. No example was lost to missing sequence features. However, 26.3\% of required segments exceeded the input limit and used predefined sampling from their two ends. Complete segment coverage is therefore not complete nucleotide coverage. Comparisons involving $S$ concern this frozen representation, not the maximum information recoverable by every sequence model (\hyperref[sec:s-coverage]{Supplementary Information, sequence coverage}).
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.94\linewidth]{figures/figure2_method_methodfirst.pdf}
+\caption{\textbf{Coupled coordinate--graph pretraining and frozen reuse.}
+\textbf{a,} Oriented segments receive seven numeric features. Historical v1 masks exact directed positive query rows per minibatch; reciprocal masking belongs to a later repair. Original unmasked degree/component inputs expose the audited shortcut.
+\textbf{b,} Coordinate attention and incoming-edge graph attention process the same evolving state. A layerwise gate, residual addition and normalization produce the updated representation. The principal encoder has two layers, four heads and a 48-dimensional output.
+\textbf{c,} An ordered pair MLP reconstructs connections using an adopted focal objective. Canonical negatives are distance- and original-degree-matched.
+\textbf{d,} After pretraining, graph vectors $T$ and separately pretrained Nucleotide Transformer vectors $S$ remain frozen. Biological labels train only chromosome-held-out probes. Coordinates $C$, graph statistics $H$ and random encoders $R$ support controlled comparisons. Panels a/b, a/c and d map to the first three Methods subsections. This is original $T$; the separate development candidate $E$ uses sequence inputs and a different target.}
+\label{fig:method}
+\end{figure}
+
+\subsection{Regulatory transfer is complementary to sequence and task dependent}
 \label{sec:ccre-result}
 
-Candidate cis-regulatory element classification provides an independent test of whether graph representations learned without regulatory labels carry reusable functional information. Frozen \method graph embeddings were therefore evaluated together with genomic coordinates and independently pretrained Nucleotide Transformer sequence embeddings under the same chromosome-held-out splits. The sequence-processing pipeline generated 512-dimensional embeddings for all 303,425 graph segments required by the downstream analyses, providing complete segment coverage for the \ccre and SV tasks. Because 26.3\% of required segments exceeded the direct sequence-model input limit and were represented using the predefined end-sampling procedure described in Methods, conclusions about the reciprocal contribution of sequence are restricted to the representation evaluated here.
+Candidate cis-regulatory element prediction tests biological reuse without regulatory-label adaptation of the encoder. Coordinates plus sequence reached AUPRC 0.9185; adding $T$ reached 0.9225 under strict context and 0.9219 under one-hop context. Paired gains were 0.0040 (\CI 0.0029--0.0048) and 0.0034 (0.0017--0.0048), respectively (\cref{fig:ccre-result,tab:downstream}). Sequence remained the larger independent information source, adding 0.0248/0.0261 beyond $C+T$ (\cref{tab:s-factorial}). These feature gains alone do not establish a benefit from pretraining over random graph encoders.
 
-Coordinates plus sequence embeddings reached mean \auprc 0.9185. Adding \method graph embeddings increased performance to 0.9225 under strict graph context and 0.9219 under one-hop context, corresponding to paired improvements of 0.0040 (\CI 0.0029--0.0048) and 0.0034 (0.0017--0.0048), respectively (\cref{tab:downstream,fig:ccre-result}). Although modest in magnitude, these gains were reproducible across chromosome folds and random seeds.
+Subsetting the same binary probe's predictions gave strict gains of 0.0058 for promoter-like elements, 0.0209 for proximal enhancers, 0.0054 for distal enhancers and 0.0349 for CTCF-only elements versus common background. These are subtype evaluations, not separately trained classifiers. Native low-, medium- and high-complexity cCRE gains were 0.0018, 0.0014 and 0.0076; that pattern is specific to this annotation task.
 
-The reciprocal comparison showed that sequence remained the larger source of independent information for this task. Nucleotide Transformer embeddings added 0.0248 \auprc under strict context and 0.0261 under one-hop context beyond coordinates and graph embeddings (\cref{tab:s-factorial}). Thus, regulatory prediction is not primarily graph driven. Instead, the evaluated sequence and graph-derived features provide complementary predictive information. The completed random-encoder controls below show that this increment alone does not establish that pretraining learned a superior cCRE representation.
+EN-TEx provided a broader test of regulatory activity \citep{rozowsky2023entex}. Its 450 completed fold/seed/context runs cover primary tasks, exposure-matched and assay-specific sensitivities, five tissues and additional assays; they are not independent biological replications. AS-prone cCRE prediction was inconclusive, including a strict gain of 0.00021 ($-0.00032$ to 0.00075). Active-versus-repressed distal enhancer tissue-macro gains were also inconclusive: 0.00089 ($-0.00039$ to 0.00233) strict and 0.00080 ($-0.00153$ to 0.00247) one-hop. Exposure matching changes ascertainment and prevalence, so absolute AP across matched and primary populations does not measure model improvement.
 
-The completed subtype analysis showed strict-context graph gains of 0.0058 for promoter-like elements, 0.0209 for proximal enhancer-like elements, 0.0054 for distal enhancer-like elements and 0.0349 for CTCF-only elements, each evaluated against the common background by subsetting predictions from the same binary cCRE probe, rather than fitting independent subtype classifiers. Native-complexity cCRE gains were 0.0018, 0.0014 and 0.0076 in low, medium and high groups, respectively. These cCRE-specific patterns should not be generalized to other biological labels.
+CTCF allele-specific SNV gains were 0.00147 (0.00010--0.00355) strict and 0.00225 (0.00096--0.00348) one-hop. H3K27ac was inconclusive under strict context, 0.00069 ($-0.00057$ to 0.00192), and positive under one-hop context, 0.00334 (0.00012--0.00796). RNA ASE, ATAC and H3K27me3 intervals included zero in both contexts. H3K4me3 gains had positive pointwise intervals, with estimates 0.00442/0.00900. All endpoints remain reported (\cref{tab:s-entex}); low absolute AP and multiple comparisons limit broader claims.
 
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{figures/figure3_ccre.pdf}
   \caption{\textbf{Frozen graph representations provide complementary information for candidate cis-regulatory element prediction.}
-  \textbf{a,} Mean chromosome-held-out area under the precision--recall curve (\auprc) for genomic coordinates combined with frozen Nucleotide Transformer sequence representations ($C+S$), and after adding frozen \method graph representations ($C+S+T$) under strict and one-hop graph context. Points show means across five chromosome folds and three random seeds; whiskers indicate 95\% hierarchical bootstrap intervals.
+  \textbf{a,} Mean chromosome-held-out area under the precision--recall curve (\auprc) for genomic coordinates combined with frozen Nucleotide Transformer sequence representations ($C+S$), and after adding frozen \method graph representations ($C+S+T$) under strict and one-hop graph context. Points show means across five chromosome folds and three archived executions; whiskers indicate 95\% hierarchical bootstrap intervals. Original seed labels have the reproducibility qualification stated in Methods.
   \textbf{b,} Paired information-source comparisons quantify the contribution of each representation while holding the other information sources fixed. Sequence representations improve substantially over k-mer composition. Graph representations provide a smaller but reproducible contribution beyond coordinates and sequence, whereas sequence representations retain an independent contribution after coordinates and graph information are included. Positive paired differences indicate that the added information improves \auprc.
   \textbf{c,} Predefined ENCODE subclasses versus common background. \textbf{d,} Native graph-complexity strata, with thresholds fixed independently of prediction outcomes.}
   \label{fig:ccre-result}
 \end{figure}
 
-\FloatBarrier
-
-\subsection{Graph-native representations contribute strongly to structural-variant insertion/deletion classification}
+\subsection{Graph representations inform known SV types beyond sequence}
 \label{sec:sv-result}
 
-Structural variants provide a distinct setting in which graph organization may contain information that is difficult to summarize from individual sequence segments. Insertion versus deletion was therefore predicted from segment pairs using the same controlled combinations of genomic coordinates, frozen sequence embeddings, and frozen \method graph embeddings.
+The historical SV task predicts insertion versus deletion among known variant records. Adding $T$ to $C+S$ increased AUPRC from 0.8721 to 0.9063 strict and 0.9122 one-hop, giving paired gains of 0.0342 (\CI 0.0324--0.0362) and 0.0401 (0.0361--0.0440) (\cref{fig:sv-result}). The one-hop-minus-strict gain was 0.0058 (0.0033--0.0084). Conversely, adding $S$ after $C+T$ yielded $-0.0002$/$-0.0005$, with intervals spanning zero. These results concern the evaluated segment features and event representation; they do not show that sequence is generally uninformative for SVs.
 
-Coordinates plus sequence embeddings reached mean \auprc 0.8721. Adding graph embeddings increased performance to 0.9063 under strict context and 0.9122 under one-hop context, corresponding to paired gains of 0.0342 (\CI 0.0324--0.0362) and 0.0401 (0.0361--0.0440), respectively (\cref{tab:downstream,fig:sv-result}). The one-hop graph contribution exceeded the strict contribution by 0.0058 \auprc (0.0033--0.0084), indicating that immediate graph-neighborhood information is additionally informative for the evaluated insertion/deletion task.
-
-Unlike the \ccre task, sequence embeddings did not provide a measurable additional \auprc after coordinates and graph embeddings were available: the corresponding changes were $-0.0002$ under strict context and $-0.0005$ under one-hop context, with confidence intervals spanning zero (\cref{tab:s-factorial}). This result is specific to the evaluated segment-level sequence representation and insertion/deletion task and should not be interpreted as evidence that nucleotide sequence is generally uninformative for structural variation.
-
-Graph contributions remained positive across all evaluated allele-frequency groups and across all well-powered variant-length strata. Strict-context gains ranged from 0.0321 to 0.0382 \auprc across allele-frequency bins, and one-hop gains ranged from 0.0369 to 0.0422. By variant length, the largest observed gains occurred for 50--100-bp variants (0.0475 strict; 0.0547 one-hop) and 1--10-kb variants (0.0370; 0.0440). Positive gains were also observed for 100--500 bp, 500 bp--1 kb, and 10--100 kb variants (\cref{tab:s-sv-length}). The 100-kb--1-Mb stratum contained only approximately 27 examples per run; its negative point estimates are retained, with insufficient precision to determine their direction reliably.
+Gains persisted across allele-frequency groups and adequately powered length strata. Approximately 27 examples per run in the 100-kb--1-Mb stratum produced uncertain negative estimates, which remain reported (\cref{tab:s-sv-length}). Complexity did not amplify the SV gain: strict estimates were 0.0419, 0.0380 and 0.0302 in low, medium and high groups, and one-hop estimates were 0.0499, 0.0474 and 0.0336 (\cref{fig:sv-complexity}). Donor stratification excluding five overlapping donors gave 60-donor macro gains of 0.0367/0.0430. The probes still used those donors' labels on other chromosomes, so this is not donor-held-out fitting (\cref{fig:s-donor}).
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.98\linewidth]{figures/figure4_sv.pdf}
   \caption{\textbf{Frozen graph representations contribute strongly to structural-variant insertion/deletion classification.}
-  \textbf{a,} Mean chromosome-held-out \auprc for genomic coordinates combined with frozen sequence representations ($C+S$), and after adding frozen \method graph representations ($C+S+T$) under strict and one-hop graph context. Points show means across five chromosome folds and three random seeds; whiskers indicate 95\% hierarchical bootstrap intervals.
+  \textbf{a,} Mean chromosome-held-out \auprc for genomic coordinates combined with frozen sequence representations ($C+S$), and after adding frozen \method graph representations ($C+S+T$) under strict and one-hop graph context. Points show means across five chromosome folds and three archived executions; whiskers indicate 95\% hierarchical bootstrap intervals. Original seed labels have the reproducibility qualification stated in Methods.
   \textbf{b,} Paired information-source comparisons show that graph representations provide a substantial contribution beyond coordinates and sequence. In contrast, the additional sequence contribution after coordinates and graph information are included is approximately zero, with intervals spanning zero, for this insertion/deletion task. Positive paired differences indicate that the added information improves \auprc.
   \textbf{c,} Conditional graph contributions across allele-frequency groups. Positive estimates are observed across all evaluated frequency groups under both graph-context definitions.
   \textbf{d,} Conditional graph contributions across variant-length groups. Estimates are positive for all adequately powered groups. The 100-kb--1-Mb group contains approximately 27 examples per run and is therefore marked as underpowered; its negative point estimate is retained, and the direction remains uncertain.}
   \label{fig:sv-result}
 \end{figure}
-
-\subsection{Topology gains persist across SV strata without increasing with graph complexity}
-
-The new complexity analysis reused all 30 archived probe runs. Strict-context topology gains were 0.0419 in low-, 0.0380 in medium-, and 0.0302 in high-complexity windows; one-hop gains were 0.0499, 0.0474 and 0.0336, respectively (\cref{fig:sv-complexity}). The high-minus-low interaction was $-0.0117$ (\CI $-0.0230$ to $-0.0019$) strict and $-0.0162$ ($-0.0267$ to $-0.0092$) one-hop. AUROC and prevalence-normalized AP showed the same ordering. Thus these data do not support the hypothesis that the representation helps more strongly in high-complexity SV regions. Exact five-fold sign-flip tests gave interaction $p=0.125$ and $p=0.0625$; the pointwise bootstrap intervals should not be read as multiplicity-adjusted mechanistic evidence.
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=\linewidth]{figures/sv_complexity.pdf}
-\caption{\textbf{Topology improves insertion/deletion discrimination across complexity strata.} Paired gains in AUPRC, AUROC and prevalence-normalized AP use the same held-out examples for $C+S$ and $C+S+T$ within each stratum. Points and intervals summarize five folds and three seeds per context. Native graph complexity was fixed independently of model outcomes. Positive gains are smaller in the high-complexity group. Intervals are pointwise hierarchical bootstrap intervals, not multiplicity-adjusted intervals.}
-\label{fig:sv-complexity}
-\end{figure}
-
-Donor/haplotype stratification retained the original pooled probes. After excluding the five overlapping donors from the macro summary, the 60 remaining donors had mean gains of 0.0367 (\CI 0.0339--0.0395) strict and 0.0430 (0.0393--0.0470) one-hop. These results describe donor-stratified chromosome transfer; training still included labels from the same donors on other chromosomes. They therefore cannot establish donor-independent probe generalization (\cref{fig:s-donor}).
-
-\subsection{EN-TEx transfer identifies modest allele-specific gains and null regulatory boundaries}
-
-The completed EN-TEx programme comprised 450 fold/seed/context runs across primary tasks, predefined sensitivities, five tissues, RNA ASE and the additional ATAC/H3K4me3/H3K27me3 panel. These related analyses are not 450 independent biological replications. P0 AS-prone cCRE prediction showed an inconclusive strict-context gain of 0.00021 (\CI $-0.00032$ to 0.00075); one-hop was also inconclusive. P1 active-versus-repressed enhancer tissue-macro gains were 0.00089 ($-0.00039$ to 0.00233) strict and 0.00080 ($-0.00153$ to 0.00247) one-hop. Exposure matching and assay-specific P0 results are retained alongside the primary task; no favorable subset replaces an inconclusive primary endpoint. The exposure-matched population has different prevalence and ascertainment, so its higher absolute AP cannot be read as improvement over the primary population. Matching controls measured opportunities, not read depth or every source of ascertainment.
-
-CTCF allele-specific SNV prediction showed modest gains of 0.00147 (\CI 0.00010--0.00355) strict and 0.00225 (0.00096--0.00348) one-hop. H3K27ac showed an inconclusive strict gain, 0.00069 ($-0.00057$ to 0.00192), and a positive one-hop estimate, 0.00334 (0.00012--0.00796). These pointwise intervals are exploratory across multiple tasks and contexts. Absolute AP remains low in the low-prevalence SNV tasks (\cref{tab:s-entex}); the results support task-dependent reuse rather than broad regulatory superiority. RNA ASE, ATAC and H3K27me3 paired topology intervals include zero in both contexts. H3K4me3 has positive pointwise intervals, with gains of 0.00442 strict and 0.00900 one-hop; it does not replace the retained null endpoints.
-
-% Keep this table:
-% For final NMI submission, consider moving the table to Supplementary once the
-% standalone biological figures carry these values clearly.
-\begin{table}[ht]
-\centering
-\caption{\textbf{Graph-structure contribution to downstream prediction.} Absolute \auprc values are means across 15 chromosome-fold and random-seed combinations within each graph context. Gains are paired differences from adding frozen \method graph embeddings to genomic coordinates and frozen Nucleotide Transformer sequence embeddings.}
-\label{tab:downstream}
-\small
-\begin{tabular}{@{}llccc@{}}
-\toprule
-Task & Context & $C+S$ & $C+S+T$ & Gain $\Delta_{T\mid C,S}$ (\CI) \\
-\midrule
-\ccre & Strict & 0.9185 & 0.9225 & 0.0040 (0.0029, 0.0048) \\
-\ccre & One-hop & 0.9185 & 0.9219 & 0.0034 (0.0017, 0.0048) \\
-SV & Strict & 0.8721 & 0.9063 & 0.0342 (0.0324, 0.0362) \\
-SV & One-hop & 0.8721 & 0.9122 & 0.0401 (0.0361, 0.0440) \\
-\bottomrule
-\end{tabular}
-\end{table}
-
+\input{completed_results_20260928}
 \FloatBarrier
 
+\subsection{Structural controls distinguish graph information from learned-weight gains}
+\label{sec:controls-result}
 
-% Is it possible to improve SV genotyping (especially in complex and copy number variant regions)?
+Hidden-connection prediction was highly sensitive to simple structure. Preferential attachment reached strict AUPRC 0.9835 and degree sum 0.9742, exceeding original \method. Auditing candidate construction identified a masking-induced endpoint-degree deficit: positives lose visible connections while matched negatives need not. Unmasked degree/component inputs provide an additional route to infer missing structure. The one-hop reversal against these baselines does not establish removal of the shortcut (\cref{tab:s-controls}). A replay of 271,796 visible-graph baseline scores across 1,215 slices reproduced both contexts exactly.
 
+The completed 120-run trained/random/$H$ downstream matrix provides a more direct test. After $C+S+H$, strict INS/DEL trained-minus-random AP was 0.005295 (\CI 0.002787--0.010515); one-hop was 0.000419 ($-0.002326$ to 0.005154). Strict cCRE favored random weights by 0.000759 (trained-minus-random interval $-0.001515$ to $-0.000123$), and one-hop was inconclusive (\cref{tab:s-hr}). No AP contrast passed the exact-test/BH correction. Thus the main graph gains do not establish a consistent learned-weight advantage across tasks. Full-graph $H$ also has broader context than windowed $T$.
 
+Increasing unlabeled training windows improved reconstruction in all four tested fractions, but the completed 360-run biological scaling study was task and context dependent (\cref{fig:s-scaling}). A separate GraphMAE-style masked-feature candidate, $E$, uses frozen sequence inputs \citep{hou2022graphmae}. It exceeded matched random controls after $C+S+H$ on both development tasks at every seed, with mean gains 0.005609 INS/DEL and 0.001836 cCRE. These initializations share one validation chromosome block; no chromosome interval or completed replication result is available. The full development results and the failed junction candidate remain in \hyperref[sec:masked-development]{Supplementary Information}. This is evidence for further evaluation, not an established replacement for $T$.
 
-
-\subsection{Frozen graph representations generalize across chromosomes and transfer across pangenome resources}
+\subsection{Cross-resource and external evaluations define the limits of reuse}
 \label{sec:generalization-result}
 
-The downstream analyses require a representation that is not restricted to graph regions encountered during pretraining. Generalization was therefore evaluated by withholding entire chromosome groups and by applying frozen models to independently released pangenome graph resources without target-resource adaptation.
+Historical v1 reconstruction reached mean window-level AUPRC 0.9501/0.9880 on HPRC R2 and 0.9745/0.9868 on HGSVC3 under strict/one-hop contexts (\cref{fig:generalization-transfer,tab:s-reconstruction}). HPRC-to-HGSVC transfer reached 0.5997/0.9408; HGSVC-to-HPRC reached 0.7247/0.8902. R1.1-to-R2 transfer was 0.7063/0.7846, and R2-to-R1.1 was 0.5669/0.8838. These scores measure the original shortcut-sensitive objective. Graph construction, exposed context and shared donors prevent interpreting them as evidence of construction-invariant or donor-independent representations.
 
-\method accurately reconstructed masked connections on chromosomes excluded from training (\cref{fig:generalization-transfer,tab:s-reconstruction}). On HPRC R2, mean held-out \auprc was 0.9501 under strict context and 0.9880 with one-hop context. HGSVC3 reached 0.9745 and 0.9868, respectively. Models trained on the integrated graph resource reached 0.9768 under strict context and 0.9894 with one-hop context when summarized across evaluations. These historical v1 scores describe performance on withheld chromosomes, but the masking-induced degree deficit described below limits their interpretation as evidence for learned higher-order organization.
+Prospective HG008 refits completed 30 evaluations on 69 clonal INS/DEL records without training on HG008. Gains were 0.032525 (\CI $-0.053371$ to 0.110254) strict and 0.064863 ($-0.066739$ to 0.212115) one-hop. Both are inconclusive, and six failed historical-probe replays remain separate from these refits. TraitGym's 14,780 matched variants yielded no positive topology interval in the locus-prior or allele-score analyses \citep{benegas2025traitgym}. Shallow boosting improved Mendelian $C+S+V$ AP from 0.102110 to 0.171056, but this is a classifier gain on previously inspected data, not improved encoder weights.
 
-Transfer to a different graph resource was strongly context dependent. HPRC-to-HGSVC transfer reached \auprc 0.5997 under strict context and 0.9408 with one-hop context; HGSVC-to-HPRC transfer reached 0.7247 and 0.8902. Transfer between HPRC releases was also asymmetric: R1.1-to-R2 yielded 0.7063 and 0.7846, whereas R2-to-R1.1 yielded 0.5669 and 0.8838. Transfer under strict local context was inconsistent across graph constructions, whereas immediate-neighborhood context produced substantially higher transfer in most comparisons. Core and one-hop contexts expose different amounts of graph structure and are treated as separate prediction settings rather than a causal test that one context radius is intrinsically superior.
-
-Cross-resource analyses test transfer between graph constructions rather than donor-independent generalization. At least five donors (HG00733, HG02818, NA19036, NA19240, and HG002/NA24385) occur in both HPRC and HGSVC, and the aggregate graph topology can contain contributions from these shared samples.
-
+Measured COSIGT quality across 265 loci also showed no established topology benefit \citep{bolognini2026cosigt}. A training-median constant outperformed all fitted primary-target models; a validation-only fallback retained this negative result. These data predict released sample--locus quality and do not measure improvements to genotype calls. Full contrasts and limitations appear in \hyperref[sec:s-transfer-boundaries]{Supplementary Information}.
 
 \begin{figure}
   \centering
   \includegraphics[width=0.98\linewidth]{figures/figure5_generalization_transfer.pdf}
-  \caption{\textbf{Graph-native pretraining generalizes across chromosomes and transfers across pangenome resources.}
+  \caption{\textbf{Historical reconstruction and cross-resource transfer of the original representation.}
   \textbf{a,} Mean chromosome-held-out \auprc for masked-connection reconstruction within HPRC R2, HGSVC3, and integrated graph regimes under strict and one-hop context. Whiskers show 95\% chromosome-block bootstrap intervals that retain the window weighting of the point estimate.
-  \textbf{b,} Transfer to a different graph resource or graph release without target-resource adaptation. Strict-context transfer is direction dependent, whereas one-hop context produces substantially higher transfer in most comparisons. Whiskers currently show one standard deviation across three random seeds and are not confidence intervals.
-  Cross-resource results measure transfer between graph resources, not donor-independent generalization, because at least five donors occur in both HPRC and HGSVC.
+  \textbf{b,} Transfer to a different graph resource or graph release without target-resource adaptation. Strict-context transfer is direction dependent, whereas one-hop context produces substantially higher transfer in most comparisons. Whiskers currently show one standard deviation across three archived executions and are not confidence intervals.
+  All panels evaluate the original degree-shortcut-sensitive objective. Cross-resource results measure transfer between graph resources, not donor-independent generalization, because at least five donors occur in both HPRC and HGSVC.
   }
   \label{fig:generalization-transfer}
 \end{figure}
-
 \FloatBarrier
-
-% Long, this subsection title is too cs/graph-heavy, we need to rephrase
-\subsection{Degree shortcuts and random controls limit attribution to learned weights}
-\label{sec:controls-result}
-
-Simple endpoint-degree statistics were unexpectedly strong predictors of hidden connections. In the current HPRC benchmark implementation, preferential attachment reached mean \auprc 0.9835 under strict context and degree sum reached 0.9742, both above \method in the same setting (\cref{tab:s-controls}). Coordinate and k-mer composition baselines were substantially weaker. These results show that hidden-edge reconstruction alone can be dominated by simple endpoint-connectivity statistics.
-
-In the current one-hop benchmark, the relative performance reversed. Compared with preferential attachment, \method had mean \auprc differences of $-0.0370$, $-0.0320$, and $-0.0420$ in low-, medium-, and high-complexity regions under strict context, with all intervals excluding zero. Under one-hop context, the corresponding differences were $+0.0707$, $+0.0714$, and $+0.0679$. Degree-sum comparisons showed the same qualitative reversal. The similarity of the observed differences across complexity strata does not support a monotonic increase in \method advantage with graph complexity; instead, the current results point to graph context as the stronger factor.
-
-A subsequent candidate audit found that single-query masking leaves a visible endpoint-degree deficit for positive edges. This shortcut limits all intrinsic v1 reconstruction and transfer claims; outperforming the reported one-hop degree baselines does not establish that the shortcut has been removed. The completed 120-run trained/random/$H$ control matrix provides a separate downstream check. After $C+S+H$, strict INS/DEL trained-minus-random AP was 0.005295 (\CI 0.002787--0.010515), but one-hop was 0.000419 ($-0.002326$ to 0.005154). Strict cCRE favored the random encoder by 0.000759 (trained-minus-random CI $-0.001515$ to $-0.000123$); one-hop was inconclusive. All four contrasts are retained in \cref{tab:s-hr}. The controls are complete but exploratory on previously inspected folds, and no AP contrast passes the reported exact-test/BH correction. $H$ accesses the full graph rather than the encoder's matched window, so its comparison is a practical baseline rather than a pure architectural ablation.
-
-\input{completed_results_20260928}
-
-
-\FloatBarrier
-
 
 \section{Discussion}
 \label{sec:discussion}
 
-This study shows that native pangenome connectivity can be used directly for self-supervised representation learning and then reused independently of the pretraining objective. \method produces graph embeddings that are informative across structural-variant, regulatory-element, and allele-specific activity tasks, chromosomes excluded from training, and multiple graph resources. The task-dependent downstream results distinguish available graph-derived information from coordinates and the evaluated nucleotide representation, while random-encoder controls are needed to attribute increments to learned weights. They do not establish broad foundation-model superiority.
+\method frames human pangenome representation learning as a test of reusable information: encode native connectivity without biological labels, freeze the representations, and compare them with coordinate, sequence and structural controls on held-out chromosomes. Its methodological contribution lies in the oriented-segment formulation, coupled positional and graph processing, and controlled transfer design. Graph attention, gating and the optimization objective are established tools adapted to this setting. The present evidence supports complementarity for particular tasks, rather than universal superiority of a foundation model.
 
-For candidate regulatory-element prediction, Nucleotide Transformer embeddings remained the larger independent information source, while graph embeddings added a smaller but reproducible contribution. This pattern is consistent with regulatory prediction depending strongly on local sequence while retaining additional information related to how segments are organized across population graph paths. Class-stratified ENCODE analyses show a larger contribution for CTCF-only elements than for promoter-like elements, but completed EN-TEx P0/P1 transfer is inconclusive. Regulatory information transfer is therefore task dependent, not uniformly positive.
+The strongest original gain occurs in classification of known insertions and deletions. Extending to three event types retains a macro increment after measured length and handcrafted graph controls, while adjusted inversion effects remain uncertain. This distinction matters: event-type prediction is not breakpoint discovery, genotyping or functional-effect prediction. The insertion pseudo-end convention and ascertained callset also limit mechanistic interpretation. Smaller gains in high-complexity SV regions contradict the proposed concentration of benefit there; the differing cCRE pattern cannot be generalized to SVs.
 
-The structural-variant insertion/deletion task showed a different balance. Adding graph embeddings to coordinates and sequence improved \auprc by 0.0342--0.0401, whereas adding the evaluated segment-level sequence embeddings after coordinates and graph information produced no measurable gain. The result shows that the evaluated graph-derived features predict known INS/DEL labels beyond the segment-level sequence features used here. The endpoint and insertion pseudo-end convention do not establish a biological breakpoint mechanism. The SV complexity analysis also contradicts the proposed concentration of gain in high-complexity windows: positive gains are smaller there than in low-complexity windows. This conclusion remains scoped to insertion/deletion classification: sequence is central to structural-variant formation and interpretation, and breakpoint-centered or longer-range sequence models may recover information omitted by the current end-sampling procedure.
+Regulatory results provide a complementary boundary. Sequence remains the larger independent source for cCRE classification, and most EN-TEx transfer tasks are null or inconclusive. Some allele-specific assays show modest pointwise increments, but their shared segment vectors describe locus susceptibility rather than donor-specific allelic activity. Exposure matching addresses measured opportunities to call AS without eliminating all ascertainment. These results motivate narrower biological hypotheses instead of selecting favorable assays to imply broad regulatory improvement.
 
-The generalization experiments distinguish reuse from memorization of the training chromosomes. Strict-context transfer varied markedly by graph direction and release, whereas immediate-neighborhood context produced much higher transfer in most comparisons. Pangenome resources differ in coordinate backbone, cohort composition, segment definition, and graph-construction procedure, all of which can change exact local adjacencies. The higher one-hop transfer is therefore consistent with some neighborhood organization being more portable than exact edges, but strict and one-hop contexts are not exposure matched and should not be interpreted as a controlled causal test of context radius.
+Attribution is the central methodological limitation. A shortcut-sensitive reconstruction objective can reward readily available degree information, and random message passing captures much of the downstream graph gain. The completed controls identify a strict INS/DEL learned-weight increment with a positive pointwise interval but no consistent advantage across contexts and tasks. The separate masked-feature candidate addresses a different target and passes development controls; independent chromosome and external comparisons are still needed. Neither greater capacity nor improved intrinsic reconstruction alone establishes better biological reuse.
 
-The degree-based controls define an important boundary of the current pretraining objective. Under strict context, simple degree statistics outperform \method, demonstrating that high hidden-edge reconstruction performance alone does not establish a higher-order representation. The current one-hop comparison reverses this pattern, and replay of the visible-graph degree calculation reproduced the archived scores exactly. A subsequent audit of the canonical HPRC candidate construction found that single-query masking leaves a visible endpoint-degree deficit for positive edges; this is a benchmark shortcut that limits mechanistic interpretation of the intrinsic reconstruction score. It does not invalidate the frozen downstream evaluations, whose biological labels and probes are separate, but it motivates a protocol-matched re-pairing objective and independent handcrafted/random controls. The completed controls support a strict INS/DEL learned-weight increment but no consistent cCRE or one-hop INS/DEL advantage. The new $E$ development result motivates the fixed chromosome comparison; it does not resolve generalization or superiority over original v1. Model capacity was also non-monotonic in the diagnostic sweep, and several architectural components did not show large independent gains. These observations suggest that representation choice and task construction are at least as important as simply increasing model size.
+The evaluation also leaves representation limits. It withholds chromosomes rather than donors; shared donors and aggregate graph construction preclude unseen-individual claims. The evaluated nucleotide representation samples long segments at their ends, and stronger or variant-centered sequence baselines could alter conditional gains. Unconnected pairs are computational negatives, not verified haplotype-specific absences. The current SV graph lacks paths, so personal regulatory, methylation and genotype effects require verified path correspondence or a separately scoped model. QTL/GWAS regional-overlap analyses likewise do not establish enrichment, fine-mapping or causality.
 
-Several limitations define the scope of the present evidence. The evaluation withholds chromosomes rather than donors; at least five donors occur in both HPRC and HGSVC, so cross-resource analyses do not establish generalization to unseen individuals. Unconnected training pairs are computationally sampled from aggregate graphs and are not verified as absent from a specific haplotype. The cCRE labels are population-aggregated annotations mapped to graph segments rather than haplotype-specific regulatory measurements. The historical SV analysis evaluates insertion/deletion classification; the separate three-class extension includes INV but retains uncertain adjusted inversion gains. Neither analysis tests discovery, mechanism, pathogenicity or clinical effect. The evaluated sequence representation truncates long segments using end sampling, and the exploratory external-signal analyses did not show positive matched enrichment for the tested QTL or GWAS signal sets. These analyses therefore do not support claims of colocalization, fine-mapping, causal mechanism, or phenotype prediction.
+A productive next step is to evaluate richer sequence--graph learning and explicit haplotype context under the same controls, with development-separated graph resources and biological outcomes. Cross-resource harmonization must distinguish population variation from graph-construction differences. The retained negative external and measured-quality results define where present representations have not demonstrated utility. Together, the method and its audits offer a reproducible basis for testing what population graph structure contributes, and what must still be learned before broader genomic reuse can be claimed.
 
-Recent work showing that genome representation can alter functional-genomics measurements provides a broader biological motivation for these findings \citep{maciasvelasco2026benchmarking}. A population graph can expose alternative sequence and haplotype organization that is difficult to represent against one linear reference, while sequence foundation models remain powerful descriptions of local molecular content. The present results therefore motivate a future model in which graph connectivity, sequence content, and explicit donor haplotype paths are integrated rather than treated as interchangeable information sources.
-
-The complete 120-run window-scaling experiment shows increasing held-out reconstruction as more training windows are available (\cref{fig:s-scaling}). This is a data-and-compute learning curve: the architecture and epoch limit are fixed, but optimizer updates are not held constant. The completed 360-run frozen biological evaluation is task dependent: the 100\%-minus-12.5\% C+S+T AP change was positive under strict SV transfer (+0.00348, 95\% CI 0.00309--0.00385) but negative under one-hop SV transfer (-0.00151, 95\% CI -0.00283-- -0.00066); cCRE improved in one-hop context (+0.00090, 0.00037--0.00146) but was inconclusive in strict context (-0.00032, -0.00066--0.00003), and CTCF intervals included zero. Thus intrinsic reconstruction scaling does not imply universal biological transfer. The HG008 prospective refit campaign is now complete, with wide intervals spanning zero; its six historical replay failures remain distinct. TraitGym and COSIGT also retain negative or inconclusive topology findings. These results limit extrapolation from the positive historical INS/DEL task. The canonical SV graph has no haplotype paths, and path-rich full-resolution nodes require a verified correspondence or a separately scoped model. Future work should prioritize donor-held-out path-bearing graphs, haplotype-specific objectives, and graph-construction-invariant representation learning. Joint sequence--graph pretraining could test whether the complementary cCRE signal and larger SV graph contribution persist when both modalities are learned together. Broader reuse across regulatory state, methylation, molecular QTL, and variant-effect tasks would then test whether a common population-aware representation can support diverse human-genomics analyses.
-
-
-% Long, I feel that the first (or the first two) subsessions should be dedicated to novel components of PangenomeFM (and highlight those key components)
 \section{Methods}
 \label{sec:methods}
 
+\subsection{Oriented-segment representation and coupled coordinate--graph encoder}
+\label{sec:architecture}
+
+The model operates on oriented segments and their native connections, rather than a linearized nucleotide input (\cref{fig:method}a,b). A segment $s$ has two handles, $2s+o$ for orientation $o\in\{0,1\}$. Reversing a handle toggles its orientation; the reverse-complement-equivalent relation to $(u,v)$ is $(v\mathbin{\mathrm{xor}}1,u\mathbin{\mathrm{xor}}1)$. The later canonical implementation uses this equivalence for candidate identity and masking. Historical training used exact directed rows, as detailed below; neither formulation makes the ordered pair scorer inherently reverse-complement equivariant.
+
+Original v1 input $x_v$ has seven columns: genomic offset SO, segment length LN, rGFA SR annotation, GRCh38 membership, oriented degree, orientation and component index. SO, LN and degree are transformed by $\log(1+|x|)$ and divided by the slice maximum; SR and component index are min--max scaled, with constant columns set to zero. Membership and orientation remain binary. The structural columns are computed before query masking in original v1, a limitation addressed explicitly in the shortcut audit. No nucleotide embeddings or biological labels enter this encoder.
+
+A shared input projection produces $h_v^{(0)}$. At layer $\ell$, coordinate attention $A_\ell$ and incoming-edge graph attention $G_\ell$ operate on the same evolving state. Thus ``coordinate'' specifies the attention neighborhood, not a branch restricted to coordinate-only inputs. With concatenation $\Vert$ and elementwise product $\odot$, the update is
+\begin{align}
+a_v^{(\ell)}&=A_\ell(h^{(\ell)},\mathrm{SO},o)_v, &
+b_v^{(\ell)}&=G_\ell(h^{(\ell)},E_{\mathrm{visible}})_v,\\
+g_v^{(\ell)}&=\sigma\!\left(W_\ell[a_v^{(\ell)}\Vert b_v^{(\ell)}]+c_\ell\right),\\
+h_v^{(\ell+1)}&=\operatorname{LN}_\ell\!\left(h_v^{(\ell)}+g_v^{(\ell)}\odot a_v^{(\ell)}+(1-g_v^{(\ell)})\odot b_v^{(\ell)}\right).
+\end{align}
+The gate is learned per layer and feature; it is not only a final mixture of two independent embeddings. The principal backbone uses dimension 48, two layers and four heads. Graph attention follows the stored edge direction \citep{velickovic2018gat}; edge attributes were disabled in the principal configuration. Coordinate attention uses a window of SO-sorted node ranks, $k=\operatorname{clip}(\operatorname{int}[32(1+4b)],32,256)$, where $b$ is the slice branching fraction; this is not a base-pair radius. It combines three-scale rotary position encoding with orientation information \citep{su2021roformer}. The original sparse implementation normalizes attention over edges arriving at each destination and aggregates source values. We retain these original semantics when describing $T$; later bidirectional or chunked implementations are separate configurations. This combination adapts established attention and gating operations to native pangenome segments.
+
+\subsection{Query masking, connection scoring and optimization}
+\label{sec:objective}
+
+The self-supervised target is observed connectivity within non-overlapping 5-Mb graph regions (\cref{fig:method}a,c). Positive candidates are observed adjacencies. Negative pairs are sampled within the same region, using the canonical benchmark's genomic-distance and unmasked-degree matching. They are not experimentally verified haplotype absences. Later canonical audits excluded conflicting reverse-complement-equivalent candidates; these post hoc exclusions do not retroactively change historical pretraining.
+
+Historical v1 removed exact directed positive query rows for each candidate minibatch, together with candidate-level validation/test positives. Other training connections remained context. The later canonical implementation also removes reverse-complement-equivalent traversals. The historical audit found no duplicate reciprocal link rows in the released main graphs, but the old dense prediction IDs cannot prove absence of reverse-equivalent candidate leakage. We retain this uncertainty instead of assigning the later repair to the original checkpoints. Masking uses one encoder pass per query set, not per pair or per entire set of training edges. Original degree/component columns remain unmasked; positive and matched negative candidates can differ in visible-degree deficit. Distance matching therefore does not prevent the audited shortcut.
+
+The ordered scorer consumes $[h_u\Vert h_v]$ through widths $2d\rightarrow2d\rightarrow d\rightarrow1$, layer normalization, ELU and dropout. Let $p=\sigma(s_{uv})$, $p_t=yp+(1-y)(1-p)$, $\alpha_t=0.25y+0.75(1-y)$, and $w_t=y\,n_-/\max(n_+,1)+(1-y)$ for candidate-batch counts $n_+,n_-$. The adopted binary focal objective \citep{lin2017focal} is
+\begin{equation}
+\mathcal{L}_{\mathrm{edge}}=\operatorname{mean}_{(u,v)}[-\alpha_t w_t(1-p_t)^2\log p_t].
+\end{equation}
+Probabilities are clipped to $[10^{-7},1-10^{-7}]$. This pretraining scorer differs from the downstream SV pair features.
+
+The principal launcher uses AdamW \citep{loshchilov2019adamw}, learning rate $5\times10^{-4}$, weight decay $10^{-4}$, dropout 0.1, DropEdge 0.1, 512 candidates per minibatch, four-batch gradient accumulation and gradient clipping at norm 1. Training is limited to 100 epochs with patience 20 and a validation macro-AUROC improvement tolerance of $10^{-4}$. The scheduler applies a five-step linear ramp followed by cosine decay and is stepped after each epoch: the first epoch uses the initial learning rate, followed by the recorded ramp. We state this ordering to reproduce the implemented schedule rather than implying a conventional warmup from the first update. These loss and optimizer choices are adopted techniques, not claimed methodological inventions.
+
+\subsection{Frozen segment pooling and conditional information comparisons}
+\label{sec:frozen-reuse}
+
+After pretraining, eligible unmasked windows are encoded with fixed parameters (\cref{fig:method}d). The original segment cache averages embeddings over its oriented-handle occurrences across eligible windows. Biological examples join these vectors to the same interval/segment mapping used by their baseline features. Neither biological labels nor target-resource evaluation update the graph encoder or the independently pretrained Nucleotide Transformer.
+
+Let $C$ denote the inherited coordinate/structural baseline, $K$ k-mer composition, $S$ frozen Nucleotide Transformer features and $T$ the original fused topology-pretrained features. Their definitions and joins are fixed across paired probes. We measure
+\begin{align}
+\Delta_{T\mid C,S}&=\operatorname{AUPRC}(C+S+T)-\operatorname{AUPRC}(C+S),\\
+\Delta_{S\mid C,T}&=\operatorname{AUPRC}(C+S+T)-\operatorname{AUPRC}(C+T).
+\end{align}
+\label{sec:primary}
+The first contrast tests additional graph-derived information, not a pretraining benefit by itself. The $H$ and matched random-encoder controls below test learned-weight attribution. $E$ denotes a separate sequence-conditioned development representation and is never substituted for historical $T$ results.
+
 \subsection{Pangenome resources and graph preparation}
 
-% Long, specify how many graph genomes, etc.
+
 We analyzed graph resources derived from HPRC and HGSVC \citep{hprc2023draft,hgsvc2021,hgsvc32025}. We generated graph tables from GFA and GBZ resources using the variation graph toolchain \citep{garrison2018variation,siren2022gbz}. For each oriented segment, we recorded length, genomic coordinate when available, and connections to other oriented segments. HPRC-centered analyses used GRCh38-style chromosome names.
 
 The processed HPRC R2 graph contains 751,237 segments and 1,097,658 links. The 303,425 downstream sequence-cache rows and 479,477 benchmark sequence-cache rows are distinct coverage denominators, not whole-graph segment counts. Full-coverage analyses used non-overlapping 5-Mb graph regions. Each candidate pair was represented by segment orientation, genomic separation, endpoint node degree, and observed connection status.
 
-\subsection{Graph representation and masked connection pretraining}
-
-A pangenome graph represents DNA as oriented segments connected along possible haplotype traversals. Genomic coordinates describe where a segment maps along a chromosome, nucleotide sequence describes local molecular content, and graph connectivity describes how segments are organized among alternative and shared paths across the population. The original v1 graph-pretraining encoder uses genomic-coordinate features and native graph connectivity; it does not receive NT sequence embeddings. The separate sequence-conditioned $E$ candidate is specified below.
-
-We formulate graph pretraining as reconstruction of a hidden connection. For each connected pair $(u,v)$, the queried connection and its reverse-complement-equivalent relation are removed before message passing. The model then distinguishes the connected pair from an unconnected pair sampled from the same genomic region. Negatives are matched to positives by genomic separation to reduce distance discrimination; this does not eliminate the later-audited masking-induced endpoint-degree cue.
-
-The principal training unit is a non-overlapping 5-Mb graph region containing oriented DNA segments, graph connections, segment lengths, and genomic coordinates where available. Connected examples correspond to observed graph adjacencies. Unconnected pairs are sampled from the same region and matched to connected pairs by genomic separation. Relations equivalent under reversal of both segment orientations are treated as the same biological traversal.
-
-For every tested pair $(u,v)$, we remove the corresponding connection and its reverse-complement equivalent before graph encoding. A small number of orientation-equivalent pairs appeared once as connected and once as unconnected in the candidate data; we excluded both entries before biological analyses.
-
-\subsection{Coordinate and graph encoders}
-
-The coordinate branch encodes genomic offset, relative position, segment length, reference-path relationship, and orientation, producing $\mathbf{h}^{\mathrm{coord}}_{v}$. The graph branch applies graph attention to the remaining connections around each segment \citep{velickovic2018gat}, producing $\mathbf{h}^{\mathrm{graph}}_{v}$. A learned gate combines the two representations,
-\begin{equation}
-\mathbf{h}_{v}=\mathbf{g}_{v}\odot\mathbf{h}^{\mathrm{coord}}_{v}+(1-\mathbf{g}_{v})\odot\mathbf{h}^{\mathrm{graph}}_{v},
-\end{equation}
-where $\mathbf{g}_v=\sigma(W[\mathbf{h}^{\mathrm{coord}}_v\Vert\mathbf{h}^{\mathrm{graph}}_v]+b)$. The graph representation includes a learned coordinate branch; $T$ therefore denotes the fused topology-pretrained representation rather than an embedding computed from adjacency alone.
-
-The connection scorer is an MLP on $[\mathbf{h}_u\Vert\mathbf{h}_v]$, with widths $2d\rightarrow2d\rightarrow d\rightarrow1$, layer normalization, ELU activations and dropout. Let $p=\sigma(s_{uv})$, $p_t=yp+(1-y)(1-p)$, $\alpha_t=0.25y+0.75(1-y)$, and $w_t=y(n_-/n_+)+(1-y)$, where $n_+$ and $n_-$ are candidate-batch counts. The implemented focal loss is
-\begin{equation}
-\mathcal{L}_{\mathrm{edge}}=\operatorname{mean}_{(u,v)}[-\alpha_t w_t(1-p_t)^2\log p_t].
-\end{equation}
-Probabilities are clipped to $[10^{-7},1-10^{-7}]$ for numerical stability. This scorer differs from the ordered pair features used by the downstream SV probe.
-
-The principal model uses a hidden dimension of 48, four attention heads, and two graph layers. Training runs for at most 100 epochs with early stopping after 20 epochs without validation improvement.
+The separate path-resource audit identifies 227 HPRC donors and 454 phased haplotypes, and 61 HGSVC donors and 122 phased haplotypes (\cref{tab:s-path}). These counts describe the audited path-bearing resources, not a newly reconstructed donor provenance for the SV-resolution training graph. The fixed graph/checkpoint versions are unchanged. The SV graph itself has no donor paths; full-resolution path node IDs cannot be substituted for its segments without a verified correspondence.
 
 \subsection{Strict and one-hop graph context}
 
-We evaluate two graph contexts. In the strict setting, message passing is restricted to the native 5-Mb region after the query edge has been removed. In the one-hop setting, the encoder additionally receives segments directly connected to the region. The settings use the same genomic-region partition and model seeds, but expansion can change the eligible candidate set. Their candidate counts are not assumed identical. Because one-hop expansion exposes more nodes and connections, strict and one-hop are treated as separate prediction contexts rather than exposure-matched estimates of a causal neighborhood-radius effect.
 
-% We may need to talk about loss functions and optimization in PangenomFM
-
-
-
-
-\subsection{Frozen representation generation}
-
-After pretraining, \method parameters remain fixed while graph embeddings are generated for segments required by transfer and downstream analyses. Biological classifiers receive selected combinations of coordinates, k-mer composition, Nucleotide Transformer sequence embeddings, and \method graph embeddings. Downstream labels never update either pretrained encoder, so changes in prediction performance measure the information available in the fixed representations.
-
-
-
+We evaluate two graph contexts. In the strict setting, message passing is restricted to the native 5-Mb region after queried directed rows have been removed. In the one-hop setting, the encoder additionally receives segments directly connected to the region. The settings use the same genomic-region partition and archived run labels, but expansion can change the eligible candidate set. Their candidate counts are not assumed identical. Because one-hop expansion exposes more nodes and connections, strict and one-hop are treated as separate prediction contexts rather than exposure-matched estimates of a causal neighborhood-radius effect.
 
 \subsection{Chromosome-held-out evaluation}
 
-We partitioned the primary chromosomes into five rotating folds. Fold A tested chr1, chr6, chr11, chr16, and chr21; fold B tested chr2, chr7, chr12, chr17, and chr22; fold C tested chr3, chr8, chr13, chr18, and chrX; fold D tested chr4, chr9, chr14, chr19, and chrY; and fold E tested chr5, chr10, chr15, and chr20. The next fold in the rotation served as validation, with fold E validated on fold A; all remaining chromosomes were used for training. We repeated each fold with random seeds 42, 314159, and 20260806.
+We partitioned the primary chromosomes into five rotating folds. Fold A tested chr1, chr6, chr11, chr16, and chr21; fold B tested chr2, chr7, chr12, chr17, and chr22; fold C tested chr3, chr8, chr13, chr18, and chrX; fold D tested chr4, chr9, chr14, chr19, and chrY; and fold E tested chr5, chr10, chr15, and chr20. The next fold in the rotation served as validation, with fold E validated on fold A; all remaining chromosomes were used for training. Original v1 used three independent executions labeled 42, 314159 and 20260806. These labels controlled split/order generators but did not fully seed PyTorch initialization or DropEdge in the historical trainer. They identify archived executions rather than exactly reproducible initialization seeds. Later campaigns use the repaired global seeding implementation; original checkpoint results are not retroactively relabeled as deterministic reruns.
 
 Chromosome holdout prevents the same local genomic region from appearing in both training and evaluation. It is not a donor holdout. At least five donors (HG00733, HG02818, NA19036, NA19240, and HG002/NA24385) occur in both HPRC and HGSVC, so cross-resource analyses measure transfer between graph resources rather than donor-independent generalization.
 
@@ -494,7 +334,7 @@ Degrees were computed on each context's actual visible graph, including the expa
 Native 5-Mb complexity is an equally weighted mean of six robustly normalized measurements: log-transformed connection density, branching fraction, log maximum degree, log cycle-rank density, log segment density, and log segment-length interquartile range divided by median length. Except for branching fraction, transformations use $\log(1+x)$. Components are centered by their median and scaled by $1.4826$ times median absolute deviation; zero-scale components contribute zero, and standardized values are clipped to $[-5,5]$. The fixed score boundaries are $-0.155641$ and $0.434725$, giving 203 low-, 202 medium-, and 203 high-complexity windows. Thresholds were defined without model outcomes and reused across contexts. SV strata use the maximum endpoint category, with a start-only sensitivity; single-locus tasks use their mapped coordinate.
 
 Component analyses removed the coordinate branch, graph branch, adaptive genomic window, fusion gate, or positional encoding. A separate capacity analysis compared hidden-dimension/graph-layer combinations of 24/1, 96/4, and 192/6 under the chromosome-held-out design.
-The principal 48/2 model was recovered from the archived main matrix for a matched capacity comparison with identical fold/seed cells and held-out candidate counts. Its fold-pooled AUPRC is 0.9423; the headline HPRC value 0.9501 instead averages window-level AUPRC. Because AP is nonlinear, these two summaries are not interchangeable. Larger-capacity diagnostic results do not establish a monotonic scaling law.
+The principal 48/2 model was recovered from the archived main matrix for a matched capacity comparison with identical fold/execution cells and held-out candidate counts. Its fold-pooled AUPRC is 0.9423; the headline HPRC value 0.9501 instead averages window-level AUPRC. Because AP is nonlinear, these two summaries are not interchangeable. Larger-capacity diagnostic results do not establish a monotonic scaling law.
 
 \subsection{Sequence embeddings}
 
@@ -502,10 +342,6 @@ We generated sequence embeddings with the Nucleotide Transformer v2 50M multi-sp
 
 For sequences within the model input limit, we averaged the final hidden state over non-special, non-padding tokens (maximum 1,000 tokens). For longer segments, we sampled equal amounts of sequence from the beginning and end, up to 6,000 bases in total, with an N separator before applying the pinned tokenizer's maximum-length rule. This procedure affected 26.3\% of required segments. Four processing batches were merged after verifying a common embedding dimension, finite values, unique segment identifiers, a common archived model version, and complete task coverage.
 
-% Tomoya and Long, These results should be included as a separate subsection in Results, including detailed interpretations of these results,
-% RECONCILED IN THIS REVISION: the scientifically relevant coverage/truncation result
-% is summarized in the first biological Results section; detailed QC remains here
-% and in Supplementary so it does not consume one of the <=5 headline Results sections.
 
 \subsection{Cis-regulatory element classification}
 
@@ -532,19 +368,6 @@ All strata reuse archived test predictions with identical feature universes. Nat
 
 Phased carrier assignments were joined by variant ID and coordinate from the original 65-donor VCF. Missing alleles remain unknown. Verified sample aliases identify HG002 and NA24385 as the same donor \citep{ncbi_hg002}; the five overlapping donors are marked separately. Donor and haplotype scores stratify the existing pooled, chromosome-held-out probes. They do not constitute donor-held-out fitting or personal graph embeddings. Because donors share variants, uncertainty is summarized over chromosome folds and seeds rather than independent donor resampling.
 
-\subsection{Primary information-source comparisons}
-\label{sec:primary}
-
-Let $C$ denote genomic coordinates, $S$ fixed Nucleotide Transformer sequence embeddings, and $T$ fixed \method graph embeddings. We quantified the contribution of graph structure beyond coordinates and sequence as
-\begin{equation}
-\Delta_{T\mid C,S}=\mathrm{AUPRC}(C+S+T)-\mathrm{AUPRC}(C+S).
-\end{equation}
-We quantified the reciprocal contribution of sequence beyond coordinates and graph structure as
-\begin{equation}
-\Delta_{S\mid C,T}=\mathrm{AUPRC}(C+S+T)-\mathrm{AUPRC}(C+T).
-\end{equation}
-Secondary contrasts compared sequence embeddings with k-mer composition and graph embeddings with coordinates plus k-mer composition.
-
 \input{completed_methods_20260928}
 
 \subsection{Statistical analysis}
@@ -569,16 +392,15 @@ For each principal analysis, we recorded model settings, trained-model version, 
 
 
 
-% Long, please prepare a github under shilab repo for your code, should we share the pretrained model there or huggingface etc.?
 \section*{Data and code availability}
 The pangenome graph resources analyzed in this study are publicly available from the Human Pangenome Reference Consortium and the Human Genome Structural Variation Consortium. \ccre annotations were obtained from the ENCODE registry. Source code, compact result tables, experiment commands and integrity records are maintained at \url{https://github.com/longnguyentan/PangenomeFM}. Checkpoints and large derived graph tables remain on the project server; a public archival DOI for these artifacts is pending.
 
 \section*{Acknowledgements}
-Computational analyses were performed on the Temple University lab server. Named acknowledgements remain subject to author confirmation.
+Computational analyses were performed on the Temple University lab server. We thank participants in the T2T discussion for feedback on this work. Named acknowledgements remain subject to author confirmation.
 
 % acknowledge NHGRI U24 and NIGMS R01 for funding
 \section*{Funding}
-Funding agencies and grant numbers are pending author confirmation in this working draft.
+The funding statement awaits confirmation of NHGRI U24 and NIGMS R01 award numbers, recipients and required attribution.
 
 \section*{Author contributions}
 The CRediT contribution statement is pending author confirmation in this working draft.
@@ -590,10 +412,11 @@ The CRediT contribution statement is pending author confirmation in this working
 \bibliography{references}
 \endgroup
 
+
 \clearpage
 \appendix
 
-% Long, Supplementary information should read like a manuscript, including its own sessions, text, figures, tables, and references
+
 \section*{Supplementary Information}
 \addcontentsline{toc}{section}{Supplementary Information}
 
@@ -602,6 +425,29 @@ The CRediT contribution statement is pending author confirmation in this working
 \setcounter{figure}{0}
 \renewcommand{\thefigure}{S\arabic{figure}}
 
+
+\noindent\textbf{Scope.} This supplement provides the data definitions, fixed chromosome partitions, full contrasts, sensitivity analyses and development boundaries supporting the main manuscript. Original topology-pretrained $T$ results remain separate from sequence-conditioned $E$ development. Pointwise intervals, exploratory follow-ups and incomplete comparisons are identified in their respective sections. The analyzed resources and annotations are described in the original HPRC, HGSVC, ENCODE and EN-TEx reports \citepS{supp__hprc2023draft,supp__hgsvc32025,supp__encode2020registry,supp__rozowsky2023entex}; methodological extensions use frozen nucleotide representations and the stated masked-feature adaptation \citepS{supp__dalla2025nucleotide,supp__hou2022graphmae}.
+
+\subsection{Principal frozen-feature comparisons}
+
+The biological figures in the main text are accompanied here by their original numerical summary. The target labeled SV is known insertion versus deletion; it is not breakpoint detection.
+
+\begin{table}[H]
+\centering
+\caption{\textbf{Graph-structure contribution to downstream prediction.} Absolute \auprc values are means across 15 chromosome-fold/execution combinations within each graph context. Gains are paired differences from adding frozen \method graph embeddings to genomic coordinates and frozen Nucleotide Transformer sequence embeddings.}
+\label{tab:downstream}
+\small
+\begin{tabular}{@{}llccc@{}}
+\toprule
+Task & Context & $C+S$ & $C+S+T$ & Gain $\Delta_{T\mid C,S}$ (\CI) \\
+\midrule
+\ccre & Strict & 0.9185 & 0.9225 & 0.0040 (0.0029, 0.0048) \\
+\ccre & One-hop & 0.9185 & 0.9219 & 0.0034 (0.0017, 0.0048) \\
+SV & Strict & 0.8721 & 0.9063 & 0.0342 (0.0324, 0.0362) \\
+SV & One-hop & 0.8721 & 0.9122 & 0.0401 (0.0361, 0.0440) \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Reconstruction and transfer results}
 
@@ -659,7 +505,11 @@ E & chr5, chr10, chr15, chr20 & chr1, chr6, chr11, chr16, chr21 \\
 \end{tabularx}
 \end{table}
 
-\subsection{Degree-based shortcuts, component controls, and capacity}
+\subsection{Separating neighborhood information from simple connectivity cues}
+
+In the original one-hop benchmark, the relative performance reversed. Compared with preferential attachment, \method had mean \auprc differences of $-0.0370$, $-0.0320$, and $-0.0420$ in low-, medium-, and high-complexity regions under strict context, with all intervals excluding zero. Under one-hop context, the corresponding differences were $+0.0707$, $+0.0714$, and $+0.0679$. Degree-sum comparisons showed the same qualitative reversal. The similarity of the observed differences across complexity strata does not support a monotonic increase in \method advantage with graph complexity; instead, the current results point to graph context as the stronger factor.
+
+
 
 The strict-context baselines demonstrate that hidden-edge prediction can be highly predictable from endpoint degree alone. The completed visible-graph audit reproduced both contexts exactly, while the contrast still does not by itself establish a biological mechanism. Component controls show that graph information contributes substantially, whereas several fusion/position components do not provide large independent gains in the current runs. Capacity is non-monotonic in the existing diagnostic sweep.
 
@@ -772,6 +622,7 @@ Length & Strict gain & One-hop gain & Interpretation \\
 \end{table}
 
 \subsection{Coverage of sequence embeddings}
+\label{sec:s-coverage}
 
 We generated 512-dimensional Nucleotide Transformer embeddings for 303,425 unique graph segments, covering every segment required for the \ccre and SV tasks. All four processing batches used the same archived model, and quality-control checks confirmed finite values and unique segment identifiers. For segments exceeding the model input limit, we sampled equal sequence from the beginning and end, up to 6,000 bases before applying the standard maximum-length rule. This procedure affected 26.3\% of required segments and motivates the scoped interpretation of the reciprocal sequence contribution in the main text.
 
@@ -824,6 +675,21 @@ GWAS Parkinson & 45 & 0.1333 & 0.2178 & $-0.0844$ ($-0.1867$, 0.0223) & 0.942 \\
 None of the evaluated signal sets showed positive matched enrichment. The all-trait GWAS set overlapped every prioritized and control set, yielding a saturated comparison. These exploratory analyses quantify broad regional overlap only and provide no evidence for colocalization, fine-mapping, causal association, or phenotype prediction.
 
 
+\subsection{Graph complexity and donor-stratified SV effects}
+
+
+The new complexity analysis reused all 30 archived probe runs. Strict-context topology gains were 0.0419 in low-, 0.0380 in medium-, and 0.0302 in high-complexity windows; one-hop gains were 0.0499, 0.0474 and 0.0336, respectively (\cref{fig:sv-complexity}). The high-minus-low interaction was $-0.0117$ (\CI $-0.0230$ to $-0.0019$) strict and $-0.0162$ ($-0.0267$ to $-0.0092$) one-hop. AUROC and prevalence-normalized AP showed the same ordering. Thus these data do not support the hypothesis that the representation helps more strongly in high-complexity SV regions. Exact five-fold sign-flip tests gave interaction $p=0.125$ and $p=0.0625$; the pointwise bootstrap intervals should not be read as multiplicity-adjusted mechanistic evidence.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{figures/sv_complexity.pdf}
+\caption{\textbf{Topology improves insertion/deletion discrimination across complexity strata.} Paired gains in AUPRC, AUROC and prevalence-normalized AP use the same held-out examples for $C+S$ and $C+S+T$ within each stratum. Points and intervals summarize five folds and three seeds per context. Native graph complexity was fixed independently of model outcomes. Positive gains are smaller in the high-complexity group. Intervals are pointwise hierarchical bootstrap intervals, not multiplicity-adjusted intervals.}
+\label{fig:sv-complexity}
+\end{figure}
+
+Donor/haplotype stratification retained the original pooled probes. After excluding the five overlapping donors from the macro summary, the 60 remaining donors had mean gains of 0.0367 (\CI 0.0339--0.0395) strict and 0.0430 (0.0393--0.0470) one-hop. These results describe donor-stratified chromosome transfer; training still included labels from the same donors on other chromosomes. They therefore cannot establish donor-independent probe generalization (\cref{fig:s-donor}).
+
+
 \subsection{Completed EN-TEx transfer and donor stratification}
 
 \begin{table}[H]
@@ -863,6 +729,14 @@ Pooled held-out-fold AP increased from 0.9184 at 12.5\% to 0.9292, 0.9375 and 0.
 \label{fig:s-scaling}
 \end{figure}
 
+The complete 120-run window-scaling experiment shows increasing held-out reconstruction as more training windows are available (\cref{fig:s-scaling}). This is a data-and-compute learning curve: the architecture and epoch limit are fixed, but optimizer updates are not held constant. The completed 360-run frozen biological evaluation is task dependent: the 100\%-minus-12.5\% C+S+T AP change was positive under strict SV transfer (+0.00348, 95\% CI 0.00309--0.00385) but negative under one-hop SV transfer (-0.00151, 95\% CI -0.00283-- -0.00066); cCRE improved in one-hop context (+0.00090, 0.00037--0.00146) but was inconclusive in strict context (-0.00032, -0.00066--0.00003), and CTCF intervals included zero. Thus intrinsic reconstruction scaling does not imply universal biological transfer.
+
 \input{completed_supplement_20260928}
 
+\FloatBarrier
+\begingroup
+\small
+\bibliographystyleS{unsrtnat}
+\bibliographyS{supplement_references}
+\endgroup
 \end{document}

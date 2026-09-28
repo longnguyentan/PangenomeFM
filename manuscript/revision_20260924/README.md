@@ -1,8 +1,10 @@
-# Working manuscript revision, evidence update 28 September 2026
+# Method-focused manuscript revision, 28 September 2026
 
 This is a scientific working revision of the supplied manuscript. Original
-attachment hashes are in `source_provenance.json`. Authors, affiliations, funding,
-acknowledgements and administrative statements are preserved.
+attachment hashes are in `source_provenance.json`; the latest LaTeX and three
+meeting-note identities are in `method_revision_provenance.json`. Authors and
+affiliations are preserved. The requested general T2T acknowledgement is added;
+exact grant, consortium, contribution and release details remain author-confirmed.
 
 ## Scientific scope
 
@@ -27,10 +29,20 @@ The original v1 cCRE and INS/DEL results remain identifiable. The update adds:
 - Exact-test resolution (minimum two-sided p = 0.0625 for five nonzero fold
   differences, 0.125 for four), pointwise intervals and multiplicity caveats.
 
-New results, methods and supplementary text are modular files named
-`completed_*_20260928.tex`. The original figures remain unchanged. All figure
-inputs are present; the captions identify the original-v1 architecture and scope.
-No new plot or measurement was invented.
+Completed results, methods and supplementary text remain modular files named
+`completed_*_20260928.tex`. The method-focused writing pass adds no measurements.
+Biological figures and generated numerical rows remain unchanged. Figures 1 and 2
+are rebuilt as PDF/SVG vectors from `build_method_figures.py`; their captions
+distinguish original directed masking from the later reciprocal-mask repair.
+
+The six-paragraph unheaded Introduction leads to five topical Results sections.
+Methods opens with representation/architecture, masking/loss/optimization and
+frozen pooling/conditional comparisons before resources. The named sequence
+coverage Results heading explains truncation. The supplement has its own narrative
+and reference list. See `../../docs/LATEX_COMMENT_RESPONSE_20260928.md` for all 118
+comment lines, and `../../docs/METHOD_FIRST_REVISION_20260928.md` for the meeting
+map, structural rationale and verification. Historical seeding and masking
+qualifications are now explicit, without changing original performance numbers.
 
 ## Evidence bundle and rebuild
 
@@ -44,6 +56,8 @@ From the repository root:
 
 ```bash
 /opt/anaconda3/bin/python manuscript/revision_20260924/build_completed_evidence.py
+/opt/anaconda3/bin/python manuscript/revision_20260924/build_method_figures.py
+/opt/anaconda3/bin/python manuscript/revision_20260924/build_supplement_references.py
 cd manuscript/revision_20260924
 /Library/TeX/texbin/latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 ```
@@ -53,7 +67,15 @@ historical reconstruction/figure audit when NumPy, pandas, matplotlib and PyMuPD
 are available. They are separate from the completed-study table update and need
 not rerun to compile this source. `build_completed_evidence.py` requires only
 NumPy and pandas. The historical eight-row `entex_rows.tex` is preserved;
-`main.tex` now imports the complete `entex_completed_rows.tex`.
+`main.tex` imports the complete `entex_completed_rows.tex`.
+
+`references.bib` is the maintained bibliography. Supplementary citations use
+namespaced keys, and `build_supplement_references.py` derives their entries without
+changing any bibliographic field. This prevents duplicate natbib labels and PDF
+anchors while giving the supplement its own S-numbered references. `latexmk` runs
+BibTeX for both lists automatically. Do not hand-edit the generated
+`supplement_references.bib`. Figure builders require matplotlib; the bibliography
+builder uses only the Python standard library.
 
 This is a multi-file LaTeX project with a bibliography and external vector
 figures. It was compiled using the existing local TeX distribution; no software

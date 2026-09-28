@@ -1,0 +1,60 @@
+{
+  "date": "2026-09-28",
+  "base_commit": "ce17df4d44c2a95054d6e7566a08f776711be1f7",
+  "inputs": [
+    {
+      "path": "/Users/longnguyentan/.codex/attachments/ae853bc4-a996-4af1-a000-dbf9e8155c44/Pasted text.txt",
+      "sha256": "83c093f26c1b8e184da0b21ed9f8eef65c005550c166eee1bebebee047f72949",
+      "bytes": 65530,
+      "lines": 820,
+      "unescaped_percent_comment_lines": 118
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/1-1 meeting 11 Sep.txt",
+      "sha256": "9917e1b23c46ab254ebfbd017737512d47959329de1219fb33e8a579f6cc29ea",
+      "bytes": 15289,
+      "nonempty_paragraphs": 89
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Group meeting 15 Sep.txt",
+      "sha256": "00a0401db526bb518e820f98eb9fbc21748f4753d8d9e6f5e452d828f5e04ea1",
+      "bytes": 44945,
+      "nonempty_paragraphs": 265
+    },
+    {
+      "path": "/Users/longnguyentan/Downloads/Group meeting 22 Sep.txt",
+      "sha256": "0eac68996c1f928a7e624c221da3bc8f58af3ca743c35c0c435c7a3f8a00d026",
+      "bytes": 34364,
+      "nonempty_paragraphs": 197
+    }
+  ],
+  "word_counts_texcount": {
+    "abstract": 141,
+    "abstract_headers": 0,
+    "abstract_captions": 0,
+    "main_text": 2428,
+    "main_text_headers": 62,
+    "main_text_captions": 777
+  },
+  "main_display_items": {
+    "figures": 5,
+    "tables": 1
+  },
+  "scope": "Method-focused writing revision; completed evidence retained; no new experiments or partially completed test results imported.",
+  "output": {
+    "path": "output/pdf/PangenomeFM_working_revision_20260928.pdf",
+    "sha256": "38ae621e61bd0288a9e0fa30384a79ff245189b8ab3b4dee436de5b77093c466",
+    "pages": 31,
+    "latex_warnings": 0,
+    "visual_review": "All 31 pages rendered and visually inspected; method figure/equations inspected at page scale."
+  },
+  "validation": {
+    "source_comment_lines_covered": 118,
+    "inventory_entries": 38,
+    "missing_or_duplicate_comment_lines": 0,
+    "figure_and_table_labels": "unique and all references resolved",
+    "evidence_builder": "six completed-study tables verified; numerical row files unchanged",
+    "generators": "evidence/bibliography rebuild idempotent",
+    "python": "ruff and compile checks passed"
+  }
+}

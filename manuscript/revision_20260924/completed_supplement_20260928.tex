@@ -34,6 +34,15 @@ Conditioning features & Context & $\Delta_T$ & 95\% CI & $p$ & $q$ \\
 \end{tabular}
 \end{table}
 
+\subsection{Additional transfer tasks retain negative and inconclusive findings}
+
+The prospective HG008 refit experiment completed all 30 planned evaluations on 69 clonal INS/DEL variants without training on HG008. Its gains beyond $C+S$ were 0.032525 (\CI $-0.053371$ to 0.110254) strict and 0.064863 ($-0.066739$ to 0.212115) one-hop. Both are inconclusive; a single external genome does not establish generalization across people. Six failed attempts to reproduce historical probes remain distinct from these successful prospective refits.
+
+TraitGym locus-prior prediction \citepS{supp__benegas2025traitgym} retained all 14,780 matched variants in the five-fold adaptation. Neither the original frozen-feature study nor the published NT-2.5B allele-score sensitivity established a positive topology interval. A subsequent completed 60-run probe study improved Mendelian $C+S+V$ AP from 0.102110 with the fixed linear classifier to 0.171056 with fixed shallow boosting, a paired difference of 0.068946 (\CI 0.017423--0.145067), where $V$ denotes published allele scores. This is a classifier improvement on previously inspected data; every topology AP interval remained nonpositive or inconclusive. The shared segment representation is a locus prior, not an allele-specific embedding, and its end-sampled sequence input omits most tested variant bases.
+
+Prediction of measured COSIGT locus quality \citepS{supp__bolognini2026cosigt} retained all 265 loci across 30 runs and 900 evaluations. Every original topology mean-absolute-error interval spanned zero. On the primary mean quality-value fraction, the constant training-median reference had lower mean error than every fitted feature model. A validation-only fallback to this constant reduced observed error but did not establish a topology benefit. These data concern quality conditional on released, evaluable sample--locus pairs; they do not demonstrate improved genotype calling or general callability. Detailed contrasts and the original negative results are retained in \hyperref[sec:s-transfer-boundaries]{Supplementary Information, external and measured-outcome transfer boundaries}.
+
+
 \subsection{External and measured-outcome transfer boundaries}
 \label{sec:s-transfer-boundaries}
 
@@ -55,7 +64,14 @@ The original TraitGym NT input retained only 22.95\% of tested complex-trait bas
 
 For COSIGT, the training-median primary-target MAE was 0.046169, compared with $C+S$ 0.053351 and $C+S+T$ 0.052699 strict/0.053824 one-hop. The later validation-only fallback yielded $C+S+T$ MAE 0.047911/0.047193 and retained the original constant reference. The paired reductions from this fallback were inconclusive in both contexts. Predicting published locus quality is distinct from altering COSIGT calls, measuring per-variant genotype concordance or establishing an all-callable denominator.
 
-\subsection{All-seed masked-feature development controls}
+\subsection{Masked sequence-feature learning passes development controls; chromosome replication remains pending}
+\label{sec:masked-development}
+
+To test a different self-supervised target, we adapted GraphMAE-style masked-feature reconstruction \citepS{supp__hou2022graphmae} to the existing graph encoder. We denote this 48-dimensional, sequence-conditioned representation by $E$ to distinguish it from the original topology-pretrained $T$. Twelve pretraining runs and 24 frozen biological probes (96 feature evaluations) compared full and coordinate-only encoders with matched frozen random controls across three seeds. All development predictions replayed and all probes converged. On fold-A validation chromosomes, mean trained-minus-random AP after $C+S+H$ was 0.005609 for INS/DEL and 0.001836 for cCRE, positive at every seed. Full-trained minus coordinate-only-trained differences were also positive at every seed, averaging 0.006145 and 0.002372 (\cref{tab:s-development}). The coordinate-only ablation also removes model capacity, so this is not an isolated causal estimate of message passing.
+
+These three initializations share one development chromosome block and receive no chromosome confidence interval. The earlier junction candidate failed its full three-seed development gate and remains a failed comparison. The fixed 120-probe chromosome replication and separately prescribed 30-probe original-v1 reference comparison have no completed aggregate result at this evidence cutoff; no partial test metrics enter this manuscript. Fold B must be reported separately because its test chromosomes supplied fold-A development validation. The remaining folds also retain historical v1 label exposure. Development success therefore does not establish superiority to v1, independent external transfer, or a validated general-purpose foundation model.
+
+\subsubsection{All-seed masked-feature development controls}
 
 \begin{table}[H]
 \centering
