@@ -256,6 +256,7 @@ def main():
             all_probes_converged=True,
             scope=plan["scope"],
             n_verified_fitted_probe_artifacts=len(artifacts),
+            audited_per_run=fingerprint(args.out_dir / "audited_per_run.csv"),
             receipt=fingerprint(source_snapshot),
             live_status_path=str((args.root / "status.json").resolve()),
             implementation=fingerprint(Path(__file__)),

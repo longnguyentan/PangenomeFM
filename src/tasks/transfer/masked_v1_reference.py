@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+from io import BytesIO
 from itertools import product
 import json
 from pathlib import Path
@@ -16,6 +18,43 @@ from tasks.transfer.hr_control_report import audited_run
 from tasks.transfer.masked_junction_reference import compare as paired_compare
 from tasks.transfer.masked_replication import chromosome_estimate, validate_matrix, verify_saved_probes
 from tasks.transfer.traitgym import write_json
+
+
+def load_candidate_replication(root: Path) -> tuple[pd.DataFrame, dict]:
+    """Read only the candidate table whose exact bytes the completed audit binds.
+
+    Use the report-local file so an intact report remains portable. Hash and
+    parse the same bytes rather than reopening a file after its checksum check.
+    Older unbound reports must be regenerated from their completed raw runs.
+    """
+    audit_path = root / "audit.json"
+    audit_bytes = audit_path.read_bytes()
+    audit = json.loads(audit_bytes)
+    if (
+        audit.get("status") != "complete"
+        or audit.get("all_saved_predictions_replayed") is not True
+        or audit.get("all_probes_converged") is not True
+    ):
+        raise ValueError("Candidate replication is incomplete")
+    expected = audit.get("audited_per_run")
+    if not isinstance(expected, dict) or not expected.get("sha256"):
+        raise ValueError(
+            "Candidate table fingerprint is missing; regenerate the replication "
+            "report from completed source runs"
+        )
+    table_path = root / "audited_per_run.csv"
+    table_bytes = table_path.read_bytes()
+    table_sha256 = hashlib.sha256(table_bytes).hexdigest()
+    if table_sha256 != expected["sha256"] or len(table_bytes) != expected.get("bytes"):
+        raise ValueError("Candidate table differs from its completed replication audit")
+    frame = pd.read_csv(BytesIO(table_bytes), float_precision="round_trip")
+    sources = {
+        "candidate_audit": dict(path=str(audit_path.resolve()), bytes=len(audit_bytes),
+            sha256=hashlib.sha256(audit_bytes).hexdigest()),
+        "candidate_table": dict(path=str(table_path.resolve()), bytes=len(table_bytes),
+            sha256=table_sha256),
+    }
+    return frame, sources
 
 
 def compare_reference(
@@ -80,16 +119,7 @@ def main() -> None:
     plan = json.loads(args.config.read_text())
     rep = json.loads(Path(plan["replication_protocol"]).read_text())
     candidate_root = Path(plan["replication_root"] + "_analysis")
-    audit = json.loads((candidate_root / "audit.json").read_text())
-    if (
-        audit["status"] != "complete"
-        or not audit["all_saved_predictions_replayed"]
-        or not audit["all_probes_converged"]
-    ):
-        raise ValueError("Candidate replication is incomplete")
-    candidate = pd.read_csv(
-        candidate_root / "audited_per_run.csv", float_precision="round_trip"
-    )
+    candidate, candidate_sources = load_candidate_replication(candidate_root)
     records, artifacts = [], []
     for fold, seed in product(plan["folds"], plan["seeds"]):
         root = args.reference_root / fold / f"seed_{seed}"
@@ -136,7 +166,7 @@ def main() -> None:
             all_probes_converged=True,
             all_baselines_bitwise_identical=True,
             n_verified_saved_probes=len(artifacts),
-            candidate_audit=fingerprint(candidate_root / "audit.json"),
+            **candidate_sources,
             implementation=fingerprint(Path(__file__)),
             scope="Supplemental fixed old/new pipeline comparison; no architecture promotion",
         ),
