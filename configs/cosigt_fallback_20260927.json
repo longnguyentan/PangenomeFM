@@ -1,0 +1,60 @@
+{
+  "artifact_type": "analysis_plan",
+  "version": 1,
+  "task": "cosigt_validation_fallback",
+  "recorded_before_selection": true,
+  "objective": "Test a validation-only training-median fallback for every frozen ridge arm after the original small-locus study showed overfitting.",
+  "development_status": "Exploratory follow-up on previously inspected held-out loci; not independent confirmation or encoder selection.",
+  "source_status_sha256": "fc3af01977a37428bd0b2d599dcede1f3313a998de279ac549546077a494bcb7",
+  "source_plan_sha256": "2bf7c8b116713c61640db90cc69cfc60587bdd3be6ba059522e191767cf8991b",
+  "loci_sha256": "df8f268923ef3f7fadd56c9e4f34d79d59990c20952477900219f81a46d6d9d3",
+  "n_loci": 265,
+  "n_runs": 30,
+  "decision_rule": "For each target, feature set, fold, seed and context, choose native ridge predictions only if its saved validation MAE is strictly lower than the training-median validation MAE; exact ties choose the median. No refit, no test selection, no clipping.",
+  "inputs": "Unchanged completed 30-run native ce75c6f study. Replay every original prediction, identity and penalty selection before deriving outputs. Validate the median validation error directly from training/validation labels.",
+  "feature_sets": [
+    "train_median",
+    "coordinate",
+    "sequence_kmer",
+    "frozen_sequence_fm",
+    "frozen_pangenomefm",
+    "coordinate_plus_frozen_sequence_fm",
+    "coordinate_plus_frozen_pangenomefm",
+    "coordinate_plus_frozen_sequence_fm_plus_frozen_pangenomefm",
+    "coordinate_plus_frozen_sequence_fm_plus_topology_control",
+    "coordinate_plus_frozen_sequence_fm_plus_topology_control_plus_frozen_pangenomefm",
+    "locus_length",
+    "C_S_L",
+    "C_S_L_T",
+    "C_S_L_H",
+    "C_S_L_H_T"
+  ],
+  "targets": [
+    "mean_qv_fraction",
+    "mean_qv_pred"
+  ],
+  "primary_target": "mean_qv_fraction",
+  "metrics": [
+    "mae",
+    "rmse",
+    "r2"
+  ],
+  "primary_metric": "mae",
+  "comparisons": "All original four T contrasts plus the same contrasts after fallback, and fallback minus original and fallback minus training median for all 14 ridge arms. Error gains are baseline minus full.",
+  "n_bootstrap": 10000,
+  "statistics_seed": 20260927,
+  "inference": "Same hierarchical fold/seed bootstrap and exact fold sign-flip/BH within metric across all targets, contexts and contrasts. Spearman retained per run only: constant predictions make correlation undefined.",
+  "validity_gates": [
+    "All 265 loci, 30 runs and original 15 feature arms retained",
+    "Source checksums and original prediction replay pass",
+    "Selection uses validation MAE only",
+    "Save selected arm and unchanged test predictions; no model retraining"
+  ],
+  "limitations": [
+    "265 evaluable regions only",
+    "Validation can overfit too; fallback does not guarantee lower test error",
+    "Improved probe error does not establish better topology embeddings or genotype calling",
+    "No random-encoder comparison",
+    "All original outcome, donor overlap and graph-version limitations retained"
+  ]
+}
