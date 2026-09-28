@@ -7,10 +7,8 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy.sparse import coo_matrix
-from scipy.sparse.csgraph import connected_components
 
-from graph.slicing import build_global_index, map_links_to_segids
+from graph.component_context import build_component_index
 from tasks.entex.prepare import fingerprint
 from tasks.transfer.traitgym import write_json
 
@@ -18,19 +16,11 @@ PRIMARY = {f'chr{i}' for i in range(1, 23)} | {'chrX', 'chrY'}
 
 
 def component_context(segments: pd.DataFrame, links: pd.DataFrame, cached_ids: np.ndarray) -> pd.DataFrame:
-    index, nodes = build_global_index(segments)
-    if len(nodes) != len(segments):
-        raise ValueError('Canonical segment names must be unique')
+    index = build_component_index(segments, links)
+    nodes, ref = index.nodes, index.reference
+    source, target, labels = index.source, index.target, index.labels
     if len(np.unique(cached_ids)) != len(cached_ids) or (cached_ids < 0).any() or (cached_ids >= len(nodes)).any():
         raise ValueError('Cache IDs must be unique canonical rows')
-    ref = nodes.SN.astype(str).str.startswith('GRCh38#0#').to_numpy()
-    if not ref.any() or ref.all():
-        raise ValueError('Require both GRCh38 reference and alternative segments')
-    source, target = map_links_to_segids(links, index)
-    alt_edges = ~ref[source] & ~ref[target]
-    adjacency = coo_matrix((np.ones(alt_edges.sum(), dtype=np.uint8),
-        (source[alt_edges], target[alt_edges])), shape=(len(nodes), len(nodes))).tocsr()
-    _, labels = connected_components(adjacency, directed=False)
     present = np.zeros(len(nodes), dtype=bool)
     present[cached_ids] = True
     alts = np.flatnonzero(~ref)

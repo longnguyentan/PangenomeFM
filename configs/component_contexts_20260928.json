@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "purpose": "Complete attached alternative components on original intervals; label-free context and memory preparation only.",
+  "full_segments": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_segments.csv.gz",
+  "full_segments_sha256": "e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347",
+  "full_links": "/home/tuv43532/PangenomeFM/server_workspace/data/processed/hprc_r2_sv/full_links.csv.gz",
+  "full_links_sha256": "7435ac55187d7bca464b961621aada6f8d46e0f7ef900ff7d59d0daee89e2f3b",
+  "manifest": "/home/tuv43532/PangenomeFM/server_workspace/data/benchmarks/hprc_r2_pretrain_5mb_paired/manifest.csv",
+  "manifest_sha256": "3e729258f62a304e31d4c39d28c21477a6520504a510dd45fc8d2940894019dd",
+  "sequence_cache": "results/foundation_evidence_20260927/whole_graph_nt_completion_20260928/whole_graph_nt.npz",
+  "sequence_cache_sha256": "5c07f9bd8b46e4104c7c787fd96dae7cdf14ab8207807a87495e3e0365d257f3",
+  "fold_config": "configs/server_full_multicohort_20260806.json",
+  "fold_config_sha256": "5cec5e982fdcfe1a3620bf257835b70ef702b606cde9a66026fec2531e6ee96d",
+  "expected_segments": 751237,
+  "heads": 4,
+  "scalar_bytes": 4,
+  "sparse_window_k": 128,
+  "gpu_bytes": 25769803776,
+  "policy": "Original one-hop contexts plus every alternative component touching the reference core and every reference boundary anchor of those components; no recursive expansion from added anchors. Preserve original stored directed/oriented links.",
+  "validity": "Retain all original one-hop intervals in QC; check actual canonical segment disjointness in all five folds, whole frozen NT coverage, orientation preservation, and dense score storage. No labels or reconstruction-candidate filtering.",
+  "limits": [
+    "Components are not verified bubbles or phased paths.",
+    "Dense score bytes omit activations/backward/optimizer; exceeding 24 GiB forbids that implementation, not the window.",
+    "No new model training until attention correctness and actual memory are verified."
+  ]
+}
