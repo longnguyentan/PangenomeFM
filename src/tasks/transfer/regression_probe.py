@@ -1,7 +1,9 @@
 """Small train/validation-only ridge probes for continuous frozen-locus tasks."""
 from __future__ import annotations
 
+import warnings
 import numpy as np
+from scipy.linalg import LinAlgWarning
 from scipy.stats import spearmanr
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
@@ -22,10 +24,15 @@ def select_ridge(x_train, y_train, x_val, y_val, alphas):
     """Return the training-only fit selected by validation MAE; never read test y."""
     if not alphas or any(a <= 0 or not np.isfinite(a) for a in alphas) or len(set(alphas)) != len(alphas):
         raise ValueError("Require distinct positive finite ridge penalties")
+    # The inherited embedding caches are float32. Small ridge penalties with
+    # more columns than loci require float64 solves; never suppress instability.
+    x_train, x_val = np.asarray(x_train, dtype=np.float64), np.asarray(x_val, dtype=np.float64)
     candidates, models = [], {}
     for alpha in sorted(alphas):
         model = make_pipeline(StandardScaler(), Ridge(alpha=alpha, solver="cholesky", fit_intercept=True))
-        model.fit(x_train, y_train)
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", LinAlgWarning)
+            model.fit(x_train, y_train)
         prediction = model.predict(x_val)
         candidates.append(dict(alpha=alpha, validation_mae=float(mean_absolute_error(y_val, prediction))))
         models[alpha] = model

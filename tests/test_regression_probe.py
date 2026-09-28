@@ -4,11 +4,12 @@ from tasks.transfer.regression_probe import regression_metrics, select_ridge
 
 
 def test_selection_uses_only_training_scaling_and_validation_error():
-    x = np.arange(10.)[:, None]
+    x = np.arange(10., dtype=np.float32)[:, None]
     y = 2*x[:, 0]+3
     val = np.array([[100.], [101.]])
     model, choice, sweep = select_ridge(x, y, val, 2*val[:, 0]+3, [.01, 1, 100])
     np.testing.assert_equal(model[0].mean_, [4.5])
+    assert model[1].coef_.dtype == np.float64
     assert choice['alpha'] == .01
     assert choice['validation_mae'] == min(row['validation_mae'] for row in sweep)
     assert regression_metrics(y, model.predict(x))['mae'] < .02

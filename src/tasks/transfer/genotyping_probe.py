@@ -84,7 +84,7 @@ def main() -> None:
                     else:
                         x = matrices[name]
                         model, selected, candidates = select_ridge(x[train], y[train], x[val], y[val], plan["ridge_alphas"])
-                        predicted = model.predict(x[test])
+                        predicted = model.predict(np.asarray(x[test], dtype=np.float64))
                         selection.extend(dict(target=target, feature_set=name, **item) for item in candidates)
                     common = dict(task=plan["task"], target=target, fold=job.fold, seed=job.seed, context=job.closure, feature_set=name)
                     output.append(dict(**common, n_train=int(train.sum()), n_val=int(val.sum()), n_test=int(test.sum()),

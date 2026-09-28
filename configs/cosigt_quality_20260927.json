@@ -124,5 +124,6 @@
     "https://link.springer.com/article/10.1186/s13059-026-04242-4",
     "https://github.com/davidebolo1993/cosigt_paper/tree/3d84bf8490bbff5ec33cf72706e713d1a41730ed"
   ],
-  "topology_control_sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166"
+  "topology_control_sha256": "ed0665d85cf5caeb56e9ca407435b1883f4ed0bbc6d1d85c9009134dc52af166",
+  "numerical_policy": "Double-precision ridge fit and prediction; ill-conditioned solver warnings fail the run. Original float32 feature values are promoted without changing their definitions."
 }

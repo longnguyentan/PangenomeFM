@@ -28,16 +28,21 @@ def fixture(tmp_path):
 def test_replay_and_reject_wrong_outcome_or_selection(tmp_path):
     loci, job, plan = fixture(tmp_path)
     assert len(replay(tmp_path, loci, job, plan)) == 1
-    bad = loci.copy();bad.loc[5, 'quality'] += 1
+    bad = loci.copy()
+    bad.loc[5, 'quality'] += 1
     with pytest.raises(ValueError, match='universe'):
         replay(tmp_path, bad, job, plan)
-    m = pd.read_csv(tmp_path/'metrics.csv');m['alpha'] = 1;m.to_csv(tmp_path/'metrics.csv', index=False)
+    m = pd.read_csv(tmp_path/'metrics.csv')
+    m['alpha'] = 1
+    m.to_csv(tmp_path/'metrics.csv', index=False)
     with pytest.raises(ValueError, match='validation rule'):
         replay(tmp_path, loci, job, plan)
 
 
 def test_replay_rejects_tampered_predictions(tmp_path):
     loci, job, plan = fixture(tmp_path)
-    p = pd.read_parquet(tmp_path/'predictions.parquet');p['prediction'] = np.nan;p.to_parquet(tmp_path/'predictions.parquet')
+    p = pd.read_parquet(tmp_path/'predictions.parquet')
+    p['prediction'] = np.nan
+    p.to_parquet(tmp_path/'predictions.parquet')
     with pytest.raises(ValueError, match='Stale'):
         replay(tmp_path, loci, job, plan)
