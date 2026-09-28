@@ -68,6 +68,16 @@
     "interpretation": "Seed stability on one already inspected development fold; no independent chromosome replication or confirmatory CI",
     "unfavorable_results": "Retain every seed and contrast; do not replace failed performance with a different seed"
   },
+  "probe_convergence_sensitivity": {
+    "reason": "Log audit found SV lbfgs iteration-limit warnings at the unchanged manuscript budget of 800; inspected cCRE logs had no convergence warnings",
+    "max_iter": 4000,
+    "seed": 42,
+    "fold": "fold_a",
+    "context": "1hop",
+    "scope": "Same checkpoints, features, examples and classifier objective; change only the maximum optimizer iterations for all arms",
+    "selection": "One fixed numerical sensitivity; no regularization, solver, tolerance, model or biological hyperparameter search",
+    "reporting": "Record actual n_iter and convergence warnings per feature, retain every result, compare to original 800-iteration predictions, and withhold promotion if probes remain unconverged"
+  },
   "implementation_requirements": [
     "Reuse native extractor and probes, adding optional companion checkpoint only",
     "Store immutable command/checkpoint/resource receipts and all favorable and unfavorable results",

@@ -2,12 +2,32 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from scripts.server.run_sv_frozen_probe_fold import (
     complete_feature_mask,
     pair_features,
     stratified_metrics,
+    validate_binary_sv_examples,
 )
+
+
+def test_binary_probe_refuses_other_types_and_conflicting_targets() -> None:
+    data = pd.DataFrame(dict(example_id=[0, 1], chrom=["chr1", "chr2"], start_segid=[10, 20],
+                             end_segid=[11, 21], svtype=["INS", "DEL"], binary_svtype_label=[1, 0]))
+    validate_binary_sv_examples(data)
+    bad = data.copy()
+    bad.loc[1, "svtype"] = "INV"
+    with pytest.raises(ValueError, match="other SV types"):
+        validate_binary_sv_examples(bad)
+    bad = data.copy()
+    bad.loc[1, "binary_svtype_label"] = 1
+    with pytest.raises(ValueError, match="disagree"):
+        validate_binary_sv_examples(bad)
+    bad = data.copy()
+    bad.loc[1, "example_id"] = 0
+    with pytest.raises(ValueError, match="unique"):
+        validate_binary_sv_examples(bad)
 
 
 def test_pair_features() -> None:

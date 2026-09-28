@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 from scripts.server.prepare_sv_breakpoint_examples import map_coordinate, prepare
 
@@ -16,6 +17,14 @@ def test_coordinate_mapping_rules() -> None:
     assert map_coordinate(120, starts, ends, segids, maximum_nearest_distance=20) == (2, 0, "overlap")
     assert map_coordinate(175, starts, ends, segids, maximum_nearest_distance=30) == (3, 25, "nearest")
     assert map_coordinate(500, starts, ends, segids, maximum_nearest_distance=10)[0] is None
+
+
+def test_binary_preparation_refuses_inversions_before_creating_output(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="must not be relabeled"):
+        prepare(normalized_variants=tmp_path / "unused.csv", full_segments=tmp_path / "unused.gz",
+                out_dir=tmp_path / "out", reference_prefix="GRCh38#0", svtypes={"INS", "DEL", "INV"},
+                minimum_length=50, maximum_nearest_distance=0)
+    assert not (tmp_path / "out").exists()
 
 
 def test_prepare_sv_examples(tmp_path: Path) -> None:

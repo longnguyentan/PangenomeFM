@@ -30,6 +30,7 @@ def main() -> int:
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--topology-control-cache", type=Path)
     ap.add_argument("--validation-only", action="store_true")
+    ap.add_argument("--probe-max-iter", type=int, help="Uniform convergence sensitivity for every probe")
     ap.add_argument("--primary-features-only", action="store_true",
                     help="Use C+S, C+S+T, C+S+H, C+S+H+T for the bounded development comparison")
     ap.add_argument("--candidate-checkpoint", action="append", default=[], metavar="NAME=PATH",
@@ -129,6 +130,8 @@ def main() -> int:
                                 "--feature-cache", str(sw / "data/processed/hprc_r2_ccre_screen_v4_features.npz")]
                 if args.validation_only:
                     command.append("--validation-only")
+                if args.probe_max_iter is not None:
+                    command += ["--probe-max-iter", str(args.probe_max_iter)]
                 if model in companions:
                     command += ['--companion-checkpoint', str(companions[model])]
                 if args.primary_features_only:
@@ -141,6 +144,7 @@ def main() -> int:
                 commands.append(command)
     out.mkdir(parents=True)
     plan = {"status": "planned", "scope": "exploratory development control; no v2 promotion",
+            "probe_max_iter_override": args.probe_max_iter,
             "companion_checkpoints": {k: str(v) for k, v in companions.items()},
             "models": selected_models, "extraction_candidate_policy": args.extraction_candidate_policy,
             "evaluation_partition": "development_validation" if args.validation_only else "test",

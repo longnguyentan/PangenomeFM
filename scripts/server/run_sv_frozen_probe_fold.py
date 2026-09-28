@@ -106,6 +106,19 @@ def complete_feature_mask(
     return keep.to_numpy(dtype=bool, copy=True)
 
 
+def validate_binary_sv_examples(examples: pd.DataFrame) -> None:
+    """Refuse nonbinary SV types or contradictory labels before any extraction."""
+    required = {"example_id", "chrom", "start_segid", "end_segid", "svtype", "binary_svtype_label"}
+    if required - set(examples) or examples[list(required)].isna().any().any():
+        raise ValueError("SV examples have missing required fields")
+    if examples.example_id.duplicated().any():
+        raise ValueError("SV example IDs must be unique")
+    if not examples.svtype.isin({"INS", "DEL"}).all():
+        raise ValueError("The historical binary probe supports only INS/DEL; other SV types need a separate task")
+    if not examples.binary_svtype_label.eq(examples.svtype.eq("INS").astype(int)).all():
+        raise ValueError("SV type and binary target disagree")
+
+
 def stratified_metrics(
     predictions: pd.DataFrame,
     examples: pd.DataFrame,
@@ -171,6 +184,7 @@ def run_probe(
     validation_only: bool = False,
     extraction_candidate_policy: str = "checkpoint",
     companion_checkpoints: list[Path] | None = None,
+    probe_max_iter: int | None = None,
 ) -> dict[str, object]:
     if out_dir.exists():
         raise FileExistsError(f"Refusing to overwrite output: {out_dir}")
@@ -187,10 +201,7 @@ def run_probe(
         for path in [checkpoint, *companion_checkpoints]:
             validate_checkpoint_holdout(path, test_chrs=test_chrs, val_chrs=val_chrs, closure=closure, seed=seed)
     examples = pd.read_csv(examples_path, compression="infer")
-    required = {"example_id", "chrom", "start_segid", "end_segid", "binary_svtype_label"}
-    missing = required - set(examples)
-    if missing:
-        raise ValueError(f"SV examples miss columns: {sorted(missing)}")
+    validate_binary_sv_examples(examples)
     examples["chrom"] = examples["chrom"].map(_canonical_chrom)
     required_nodes = set(examples["start_segid"].astype(int)) | set(examples["end_segid"].astype(int))
     embeddings, occurrences, canonical_candidate_audit = _extract_embeddings(
@@ -300,6 +311,7 @@ def run_probe(
         seed=seed,
         feature_access=selected_feature_access,
         validation_only=validation_only,
+        probe_max_iter=probe_max_iter,
     )
     predictions = predictions.rename(columns={"segid": "example_id"})
     strata = stratified_metrics(predictions, examples)
@@ -341,6 +353,7 @@ def run_probe(
         "target": "insertion versus deletion among versioned SV records of length >=50 bp",
         "fairness_policy": "all feature sets use identical mapped variants and chromosome splits",
         "calibration_policy": "temperature and F1 threshold fit on validation chromosomes only",
+        "probe_max_iter_override": probe_max_iter,
         "upstream_leakage_control": "checkpoint pretraining excluded every downstream test chromosome",
         "important_limitation": "variant records are graph-derived/assembly-derived truth, not a donor-held-out molecular phenotype",
         "modality_factorial": {
@@ -390,6 +403,7 @@ def main() -> int:
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--max-slices", type=int)
     parser.add_argument("--validation-only", action="store_true")
+    parser.add_argument("--probe-max-iter", type=int, help="Optional convergence sensitivity; default preserves manuscript 800")
     parser.add_argument("--extraction-candidate-policy", choices=["checkpoint", "manuscript"], default="checkpoint")
     parser.add_argument("--external-sequence-cache", type=Path)
     parser.add_argument("--minimum-external-coverage", type=float, default=0.95)
@@ -426,6 +440,7 @@ def main() -> int:
         canonical_conflict_policy=args.canonical_conflict_policy,
         topology_control_cache=args.topology_control_cache,
         validation_only=args.validation_only,
+        probe_max_iter=args.probe_max_iter,
         extraction_candidate_policy=args.extraction_candidate_policy,
     )
     return 0

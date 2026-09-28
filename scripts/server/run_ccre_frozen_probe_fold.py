@@ -14,11 +14,13 @@ import argparse
 import hashlib
 import json
 import time
+import warnings
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import torch
+from sklearn.exceptions import ConvergenceWarning
 from sklearn.metrics import (
     accuracy_score,
     average_precision_score,
@@ -141,6 +143,26 @@ def binary_metrics(
     }
 
 
+def fit_logistic_probe(matrix, labels, seed: int, max_iter: int | None = None):
+    """Keep the manuscript estimator and expose its actual convergence status."""
+    model = _fit_model("logistic", seed)
+    if max_iter is not None:
+        if max_iter < model.named_steps["logisticregression"].max_iter:
+            raise ValueError("A convergence sensitivity may only increase the manuscript iteration budget")
+        model.set_params(logisticregression__max_iter=max_iter)
+    with warnings.catch_warnings(record=True) as observed:
+        warnings.simplefilter("always", ConvergenceWarning)
+        model.fit(matrix, labels)
+    for warning in observed:
+        warnings.warn(warning.message, warning.category, stacklevel=2)
+    estimator = model.named_steps["logisticregression"]
+    converged = not any(issubclass(w.category, ConvergenceWarning) for w in observed)
+    return model, dict(probe_solver=estimator.solver, probe_max_iter=int(estimator.max_iter),
+        probe_iterations=int(np.max(estimator.n_iter_)), probe_converged=converged,
+        probe_convergence_messages=" | ".join(str(w.message) for w in observed
+                                               if issubclass(w.category, ConvergenceWarning)))
+
+
 def evaluate_feature_sets(
     *,
     segids: np.ndarray,
@@ -152,6 +174,7 @@ def evaluate_feature_sets(
     seed: int,
     feature_access: dict[str, str] | None = None,
     validation_only: bool = False,
+    probe_max_iter: int | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Fit on train, calibrate on validation, and score the explicit partition."""
 
@@ -176,6 +199,7 @@ def evaluate_feature_sets(
     per_chromosome_rows: list[dict[str, object]] = []
     prediction_frames: list[pd.DataFrame] = []
     for feature_index, (feature_name, matrix) in enumerate(features.items()):
+        optimization = {}
         if len(matrix) != len(labels):
             raise ValueError(f"Feature length mismatch for {feature_name}")
         if feature_name == "training_prevalence":
@@ -187,8 +211,7 @@ def evaluate_feature_sets(
             raw_val = scores[is_val]
             raw_test = scores[is_evaluation]
         else:
-            model = _fit_model("logistic", seed)
-            model.fit(matrix[is_train], labels[is_train])
+            model, optimization = fit_logistic_probe(matrix[is_train], labels[is_train], seed, probe_max_iter)
             raw_val = model.predict_proba(matrix[is_val])[:, 1]
             raw_test = model.predict_proba(matrix[is_evaluation])[:, 1]
 
@@ -197,6 +220,7 @@ def evaluate_feature_sets(
         calibrated_test = apply_temperature(raw_test, temperature)
         threshold = _choose_threshold(labels[is_val], calibrated_val)
         common = {
+            **optimization,
             "feature_set": feature_name,
             "feature_access": access[feature_name],
             "temperature": float(temperature),
@@ -267,6 +291,7 @@ def run_probe(
     validation_only: bool = False,
     extraction_candidate_policy: str = "checkpoint",
     companion_checkpoints: list[Path] | None = None,
+    probe_max_iter: int | None = None,
 ) -> dict[str, object]:
     if (out_dir / "audit.json").exists():
         raise FileExistsError(f"Refusing to overwrite completed output: {out_dir}")
@@ -389,6 +414,7 @@ def run_probe(
         seed=seed,
         feature_access=selected_feature_access,
         validation_only=validation_only,
+        probe_max_iter=probe_max_iter,
     )
     for frame in (metrics, per_chromosome, predictions):
         frame.insert(0, "fold", fold)
@@ -439,6 +465,7 @@ def run_probe(
         "canonical_conflict_policy": canonical_conflict_policy,
         "canonical_conflict_interpretation": "all representations of a conflicting canonical identity are excluded before frozen embedding extraction; remaining same-label equivalents are collapsed",
         "calibration_policy": "temperature and F1 threshold fit on validation chromosomes only",
+        "probe_max_iter_override": probe_max_iter,
         "sequence_note": ("PangenomeFM checkpoint has no nucleotide input" if representation == 'topology_native'
                           else "This representation includes sequence-conditioned inputs; see branch/input provenance"),
         "modality_factorial": {
@@ -483,6 +510,7 @@ def main() -> int:
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--max-slices", type=int)
     parser.add_argument("--validation-only", action="store_true")
+    parser.add_argument("--probe-max-iter", type=int, help="Optional convergence sensitivity; default preserves manuscript 800")
     parser.add_argument("--extraction-candidate-policy", choices=["checkpoint", "manuscript"], default="checkpoint")
     parser.add_argument("--external-sequence-cache", type=Path)
     parser.add_argument("--minimum-external-coverage", type=float, default=0.95)
@@ -519,6 +547,7 @@ def main() -> int:
         canonical_conflict_policy=args.canonical_conflict_policy,
         topology_control_cache=args.topology_control_cache,
         validation_only=args.validation_only,
+        probe_max_iter=args.probe_max_iter,
         extraction_candidate_policy=args.extraction_candidate_policy,
     )
     return 0

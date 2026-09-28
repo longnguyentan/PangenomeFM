@@ -93,6 +93,11 @@ def prepare(
     minimum_length: int,
     maximum_nearest_distance: int,
 ) -> dict[str, object]:
+    if not svtypes or not svtypes <= {"INS", "DEL"}:
+        raise ValueError(
+            "This binary task supports only INS/DEL. INV, DUP and complex events "
+            "require a separate target definition; they must not be relabeled as DEL."
+        )
     if out_dir.exists() and any(out_dir.iterdir()):
         raise FileExistsError(f"Output directory is not empty: {out_dir}")
     out_dir.mkdir(parents=True, exist_ok=True)

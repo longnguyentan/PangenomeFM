@@ -100,13 +100,20 @@ def main() -> None:
             if receipt[key] != receipts[0][key]:
                 raise ValueError("Source protocol differs")
     receipt = receipts[0]
-    records, branch_evidence = [], []
+    if len({r.get("probe_max_iter_override") for r in receipts}) != 1:
+        raise ValueError("Probe optimizer budgets differ between source roots")
+    records, branch_evidence, optimization = [], [], []
     for model, task in product(MODELS, ["sv", "ccre"]):
         root, name = ((args.topology_root, "v2") if model == "T" else
                       (args.sequence_root, "nt") if model == "Q" else (args.root, model))
         path = root / "probes" / name / task / "1hop"
         records.append(audited_run(path, model, task, receipt["fold"]["name"],
                                    receipt["seed"], "1hop", validation_only=True))
+        source_metrics = pd.read_csv(path / "metrics.csv")
+        if "probe_converged" in source_metrics:
+            columns = ["feature_set", "probe_solver", "probe_max_iter", "probe_iterations",
+                       "probe_converged", "probe_convergence_messages"]
+            optimization.append(source_metrics[columns].assign(model=model, task=task))
         if model in COMPOSITES:
             audit = json.loads((path / "audit.json").read_text())["canonical_candidate_audit"]
             if not audit.get("exact_branch_preservation") or [b["dimension"] for b in audit["branches"]] != [48, 48]:
@@ -120,8 +127,19 @@ def main() -> None:
     frame = pd.concat(records, ignore_index=True)
     frame["embedding"] = frame.model
     differences, gate = compare(frame)
+    optimizer = pd.concat(optimization, ignore_index=True) if optimization else pd.DataFrame()
+    fully_recorded = len(optimization) == len(MODELS) * 2
+    if fully_recorded and (optimizer.probe_max_iter.nunique() != 1 or optimizer.probe_solver.nunique() != 1):
+        raise ValueError("Probe optimizer settings differ between compared models")
+    gate["probe_optimization_fully_recorded"] = fully_recorded
+    gate["all_probes_converged"] = bool(optimizer.probe_converged.eq(True).all()) if fully_recorded else None
+    if fully_recorded and not gate["all_probes_converged"]:
+        gate["performance_gate_before_solver_check"] = gate["status"]
+        gate["status"] = "optimization_incomplete"
     args.out_dir.mkdir(parents=True, exist_ok=False)
     frame.to_csv(args.out_dir / "audited_per_run.csv", index=False)
+    if len(optimizer):
+        optimizer.to_csv(args.out_dir / "probe_optimization.csv", index=False)
     differences.to_csv(args.out_dir / "paired_differences.csv", index=False)
     (args.out_dir / "development_gate.json").write_text(json.dumps(gate, indent=2) + "\n")
     (args.out_dir / "audit.json").write_text(json.dumps(dict(status="complete",

@@ -25,6 +25,9 @@ worth replicating, not an established best model or an acceptance guarantee.
 - [x] Freeze the candidate and remaining-seed replication protocol before
   observing the new seeds.
 - [ ] Finish seeds 314159 and 20260806: launched in a durable server session.
+- [ ] Complete the fixed 4,000-iteration probe sensitivity: log review found
+  some SV logistic fits reached the manuscript's 800-iteration cap. The original
+  runs remain unchanged; candidate promotion also requires this numerical check.
 - [ ] Replicate across chromosome folds and run the selected candidate on new
   downstream endpoints; the full v2 matrix is not completed.
 
@@ -107,6 +110,15 @@ cCRE after C+S+H. Do not describe the tiny cCRE difference as a replicated
 improvement. The practical result is preserving both task strengths with one
 fixed representation while passing the same-dimension controls.
 
+**Numerical caveat:** subsequent log inspection found two convergence warnings
+in each seed-42 composite SV probe log, and none in the corresponding cCRE logs.
+The historical logs did not identify which feature fit issued each warning.
+The apparent development-gate pass is therefore provisional pending a fixed
+4,000-iteration sensitivity with per-feature iteration/convergence receipts.
+Only the optimizer's iteration ceiling changes; estimator, class weighting,
+regularization, features, checkpoints and examples remain fixed. This is not
+a search for a better biological score.
+
 [Audited per-run table](../results/foundation_evidence_20260927/composite_biological_analysis/audited_per_run.csv)
 · [Paired contrasts](../results/foundation_evidence_20260927/composite_biological_analysis/paired_differences.csv)
 · [Gate](../results/foundation_evidence_20260927/composite_biological_analysis/development_gate.json)
@@ -174,6 +186,8 @@ The already downloaded annotation has **300 events**, including two nonprimary
 contig events. All 298 events on primary chromosomes map both first/last affected
 bases and have NT features. Test-fold support is 72, 74, 59, 42 and 51 inversions.
 The two nonprimary events remain explicitly recorded, not silently discarded.
+The historical mapper and binary probe now reject INV/DUP/other classes and
+inconsistent binary targets, preventing accidental relabeling as DEL.
 
 Use the TSV's SV-Pop BED+6 coordinate contract, verified against each event ID
 and length. Preserve INV as its own type; the historical binary INS/DEL probe
