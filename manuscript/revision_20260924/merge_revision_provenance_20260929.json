@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-29",
+  "baseline_commit": "8b02546",
+  "entrypoint": "main.tex",
+  "bibliography": "references.bib",
+  "inputs": {
+    "/Users/longnguyentan/Downloads/main (1).tex": {
+      "bytes": 109785,
+      "sha256": "58b50f44e27179c81ed47b8ffbed198c5ac4af001664c503afcc2713d36f7606"
+    },
+    "/Users/longnguyentan/Downloads/references (1).bib": {
+      "bytes": 31817,
+      "sha256": "e166730c4d7db014a9dea5b12c85d8c8428668473cf288f51b4e92eb891433d6"
+    },
+    "/Users/longnguyentan/Downloads/Temple Uni/PangenomeFM/.worktrees/v2-evidence-review/manuscript/revision_20260924/qa/merge_20260929/before_main.tex": {
+      "bytes": 160488,
+      "sha256": "7904439781be6c7a812dcd4d39639f1357151d05b4f667c5ba7da02524a90add"
+    }
+  },
+  "current_sources": {
+    "main.tex": "b18f8f517602be407d2c214da83a294cf881f30ee6279943bf4a70e666587cee",
+    "references.bib": "698df49234ad2b4f9fcf6e1c613a024ef73fcf83d08e16f93e774f1517c61e6d",
+    "editorial_comment_manifest.json": "f874868565d6b47b0d0bb74330245470f6736283c07065ce11e1cc8821124dc3"
+  },
+  "scope": "Editorial quality, external bibliography repair, EN-TEx saved-result review; no model fitting or new biological experiments.",
+  "checks": {
+    "original_comments": 118,
+    "followup_comments": 25,
+    "baseline_comments": 23,
+    "bibliography_keys": 52,
+    "distinct_cited_works": 45,
+    "google_scholar_export_keys": "not certified; service inaccessible",
+    "full_pdf_build": "pdfLaTeX + BibTeX bu1/bu2 + three repeat passes succeeded",
+    "unresolved_citations": 0,
+    "unresolved_cross_references": 0,
+    "latex_warnings": 0,
+    "native_editor_compiler": "cannot load companion figures, source kept open",
+    "pdf_visual_review": "All 34 pages in contact sheets; detailed regulatory-results and Supplementary bibliography pages checked. No clipping/overlap seen.",
+    "entex_configurations": 450,
+    "entex_feature_metric_rows": 3150,
+    "entex_validation": "Saved means and paired AP arithmetic verified within 1e-12; CIs retained, not recomputed"
+  },
+  "author_inputs_remaining": [
+    "consortium approval and member lists",
+    "grant identifiers and attribution",
+    "author contributions and competing interests",
+    "release repository/model/Zenodo identifiers"
+  ]
+}

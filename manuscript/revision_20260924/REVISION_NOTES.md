@@ -1,3 +1,30 @@
+# Manuscript quality and bibliography revision, 29 September 2026
+
+This is the current editorial disposition. Earlier sections below are historical.
+The latest author instruction supersedes their word-count target, aims-only
+Abstract/Introduction policy and inline-bibliography layout.
+
+- Narrative findings restored in Abstract, Introduction paragraph 6 and Discussion;
+  active author voice restored in Results, with no change to numerical tables.
+- Accurate caveats retained in Methods/Supplement. Completed EN-TEx weighting and
+  multiplicity results added, including attenuation and null findings.
+- All bibliography entries moved to external `references.bib`. 52 active keys / 45
+  distinct works reviewed; missing citations, incorrect Umap metadata, author-name
+  errors and other bibliographic issues corrected. Exact Scholar-export key
+  equality is not certified because Google Scholar could not be accessed.
+- Original comments remain verbatim, with new `% Long Note` responses. No open
+  experiment or author-confirmation item is falsely marked complete.
+- Full pdfLaTeX/BibTeX build succeeds; native single-document preview cannot load
+  the project's companion figures. Use the delivered full-project PDF.
+
+See [old/new comparisons](MERGE_REVIEW_20260929.md),
+[reference-by-reference audit](BIBLIOGRAPHY_AUDIT_20260929.md) and
+[the full EN-TEx team report](../../docs/ENTEX_COMPLETE_TEAM_REPORT_20260929.md).
+
+---
+
+## Historical editorial record (28 September; superseded where noted above)
+
 # Consolidated NMI revision — 28 September 2026
 
 ## Latest paragraph-level writing revision

@@ -1,77 +1,88 @@
-# PangenomeFM: consolidated LaTeX source
+# PangenomeFM manuscript: revised 29 September 2026
 
-Open `main.tex`. It contains the entire main article, Supplementary Information,
-all tables, both reference lists, and the preserved professor/editorial comments.
-There is exactly ONE .tex file. Only the ten vector figures remain external.
-No compiled manuscript PDF, extra .tex file or .bib file is required or included.
+`main.tex` is the one editable TeX source for the main article, Supplementary
+Information, tables and preserved professor/editorial comments. All bibliographic
+entries are in **`references.bib`**, never embedded in `main.tex`. Ten figure PDFs
+are external. The source ZIP contains the entire project needed for compilation.
 
 ## Compile
 
-Upload the entire ZIP to Overleaf and select `main.tex` with pdfLaTeX. Locally:
+Upload the complete source ZIP to Overleaf and select `main.tex` with pdfLaTeX.
+With an existing TeX Live/MacTeX installation, the reproducible local build is:
 
-    pdflatex main.tex
-    pdflatex main.tex
-    pdflatex main.tex
+```bash
+python3 check_bibliography.py
+python3 check_editorial_comments.py
+python3 build_manuscript.py
+```
 
-There is no BibTeX step: the references are inline. No data, Python package,
-checkpoint or server access is required. The Codex single-document compiler does
-not currently load companion figure PDFs; use a full LaTeX project compiler.
+The last command creates `output/pdf/PangenomeFM_manuscript.pdf`, runs BibTeX for
+both reference lists and rejects unresolved citations/references and layout
+warnings. It uses Python's standard library; no model/data/server is needed.
+The equivalent manual sequence, from this folder, is:
 
-## Paragraph-level review
+```bash
+pdflatex main.tex
+bibtex bu1
+bibtex bu2
+pdflatex main.tex
+pdflatex main.tex
+pdflatex main.tex
+```
 
-The current writing pass reviewed 120 content blocks, revised 75 and retained 45;
-six headings were revised. Open `PARAGRAPH_REVIEW_20260928.html` for a searchable
-old/new table, or `PARAGRAPH_REVIEW_20260928.md` for the complete Markdown version.
-Explanations are in Vietnamese. `prose_revision_provenance.json` records the
-current manuscript hash and checks; consolidation provenance is historical.
+The Codex single-document compiler currently cannot load this project's companion
+figure PDFs or bibliography. The saved source remains editable in its existing
+tab; the full-project PDF is the verified rendered artifact.
 
-## Organization and editorial decisions
+## Current editorial decisions
 
-Main sections: Abstract, Introduction (six paragraphs), Results, Discussion,
-Methods, Data availability, Code availability, References and author statements.
-The Supplementary Information follows, with 11 notes, Supplementary Methods,
-consortium-list placeholders and its own S-numbered reference list.
+The latest author feedback prioritizes manuscript quality over word count and
+restores findings in the Abstract, final Introduction paragraph and Discussion.
+Results use the authors' voice, with the main SV task named insertion-versus-
+deletion classification. The more precise masking, initialization, post hoc and
+replication caveats are retained. Completed EN-TEx weighting and multiplicity
+sensitivities accompany the primary estimates.
 
-Four main figures: paradigms (1), architecture (2), structural variants (3),
-regulatory elements (4). Two main tables: three-class SVs and trained/untrained
-controls. Reconstruction controls are supplementary. Figure filenames need not
-match their final automatically assigned supplementary numbers.
+Main sections are Abstract, Introduction (six paragraphs), Results, Discussion,
+Methods, availability statements, References and author statements. The Methods
+open with graph representation, encoder, objective, loss and optimization.
+Supplementary Information contains 11 notes, Supplementary Methods and its own
+S-numbered references. The main article has four figures and two tables.
 
-The author's instruction to keep findings out of the abstract and Introduction
-is retained. Completed results and null findings remain in Results. New
-single-fold development findings are labelled as such. No incomplete chromosome
-replication result is used. Author-confirmation items remain visible in red.
-See `REVISION_NOTES.md` for the evidence checks, reference corrections and open
-scientific/author-input items.
+See `MERGE_REVIEW_20260929.md` for the new old/new comparisons and editorial
+choices, and `BIBLIOGRAPHY_AUDIT_20260929.md` for all 45 distinct works and the
+Google Scholar access limitation. All 52 active keys resolve; seven intentional
+`supp__` aliases give repeated works distinct anchors in the two reference lists.
 
-## Comments and integrity
+`PARAGRAPH_REVIEW_20260928.html` and its Markdown version are the previous
+paragraph-level review, retained as history. `REVISION_NOTES.md` clearly separates
+the current changes from the older editorial passes.
 
-All 118 original professor comments and the 25-line follow-up are preserved
-verbatim inside `main.tex`, together with earlier and supplied rewrite comments.
-The historical comment archive follows the document end marker; it does not
-print. Search `% Long Note:` for editorial responses and current dispositions.
-Improved genotype calls remain evidence-open, not marked as a favorable result.
+## Comments and unresolved author inputs
 
-Optional preservation check (Python standard library only):
+All 118 original professor comments, 25 follow-up comment lines and later source
+comments are preserved. Search `% Long Note:` for responses. The comment archive
+after the document end marker does not print. A request to demonstrate improved
+SV genotyping remains evidence-open; it has not been converted into a claim.
+Grant identifiers, consortium approval/member lists, contributions and publication
+repository/DOI information still require author confirmation and remain visible.
 
-    python check_editorial_comments.py
+## Integrity and source package
 
-`package_manifest.json` records the SHA-256 of each delivered file. The older
-modular sources in the repository are historical and are not dependencies.
+`merge_revision_provenance_20260929.json` identifies the current revision;
+`bibliography_audit_20260929.json` pins the reviewed bibliography. Older provenance
+files describe earlier revisions, not the current source hash.
 
-## Repository provenance
+```bash
+python3 package_latex.py
+```
 
-`consolidation_provenance.json` identifies the supplied rewrite and numerical
-evidence. Older `*_provenance.json`, modular TeX sources and PDF snapshots
-document previous revisions; they do not describe the current active source.
+This creates `output/source/PangenomeFM_NMI_revised_LaTeX.zip` with exactly one
+TeX file, one bibliography, figures, checks and revision notes. Its internal
+`package_manifest.json` records every delivered file hash. Compiled PDFs and
+historical modular TeX files are not dependencies of the source ZIP.
 
-To rebuild the source-only delivery ZIP:
-
-    python package_latex.py
-
-To regenerate corrected figure labels from the supplied extracted rewrite:
-
-    python repair_rewrite_figures.py /path/to/PangenomeFM_NMI
-
-The architecture vector is generated with
-`build_method_figures.method("Fig2_architecture")`. Neither procedure fits a model.
+The separate, comprehensive team report is
+`../../docs/ENTEX_COMPLETE_TEAM_REPORT_20260929.md` from this directory. It reviews
+450 completed EN-TEx configurations, 3,150 feature-specific metric records,
+source QC, sensitivity analyses and evidence limits; it is not a new model run.

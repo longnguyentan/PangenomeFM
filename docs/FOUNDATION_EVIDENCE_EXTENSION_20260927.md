@@ -1,3 +1,5 @@
+> **29 September 2026 update:** See [the complete EN-TEx team report](ENTEX_COMPLETE_TEAM_REPORT_20260929.md) for the reconciled 450-configuration results, completed follow-ups and QC. Status snapshots below are historical.
+
 # Foundation-model evidence: remaining work and fixed extension
 
 Plan fixed 27 September 2026 UTC. This is an exploratory continuation specified

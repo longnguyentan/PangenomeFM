@@ -198,8 +198,16 @@ def check(args: argparse.Namespace) -> int:
 
     main_text = without_comments(current_main)
     if single_file:
-        if re.search(r"\\(?:input|include|externaldocument|bibliography)\s*\{", main_text):
-            errors.append("Single-file manuscript must not require external TeX or bibliography files")
+        if re.search(r"\\(?:input|include|externaldocument)\s*\{", main_text):
+            errors.append("Single-file manuscript must not require external TeX files")
+        bibliography = manifest.get("external_bibliography")
+        if bibliography:
+            if not (directory / bibliography).is_file():
+                errors.append(f"External bibliography missing: {bibliography}")
+            if re.search(r"\\(?:bibitem|begin\{thebibliography\})", main_text):
+                errors.append("References must live in the external .bib, not main.tex")
+        elif re.search(r"\\bibliography\s*\{", main_text):
+            errors.append("Undeclared external bibliography")
         for source_group in manifest.get("consolidation_comment_sets", []):
             expected = counts(source_group["comments"])
             for comment, missing in (expected - counts(comment_records(current_main))).items():

@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-29",
+  "files": {
+    "main.tex": {
+      "bytes": 145553,
+      "sha256": "b18f8f517602be407d2c214da83a294cf881f30ee6279943bf4a70e666587cee"
+    },
+    "references.bib": {
+      "bytes": 20285,
+      "sha256": "698df49234ad2b4f9fcf6e1c613a024ef73fcf83d08e16f93e774f1517c61e6d"
+    },
+    "output/pdf/PangenomeFM_manuscript.pdf": {
+      "bytes": 712284,
+      "sha256": "979e9944dc6b44a51f8d0a22205a21ec879c6472180bb469db7e3af5246d35c3"
+    },
+    "output/source/PangenomeFM_NMI_revised_LaTeX.zip": {
+      "bytes": 484113,
+      "sha256": "5708806bb1ab2389b98eae060c2ebbf18c241e04a4f3e635760999852d75c536"
+    },
+    "BIBLIOGRAPHY_AUDIT_20260929.md": {
+      "bytes": 17122,
+      "sha256": "acc68c7da048e3e350b78fb51518143d73c7be70518b09ba9dbcaf1fd243a865"
+    },
+    "MERGE_REVIEW_20260929.md": {
+      "bytes": 14696,
+      "sha256": "aa3200163a2cf0d39a15771b895c441f25f811859ea1d5f25912279ebc8e286a"
+    }
+  },
+  "validation": {
+    "full_project_compile": "passed, no unresolved references/citations or LaTeX warnings",
+    "pdf_pages": 34,
+    "visual_review": "all pages; selected detailed pages",
+    "citation_integrity": "52 keys / 45 distinct works, 0 missing",
+    "source_zip": "one TeX + one external bib; all internal SHA256 values match",
+    "negative_test": "missing citation is rejected",
+    "editorial_comment_preservation": "passed",
+    "entex_metric_rows_checked": 3150,
+    "entex_configurations_checked": 450
+  },
+  "limitations": [
+    "Native single-document preview cannot load companion figure PDFs.",
+    "Exact Google Scholar-exported citation keys could not be checked because Scholar was inaccessible.",
+    "Author-input placeholders remain; no new experiments were run."
+  ]
+}

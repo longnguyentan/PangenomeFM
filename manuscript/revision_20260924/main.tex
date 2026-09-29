@@ -22,6 +22,7 @@
 \usepackage{placeins}
 \usepackage{titlesec}
 \usepackage[numbers,sort&compress,super]{natbib}
+\usepackage{bibunits}
 \usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=blue!55!black]{hyperref}
 \usepackage{xspace}
 
@@ -125,14 +126,29 @@ Ting Wang$^{7,8}$
 % Long Note: Done [PROSE-03]. No findings are restored to Abstract/Introduction.
 % Development results remain development results; author/evidence-open items
 % retain their status. Older placement and wording notes are historical.
+% Long Note: Done [MERGE-01, 29 September 2026]. The author now requests findings
+% in the Abstract, final Introduction paragraph and Discussion. This supersedes
+% SINGLE-02 and PROSE-03 placement rules; numerical claims keep their qualifications.
+% Long Note: Done [MERGE-02]. References now live only in references.bib. Two
+% BibTeX units retain separate main and Supplementary numbering in one main.tex.
+% Long Note: Done [MERGE-03]. Keep P043/P045/P100/P107/P088/P032 and the specified
+% Methods/Supplement accuracy edits. P104 retains its outcome with active wording.
+% Long Note: Done [MERGE-04]. P025 em dashes removed; results use author voice.
+% Long Note: Alternative B (aim-only Abstract, superseded; retained for discussion):
+% Human pangenome graphs describe shared and alternative sequences through their connections. These connections place each segment in a structural context that is absent from a linear sequence alone. We introduce PangenomeFM, a self-supervised model for learning from this context. The encoder combines attention over nearby genomic positions with attention over connected segments through a learned gate and is pretrained to recover hidden connections. Its representations remain frozen during biological evaluation, alongside independently pretrained nucleotide embeddings. We evaluate structural-variant classification, regulatory-element annotation and susceptibility to allele-specific activity on held-out chromosomes. Comparisons with genomic features, sequence embeddings, graph statistics and untrained encoders assess both the predictive value of graph structure and the contribution of pretraining. This framework provides a controlled setting for studying how pangenome connectivity can inform biological prediction.
+% \end{abstract}
+
 \begin{document}
 \maketitle
+\begin{bibunit}[unsrtnat]
 
 % Long Note: The abstract follows the four NMI examples: problem, gap, model,
 % principal findings and implication, without citations or dense numbers.
 % Long Note: Superseded by SINGLE-02; the author requires an aim-focused abstract.
+% Long Note: Done [MERGE-05]. Latest author feedback restores findings here and
+% in Introduction/Discussion; the earlier SINGLE-02 restriction is historical.
 \begin{abstract}
-Human pangenome graphs describe shared and alternative sequences through their connections. These connections place each segment in a structural context that is absent from a linear sequence alone. We introduce PangenomeFM, a self-supervised model for learning from this context. The encoder combines attention over nearby genomic positions with attention over connected segments through a learned gate and is pretrained to recover hidden connections. Its representations remain frozen during biological evaluation, alongside independently pretrained nucleotide embeddings. We evaluate structural-variant classification, regulatory-element annotation and susceptibility to allele-specific activity on held-out chromosomes. Comparisons with genomic features, sequence embeddings, graph statistics and untrained encoders assess both the predictive value of graph structure and the contribution of pretraining. This framework provides a controlled setting for studying how pangenome connectivity can inform biological prediction.
+Human genome analysis depends on how genetic diversity is represented. Pangenome graphs encode alternative sequence arrangements, but most genomic foundation models learn from linear DNA. We developed \method, a self-supervised model that couples genomic-position attention with attention over graph connections. We froze its representations for biological prediction. Across held-out chromosomes, graph features increased average precision beyond coordinates and nucleotide embeddings by 0.003--0.004 for regulatory-element classification and 0.034--0.040 for insertion-versus-deletion classification. Reconstruction transferred more effectively across graph resources with immediate-neighbourhood context, although masking cues and shared donors limit interpretation. Graph statistics and untrained encoders recovered much of the biological gain, and connection counts exposed a shortcut in pretraining. Our results support pangenome connectivity as a complementary genomic representation, while showing that the contribution of learned weights must be established separately.
 \end{abstract}
 
 % Long Note: Six-paragraph Introduction as requested: (1) linear to graph
@@ -146,7 +162,7 @@ Human pangenome graphs describe shared and alternative sequences through their c
 
 Human genome analysis relies on a reference sequence to locate genes, regulatory elements and variants. GRCh38 and the telomere-to-telomere CHM13 assembly provide widely used coordinate systems\cite{schneider2017grch38,nurk2022complete}, but neither directly represents the alternative sequence arrangements found across individuals. Sequences absent from a reference must be described relative to it, complicating alignment, variant discovery and annotation in structurally diverse regions\cite{paten2017genome,eizenga2020pangenome}. Pangenome graphs represent these alternatives as connected segments, with different genomic arrangements following different routes through the graph\cite{garrison2018variation,li2020minigraph,hickey2024pangenome}. Haplotype-resolved assemblies from the Human Pangenome Reference Consortium (HPRC) and Human Genome Structural Variation Consortium (HGSVC) provide the basis for studying human genomes in this form\cite{hprc2023draft,hgsvc2021,hgsvc32025}.
 
-The choice of genome representation affects which biological signals an analysis can recover. Assembly-based pangenomes improve access to structurally diverse loci and support variant discovery\cite{hprc2023draft,hgsvc32025}, while pangenome-based inference enables known structural variants (SVs) to be genotyped across large cohorts\cite{siren2021giraffe,ebler2022pangenie}. In functional genomics, Macias-Velasco and colleagues compared reference, personal and pangenome representations across accessibility, expression, methylation and chromatin-contact assays; the effects of genome choice depended on the assay and its analysis pipeline\cite{maciasvelasco2026benchmarking}. The structural context represented by a pangenome may also be useful as an input to predictive models. Whether it contributes information beyond nucleotide sequence and genomic position remains a question for representation learning.
+The choice of genome representation affects which biological signals an analysis can recover. Assembly-based pangenomes improve access to structurally diverse loci and support variant discovery\cite{hprc2023draft,hgsvc32025}, while pangenome-based inference enables known structural variants (SVs) to be genotyped across large cohorts\cite{siren2021giraffe,ebler2022pangenie}. In functional genomics, Macias-Velasco and colleagues compared reference, personal and pangenome representations across accessibility, expression, methylation and chromatin-contact assays; the effects of genome choice depended on the assay and its analysis pipeline\cite{macias2026benchmarking}. The structural context represented by a pangenome may also be useful as an input to predictive models. Whether it contributes information beyond nucleotide sequence and genomic position remains a question for representation learning.
 
 Genomic foundation models provide a natural sequence baseline for this question. DNABERT, DNABERT-2, HyenaDNA and the Nucleotide Transformer learn reusable features from DNA and support regulatory and variant-related prediction\cite{ji2021dnabert,zhou2024dnabert2,nguyen2023hyenadna,dalla2025nucleotide}. Related approaches score variants from masked-nucleotide likelihoods\cite{benegas2023gpn} or predict regulatory activity directly from sequence\cite{avsec2021enformer}. Although their training data may contain population diversity, each input is a linear string without an explicit description of how alternative segments connect. Frozen sequence representations also vary in their utility across tasks and do not consistently outperform simpler regulatory baselines\cite{tang2025evaluating}. Assessing a graph representation therefore requires a comparison with a specified sequence model on the same biological examples.
 
@@ -154,7 +170,7 @@ Pangenome topology describes relationships that genomic coordinates and nucleoti
 
 Pangenome information has entered predictive models through several representations (Fig.~\ref{fig:paradigms}). DeepGene converts graph-derived information into sequence input\cite{zhang2025deepgene}, whereas PangenomeX uses a phylogeny-guided network of copy-number relationships among individuals for supervised prediction\cite{xue2025pangenomex}. Self-supervision on native segment connectivity offers another route. Graph attention\cite{velickovic2018gat} and reconstruction of connections or masked node features\cite{kipf2016vgae,hu2020strategies,hou2022graphmae} provide established building blocks for this task. In link prediction, positive and negative sampling can introduce cues that inflate performance\cite{li2023heart,dong2022fakeedge}, a form of shortcut learning\cite{geirhos2020shortcut}. Evaluating pangenome pretraining consequently requires controls for the information already available in graph statistics and in an untrained encoder.
 
-Here we introduce \method, a self-supervised model for learning segment representations from human pangenome connectivity (Fig.~\ref{fig:method}). The encoder retains segment orientation and couples attention over nearby genomic positions with attention over connected segments through a feature-wise gate. Pretraining recovers hidden connections without biological labels; the encoder is then frozen for downstream prediction. We evaluate known SV types, candidate cis-regulatory elements (cCREs) and EN-TEx allele-specific activity\cite{rozowsky2023entex} on held-out chromosomes. Comparisons with frozen sequence embeddings, graph statistics and untrained encoders assess whether graph context contributes reusable biological information and whether that contribution depends on learned weights. Alternative pretraining objectives and external datasets extend this evaluation.
+Here we introduce \method, a self-supervised model that learns segment representations directly from human pangenome connectivity (Fig.~\ref{fig:method}). Its encoder retains segment orientation and couples attention over nearby genomic positions with attention over connected segments through a feature-wise gate. We pretrain the model to recover hidden connections, then freeze it for biological prediction. On held-out chromosomes, its representations add a small contribution to candidate cis-regulatory element (cCRE) classification and a larger contribution to distinguishing known insertions from deletions, beyond genomic features and frozen nucleotide embeddings. EN-TEx allele-specific activity\cite{rozowsky2023entex} and external datasets test the limits of this reuse. Graph statistics and untrained encoders recover much of the predictive gain, while reconstruction controls expose a cue introduced by masking. These comparisons distinguish the value of graph context from the contribution of learned weights and motivate alternative pretraining objectives.
 
 \begin{figure}[tbp]
   \centering
@@ -195,13 +211,13 @@ Here we introduce \method, a self-supervised model for learning segment represen
 
 We evaluated frozen PangenomeFM representations ($T$) alongside genomic coordinate and structural features ($C$) and frozen Nucleotide Transformer embeddings ($S$). Performance is measured by average precision (AP), which summarizes the precision--recall trade-off. Strict context restricts the graph to each 5-Mb region; one-hop context includes directly connected segments. Biological labels are used only to fit the downstream classifier.
 
-For known SVs, graph connectivity may distinguish the sequence arrangements associated with different event types. We classified HGSVC3 insertions and deletions of at least 50~bp\cite{hgsvc32025} using features from the graph segments at each event's two endpoints. Adding $T$ to $C+S$ increased AP from 0.8721 to 0.9063 under strict context and to 0.9122 under one-hop context, with paired gains of 0.0342 (\CI 0.0324--0.0362) and 0.0401 (0.0361--0.0440), respectively (Fig.~\ref{fig:sv}a,b). One-hop context added 0.0058 (0.0033--0.0084) beyond strict context.
+We first asked whether graph connectivity could help distinguish known SV types beyond genomic position and nucleotide sequence. We classified HGSVC3 insertions and deletions of at least 50~bp\cite{hgsvc32025} using features from the graph segments at each event's two endpoints. Adding $T$ to $C+S$ increased AP from 0.8721 to 0.9063 under strict context and to 0.9122 under one-hop context, with paired gains of 0.0342 (\CI 0.0324--0.0362) and 0.0401 (0.0361--0.0440), respectively (Fig.~\ref{fig:sv}a,b). One-hop context added 0.0058 (0.0033--0.0084) beyond strict context.
 
 Sequence embeddings improved on k-mer composition by 0.0808 (Supplementary Table~\ref{S-stab:factorial}), but added little once graph representations were included: adding $S$ to $C+T$ changed AP by $-0.0002$ and $-0.0005$, with both intervals spanning zero. Thus, the additional contribution of this sequence representation depended on the baseline; the reciprocal comparison does not establish that graph context captures all sequence information relevant to SVs.
 
 The topology gain was positive in all four allele-frequency groups and in every adequately powered length group. It was largest for 50--100-bp events (0.0475 strict, 0.0547 one-hop; Fig.~\ref{fig:sv}c,d and Supplementary Table~\ref{S-stab:svlength}). Events of 100~kb--1~Mb had negative, highly uncertain estimates, with about 27 test examples per run.
 
-Graph complexity did not show the expected association with topology gain. Using a score fixed before model evaluation (Methods), strict gains decreased from 0.0419 to 0.0380 and 0.0302 across low-, medium- and high-complexity regions; one-hop gains were 0.0499, 0.0474 and 0.0336 (Supplementary Fig.~\ref{S-sfig:complexity}). High-minus-low differences were $-0.0117$ ($-0.0230$ to $-0.0019$) and $-0.0162$ ($-0.0267$ to $-0.0092$), although exact fold-level tests did not resolve these differences ($P=0.125$ and $P=0.0625$).
+We then examined whether graph complexity explained the variation in topology gain. Using a score fixed before model evaluation (Methods), we found that strict gains decreased from 0.0419 to 0.0380 and 0.0302 across low-, medium- and high-complexity regions; one-hop gains were 0.0499, 0.0474 and 0.0336 (Supplementary Fig.~\ref{S-sfig:complexity}). High-minus-low differences were $-0.0117$ ($-0.0230$ to $-0.0019$) and $-0.0162$ ($-0.0267$ to $-0.0092$), although exact fold-level tests did not resolve these differences ($P=0.125$ and $P=0.0625$).
 
 To assess overlap between the source populations, we stratified test events by carrier and excluded the five known donors shared between HGSVC3 and HPRC. Across the remaining 60 donors, mean gains were 0.0367 (0.0339--0.0395) strict and 0.0430 (0.0393--0.0470) one-hop (Supplementary Fig.~\ref{S-sfig:donor}). Variants from these donors on other chromosomes remained in the training set, so the analysis addresses resource overlap rather than prediction in unseen individuals.
 
@@ -225,7 +241,7 @@ To assess overlap between the source populations, we stratified test events by c
 
 We extended SV classification to inversions to assess whether the graph contribution persisted across event types and after adjustment for event length. The analysis retained all 174,267 primary-chromosome events at their observed frequencies: 110,623 insertions, 63,346 deletions and 298 inversions. Each event was represented by the segment containing its first affected base. Adding $T$ to $C+S$ increased macro AP, the unweighted mean of the three one-versus-rest APs, from 0.4070 to 0.4740 under strict context and to 0.4586 under one-hop context (Table~\ref{tab:sv-natural}). After including event log length ($L$) and 14 label-free graph statistics ($H$), the increments from $T$ were 0.0477 (0.0399--0.0553) and 0.0150 (0.0077--0.0214).
 
-The inversion-specific increments after $L$ and $H$ were uncertain, with intervals spanning zero in both contexts. The class contained only 298 events. Matching chromosome and length distributions across classes also made the macro gain after $H$ inconclusive (223 events per class; Supplementary Note~\ref{S-snote:threeclass}). For the natural-frequency macro contrasts, exact fold-level sign-flip tests reached the minimum attainable value of $P=0.0625$ (Benjamini--Hochberg $q=0.0741$ within the metric); the positive bootstrap intervals are therefore pointwise evidence. These analyses describe the ascertained HGSVC3 call set and lack an untrained-encoder comparison, limiting attribution of the macro gain to pretraining.
+The inversion-specific increments after $L$ and $H$ were uncertain, with intervals spanning zero in both contexts. The class contained only 298 events. Matching chromosome and length distributions across classes also made the macro gain after $H$ inconclusive (223 events per class; Supplementary Note~\ref{S-snote:threeclass}). For the natural-frequency macro contrasts, exact fold-level sign-flip tests reached the minimum attainable value of $P=0.0625$ (Benjamini--Hochberg $q=0.0741$ within the metric); the positive bootstrap intervals are therefore pointwise evidence. These analyses describe the ascertained HGSVC3 call set. Without an untrained-encoder comparison, we cannot determine how much of the macro gain comes from pretraining.
 
 \begin{table}[tbp]
 \centering
@@ -254,13 +270,15 @@ Inversion AP & One-hop & $C+S+L+H$ & 0.1743 & 0.1728 & $-$0.0015 & $-$0.0197 to 
 \subsection{Graph and sequence representations are complementary for regulatory elements}
 \label{sec:ccre-result}
 
-For ENCODE cCRE classification\cite{encode2020registry}, $C+S$ reached AP 0.9185. Adding $T$ increased AP to 0.9225 under strict context and 0.9219 under one-hop context, with paired gains of 0.0040 (0.0029--0.0048) and 0.0034 (0.0017--0.0048) (Fig.~\ref{fig:ccre}a,b). Sequence made a larger contribution than in SV classification: $S$ improved on k-mer composition by 0.3151 and added 0.0248 and 0.0261 beyond $C+T$ (Supplementary Table~\ref{S-stab:factorial}).
+We next asked whether the same frozen graph representations could inform regulatory annotation. For ENCODE cCRE classification\cite{encode2020registry}, $C+S$ reached AP 0.9185. Adding $T$ increased AP to 0.9225 under strict context and 0.9219 under one-hop context, with paired gains of 0.0040 (0.0029--0.0048) and 0.0034 (0.0017--0.0048) (Fig.~\ref{fig:ccre}a,b). Sequence made a larger contribution than in SV classification: $S$ improved on k-mer composition by 0.3151 and added 0.0248 and 0.0261 beyond $C+T$ (Supplementary Table~\ref{S-stab:factorial}).
 
 The graph contribution varied across regulatory annotations. Comparing each ENCODE class with the common background using the same binary classifier gave strict gains of 0.0058 for promoter-like elements, 0.0209 for proximal enhancer-like elements, 0.0054 for distal enhancer-like elements and 0.0349 for CTCF-only elements (Fig.~\ref{fig:ccre}c). Gains were larger in high-complexity regions (0.0076) than in low- and medium-complexity regions (0.0018 and 0.0014; Fig.~\ref{fig:ccre}d). These descriptive subgroup analyses reuse predictions from a single classifier.
 
 EN-TEx provided a test of measured regulatory activity across tissues from four individuals\cite{rozowsky2023entex}. Because each segment has one representation, the allele-specific (AS) tasks predict a locus's susceptibility to imbalance across measurements. The contribution of $T$ was assay dependent (Supplementary Table~\ref{S-stab:entex}). AS-prone cCRE prediction was inconclusive in both contexts (strict gain 0.00021, $-0.00032$ to 0.00075), as was active-versus-repressed distal enhancer classification averaged over five tissues.
 
-For AS single-nucleotide variants (SNVs), CTCF gains were 0.00147 (0.00010--0.00355) strict and 0.00225 (0.00096--0.00348) one-hop. H3K4me3 had positive intervals in both contexts and H3K27ac in one-hop context only; RNA allele-specific expression, ATAC-seq accessibility and H3K27me3 were inconclusive. Absolute AP was low (0.025--0.10 for SNV endpoints), consistent with the rarity of AS events. The intervals are unadjusted across assays, and the predictions do not identify the favoured allele in an individual. The evidence supports, at most, a small locus-level contribution for selected assays.
+For AS single-nucleotide variants (SNVs), CTCF gains were 0.00147 (0.00010--0.00355) strict and 0.00225 (0.00096--0.00348) one-hop. H3K4me3 had positive intervals in both contexts and H3K27ac in one-hop context only; RNA allele-specific expression, ATAC-seq accessibility and H3K27me3 were inconclusive. Absolute AP was low (0.025--0.10 for SNV endpoints), consistent with the rarity of AS events.
+
+We examined whether frequently measured loci accounted for these increments by giving each locus equal total weight at evaluation. CTCF intervals then included zero, whereas H3K27ac retained positive intervals in both contexts. H3K4me3 gains fell to approximately 0.0011 and were inconclusive; neither context passed the multiplicity sensitivity for the three-assay extension (Supplementary Note~\ref{S-snote:entex}). These comparisons show that the apparent benefit depends on which measurements receive weight. The predictions do not identify the favoured allele in an individual, and we interpret the positive findings as limited evidence for predicting a locus's propensity for imbalance.
 
 \begin{figure}[tbp]
   \centering
@@ -319,7 +337,7 @@ cCRE & Strict & 0.0027 (0.0020 to 0.0034) & 0.0035 (0.0024 to 0.0045) & $-$0.000
 \subsection{Connection counts expose a shortcut in reconstruction pretraining}
 \label{sec:shortcut-result}
 
-On held-out chromosomes, connection-recovery AP was 0.9501 under strict context and 0.9880 under one-hop context, against a chance level of approximately 0.50 (Supplementary Fig.~\ref{S-sfig:controls}a and Supplementary Note~\ref{S-snote:reconstruction}). Under strict context, preferential attachment---the product of the endpoints' visible connection counts\cite{barabasi1999emergence,libennowell2007link}---reached 0.9835, exceeding \method. The sum of the connection counts reached 0.9742, compared with 0.7003 for genomic coordinates and 0.6555 for k-mer composition.
+On held-out chromosomes, connection-recovery AP was 0.9501 under strict context and 0.9880 under one-hop context, against a chance level of approximately 0.50 (Supplementary Fig.~\ref{S-sfig:controls}a and Supplementary Note~\ref{S-snote:reconstruction}). Under strict context, preferential attachment (the product of the endpoints' visible connection counts\cite{barabasi1999emergence,libennowell2007link}) reached 0.9835, exceeding \method. The sum of the connection counts reached 0.9742, compared with 0.7003 for genomic coordinates and 0.6555 for k-mer composition.
 
 The masking procedure creates an asymmetry between positive and negative candidates. Hiding a true connection decreases the visible connection count at its endpoints, whereas a matched negative pair need not lose a connection. Complete-graph counts supplied to the encoder make this deficit potentially detectable. Recomputing the baselines on the visible graph reproduced the reported scores (Supplementary Note~\ref{S-snote:reconstruction}). Under one-hop context, \method exceeded preferential attachment in all complexity groups, but expansion changed both encoder inputs and baseline scores. This comparison alone cannot establish removal of the masking cue.
 
@@ -345,15 +363,15 @@ At 265 complex loci with published COSIGT results\cite{bolognini2026cosigt}, we 
 \section{Discussion}
 \label{sec:discussion}
 
-Pangenome representation learning must account for two relationships among sequences: proximity in genomic coordinates and adjacency along alternative genomic arrangements. \method couples these relationships within each encoder layer, using oriented segments to retain the direction of graph connections. Segment identifiers provide a common unit for linking these representations to biological annotations, while frozen evaluation separates self-supervised training from label-dependent fitting. Pretraining is thereby defined on native pangenome connections, with segment-level representations that can be evaluated against sequence features and simpler descriptions of graph structure.
+We found that frozen pangenome graph representations complement nucleotide embeddings, with a larger contribution to insertion-versus-deletion classification than to regulatory-element annotation. This contribution persisted across chromosome partitions, but graph statistics and untrained encoders recovered much of it. After graph statistics were included, trained weights had their clearest pointwise advantage in strict SV classification; the comparisons did not survive multiplicity correction. The biological value of graph context is therefore better supported than a general benefit from pretraining. By coupling genomic proximity and graph adjacency, \method provides a way to study these contributions on the same segments and biological examples.
 
 The expected role of graph context differs across biological tasks. SV type describes a change in sequence arrangement, making local connectivity directly relevant to the target. Regulatory annotation and measured activity depend on additional sequence and cellular features that an aggregate graph does not encode. In particular, a single vector shared by both alleles can describe a locus's structural setting but cannot identify the allele favoured in a donor or tissue. Extending this representation to individual function will require reliable links between segments, haplotype paths and matched functional measurements.
 
-A central challenge for self-supervised graph learning is to distinguish relationships learned from the graph from cues created by the training task. Edge masking changes the neighbourhood that the encoder observes, and candidate matching must account for those changes. Junction re-pairing addresses endpoint exposure, whereas masked sequence-feature reconstruction leaves connectivity intact and predicts segment content. Their value as pretraining objectives ultimately depends on biological comparisons with matched untrained encoders, graph statistics and sequence baselines, evaluated on chromosomes reserved from model development.
+Our reconstruction analysis also identified a problem in the training task itself. Hiding a positive connection changes its endpoints' visible connection counts, whereas a matched negative pair need not undergo the same change. A model can exploit this asymmetry without learning the relationships that the task is intended to measure. Junction re-pairing removes the endpoint-exposure cue, and bidirectional models learned this revised task in development experiments. Masked sequence-feature reconstruction offers a second approach that leaves connectivity intact. Neither result yet establishes biological transfer across independent chromosome partitions, so reconstruction accuracy alone cannot determine which objective should be used.
 
 The present evaluation also has limits imposed by the data and representations. Chromosome hold-out separates genomic regions but allows the same donors to contribute to training and testing; shared donors further complicate transfer between graph resources. Long-segment end sampling restricts the sequence baseline and warrants comparison with models that retain more nucleotide context. For SVs, ascertainment and the inferred second endpoint of insertions constrain interpretation to the event representations studied. Genotyping applications additionally require truth genotypes and a defined callable population, including complex and copy-number-variable regions.
 
-Further progress will require training signals that reward biologically useful relationships within pangenome graphs, together with evaluations that separate their contribution from the information already present in the inputs. Sequence-conditioned encoders could distinguish structurally similar segments through their nucleotide content, while path-aware representations could distinguish haplotypes traversing the same locus. Both extensions require evaluation on chromosomes reserved from development, with matched model capacity and stronger sequence comparators. Such comparisons would establish whether the added biological detail improves prediction beyond the existing inputs.
+Taken together, our results show where population graph structure contributes to biological prediction and where the current representation remains insufficient. Its stronger contribution to known SV types makes sequence arrangement a useful starting point for further development; the small, assay-dependent EN-TEx gains and inconclusive external tests argue against broad claims of functional transfer. Sequence-conditioned encoders may distinguish structurally similar segments by their nucleotide content, while path-aware representations could distinguish haplotypes traversing the same locus. We would evaluate both on chromosomes reserved from development, against matched untrained encoders, graph statistics and stronger sequence models. Such tests are needed to establish whether pretraining extracts biological information that these simpler representations leave unused.
 
 % Long Note: Methods open with the novel components (graph representation,
 % coupled encoder, pretraining objective with loss and optimization, frozen
@@ -498,345 +516,10 @@ Source code, compact result tables and experiment commands are available at \url
 
 \begingroup
 \small
-\begin{thebibliography}{41}
-\providecommand{\natexlab}[1]{#1}
-\providecommand{\url}[1]{\texttt{#1}}
-\expandafter\ifx\csname urlstyle\endcsname\relax
-  \providecommand{\doi}[1]{doi: #1}\else
-  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
-
-\bibitem[Schneider et~al.(2017)Schneider, Graves-Lindsay, Howe, Bouk, Chen,
-  Kitts, Murphy, Pruitt, Thibaud-Nissen, et~al.]{schneider2017grch38}
-Valerie~A. Schneider, Tina Graves-Lindsay, Kerstin Howe, Nathan Bouk,
-  Hsiu-Chuan Chen, Paul~A. Kitts, Terence~D. Murphy, Kim~D. Pruitt,
-  Fran\c{c}oise Thibaud-Nissen, et~al.
-\newblock Evaluation of {GRCh38} and de novo haploid genome assemblies
-  demonstrates the enduring quality of the reference assembly.
-\newblock \emph{Genome Research}, 27\penalty0 (5):\penalty0 849--864, 2017.
-\newblock \doi{10.1101/gr.213611.116}.
-
-\bibitem[Nurk et~al.(2022)Nurk, Koren, Rhie, Rautiainen, Bzikadze, Mikheenko,
-  Vollger, Altemose, Uralsky, Gershman, et~al.]{nurk2022complete}
-Sergey Nurk, Sergey Koren, Arang Rhie, Mikko Rautiainen, Andrey~V. Bzikadze,
-  Alla Mikheenko, Mitchell~R. Vollger, Nicolas Altemose, Lev Uralsky, Ariel
-  Gershman, et~al.
-\newblock The complete sequence of a human genome.
-\newblock \emph{Science}, 376\penalty0 (6588):\penalty0 44--53, 2022.
-\newblock \doi{10.1126/science.abj6987}.
-
-\bibitem[Paten et~al.(2017)Paten, Novak, Eizenga, and
-  Garrison]{paten2017genome}
-Benedict Paten, Adam~M. Novak, Jordan~M. Eizenga, and Erik Garrison.
-\newblock Genome graphs and the evolution of genome inference.
-\newblock \emph{Genome Research}, 27\penalty0 (5):\penalty0 665--676, 2017.
-\newblock \doi{10.1101/gr.214155.116}.
-
-\bibitem[Eizenga et~al.(2020)Eizenga, Novak, Sibbesen, Heumos, Ghaffaari,
-  Hickey, Chang, Seaman, Rounthwaite, Ebler, et~al.]{eizenga2020pangenome}
-Jordan~M. Eizenga, Adam~M. Novak, Jonas~A. Sibbesen, Simon Heumos, Ali
-  Ghaffaari, Glenn Hickey, Xian Chang, Josiah~D. Seaman, Robin Rounthwaite,
-  Jana Ebler, et~al.
-\newblock Pangenome graphs.
-\newblock \emph{Annual Review of Genomics and Human Genetics}, 21:\penalty0
-  139--162, 2020.
-\newblock \doi{10.1146/annurev-genom-120219-080406}.
-
-\bibitem[Garrison et~al.(2018)Garrison, Sir{\'e}n, Novak, Hickey, Eizenga,
-  Dawson, Jones, Garg, Markello, Lin, et~al.]{garrison2018variation}
-Erik Garrison, Jouni Sir{\'e}n, Adam~M. Novak, Glenn Hickey, Jordan~M. Eizenga,
-  Eric~T. Dawson, William Jones, Shilpa Garg, Charles Markello, Michael~F. Lin,
-  et~al.
-\newblock Variation graph toolkit improves read mapping by representing genetic
-  variation in the reference.
-\newblock \emph{Nature Biotechnology}, 36\penalty0 (9):\penalty0 875--879,
-  2018.
-\newblock \doi{10.1038/nbt.4227}.
-
-\bibitem[Li et~al.(2020)Li, Feng, and Chu]{li2020minigraph}
-Heng Li, Xiaowen Feng, and Chong Chu.
-\newblock The design and construction of reference pangenome graphs with
-  minigraph.
-\newblock \emph{Genome Biology}, 21:\penalty0 265, 2020.
-\newblock \doi{10.1186/s13059-020-02168-z}.
-
-\bibitem[Hickey et~al.(2024)Hickey, Monlong, Ebler, Novak, Eizenga, Gao,
-  Marschall, Li, and Paten]{hickey2024pangenome}
-Glenn Hickey, Jean Monlong, Jana Ebler, Adam~M. Novak, Jordan~M. Eizenga, Yan
-  Gao, Tobias Marschall, Heng Li, and Benedict Paten.
-\newblock Pangenome graph construction from genome alignments with
-  minigraph-cactus.
-\newblock \emph{Nature Biotechnology}, 42\penalty0 (4):\penalty0 663--673,
-  2024.
-\newblock \doi{10.1038/s41587-023-01793-w}.
-
-\bibitem[Liao et~al.(2023)Liao, Asri, Ebler, Doerr, Haukness, Hickey, Lu,
-  Lucas, Monlong, Abel, et~al.]{hprc2023draft}
-Wen-Wei Liao, Mobin Asri, Jana Ebler, Daniel Doerr, Marina Haukness, Glenn
-  Hickey, Shuangjia Lu, Julian~K. Lucas, Jean Monlong, Haley~J. Abel, et~al.
-\newblock A draft human pangenome reference.
-\newblock \emph{Nature}, 617\penalty0 (7960):\penalty0 312--324, 2023.
-\newblock \doi{10.1038/s41586-023-05896-x}.
-
-\bibitem[Ebert et~al.(2021)Ebert, Audano, Zhu, Rodriguez-Martin, Porubsky,
-  Bonder, Sulovari, Ebler, Zhou, Serra~Mari, et~al.]{hgsvc2021}
-Peter Ebert, Peter~A. Audano, Qihui Zhu, Bernardo Rodriguez-Martin, David
-  Porubsky, Marc~Jan Bonder, Arvis Sulovari, Jana Ebler, Weichen Zhou, Rebecca
-  Serra~Mari, et~al.
-\newblock Haplotype-resolved diverse human genomes and integrated analysis of
-  structural variation.
-\newblock \emph{Science}, 372\penalty0 (6537):\penalty0 eabf7117, 2021.
-\newblock \doi{10.1126/science.abf7117}.
-
-\bibitem[Logsdon et~al.(2025)]{hgsvc32025}
-Glennis~A. Logsdon et~al.
-\newblock Complex genetic variation in nearly complete human genomes.
-\newblock \emph{Nature}, 644:\penalty0 430--441, 2025.
-
-\bibitem[Sir{\'e}n et~al.(2021)Sir{\'e}n, Monlong, Chang, Novak, Eizenga,
-  Markello, Sibbesen, Hickey, Chang, Carroll, et~al.]{siren2021giraffe}
-Jouni Sir{\'e}n, Jean Monlong, Xian Chang, Adam~M. Novak, Jordan~M. Eizenga,
-  Charles Markello, Jonas~A. Sibbesen, Glenn Hickey, Pi-Chuan Chang, Andrew
-  Carroll, et~al.
-\newblock Pangenomics enables genotyping of known structural variants in 5202
-  diverse genomes.
-\newblock \emph{Science}, 374\penalty0 (6574):\penalty0 abg8871, 2021.
-\newblock \doi{10.1126/science.abg8871}.
-
-\bibitem[Ebler et~al.(2022)Ebler, Ebert, Clarke, Rausch, Audano, Houwaart,
-  et~al.]{ebler2022pangenie}
-Jana Ebler, Peter Ebert, Wayne~E. Clarke, Tobias Rausch, Peter~A. Audano,
-  Torsten Houwaart, et~al.
-\newblock Pangenome-based genome inference allows efficient and accurate
-  genotyping across a wide spectrum of variant classes.
-\newblock \emph{Nature Genetics}, 54:\penalty0 518--525, 2022.
-\newblock \doi{10.1038/s41588-022-01043-w}.
-
-\bibitem[Macias-Velasco et~al.(2026)Macias-Velasco, Zhuo, Tomlinson,
-  et~al.]{maciasvelasco2026benchmarking}
-Juan~F. Macias-Velasco, Xiaoyu Zhuo, Chad Tomlinson, et~al.
-\newblock Benchmarking genome choice in functional genomics analyses.
-\newblock \emph{Nature Communications}, 17:\penalty0 6837, 2026.
-\newblock \doi{10.1038/s41467-026-73663-3}.
-
-\bibitem[Ji et~al.(2021)Ji, Zhou, Liu, and Davuluri]{ji2021dnabert}
-Yanrong Ji, Zhihan Zhou, Han Liu, and Ramana~V. Davuluri.
-\newblock {DNABERT}: pre-trained bidirectional encoder representations from
-  transformers model for {DNA}-language in genome.
-\newblock \emph{Bioinformatics}, 37\penalty0 (15):\penalty0 2112--2120, 2021.
-\newblock \doi{10.1093/bioinformatics/btab083}.
-
-\bibitem[Zhou et~al.(2024)Zhou, Ji, Li, Dutta, Davuluri, and
-  Liu]{zhou2024dnabert2}
-Zhihan Zhou, Yanrong Ji, Weijian Li, Pratik Dutta, Ramana~V. Davuluri, and Han
-  Liu.
-\newblock {DNABERT-2}: Efficient foundation model and benchmark for
-  multi-species genomes.
-\newblock In \emph{International Conference on Learning Representations}, 2024.
-
-\bibitem[Nguyen et~al.(2023)Nguyen, Poli, Faizi, Thomas, Wornow, Birch-Sykes,
-  Massaroli, Patel, Rabideau, Bengio, Ermon, R{\'e}, and
-  Baccus]{nguyen2023hyenadna}
-Eric Nguyen, Michael Poli, Marjan Faizi, Armin Thomas, Michael Wornow, Callum
-  Birch-Sykes, Stefano Massaroli, Aman Patel, Clayton Rabideau, Yoshua Bengio,
-  Stefano Ermon, Christopher R{\'e}, and Stephen Baccus.
-\newblock {HyenaDNA}: Long-range genomic sequence modeling at single nucleotide
-  resolution.
-\newblock In \emph{Advances in Neural Information Processing Systems},
-  volume~36, 2023.
-
-\bibitem[Dalla-Torre et~al.(2025)Dalla-Torre, Gonzalez, Mendoza-Revilla,
-  Carranza, Grzywaczewski, Oteri, Dallago, Trop, de~Almeida, Sirelkhatim,
-  et~al.]{dalla2025nucleotide}
-Hugo Dalla-Torre, Liam Gonzalez, Javier Mendoza-Revilla, Nicolas~Lopez
-  Carranza, Adam~Henryk Grzywaczewski, Francesco Oteri, Christian Dallago, Evan
-  Trop, Bernardo~P. de~Almeida, Hassan Sirelkhatim, et~al.
-\newblock Nucleotide transformer: building and evaluating robust foundation
-  models for human genomics.
-\newblock \emph{Nature Methods}, 22\penalty0 (2):\penalty0 287--297, 2025.
-\newblock \doi{10.1038/s41592-024-02523-z}.
-
-\bibitem[Benegas et~al.(2023)Benegas, Batra, and Song]{benegas2023gpn}
-Gonzalo Benegas, Sanjit~Singh Batra, and Yun~S. Song.
-\newblock {DNA} language models are powerful predictors of genome-wide variant
-  effects.
-\newblock \emph{Proceedings of the National Academy of Sciences USA},
-  120\penalty0 (44):\penalty0 e2311219120, 2023.
-\newblock \doi{10.1073/pnas.2311219120}.
-
-\bibitem[Avsec et~al.(2021)Avsec, Agarwal, Visentin, Ledsam, Grabska-Barwinska,
-  Taylor, Assael, Jumper, Kohli, and Kelley]{avsec2021enformer}
-{\v{Z}}iga Avsec, Vikram Agarwal, Daniel Visentin, Joseph~R. Ledsam, Agnieszka
-  Grabska-Barwinska, Kyle~R. Taylor, Yannis Assael, John Jumper, Pushmeet
-  Kohli, and David~R. Kelley.
-\newblock Effective gene expression prediction from sequence by integrating
-  long-range interactions.
-\newblock \emph{Nature Methods}, 18:\penalty0 1196--1203, 2021.
-\newblock \doi{10.1038/s41592-021-01252-x}.
-
-\bibitem[Tang et~al.(2025)Tang, Somia, Yu, and Koo]{tang2025evaluating}
-Ziqi Tang, Nirali Somia, Yiyang Yu, and Peter~K. Koo.
-\newblock Evaluating the representational power of pre-trained {DNA} language
-  models for regulatory genomics.
-\newblock \emph{Genome Biology}, 26:\penalty0 203, 2025.
-\newblock \doi{10.1186/s13059-025-03674-8}.
-
-\bibitem[Zhang et~al.(2025)Zhang, Yang, Yin, Qian, and Sun]{zhang2025deepgene}
-Xiang Zhang, Mingjie Yang, Xunhang Yin, Yining Qian, and Fei Sun.
-\newblock {DeepGene}: An efficient foundation model for genomics based on
-  pan-genome graph transformer.
-\newblock \emph{IEEE/ACM Transactions on Computational Biology and
-  Bioinformatics}, 22:\penalty0 3143--3152, 2025.
-
-\bibitem[Xue et~al.(2025)Xue, Wang, Wang, Yuan, Wang, Zeng, Jin, Zhu, and
-  Wang]{xue2025pangenomex}
-Zhengfa Xue, Yu~Wang, Xuwen Wang, Jiajing Yuan, Lin Wang, Jingyu Zeng, Xin Jin,
-  Huanhuan Zhu, and Jiayin Wang.
-\newblock {PangenomeX}: a graph convolutional network-based pangenome framework
-  for unbiased population-scale genomic variation analysis.
-\newblock \emph{Briefings in Bioinformatics}, 26\penalty0 (5):\penalty0
-  bbaf550, 2025.
-\newblock \doi{10.1093/bib/bbaf550}.
-
-\bibitem[Veli{\v{c}}kovi{\'c} et~al.(2018)Veli{\v{c}}kovi{\'c}, Cucurull,
-  Casanova, Romero, Li{\`o}, and Bengio]{velickovic2018gat}
-Petar Veli{\v{c}}kovi{\'c}, Guillem Cucurull, Arantxa Casanova, Adriana Romero,
-  Pietro Li{\`o}, and Yoshua Bengio.
-\newblock Graph attention networks.
-\newblock In \emph{International Conference on Learning Representations}, 2018.
-
-\bibitem[Kipf and Welling(2016)]{kipf2016vgae}
-Thomas~N. Kipf and Max Welling.
-\newblock Variational graph auto-encoders.
-\newblock \emph{arXiv}, abs/1611.07308, 2016.
-\newblock \doi{10.48550/arXiv.1611.07308}.
-
-\bibitem[Hu et~al.(2020)Hu, Liu, Gomes, Zitnik, Liang, Pande, and
-  Leskovec]{hu2020strategies}
-Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande,
-  and Jure Leskovec.
-\newblock Strategies for pre-training graph neural networks.
-\newblock In \emph{International Conference on Learning Representations}, 2020.
-
-\bibitem[Hou et~al.(2022)Hou, Liu, Cen, Dong, Yang, Wang, and
-  Tang]{hou2022graphmae}
-Zhenyu Hou, Xiao Liu, Yukuo Cen, Yuxiao Dong, Hongxia Yang, Chunjie Wang, and
-  Jie Tang.
-\newblock {GraphMAE}: Self-supervised masked graph autoencoders.
-\newblock \emph{arXiv}, abs/2205.10803, 2022.
-\newblock \doi{10.48550/arXiv.2205.10803}.
-
-\bibitem[Li et~al.(2023)Li, Shomer, Mao, Zeng, Ma, Shah, Tang, and
-  Yin]{li2023heart}
-Juanhui Li, Harry Shomer, Haitao Mao, Shenglai Zeng, Yao Ma, Neil Shah, Jiliang
-  Tang, and Dawei Yin.
-\newblock Evaluating graph neural networks for link prediction: current
-  pitfalls and new benchmarking.
-\newblock In \emph{Advances in Neural Information Processing Systems (Datasets
-  and Benchmarks Track)}, volume~36, 2023.
-
-\bibitem[Dong et~al.(2022)Dong, Tian, Guo, Yang, and Chawla]{dong2022fakeedge}
-Kaiwen Dong, Yijun Tian, Zhichun Guo, Yang Yang, and Nitesh~V. Chawla.
-\newblock {FakeEdge}: alleviate dataset shift in link prediction.
-\newblock In \emph{Proceedings of the First Learning on Graphs Conference},
-  volume 198 of \emph{Proceedings of Machine Learning Research}, pages
-  56:1--56:19, 2022.
-
-\bibitem[Geirhos et~al.(2020)Geirhos, Jacobsen, Michaelis, Zemel, Brendel,
-  Bethge, and Wichmann]{geirhos2020shortcut}
-Robert Geirhos, J{\"o}rn-Henrik Jacobsen, Claudio Michaelis, Richard Zemel,
-  Wieland Brendel, Matthias Bethge, and Felix~A. Wichmann.
-\newblock Shortcut learning in deep neural networks.
-\newblock \emph{Nature Machine Intelligence}, 2:\penalty0 665--673, 2020.
-\newblock \doi{10.1038/s42256-020-00257-z}.
-
-\bibitem[Rozowsky et~al.(2023)Rozowsky, Gao, Borsari,
-  et~al.]{rozowsky2023entex}
-Joel Rozowsky, Jiahao Gao, Beatrice Borsari, et~al.
-\newblock The {EN-TEx} resource of multi-tissue personal epigenomes and
-  variant-impact models.
-\newblock \emph{Cell}, 186\penalty0 (7):\penalty0 1493--1511.e40, 2023.
-\newblock \doi{10.1016/j.cell.2023.02.018}.
-
-\bibitem[Moore et~al.(2020)Moore, Purcaro, Pratt, Epstein, Shoresh, Adrian,
-  Kawli, Davis, Dobin, et~al.]{encode2020registry}
-Jill~E. Moore, Michael~J. Purcaro, Henry~E. Pratt, Charles~B. Epstein, Noam
-  Shoresh, Jessika Adrian, Trupti Kawli, Carrie~A. Davis, Alexander Dobin,
-  et~al.
-\newblock Expanded encyclopaedias of {DNA} elements in the human and mouse
-  genomes.
-\newblock \emph{Nature}, 583\penalty0 (7818):\penalty0 699--710, 2020.
-\newblock \doi{10.1038/s41586-020-2493-4}.
-
-\bibitem[Hewitt and Liang(2019)]{hewitt2019control}
-John Hewitt and Percy Liang.
-\newblock Designing and interpreting probes with control tasks.
-\newblock In \emph{Proceedings of the 2019 Conference on Empirical Methods in
-  Natural Language Processing and the 9th International Joint Conference on
-  Natural Language Processing}, pages 2733--2743, 2019.
-\newblock \doi{10.18653/v1/D19-1275}.
-
-\bibitem[Barab{\'a}si and Albert(1999)]{barabasi1999emergence}
-Albert-L{\'a}szl{\'o} Barab{\'a}si and R{\'e}ka Albert.
-\newblock Emergence of scaling in random networks.
-\newblock \emph{Science}, 286\penalty0 (5439):\penalty0 509--512, 1999.
-\newblock \doi{10.1126/science.286.5439.509}.
-
-\bibitem[Liben-Nowell and Kleinberg(2007)]{libennowell2007link}
-David Liben-Nowell and Jon Kleinberg.
-\newblock The link-prediction problem for social networks.
-\newblock \emph{Journal of the American Society for Information Science and
-  Technology}, 58\penalty0 (7):\penalty0 1019--1031, 2007.
-\newblock \doi{10.1002/asi.20591}.
-
-\bibitem[Benegas et~al.(2025)Benegas, Eraslan, and Song]{benegas2025traitgym}
-Gonzalo Benegas, G{\"o}kcen Eraslan, and Yun~S. Song.
-\newblock Benchmarking {DNA} sequence models for causal regulatory variant
-  prediction in human genetics.
-\newblock \emph{bioRxiv}, 2025.
-\newblock \doi{10.1101/2025.02.11.637758}.
-
-\bibitem[Bolognini et~al.(2026)]{bolognini2026cosigt}
-Davide Bolognini et~al.
-\newblock {COSIGT}: population-scalable genotyping of complex loci from
-  low-coverage sequencing data using pangenome graphs.
-\newblock \emph{Genome Biology}, 27:\penalty0 286, 2026.
-\newblock \doi{10.1186/s13059-026-04242-4}.
-
-\bibitem[Sir{\'e}n and Paten(2022)]{siren2022gbz}
-Jouni Sir{\'e}n and Benedict Paten.
-\newblock {GBZ} file format for pangenome graphs.
-\newblock \emph{Bioinformatics}, 38\penalty0 (22):\penalty0 5012--5018, 2022.
-\newblock \doi{10.1093/bioinformatics/btac656}.
-
-\bibitem[Su et~al.(2021)Su, Lu, Pan, Murtadha, Wen, and Liu]{su2021roformer}
-Jianlin Su, Yu~Lu, Shengfeng Pan, Ahmed Murtadha, Bo~Wen, and Yunfeng Liu.
-\newblock {RoFormer}: Enhanced transformer with rotary position embedding.
-\newblock \emph{arXiv}, abs/2104.09864, 2021.
-\newblock \doi{10.48550/arXiv.2104.09864}.
-
-\bibitem[Lin et~al.(2017)Lin, Goyal, Girshick, He, and
-  Doll{\'a}r]{lin2017focal}
-Tsung-Yi Lin, Priya Goyal, Ross Girshick, Kaiming He, and Piotr Doll{\'a}r.
-\newblock Focal loss for dense object detection.
-\newblock In \emph{Proceedings of the IEEE International Conference on Computer
-  Vision}, pages 2980--2988, 2017.
-\newblock \doi{10.1109/ICCV.2017.324}.
-
-\bibitem[Loshchilov and Hutter(2019)]{loshchilov2019adamw}
-Ilya Loshchilov and Frank Hutter.
-\newblock Decoupled weight decay regularization.
-\newblock In \emph{International Conference on Learning Representations}, 2019.
-\newblock URL \url{https://arxiv.org/abs/1711.05101}.
-
-\bibitem[{National Center for Biotechnology Information}(2026)]{ncbi_hg002}
-{National Center for Biotechnology Information}.
-\newblock {NIST HG002 NA24385: BioSample SAMN03283347}.
-\newblock \url{https://www.ncbi.nlm.nih.gov/biosample/SAMN03283347/}, 2026.
-\newblock Database record accessed 24 September 2026.
-
-\end{thebibliography}
+\putbib[references]
 
 \endgroup
+\end{bibunit}
 
 \section*{Acknowledgements}
 We thank the Human Pangenome Reference Consortium, the Human Genome Structural Variation Consortium and the ENCODE and EN-TEx projects for making their data available, and participants in the Telomere-to-Telomere consortium meeting for discussions and feedback on this work. Funding attribution: \authorinput{confirm NHGRI U24 and NIGMS R01 award numbers, recipients and required wording before submission.} Computations were performed on research computing resources at Temple University.
@@ -866,6 +549,7 @@ Supplementary Information accompanies this paper.
 \titleformat{\section}{\large\bfseries}{Supplementary Note \thesection.}{0.5em}{}
 \captionsetup[figure]{name=Supplementary Fig.}
 \captionsetup[table]{name=Supplementary Table}
+\begin{bibunit}[unsrtnat]
 \renewcommand{\citenumfont}[1]{S#1}
 \renewcommand{\bibnumfmt}[1]{[S#1]}
 
@@ -1050,6 +734,8 @@ We generated 512-dimensional Nucleotide Transformer embeddings for all 303,425 s
 We subsequently extended the embeddings to all 751,237 segments of the graph with the same model and procedure. The 479,477 embeddings used by the reconstruction benchmark were preserved exactly, and 271,760 new embeddings were added, all finite. The extension provides sequence inputs across the graph. The analyses reported here, including Supplementary Note~\ref{S-snote:objectives}, used the original embeddings.
 
 %======================================================================
+% Long Note: Done [MERGE-06]. Completed weighting/multiplicity sensitivities
+% are reported alongside the primary estimates, without refitting or new claims.
 \section{EN-TEx datasets and complete results}
 \label{S-snote:entex}
 
@@ -1062,6 +748,14 @@ The supplied high-confidence SNV file contained only RNA-seq records, so we pars
 
 \subsection{Results}
 All predefined endpoints are shown in Supplementary Table~\ref{S-stab:entex}. The exposure-matched version of the AS-prone cCRE task controls the number of measurement opportunities but targets a different population with higher prevalence, so its absolute AP cannot be compared with the primary task. AS-prone cCRE prevalence increases across complexity groups. Assessing predictive benefit requires comparison of $C+S$ and $C+S+T$ within each group, where both models face the same prevalence. Intervals are pointwise and unadjusted across the panel.
+
+
+\subsection{Repeated-measurement and multiplicity sensitivities}
+The same SNV can occur in several donor, tissue and assay measurements. We therefore re-evaluated saved predictions with each observation weighted by the inverse number of measurements at its locus. This changes the evaluation target; the probes were not refitted. With equal total weight per locus, CTCF gains were 0.00018 ($-0.00054$ to 0.00096) strict and 0.00049 ($-0.00034$ to 0.00132) one-hop. H3K27ac gains were 0.00199 (0.00111--0.00273) and 0.00221 (0.00065--0.00419), respectively. These two-assay follow-ups were specified after inspection of the primary results and are exploratory.
+
+For the subsequent ATAC-seq, H3K4me3 and H3K27me3 extension, the follow-up protocol was fixed before fitting. Equal-locus H3K4me3 gains were 0.00107 ($-0.00005$ to 0.00243) strict and 0.00115 ($-0.00054$ to 0.00281) one-hop. In the multiplicity sensitivity, we averaged paired gains across runs within each fold, enumerated the 32 fold-level sign flips, and applied Benjamini--Hochberg correction to the six assay--context contrasts separately for each metric and weighting scheme. No AP contrast had $q<0.05$; H3K4me3 had $q=0.375$ with measurement weighting and $q=0.75$ with equal-locus weighting. Only five folds contribute to these tests, so the smallest attainable two-sided $P$ value is 0.0625. This analysis does not correct for every endpoint and stratum in the full study.
+
+Equal-donor and equal-tissue macro evaluations use all groups with at least 200 measurements, ten positives and ten negatives in every held-out fold. They describe variation within the sampled donors and tissues, rather than transfer to unseen donors or tissues. Together, these sensitivities distinguish a small predictive increment from a broader claim about allele-specific biology.
 
 \begin{table}[H]
 \centering
@@ -1271,7 +965,7 @@ In this configuration, encoders passing messages only along incoming connections
 
 These comparisons each use one run on the partition used for model selection and have no confidence intervals. Initial-parameter equivalence is verified for the sequence-conditioned pairs but cannot be verified from the older topology-only checkpoints. The latter therefore remain architecture-matched controls with an initialization-provenance limitation. Under the same matching constraints the strict context retained only 12 eligible regions across all chromosomes, too few for training and validation, so development used the one-hop context only.
 
-Frozen representations from the junction-trained encoder were combined with the original representations and evaluated on the biological tasks under a three-run development criterion, which required the combination to exceed every matched combination containing untrained components after $C+S+H$, and not to fall materially below the better single representation, for both tasks. Only one of three runs met the criterion; the other two failed for cCRE and SV, respectively. This inconsistency precluded chromosome-level replication of the junction encoder under the predefined rule.
+Frozen representations from the junction-trained encoder were combined with the original representations and evaluated on the biological tasks under a three-run development criterion, which required the combination to exceed every matched combination containing untrained components after $C+S+H$, and not to fall materially below the better single representation, for both tasks. Only one of three runs met the criterion; the other two failed for cCRE and SV, respectively. Under the predefined rule, we did not advance this encoder to chromosome-level replication.
 
 \begin{figure}[H]
 \centering
@@ -1392,100 +1086,10 @@ For each principal analysis, we recorded the model configuration and version, ch
 \begingroup
 \small
 \renewcommand{\refname}{Supplementary references}
-\begin{thebibliography}{11}
-\providecommand{\natexlab}[1]{#1}
-\providecommand{\url}[1]{\texttt{#1}}
-\expandafter\ifx\csname urlstyle\endcsname\relax
-  \providecommand{\doi}[1]{doi: #1}\else
-  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
-
-\bibitem[Dalla-Torre et~al.(2025)Dalla-Torre, Gonzalez, Mendoza-Revilla,
-  Carranza, Grzywaczewski, Oteri, Dallago, Trop, de~Almeida, Sirelkhatim,
-  et~al.]{supp__dalla2025nucleotide}
-Hugo Dalla-Torre, Liam Gonzalez, Javier Mendoza-Revilla, Nicolas~Lopez
-  Carranza, Adam~Henryk Grzywaczewski, Francesco Oteri, Christian Dallago, Evan
-  Trop, Bernardo~P. de~Almeida, Hassan Sirelkhatim, et~al.
-\newblock Nucleotide transformer: building and evaluating robust foundation
-  models for human genomics.
-\newblock \emph{Nature Methods}, 22\penalty0 (2):\penalty0 287--297, 2025.
-\newblock \doi{10.1038/s41592-024-02523-z}.
-
-\bibitem[Liao et~al.(2023)Liao, Asri, Ebler, Doerr, Haukness, Hickey, Lu,
-  Lucas, Monlong, Abel, et~al.]{supp__hprc2023draft}
-Wen-Wei Liao, Mobin Asri, Jana Ebler, Daniel Doerr, Marina Haukness, Glenn
-  Hickey, Shuangjia Lu, Julian~K. Lucas, Jean Monlong, Haley~J. Abel, et~al.
-\newblock A draft human pangenome reference.
-\newblock \emph{Nature}, 617\penalty0 (7960):\penalty0 312--324, 2023.
-\newblock \doi{10.1038/s41586-023-05896-x}.
-
-\bibitem[Logsdon et~al.(2025)]{supp__hgsvc32025}
-Glennis~A. Logsdon et~al.
-\newblock Complex genetic variation in nearly complete human genomes.
-\newblock \emph{Nature}, 644:\penalty0 430--441, 2025.
-
-\bibitem[{National Center for Biotechnology
-  Information}(2026)]{supp__ncbi_hg002}
-{National Center for Biotechnology Information}.
-\newblock {NIST HG002 NA24385: BioSample SAMN03283347}.
-\newblock \url{https://www.ncbi.nlm.nih.gov/biosample/SAMN03283347/}, 2026.
-\newblock Database record accessed 24 September 2026.
-
-\bibitem[Benegas et~al.(2025)Benegas, Eraslan, and
-  Song]{supp__benegas2025traitgym}
-Gonzalo Benegas, G{\"o}kcen Eraslan, and Yun~S. Song.
-\newblock Benchmarking {DNA} sequence models for causal regulatory variant
-  prediction in human genetics.
-\newblock \emph{bioRxiv}, 2025.
-\newblock \doi{10.1101/2025.02.11.637758}.
-
-\bibitem[Bolognini et~al.(2026)]{supp__bolognini2026cosigt}
-Davide Bolognini et~al.
-\newblock {COSIGT}: population-scalable genotyping of complex loci from
-  low-coverage sequencing data using pangenome graphs.
-\newblock \emph{Genome Biology}, 27:\penalty0 286, 2026.
-\newblock \doi{10.1186/s13059-026-04242-4}.
-
-\bibitem[Sir{\'e}n and Paten(2022)]{supp__siren2022gbz}
-Jouni Sir{\'e}n and Benedict Paten.
-\newblock {GBZ} file format for pangenome graphs.
-\newblock \emph{Bioinformatics}, 38\penalty0 (22):\penalty0 5012--5018, 2022.
-\newblock \doi{10.1093/bioinformatics/btac656}.
-
-\bibitem[Karimzadeh et~al.(2018)Karimzadeh, Ernst, Kundaje, and
-  Hoffman]{supp__karimzadeh2018umap}
-Mehran Karimzadeh, Carl Ernst, Anshul Kundaje, and Michael~M. Hoffman.
-\newblock {Umap} and {Bismap}: quantifying genome and methylome mappability.
-\newblock \emph{Bioinformatics}, 34\penalty0 (13):\penalty0 i716--i725, 2018.
-\newblock \doi{10.1093/bioinformatics/bty617}.
-
-\bibitem[Frankish et~al.(2023)]{supp__frankish2023gencode}
-Adam Frankish et~al.
-\newblock {GENCODE}: reference annotation for the human and mouse genomes in
-  2023.
-\newblock \emph{Nucleic Acids Research}, 51\penalty0 (D1):\penalty0 D942--D949,
-  2023.
-\newblock \doi{10.1093/nar/gkac1071}.
-
-\bibitem[Lappalainen et~al.(2013)Lappalainen, Sammeth, Friedl{\"a}nder,
-  et~al.]{supp__lappalainen2013transcriptome}
-Tuuli Lappalainen, Michael Sammeth, Marc~R. Friedl{\"a}nder, et~al.
-\newblock Transcriptome and genome sequencing uncovers functional variation in
-  humans.
-\newblock \emph{Nature}, 501:\penalty0 506--511, 2013.
-\newblock \doi{10.1038/nature12531}.
-
-\bibitem[Sollis et~al.(2023)Sollis, Mosaku, Abid, Buniello, Cerezo, Gil, Groza,
-  G{\"u}nes, Hall, Hayhurst, et~al.]{supp__sollis2023gwas}
-Elliott Sollis, Abiodun Mosaku, Anum Abid, Annalisa Buniello, Maria Cerezo,
-  Laura Gil, Tudor Groza, Oya G{\"u}nes, Peggy Hall, James Hayhurst, et~al.
-\newblock The {NHGRI-EBI GWAS Catalog}: knowledgebase and deposition resource.
-\newblock \emph{Nucleic Acids Research}, 51\penalty0 (D1):\penalty0 D977--D985,
-  2023.
-\newblock \doi{10.1093/nar/gkac1010}.
-
-\end{thebibliography}
+\putbib[references]
 
 \endgroup
+\end{bibunit}
 
 
 \end{document}
@@ -2088,3 +1692,7 @@ Elliott Sollis, Abiodun Mosaku, Anum Abid, Annalisa Buniello, Maria Cerezo,
 % The SV section now covers SV types and stratified analyses (types, allele frequency, length, complexity, donors), including the three-class INS/DEL/INV extension.
 % Methods open with the novel components (graph representation,
 % coupled encoder, pretraining objective with loss and optimization, frozen reuse and attribution design, shortcut-resistant objectives), followed by resources, tasks and statistics.
+
+% Long Note: Comments unique to supplied main (1).tex (29 September 2026).
+% Six-paragraph Introduction: (1) linear to graph representation, (2) why representation matters biologically (Macias-Velasco et al.), (3) DNA foundation models, (4) topology that sequence tokens lack, (5) prior pangenome learning and the attribution gap, with Fig. 1 cited here and related work merged in, (6) PangenomeFM, its contributions and the main findings.
+% resources, tasks and statistics

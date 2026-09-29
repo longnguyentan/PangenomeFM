@@ -1,0 +1,431 @@
+{
+  "configurations": 450,
+  "metric_rows": 3150,
+  "tasks": [
+    {
+      "task": "P0 AS-prone cCRE",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "P0 exposure matched",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "P0 H3K27ac only",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "P0 CTCF only",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "P1 thyroid_gland",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "P1 tibial_nerve",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "P1 body_of_pancreas",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "P1 gastroesophageal_sphincter",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "P1 Peyers_patch",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "P2 CTCF",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "P2 H3K27ac",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "RNA ASE",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "atac",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "h3k4me3",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    },
+    {
+      "task": "h3k27me3",
+      "run_configurations": 30,
+      "classifier_metric_rows": 210,
+      "paired_arithmetic": "passed",
+      "summary_means": "passed"
+    }
+  ],
+  "scope": "Saved metrics verification, not refitting or rebootstrap of predictions",
+  "review_date": "2026-09-29",
+  "report_sha256": "afbd64449e9a3e34b59fbdbabbf4de23380c7c2f59fe883156f6c63913f23fc1",
+  "local_link_check": "passed",
+  "source_artifacts": {
+    "results/entex/v1/p0_analysis/per_run.csv": {
+      "bytes": 102879,
+      "sha256": "c22092c3d39ffa5cddf8d9a95d227a8f1495b10a51111ee6e5a01be27eb5e749"
+    },
+    "results/entex/v1/p0_analysis/summary.csv": {
+      "bytes": 12708,
+      "sha256": "5a952acc52eb9cf59a5fdd0fe9adb6a9faf57f7ede1cc19f6c45d5c96a6cbcdf"
+    },
+    "results/entex/v1/p0_analysis/paired_gains.csv": {
+      "bytes": 549,
+      "sha256": "18301dd456b1713bf8eb0908c2e82d5060331b9e1ccd5547ba98cc1205ee290b"
+    },
+    "results/entex/v1/p0_analysis/complexity_metric_summary.csv": {
+      "bytes": 9608,
+      "sha256": "10984d62292141c62d3651ca722d96ae71200812ab5fb35e61c717c53b8999b7"
+    },
+    "results/entex/v1/p0_exposure_matched_analysis/per_run.csv": {
+      "bytes": 91937,
+      "sha256": "308ac2b321f21b09d7f6a062ace5df11375500d6fb68cf0bc76809c4aef0ae90"
+    },
+    "results/entex/v1/p0_exposure_matched_analysis/summary.csv": {
+      "bytes": 12592,
+      "sha256": "436831e15f210077bb53a9a35b75f9330130117593f0d271e068c5e557aeea63"
+    },
+    "results/entex/v1/p0_exposure_matched_analysis/paired_gains.csv": {
+      "bytes": 545,
+      "sha256": "933980abd2cdcfb51674dbea1dea97eb16fd4c451c88eaa45fb72808914fc93f"
+    },
+    "results/entex/v1/p0_exposure_matched_analysis/complexity_metric_summary.csv": {
+      "bytes": 9400,
+      "sha256": "d9e358739d222f28f448df504c4f51ec41adfba5949d66062b5fa0896db933cc"
+    },
+    "results/entex/v1/p0_h3k27ac_analysis/per_run.csv": {
+      "bytes": 102437,
+      "sha256": "8798a0199bde3fb299796ed3eab25e463aab313fdfb572017098c175a5de203a"
+    },
+    "results/entex/v1/p0_h3k27ac_analysis/summary.csv": {
+      "bytes": 12779,
+      "sha256": "caf8d01c7a3e44ccaa7043fe9c390aaee1f1f5ba6f7756504c3ec1450cef5e49"
+    },
+    "results/entex/v1/p0_h3k27ac_analysis/paired_gains.csv": {
+      "bytes": 554,
+      "sha256": "1758b2ccff581a3bc9c7b372efb9bbfb9881f3ab307e87b985b98865e069e557"
+    },
+    "results/entex/v1/p0_h3k27ac_analysis/complexity_metric_summary.csv": {
+      "bytes": 9569,
+      "sha256": "a1f83798dc8e606941087e69c75e221f1757d3bf72e64210f8cbd2500b226eda"
+    },
+    "results/entex/v1/p0_ctcf_analysis/per_run.csv": {
+      "bytes": 101877,
+      "sha256": "b2ca37382d9302899bdf3bab871c42d34d716ca119b2f43010342e99520ea836"
+    },
+    "results/entex/v1/p0_ctcf_analysis/summary.csv": {
+      "bytes": 12725,
+      "sha256": "981f2708703b9d85df6bb6f59aee7ae5257324a90d2d85f8a4f47ac675a74b96"
+    },
+    "results/entex/v1/p0_ctcf_analysis/paired_gains.csv": {
+      "bytes": 556,
+      "sha256": "cfd1f0c3934523bcb343fec3b5310e4fadc51d7c0fbef1432197fa0d7621a2de"
+    },
+    "results/entex/v1/p0_ctcf_analysis/complexity_metric_summary.csv": {
+      "bytes": 9583,
+      "sha256": "d8606fcc1bc27770fa4e2ba7dfb30c121ccef8e01bfab9173ef536d9d53802be"
+    },
+    "results/entex/v1/p1_analysis/thyroid_gland/per_run.csv": {
+      "bytes": 103285,
+      "sha256": "47b635fa34f655bdaea98bf7b733ec56258110c30258bc2b4fca1ef6fb91d2e2"
+    },
+    "results/entex/v1/p1_analysis/thyroid_gland/summary.csv": {
+      "bytes": 12624,
+      "sha256": "9a6071505c020699064b8376640237f9fdf0bb031d2d83db38c5257bffdbbbbc"
+    },
+    "results/entex/v1/p1_analysis/thyroid_gland/paired_gains.csv": {
+      "bytes": 539,
+      "sha256": "b67f0a09d52dbba7d1cfc5e781e662758d009300d093f212df81eed8bb5b3e7c"
+    },
+    "results/entex/v1/p1_analysis/thyroid_gland/complexity_metric_summary.csv": {
+      "bytes": 9465,
+      "sha256": "8fae1b12d910710a6e752c14fb9831227a08a3f6f7387a1888d19d26788f6baa"
+    },
+    "results/entex/v1/p1_analysis/tibial_nerve/per_run.csv": {
+      "bytes": 103442,
+      "sha256": "86cf8cc6071029006b605de68328aad219cd8f7b772eaf1a921ed22528ed4c97"
+    },
+    "results/entex/v1/p1_analysis/tibial_nerve/summary.csv": {
+      "bytes": 12608,
+      "sha256": "00ed575206325b4be77c0c9df6a7d7ceda316609637ab7ee9430f5db43488c52"
+    },
+    "results/entex/v1/p1_analysis/tibial_nerve/paired_gains.csv": {
+      "bytes": 535,
+      "sha256": "e0d43b1ee3a176b5482c1b44b068d6e2fbb8ac41e947c9fbbe488f16564f4cbb"
+    },
+    "results/entex/v1/p1_analysis/tibial_nerve/complexity_metric_summary.csv": {
+      "bytes": 9447,
+      "sha256": "d7eabc1bf894899d3d4b56c36316f828290d72c5c66b800b7ac038fac4eb362c"
+    },
+    "results/entex/v1/p1_analysis/body_of_pancreas/per_run.csv": {
+      "bytes": 103862,
+      "sha256": "dbecca3c63b2fcb4f25d404bfe34fd9510b994ebb1e9bf71d06c68015fe31e08"
+    },
+    "results/entex/v1/p1_analysis/body_of_pancreas/summary.csv": {
+      "bytes": 12623,
+      "sha256": "c89d65fa506e40d629183f21e8972f59b0b44e9dfe33e6c76b81b52d211500b3"
+    },
+    "results/entex/v1/p1_analysis/body_of_pancreas/paired_gains.csv": {
+      "bytes": 538,
+      "sha256": "8fe4f2c3889ef3ded9c0dba71bf7e31808dbf0b273e0757568509318aa15204a"
+    },
+    "results/entex/v1/p1_analysis/body_of_pancreas/complexity_metric_summary.csv": {
+      "bytes": 9487,
+      "sha256": "16aee658b98d9cd1b6bc9c93c0a0672528d787dccc92eb0fc2c4c4962dc8e337"
+    },
+    "results/entex/v1/p1_analysis/gastroesophageal_sphincter/per_run.csv": {
+      "bytes": 106345,
+      "sha256": "5ed617ae4e3937c22b6c150d4f4db2c40e416b15e389764b54310e3c64d71844"
+    },
+    "results/entex/v1/p1_analysis/gastroesophageal_sphincter/summary.csv": {
+      "bytes": 12617,
+      "sha256": "2dac723feb25a7b26bb7219311ff86995f25d2dc568a887ed3d26731205c8c41"
+    },
+    "results/entex/v1/p1_analysis/gastroesophageal_sphincter/paired_gains.csv": {
+      "bytes": 535,
+      "sha256": "0bcf3b23aee6bb66ffe94dd7db5ee8baf95aadd8aa5ff696e7343e997ca1bbc2"
+    },
+    "results/entex/v1/p1_analysis/gastroesophageal_sphincter/complexity_metric_summary.csv": {
+      "bytes": 9467,
+      "sha256": "937cd40f0dc77205a84d983d5cd31848ccb2746516faf49fcdb864dfced7748e"
+    },
+    "results/entex/v1/p1_analysis/Peyers_patch/per_run.csv": {
+      "bytes": 103039,
+      "sha256": "05963fb880d0409720f5bcd6c44474801ec54951eca9d65d0a7a59de4fce240d"
+    },
+    "results/entex/v1/p1_analysis/Peyers_patch/summary.csv": {
+      "bytes": 12580,
+      "sha256": "db1a1b014d9b47a9f24c817100f5a4991a6e0af992dbc8257ae41ee400938701"
+    },
+    "results/entex/v1/p1_analysis/Peyers_patch/paired_gains.csv": {
+      "bytes": 539,
+      "sha256": "8f02b6cc79971c02436f3bbe4b9bc48301b07e6ac1b6dcf3ade646b7b8117cc7"
+    },
+    "results/entex/v1/p1_analysis/Peyers_patch/complexity_metric_summary.csv": {
+      "bytes": 9476,
+      "sha256": "659a89a177295f05e51c9ad9d5fe4df7ce08707fcdd2d314d019b6f3cfbd87de"
+    },
+    "results/entex/v1/p2_analysis/ctcf/per_run.csv": {
+      "bytes": 103298,
+      "sha256": "8605fec433a8098a076c18ee7f6d2bbff31939282171fca314b2ff6f35c7d4aa"
+    },
+    "results/entex/v1/p2_analysis/ctcf/summary.csv": {
+      "bytes": 12763,
+      "sha256": "08f8b62d59293fedd9534eb658d4bd60ad8847f466d7b0019538247fe898cc65"
+    },
+    "results/entex/v1/p2_analysis/ctcf/paired_gains.csv": {
+      "bytes": 545,
+      "sha256": "b988936ab32afc6451d319faca3a4ca6c902e25e52f2f6361c3f10d45d08dcf3"
+    },
+    "results/entex/v1/p2_analysis/ctcf/complexity_metric_summary.csv": {
+      "bytes": 11213,
+      "sha256": "6dcda385001a1d4a7545d1cb0758801f925ae953efd18f71128b571015feb212"
+    },
+    "results/entex/v1/p2_analysis/h3k27ac/per_run.csv": {
+      "bytes": 103944,
+      "sha256": "115e1b20148233b743f9add5536cba5b56e0ea4b64339940942f55553afc17c2"
+    },
+    "results/entex/v1/p2_analysis/h3k27ac/summary.csv": {
+      "bytes": 12730,
+      "sha256": "01ca78727ecae7bc645b5f7a219ac25b81da0eebb76a71087815c38e2bed1d3b"
+    },
+    "results/entex/v1/p2_analysis/h3k27ac/paired_gains.csv": {
+      "bytes": 539,
+      "sha256": "5d34a5b5e57ec20853c55ac52b71f44f835ff29bc7fac9ee3bf887c1a8ae0980"
+    },
+    "results/entex/v1/p2_analysis/h3k27ac/complexity_metric_summary.csv": {
+      "bytes": 11590,
+      "sha256": "c3a5c901e36ee4d2a54100dd5645ea57ff249cb8c394e3cb9ef005f3143b7f12"
+    },
+    "results/entex/meeting_20260929/rna_analysis/per_run.csv": {
+      "bytes": 102794,
+      "sha256": "acec9d8ba17dcc56064d65ac0af037d8c06f7763be8a159bf8973f4c16a60914"
+    },
+    "results/entex/meeting_20260929/rna_analysis/summary.csv": {
+      "bytes": 12825,
+      "sha256": "61a01493dbf41f1c916e85d03d8be08ed788184cf9d6920dfd96621bec19b0b5"
+    },
+    "results/entex/meeting_20260929/rna_analysis/paired_gains.csv": {
+      "bytes": 547,
+      "sha256": "165bba5008b0c29fb47f80ae4a1a10e3e37d5008e55d271b24f12e40901c7333"
+    },
+    "results/entex/meeting_20260929/rna_analysis/complexity_metric_summary.csv": {
+      "bytes": 9707,
+      "sha256": "0d3717d663c0201114372e4e7bd8df68801a26caa84565876d8fcdad1ea88390"
+    },
+    "results/entex/extension_20260927/analysis/atac/per_run.csv": {
+      "bytes": 103285,
+      "sha256": "9f5eea230aad83907c078e01a4d1cc8a198a33bc03fe001afab78bc49143b4b0"
+    },
+    "results/entex/extension_20260927/analysis/atac/summary.csv": {
+      "bytes": 12800,
+      "sha256": "14b852fd0cfb2f1665971c780a2e7b9126f5be44e9462816968a1d852178f196"
+    },
+    "results/entex/extension_20260927/analysis/atac/paired_gains.csv": {
+      "bytes": 555,
+      "sha256": "3c128493d6bc7e1812ff8714605065e790286517ef1b898354265cdc93c55fe7"
+    },
+    "results/entex/extension_20260927/analysis/atac/complexity_metric_summary.csv": {
+      "bytes": 11182,
+      "sha256": "b06e3af4b762ba333523f250c0c91a48bceb4c19943a2a18f80abf1d05aab9a2"
+    },
+    "results/entex/extension_20260927/analysis/h3k4me3/per_run.csv": {
+      "bytes": 103832,
+      "sha256": "e8f047b8d6575c574f316fc2433d2415f4ca73818647da84f631219b38e43c2d"
+    },
+    "results/entex/extension_20260927/analysis/h3k4me3/summary.csv": {
+      "bytes": 12710,
+      "sha256": "0d8e86598f61a25b1f7ee391984c261cc47c9a1545721c60dcdfa853d9ce7a27"
+    },
+    "results/entex/extension_20260927/analysis/h3k4me3/paired_gains.csv": {
+      "bytes": 542,
+      "sha256": "a5772a334037eb1e5c788c577971f2bd504c18e0384182e69f7d3c8e7ae2fdbf"
+    },
+    "results/entex/extension_20260927/analysis/h3k4me3/complexity_metric_summary.csv": {
+      "bytes": 11535,
+      "sha256": "abca549d417010bbbf5b7e02c181e6b19456b14d6c992677ce1299db6042ee62"
+    },
+    "results/entex/extension_20260927/analysis/h3k27me3/per_run.csv": {
+      "bytes": 103901,
+      "sha256": "e6b6164ee9fdd403a2c4527adacd9420da0ae6a8fc30a13c8ae71e208c8f9bcf"
+    },
+    "results/entex/extension_20260927/analysis/h3k27me3/summary.csv": {
+      "bytes": 12672,
+      "sha256": "529bd2fc3b3f8817452c742f07a7f040d96fb63c389a6a6ac438da6d745a8656"
+    },
+    "results/entex/extension_20260927/analysis/h3k27me3/paired_gains.csv": {
+      "bytes": 542,
+      "sha256": "51dc94bfc3d0ae73ac067c418f30602176488feddbb500c35cf7ef31159813a9"
+    },
+    "results/entex/extension_20260927/analysis/h3k27me3/complexity_metric_summary.csv": {
+      "bytes": 11500,
+      "sha256": "1cbe1624e3002ae97e6a5b2c93ca0f427c1ae5ef4fa6b4fe4c10fa6892ec6589"
+    },
+    "results/entex/v1/qc/cCREs_default_AS.tsv.qc.json": {
+      "bytes": 4439,
+      "sha256": "b01481da425aeb17fe8910b6101a8bf584ab5ca7edd5a062f04922d05e7e718e"
+    },
+    "results/entex/v1/qc/hetSNVs_high-confidence_AS.tsv.qc.json": {
+      "bytes": 4225,
+      "sha256": "700426f714b6ce7461881f421d7d635cfd359fea21088fd4525c78e06a6dca3d"
+    },
+    "results/entex/v1/qc/active.combined_set.txt.zip.qc.json": {
+      "bytes": 2386,
+      "sha256": "1eeec1825c5df65919c233914b31a24a0d30ecde3a97645377f9f94925d74e2c"
+    },
+    "results/entex/v1/qc/repressed.combined_set.txt.zip.qc.json": {
+      "bytes": 2409,
+      "sha256": "69c43211ddbc427c87e0eee66b8839b5b3603efe4ac77d15fb8634578d25501a"
+    },
+    "results/entex/v1/qc/p2/preparation.json": {
+      "bytes": 4899,
+      "sha256": "2de82cb22505fff8b4b9fe886fbe798d4330be31b85c845bb1bb8bf14715bd83"
+    },
+    "results/entex/v1/qc/completed/final_coverage.json": {
+      "bytes": 106282,
+      "sha256": "d2e3ab82a964575419951e190ab39bb5988f7fe6abca4f18472f3fd194592d0a"
+    },
+    "results/entex/meeting_20260929/qc/rna_preparation.json": {
+      "bytes": 2535,
+      "sha256": "1769b307e8d086d2e438a469cd5bb79a60899e25aa98d2ee710fbb361acd6e8c"
+    },
+    "results/entex/extension_20260927/qc/audit.json": {
+      "bytes": 12300,
+      "sha256": "33e452391b542e1a08b51c5597fd43004821444ca717e7add8a2233d26954e6f"
+    },
+    "results/entex/v1/p0_analysis/auprc_strict.png": {
+      "bytes": 62055,
+      "sha256": "48d393947bb924dd561629019ef76a12960a9faff2922e1e6c7599aa70920930"
+    },
+    "results/entex/v1/p0_analysis/complexity_gain_strict.png": {
+      "bytes": 65884,
+      "sha256": "0fcb641b60fcea7404c03b6a563bf8935219c561387b9c1aac4de84013cdfc58"
+    },
+    "results/entex/meeting_20260929/report/weighting_auprc.pdf": {
+      "bytes": 23151,
+      "sha256": "ba9c3689cdc7aaa592b6a26567fc0d0e3444b6e481b54e337f2e05ded83d9c18"
+    },
+    "results/entex/extension_20260927/report/weighting_auprc.pdf": {
+      "bytes": 24635,
+      "sha256": "fbacaa800c650eb4f64bb5c2804dfd6baa19592810723895803dab14c1b4c545"
+    },
+    "results/entex/extension_20260927/report/donor_gains.pdf": {
+      "bytes": 21334,
+      "sha256": "897b50444baca651149f9e335f77ab91f5ec3edf7e12960cd48f62a7a2ced8cf"
+    },
+    "results/entex/extension_20260927/report/tissue_gains.pdf": {
+      "bytes": 51299,
+      "sha256": "002af137c4eef3046ab94089e3a2d1a62b8bffd67f6cf4f6295930d83e88d197"
+    },
+    "configs/entex_v1.json": {
+      "bytes": 1852,
+      "sha256": "8fc758ced22b21156d0fa55e8f2fd3a26babb11943bcc10d2d721da9968bd876"
+    },
+    "configs/entex_meeting_20260929.json": {
+      "bytes": 1869,
+      "sha256": "8d630f4676aabed8ede36c4dc6fb0cb2dbf921692283f1737d8a3345380f5633"
+    },
+    "configs/entex_extension_20260927.json": {
+      "bytes": 3091,
+      "sha256": "d56122569bd96994d032daf209932c75b5095bdbcdc7aed814bdc07f528e2a1a"
+    }
+  },
+  "limitations": [
+    "Saved CIs retained; predictions were not re-bootstrapped.",
+    "No new classifier or encoder was fitted in this report review.",
+    "Local coverage receipts are complete for 330 core configurations; later 120 configurations lack a uniform full feature-audit export.",
+    "P1 mapping percentage is carried from the original completion record, not independently re-mapped here."
+  ]
+}

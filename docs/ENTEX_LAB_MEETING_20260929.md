@@ -1,3 +1,5 @@
+> **29 September 2026 update:** See [the complete EN-TEx team report](ENTEX_COMPLETE_TEAM_REPORT_20260929.md) for the reconciled 450-configuration results, completed follow-ups and QC. Status snapshots below are historical.
+
 # EN-TEx biological transfer — team brief for Tuesday, 29 September 2026
 
 Prepared 26 September; updated 27 September 2026. This document separates completed biological
