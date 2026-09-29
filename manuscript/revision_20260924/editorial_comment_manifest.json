@@ -2996,6 +2996,423 @@
           "comment": "%======================================================================"
         }
       ]
+    },
+    {
+      "name": "supplied main.tex for paragraph review",
+      "comments": [
+        {
+          "line": 3,
+          "comment": "% Prevent pdflatex object-stream overflow with complex vector figures."
+        },
+        {
+          "line": 27,
+          "comment": "% Uncomment if line numbers are required."
+        },
+        {
+          "line": 28,
+          "comment": "% \\usepackage[mathlines]{lineno}\\linenumbers"
+        },
+        {
+          "line": 44,
+          "comment": "% \\titleformat{\\section}{\\large\\bfseries}{\\thesection.}{0.6em}{}"
+        },
+        {
+          "line": 45,
+          "comment": "% \\titleformat{\\subsection}{\\normalsize\\bfseries}{\\thesubsection.}{0.6em}{}"
+        },
+        {
+          "line": 58,
+          "comment": "%"
+        },
+        {
+          "line": 71,
+          "comment": "% Nature Machine Intelligence"
+        },
+        {
+          "line": 75,
+          "comment": "% Pangenome Foundation Model capture"
+        },
+        {
+          "line": 76,
+          "comment": "% Need to add HGSVC and HPRC to the author list"
+        },
+        {
+          "line": 82,
+          "comment": "% HGSVC, HPRC,"
+        },
+        {
+          "line": 101,
+          "comment": "% NEW STRUCTURES"
+        },
+        {
+          "line": 103,
+          "comment": "% Title"
+        },
+        {
+          "line": 104,
+          "comment": "% Abstract"
+        },
+        {
+          "line": 106,
+          "comment": "% Introduction"
+        },
+        {
+          "line": 108,
+          "comment": "% Results"
+        },
+        {
+          "line": 109,
+          "comment": "%   1. Graph-native representations add complementary information to regulatory-element prediction"
+        },
+        {
+          "line": 110,
+          "comment": "%   2. Graph-native representations contribute strongly to structural-variant breakpoint classification"
+        },
+        {
+          "line": 111,
+          "comment": "%   3. Frozen graph representations generalize across chromosomes and transfer across pangenome resources"
+        },
+        {
+          "line": 112,
+          "comment": "%   4. Neighborhood context distinguishes learned graph representations from degree-based shortcuts"
+        },
+        {
+          "line": 114,
+          "comment": "% Discussion"
+        },
+        {
+          "line": 116,
+          "comment": "% Methods"
+        },
+        {
+          "line": 117,
+          "comment": "%   Pangenome resources and graph preparation"
+        },
+        {
+          "line": 118,
+          "comment": "%   Masked graph-connection pretraining"
+        },
+        {
+          "line": 119,
+          "comment": "%   PangenomeFM architecture"
+        },
+        {
+          "line": 120,
+          "comment": "%   Strict and one-hop graph context"
+        },
+        {
+          "line": 121,
+          "comment": "%   Chromosome-held-out evaluation"
+        },
+        {
+          "line": 122,
+          "comment": "%   Cross-resource and cross-release transfer"
+        },
+        {
+          "line": 123,
+          "comment": "%   Sequence embeddings and downstream classifiers"
+        },
+        {
+          "line": 124,
+          "comment": "%   Baselines, ablations and capacity"
+        },
+        {
+          "line": 125,
+          "comment": "%   Statistical analysis"
+        },
+        {
+          "line": 126,
+          "comment": "%   Exploratory path/QTL/GWAS analyses"
+        },
+        {
+          "line": 128,
+          "comment": "% Data availability"
+        },
+        {
+          "line": 129,
+          "comment": "% Code availability"
+        },
+        {
+          "line": 130,
+          "comment": "% Acknowledgements"
+        },
+        {
+          "line": 131,
+          "comment": "% Funding"
+        },
+        {
+          "line": 132,
+          "comment": "% Author contributions"
+        },
+        {
+          "line": 133,
+          "comment": "% References"
+        },
+        {
+          "line": 135,
+          "comment": "% Supplementary Information"
+        },
+        {
+          "line": 146,
+          "comment": "% Structure: biological representation problem --> graph-native idea --> cCRE --> SV --> generalization --> control --> scoped conclusion"
+        },
+        {
+          "line": 153,
+          "comment": "% Long and Tomoya, here are what I think about the layout of the introduction: representation of DNA sequences and human genomes (linear->graph - capturing diversity, complex variations and regions), existing DNA foundation models and their applications (this can be swapped to the beginning of this session), the need of non-linear/graph representation of genomes and foundation models  to capture information in graph genomes or pangnomes, previous efforts of building pangenome foundation models and what they lack of, -> introduce pangenomeFM, improvement over previous work, applications of using pangenomeFM for downstream tasks."
+        },
+        {
+          "line": 157,
+          "comment": "% Long, the following paper should be cited (add other related papers if any) to stress the importance of using graph genomes for functional genomics analysis"
+        },
+        {
+          "line": 158,
+          "comment": "% https://www.nature.com/articles/s41467-026-73663-3"
+        },
+        {
+          "line": 161,
+          "comment": "% [LONG NOTE]"
+        },
+        {
+          "line": 162,
+          "comment": "% Para 1: linear to graph: what linear has, what it loses, and why graph could enable the diversity"
+        },
+        {
+          "line": 163,
+          "comment": "% Para 2: why the representation matters in biology"
+        },
+        {
+          "line": 164,
+          "comment": "% para 3: talks about the DNA foundation models (DNABERT,etc.)"
+        },
+        {
+          "line": 165,
+          "comment": "% para 4: talks about pangenome topology features which sequence tokens do not present/have"
+        },
+        {
+          "line": 166,
+          "comment": "% para 5: previous work & gaps (DeepGene, PangenomeX, etc.)"
+        },
+        {
+          "line": 167,
+          "comment": "% para 6: introduce PangenomeFM + evidence/result (main generalization, etc.)"
+        },
+        {
+          "line": 172,
+          "comment": "% Intro should start with the representation of human genomes, genetic variation should be mentioned later"
+        },
+        {
+          "line": 187,
+          "comment": "% Long, the layout looks more like a CS paper, we need to change it to the format of Nature Machine Intelligence or Nature Methods (check some recent papers in those journals and follow their layout)"
+        },
+        {
+          "line": 205,
+          "comment": "% Long note: This figure needs updates"
+        },
+        {
+          "line": 228,
+          "comment": "% Long, add results on predicting cCREs and ENCODE data?"
+        },
+        {
+          "line": 229,
+          "comment": "% add citation of this paper "
+        },
+        {
+          "line": 230,
+          "comment": "% https://www.nature.com/articles/s41467-026-73663-3"
+        },
+        {
+          "line": 232,
+          "comment": "% cCRE is now the first standalone Result. The existing binary cCRE"
+        },
+        {
+          "line": 233,
+          "comment": "% result is included below. TODO(new analysis): if ENCODE class labels are cleanly"
+        },
+        {
+          "line": 234,
+          "comment": "% recoverable, add PLS/pELS/dELS/CTCF-only stratification and/or topology gain by"
+        },
+        {
+          "line": 235,
+          "comment": "% local graph/variant complexity. Do not assume which class benefits most."
+        },
+        {
+          "line": 241,
+          "comment": "% Long Note: The first subsections highlight the novel components, Results opens with the design of PangenomeFM and its evaluation logic (Fig. 2), which the Methods then specify."
+        },
+        {
+          "line": 242,
+          "comment": "% Results opens with measured biological outcomes."
+        },
+        {
+          "line": 243,
+          "comment": "% The SV section now covers SV types and stratified analyses (types, allele frequency, length, complexity, donors), including the three-class INS/DEL/INV extension."
+        },
+        {
+          "line": 264,
+          "comment": "% Long Note: Kept the controlled multiclass result in the main text, with the"
+        },
+        {
+          "line": 265,
+          "comment": "% uncertain inversion result and the absent random-encoder arm stated explicitly."
+        },
+        {
+          "line": 266,
+          "comment": "% Run counts, convergence checks and the common-support sensitivity are in"
+        },
+        {
+          "line": 267,
+          "comment": "% Supplementary Note 4."
+        },
+        {
+          "line": 297,
+          "comment": "% Long Note: cCRE and ENCODE results as requested (binary cCRE, PLS/pELS/dELS/CTCF-only"
+        },
+        {
+          "line": 298,
+          "comment": "% and complexity strata), followed by EN-TEx activity (1-1 meeting, 11 September)."
+        },
+        {
+          "line": 318,
+          "comment": "% Long Note: Separate Results subsection on the sequence embeddings, as requested,"
+        },
+        {
+          "line": 319,
+          "comment": "% with its interpretation; quality-control details are in Supplementary Note 5."
+        },
+        {
+          "line": 325,
+          "comment": "% Long Note: Retitled from the CS-heavy heading. The trained-versus-random table"
+        },
+        {
+          "line": 326,
+          "comment": "% moves to the main text because it qualifies the central claim."
+        },
+        {
+          "line": 354,
+          "comment": "% Long Note: This subsection reports the shortcut audit, including the visible-graph"
+        },
+        {
+          "line": 355,
+          "comment": "% recomputation of degree baselines under each context (the high-priority control"
+        },
+        {
+          "line": 356,
+          "comment": "% requested in the original comments), and the development of objectives that"
+        },
+        {
+          "line": 357,
+          "comment": "% remove the shortcut."
+        },
+        {
+          "line": 371,
+          "comment": "% Long Note: The genotyping question (improve SV genotyping in complex/CNV regions)"
+        },
+        {
+          "line": 372,
+          "comment": "% is addressed with the COSIGT analysis; improved genotype calls are NOT shown and"
+        },
+        {
+          "line": 373,
+          "comment": "% the text says so."
+        },
+        {
+          "line": 400,
+          "comment": "% Long, I feel that the first (or the first two) subsessions should be dedicated to novel components of PangenomeFM (and highlight those key components)"
+        },
+        {
+          "line": 402,
+          "comment": "% Methods open with the novel components (graph representation,"
+        },
+        {
+          "line": 403,
+          "comment": "% coupled encoder, pretraining objective with loss and optimization, frozen reuse and attribution design, shortcut-resistant objectives), followed by resources, tasks and statistics."
+        },
+        {
+          "line": 411,
+          "comment": "% Long, specify how many graph genomes, etc."
+        },
+        {
+          "line": 413,
+          "comment": "% We may need to talk about loss functions and optimization in PangenomFM"
+        },
+        {
+          "line": 418,
+          "comment": "% Tomoya and Long, These results should be included as a separate subsection in Results, including detailed interpretations of these results,"
+        },
+        {
+          "line": 419,
+          "comment": "% RECONCILED IN THIS REVISION: the scientifically relevant coverage/truncation result"
+        },
+        {
+          "line": 420,
+          "comment": "% is summarized in the first biological Results section; detailed QC remains here"
+        },
+        {
+          "line": 421,
+          "comment": "% and in Supplementary so it does not consume one of the <=5 headline Results sections."
+        },
+        {
+          "line": 427,
+          "comment": "% Long Note: confirm against the HPRC release documentation which assemblies were used to build the SV-resolution graph."
+        },
+        {
+          "line": 526,
+          "comment": "% Long, please prepare a github under shilab repo for your code, should we share the pretrained model there or huggingface etc.?"
+        },
+        {
+          "line": 533,
+          "comment": "% acknowledge NHGRI U24 and NIGMS R01 for funding"
+        },
+        {
+          "line": 547,
+          "comment": "% Long, Supplementary information should read like a manuscript, including its own sessions, text, figures, tables, and references"
+        },
+        {
+          "line": 582,
+          "comment": "%======================================================================"
+        },
+        {
+          "line": 637,
+          "comment": "%======================================================================"
+        },
+        {
+          "line": 683,
+          "comment": "%======================================================================"
+        },
+        {
+          "line": 713,
+          "comment": "%======================================================================"
+        },
+        {
+          "line": 721,
+          "comment": "%======================================================================"
+        },
+        {
+          "line": 769,
+          "comment": "%======================================================================"
+        },
+        {
+          "line": 803,
+          "comment": "%======================================================================"
+        },
+        {
+          "line": 904,
+          "comment": "%======================================================================"
+        },
+        {
+          "line": 921,
+          "comment": "%======================================================================"
+        },
+        {
+          "line": 967,
+          "comment": "%======================================================================"
+        },
+        {
+          "line": 990,
+          "comment": "%======================================================================"
+        }
+      ]
     }
   ]
 }

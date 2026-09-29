@@ -1,0 +1,112 @@
+{
+  "date": "2026-09-28",
+  "base_commit": "83d4e72",
+  "entrypoint": "main.tex",
+  "scope": "Paragraph-by-paragraph writing revision; no experiments, figure changes or new manuscript PDF",
+  "baseline_main_tex_sha256": "70190d7a3bce063390e247b91fa8ca3edb42033c2304b0c7dc34471ae0afa57e",
+  "main_tex_sha256": "7904439781be6c7a812dcd4d39639f1357151d05b4f667c5ba7da02524a90add",
+  "inputs": {
+    "/Users/longnguyentan/Downloads/main.tex": {
+      "sha256": "3a0a66ddf1a61f412b214d09136e86f03f8875b7e6c2ce753a42cd7ea2e6bc24",
+      "bytes": 110432
+    },
+    "/Users/longnguyentan/Downloads/references.bib": {
+      "sha256": "e166730c4d7db014a9dea5b12c85d8c8428668473cf288f51b4e92eb891433d6",
+      "bytes": 31817
+    },
+    "/Users/longnguyentan/Downloads/[NMI] Example 1 - s42256-026-01306-9.pdf": {
+      "sha256": "b18277137d7e656959ebdb86d5257ad9d6c966cfc1b297fe647fc26037200d32",
+      "bytes": 14390052
+    },
+    "/Users/longnguyentan/Downloads/[NMI] Example 2 - s42256-026-01304-x.pdf": {
+      "sha256": "b19319a3afae0d3cdffc25c891a3c5dcaba1ed94e20dafb5c073879d527a6214",
+      "bytes": 2630655
+    },
+    "/Users/longnguyentan/Downloads/[NMI] Example 3 - s42256-026-01293-x.pdf": {
+      "sha256": "492fc4414c7c9da5a2081dbe3a3f0d95ba4f2d12910a312bfb04eed59a974eff",
+      "bytes": 6418433
+    },
+    "/Users/longnguyentan/Downloads/[NMI] Example 4 - s42256-026-01295-9.pdf": {
+      "sha256": "6fa42c184362947752a76c824bcb0a86b138069233fcbfa6a3d3c15293b753d1",
+      "bytes": 5895562
+    }
+  },
+  "review": {
+    "blocks_reviewed": 120,
+    "blocks_revised": 75,
+    "blocks_retained": 45,
+    "headings_revised": 6,
+    "word_counts": {
+      "abstract": 128,
+      "main": 2875
+    },
+    "source_comparison_basis": "Existing open main.tex at 83d4e72; Downloads/main.tex is a reference, not an overwrite source"
+  },
+  "comparison_files": {
+    "PARAGRAPH_REVIEW_20260928.md": {
+      "sha256": "0acdc43cc56985088f81fad8e68cc3817740aafd1bd821ad924592fb54b7d8f1",
+      "bytes": 207163
+    },
+    "PARAGRAPH_REVIEW_20260928.html": {
+      "sha256": "c2a01d35120e1ff77aebb7fe7c8b086523d83d8a670f3196007e14c7f4a41667",
+      "bytes": 220279
+    }
+  },
+  "checks": {
+    "tables_equations_bibliographies": "byte-identical active environments",
+    "citations": "exact same citation keys and occurrence counts",
+    "figures": "same files and SHA-256 values",
+    "numeric_values": "No old decimal measurement occurrence removed",
+    "comments": "All previous comments plus supplied main.tex comments preserved; checker passes",
+    "right_column": "Every replacement block matches current main.tex",
+    "project_compile": "Three clean pdfLaTeX draft-mode passes; no undefined references/citations or box warnings",
+    "native_compile": "Companion PDF assets unavailable to single-file compiler; preview not verified",
+    "pdf_created": false
+  },
+  "bibliography_comparison": {
+    "provided_entries": 19,
+    "active_unique_keys": 45,
+    "active_keys_present_in_provided": 18,
+    "active_keys_absent_from_provided": [
+      "avsec2021enformer",
+      "barabasi1999emergence",
+      "benegas2023gpn",
+      "benegas2025traitgym",
+      "bolognini2026cosigt",
+      "dong2022fakeedge",
+      "ebler2022pangenie",
+      "eizenga2020pangenome",
+      "geirhos2020shortcut",
+      "hewitt2019control",
+      "hou2022graphmae",
+      "hu2020strategies",
+      "kipf2016vgae",
+      "li2020minigraph",
+      "li2023heart",
+      "libennowell2007link",
+      "lin2017focal",
+      "loshchilov2019adamw",
+      "maciasvelasco2026benchmarking",
+      "ncbi_hg002",
+      "nguyen2023hyenadna",
+      "paten2017genome",
+      "rozowsky2023entex",
+      "siren2021giraffe",
+      "su2021roformer",
+      "tang2025evaluating",
+      "zhou2024dnabert2"
+    ],
+    "action": "Retain previously verified inline bibliographies and citation identities; no new factual claim requiring a new reference"
+  },
+  "scientific_clarifications": [
+    "Unmasked downstream extraction does not eliminate possible effects of shortcut-sensitive pretrained weights",
+    "Partially controlled initialization is not asserted to establish independent or reproducible initial states",
+    "Window-scaling patterns do not identify a causal contribution of the degree shortcut"
+  ],
+  "remaining_items_unchanged": [
+    "Author/consortium/funding/release confirmations",
+    "Exact training-graph assemblies",
+    "Independent E replication not complete in reported evidence",
+    "Improved genotype calls unproved"
+  ]
+}

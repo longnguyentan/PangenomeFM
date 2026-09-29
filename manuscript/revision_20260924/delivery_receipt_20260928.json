@@ -1,24 +1,25 @@
 {
   "date": "2026-09-28",
-  "base_commit": "c8049161cbb2400998db2b969adf5210c53c2da7",
-  "source_revision_record": "consolidation_provenance.json",
+  "base_commit": "83d4e72",
+  "source_revision_record": "prose_revision_provenance.json",
   "entrypoint": "main.tex",
-  "main_tex_sha256": "70190d7a3bce063390e247b91fa8ca3edb42033c2304b0c7dc34471ae0afa57e",
+  "main_tex_sha256": "7904439781be6c7a812dcd4d39639f1357151d05b4f667c5ba7da02524a90add",
   "archive": {
     "path": "output/source/PangenomeFM_NMI_revised_LaTeX.zip",
-    "bytes": 356401,
-    "files": 17,
+    "bytes": 456727,
+    "files": 20,
     "tex_files": 1,
-    "sha256": "e094f9ef69a688b41d4d36b2f38403ff96b5008374bdab800631dd1425534afa"
+    "sha256": "ed2535ac2ba210df3517debdf6d3572f30486ddc22dd12c15633642151b6662e"
   },
   "checks": {
     "zip_integrity": "passed",
     "manifest_hashes": "all verified",
     "deterministic_rebuild": "identical ZIP SHA-256",
     "portable_project_compile": "Three pdfLaTeX draft-mode passes from isolated extracted package; no warnings, undefined citations/references, or box warnings",
-    "comments": "Checker passes in extracted bundle; deliberate original-comment deletion correctly fails",
+    "comments": "Checker passes in current source and isolated extracted bundle; all original/follow-up/supplied comments preserved",
     "pdf_created": false,
-    "native_editor": "Checked; cannot load companion figure PDFs; document kept open"
+    "native_editor": "Checked; cannot load companion figure PDFs; document kept open",
+    "comparison": "120 HTML entries, 75 revised, controls present; every right-column block matches current source; all provenance hashes verified"
   },
   "editorial_status": {
     "original_comments_preserved": 118,
@@ -27,5 +28,16 @@
     "professor_followup_request_count": 13,
     "genotype_call_improvement": "evidence open",
     "open_author_items": "See REVISION_NOTES.md"
+  },
+  "prose_review": {
+    "blocks_reviewed": 120,
+    "blocks_revised": 75,
+    "blocks_retained": 45,
+    "headings_revised": 6,
+    "word_counts": {
+      "abstract": 128,
+      "main": 2875
+    },
+    "source_comparison_basis": "Existing open main.tex at 83d4e72; Downloads/main.tex is a reference, not an overwrite source"
   }
 }

@@ -123,5 +123,7 @@
   "intentional_author_requirements": [
     "Explicit Introduction heading",
     "No study findings in abstract or Introduction"
-  ]
+  ],
+  "record_scope": "Historical consolidation before paragraph-level revision; see prose_revision_provenance.json for current source and checks.",
+  "latest_revision": "prose_revision_provenance.json"
 }

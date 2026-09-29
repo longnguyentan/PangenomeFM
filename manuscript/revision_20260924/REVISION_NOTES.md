@@ -1,5 +1,16 @@
 # Consolidated NMI revision — 28 September 2026
 
+## Latest paragraph-level writing revision
+
+The main text was subsequently reviewed paragraph by paragraph: 120 content
+blocks reviewed, 75 revised, 45 retained, and six headings revised. Full old/new
+comparisons and Vietnamese explanations are in `PARAGRAPH_REVIEW_20260928.md`
+and the searchable `PARAGRAPH_REVIEW_20260928.html`. Current word counts are
+2875 for the main text and 128 for the abstract. Tables, equations,
+citations, numerical estimates and figure assets are unchanged.
+`prose_revision_provenance.json` records the current source identity and checks.
+The consolidation record below documents the preceding editorial pass.
+
 ## Delivered source
 
 `main.tex` is the single editable source for the article and supplement. All

@@ -44,6 +44,8 @@ The author's instruction to keep findings out of the abstract and Introduction
 is retained. Completed results and null findings remain in Results. New
 single-fold development findings are labelled as such. No incomplete chromosome
 replication result is used. Author-confirmation items remain visible in red.
+See `PARAGRAPH_REVIEW_20260928.html` (searchable side-by-side) or its Markdown
+version for the complete paragraph-level writing review with Vietnamese reasons.
 See `REVISION_NOTES.md` for the evidence checks, reference corrections and open
 scientific/author-input items.
 
@@ -69,7 +71,10 @@ def main() -> None:
              "check_editorial_comments.py": ROOT / "check_editorial_comments.py",
              "editorial_comment_manifest.json": ROOT / "editorial_comment_manifest.json",
              "consolidation_provenance.json": ROOT / "consolidation_provenance.json",
-             "REVISION_NOTES.md": ROOT / "REVISION_NOTES.md"}
+             "REVISION_NOTES.md": ROOT / "REVISION_NOTES.md",
+             "PARAGRAPH_REVIEW_20260928.md": ROOT / "PARAGRAPH_REVIEW_20260928.md",
+             "PARAGRAPH_REVIEW_20260928.html": ROOT / "PARAGRAPH_REVIEW_20260928.html",
+             "prose_revision_provenance.json": ROOT / "prose_revision_provenance.json"}
     from check_editorial_comments import without_comments
     text = without_comments((ROOT / "main.tex").read_text()).split(r"\end{document}", 1)[0]
     figures = set(re.findall(r"\\includegraphics(?:\[[^\]]+\])?\{([^}]+)\}", text))

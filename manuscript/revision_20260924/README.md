@@ -17,6 +17,14 @@ There is no BibTeX step: the references are inline. No data, Python package,
 checkpoint or server access is required. The Codex single-document compiler does
 not currently load companion figure PDFs; use a full LaTeX project compiler.
 
+## Paragraph-level review
+
+The current writing pass reviewed 120 content blocks, revised 75 and retained 45;
+six headings were revised. Open `PARAGRAPH_REVIEW_20260928.html` for a searchable
+old/new table, or `PARAGRAPH_REVIEW_20260928.md` for the complete Markdown version.
+Explanations are in Vietnamese. `prose_revision_provenance.json` records the
+current manuscript hash and checks; consolidation provenance is historical.
+
 ## Organization and editorial decisions
 
 Main sections: Abstract, Introduction (six paragraphs), Results, Discussion,

@@ -3,6 +3,17 @@
 Updated 28 September 2026. Applies to the **existing open `main.tex`** in
 `manuscript/revision_20260924`; no replacement manuscript or tab was created.
 
+## Latest paragraph-level writing revision
+
+- [x] Review 120 content blocks against the current source and supplied files.
+- [x] Revise 75 blocks and six headings; retain 45 blocks that are already precise.
+- [x] Supply complete old/new comparison tables in Markdown and searchable HTML.
+- [x] Preserve six Introduction paragraphs, method-first Methods and all scientific controls.
+- [x] Verify that numerical tables, equations, citations and figure files remain unchanged.
+
+Full record: `manuscript/revision_20260924/PARAGRAPH_REVIEW_20260928.md`.
+No evidence-open or author-confirmation item changes status through prose editing.
+
 ## Latest consolidated-source revision
 
 - [x] Review the supplied NMI rewrite against saved evidence and merge into the existing `main.tex`.
