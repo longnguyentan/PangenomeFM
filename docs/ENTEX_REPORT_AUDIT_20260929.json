@@ -110,8 +110,7 @@
   ],
   "scope": "Saved metrics verification, not refitting or rebootstrap of predictions",
   "review_date": "2026-09-29",
-  "report_sha256": "afbd64449e9a3e34b59fbdbabbf4de23380c7c2f59fe883156f6c63913f23fc1",
-  "local_link_check": "passed",
+  "report_sha256": "de72ea4160f096308fb2c1c14734ad3d0b89c8cc5a462dc2dee43ab1748c73f0",
   "source_artifacts": {
     "results/entex/v1/p0_analysis/per_run.csv": {
       "bytes": 102879,
@@ -427,5 +426,21 @@
     "No new classifier or encoder was fitted in this report review.",
     "Local coverage receipts are complete for 330 core configurations; later 120 configurations lack a uniform full feature-audit export.",
     "P1 mapping percentage is carried from the original completion record, not independently re-mapped here."
-  ]
+  ],
+  "previous_report_sha256": "afbd64449e9a3e34b59fbdbabbf4de23380c7c2f59fe883156f6c63913f23fc1",
+  "presentation_revision": {
+    "main_briefing_minutes": 15,
+    "timed_blocks": 7,
+    "questions": 0,
+    "hyperlinks": 0,
+    "external_document_navigation": false,
+    "previous_scientific_table_rows_preserved": 664,
+    "all_task_complexity_contrasts_included": 90,
+    "new_experiments": 0,
+    "appendices": "All supporting details remain in the same document; not part of the timed delivery.",
+    "main_briefing_word_count": 1510,
+    "table_column_consistency": "passed",
+    "all_recorded_source_hashes": "passed",
+    "scientific_table_row_preservation": "passed"
+  }
 }

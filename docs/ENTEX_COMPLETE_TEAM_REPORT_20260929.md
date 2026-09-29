@@ -1,47 +1,124 @@
-# EN-TEx: complete results, data quality and interpretation for the PangenomeFM team
+# EN-TEx × PangenomeFM: 15-minute team briefing
 
-Takeaway: EN-TEx shows small assay-dependent graph gains; regulatory-locus and enhancer results remain inconclusive.
+**Evidence snapshot: 29 September 2026.** Completed saved results; no new fitting in this review. Main briefing below; detailed results and QC retained in the appendices of this same document. No external material needed to follow the discussion.
 
-**Evidence reviewed: 29 September 2026 (America/New_York).** Prepared for team discussion. This report supersedes the incomplete extension status in the earlier meeting brief.
+## 0–1 min · Main message
 
-We evaluated whether frozen pangenome representations improve biological prediction beyond genomic coordinates and nucleotide embeddings. Saved outputs contain 450 complete fold–run–context configurations across 15 datasets, each with seven feature combinations. AS-prone cCREs, the enhancer-state tissue macro and RNA allele-specific expression remain inconclusive globally. CTCF, H3K27ac and H3K4me3 show small positive estimates in some settings, but weighting and multiplicity analyses narrow the claims. The representations describe loci, not donor-specific alleles, and these EN-TEx evaluations do not establish that learned weights outperform matched untrained encoders. The next useful step is a controlled representation comparison on the existing endpoints, with the repeated-measurement and allele-resolution limitations explicitly tested.
+- **450 completed configurations across 15 datasets; 3,150 feature-specific metric records.** Five chromosome folds × three runs × two graph contexts per dataset.
+- **Small, assay-dependent graph contributions.** No global benefit established for AS-prone cCREs, enhancer state or RNA allele-specific expression.
+- **Measurement exposure changes the interpretation.** CTCF becomes inconclusive with equal-locus evaluation; H3K27ac retains small positive intervals; H3K4me3 attenuates and does not pass multiplicity sensitivity.
+- **EN-TEx does not yet demonstrate a benefit from learned weights over an untrained encoder.** Existing results use the original frozen model, not the newer sequence-conditioned encoder.
 
-## 1. Scientific context and question
+## 1–3 min · Biological tasks and data
 
-EN-TEx combines personal genomes and functional assays across tissues from four individuals. Its published resource contains 1,635 datasets; our experiments use released, processed accessible/testable AS calls and active/repressed cCRE annotations, not all raw experiments. [Original EN-TEx paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC10074325/) · [official portal](https://entex.encodeproject.org/main.html).
+**EN-TEx:** personal genomes and functional assays from four donors, up to 30 tissues in the analysed AS tables. Published resource: 1,635 datasets. Here: released, processed calls; no independent raw-read reanalysis.
 
-The primary question is whether adding frozen topology T improves average precision (AP, reported as AUPRC in the code) beyond C+S on identical examples: `ΔT = AP(C+S+T) − AP(C+S)`. The reciprocal contrast is `ΔS = AP(C+S+T) − AP(C+T)`. A positive topology increment is neither proof of causal biological information nor proof that pretraining was necessary.
+**AS = allele-specific imbalance; cCRE = candidate cis-regulatory element; dELS = distal enhancer-like element.** A measurement is one tested locus/experiment observation; repeated measurements are not independent donors.
 
-### Experimental units and labels
-
-| Task | Unit and positive | Negative / exclusions |
+| Task | Prediction target | Data scale / class balance |
 |---|---|---|
-| P0 | One cCRE locus; any supplied significant AS call among informative measurements | Measured/testable with no significant call; absent/unmeasured elements never become negative |
-| P0b | Existing P0 predictions within predefined graph-complexity strata | No re-binning or selection using performance |
-| P0 sensitivities | Exact exposure matching, H3K27ac-only, CTCF-only | Definitions fixed before P0 biological fitting; matching after common feature coverage |
-| P1 | A distal enhancer-like cCRE in one tissue, explicitly active | Explicitly repressed; require V2 dELS and supplied distal state; exclude conflicting locus/tissue labels |
-| P2 / extensions | A measured heterozygous SNV/experiment, supplied AS significance=1 | Accessible/informative SNV measurement with significance=0; no absence-based negatives |
+| P0: AS-prone cCRE | Any supplied significant AS call at a testable locus | 5,330,335 measurements → 250,722 loci; 28,092 positive, 11.20% |
+| P0 sensitivities | Exposure-matched, H3K27ac-only, CTCF-only | Three definitions fixed before biological fitting |
+| P1: enhancer state | Explicitly active versus explicitly repressed dELS, separately per tissue | Five tissues; 205,788–260,898 loci each; approximately 40–46% active |
+| P2: CTCF / H3K27ac SNVs | Supplied significant imbalance in an informative measurement | 2.39M / 3.17M measurements; 596,650 / 713,418 loci; 3.51% / 2.36% positive |
+| RNA allele-specific expression | Same AS target, high-confidence RNA subset | 1.64M measurements; 466,867 loci; 1.44% positive |
+| ATAC / H3K4me3 / H3K27me3 | Same AS target, three additional assays | 3.27M / 1.66M / 1.29M measurements; 4.08% / 4.50% / 1.99% positive |
 
-SNV features and predictions are constant for every occurrence of a locus within a run. Training aggregates identical locus/label examples with counts while retaining original measurement class weights and scaler occurrence weights. A locus may have both AS and non-AS measurements across experiments. Thus the task measures propensity for imbalance within the sampled measurements; it does not predict the favoured allele, its direction of effect, a causal variant, or a donor/tissue-specific response.
+**Label safeguards:** supplied AS calls; no invented significance threshold; unmeasured loci excluded from negatives. P1 uses measured repression, not “not active”. SNV features are shared across occurrences of a locus, so the target is susceptibility to imbalance, not its favoured allele or a donor-specific response.
 
-## 2. Lifecycle and completeness
+## 3–5 min · QC and evaluation design
 
-| Programme | Configurations | Status |
+**Resolved data issues**
+
+- Initial high-confidence SNV file: **RNA only**. CTCF/H3K27ac and the three-assay extension use the full accessible set: 22,310,439 measurements across 12 assays.
+- Initial SCREEN v4 join: only **31.6% active / 41.6% repressed coverage**. ENCODE V2 registry ENCFF924IMH resolved all supplied IDs; outcome-dependent missingness was not accepted.
+- P1 tissues selected by class counts, not performance: thyroid gland, tibial nerve, body of pancreas, gastroesophageal sphincter, Peyer's patch. Conflicting tissue/locus states excluded.
+- Four initial source tables: zero recorded missing values; malformed coordinates/counts and conflicting duplicate identities rejected. Coordinates: GRCh38, zero-based, half-open.
+- Same pinned HPRC R2 graph. P0: **100% mapped**, 1.33% multi-segment; all six SNV datasets: **100% mapped**, one containing segment. P1: 100% mapping in the original completion record.
+- Common feature coverage: **100% in 180 core configurations**; at least **99.9983% in 150 P1 configurations**. Later 120 RNA/extension fits lack a uniform exported per-run feature audit; their every-run coverage is not independently re-certified here.
+
+**Frozen comparison**
+
+- C: manuscript coordinate/structural features; K: k-mer composition; S: frozen Nucleotide Transformer; T: frozen PangenomeFM.
+- Seven probes: C, K, S, T, C+S, C+T, C+S+T. Standardized logistic classifiers; only probes receive biological labels.
+- Same loci and chromosome partitions for all feature arms. Strict: within-window graph; one-hop: directly connected context. No random row split.
+- Primary contrast: **ΔT = AP(C+S+T) − AP(C+S)**. AP is reported as AUPRC; random-ranking baseline equals positive prevalence. A gain of 0.001 is 0.1 percentage point of AP.
+- Paired 95% hierarchical-bootstrap intervals: five folds, then three runs within folds, 10,000 draws. Pointwise intervals; not automatically evidence after multiple comparisons. Run IDs do not imply fully controlled encoder initialization/DropEdge randomness.
+
+## 5–8 min · Complete endpoint overview
+
+Read each pair as **strict / one-hop**. † = primary pointwise 95% interval entirely above zero; not a multiplicity-adjusted claim. Exact intervals, AUROC and all feature combinations remain in Appendices C and F.
+
+| Endpoint | C+S AP | C+S+T AP, strict / one-hop | ΔAP, strict / one-hop | Primary readout |
+|---|---|---|---|---|
+| P0 AS-prone cCRE | 0.1514 | 0.1516 / 0.1508 | +0.0002 / -0.0007 | Inconclusive |
+| P1 enhancer state, 5-tissue macro | 0.5699 | 0.5708 / 0.5707 | +0.0009 / +0.0008 | Inconclusive |
+| CTCF SNVs | 0.0616 | 0.0630 / 0.0638 | +0.0015 † / +0.0022 † | Positive primary intervals; weighting-sensitive |
+| H3K27ac SNVs | 0.0497 | 0.0504 / 0.0530 | +0.0007 / +0.0033 † | Positive one-hop primary interval |
+| RNA ASE | 0.0255 | 0.0271 / 0.0270 | +0.0016 / +0.0015 | Inconclusive |
+| ATAC SNVs | 0.0473 | 0.0470 / 0.0476 | -0.0003 / +0.0003 | Inconclusive |
+| H3K4me3 SNVs | 0.0803 | 0.0847 / 0.0893 | +0.0044 † / +0.0090 † | Primary gain attenuates after reweighting |
+| H3K27me3 SNVs | 0.0915 | 0.0949 / 0.0988 | +0.0034 / +0.0073 | Inconclusive |
+
+**P1 detail:** five-tissue macro inconclusive; tibial nerve has a positive strict pointwise interval, other tissue/context intervals cross zero. All five tissues retained, including negative Peyer's-patch estimates.
+
+## 8–11 min · Sensitivities that change the interpretation
+
+| Analysis | Observed result | Interpretation |
 |---|---|---|
-| P0 + 3 sensitivities | 120 | Complete |
-| P1, 5 tissues | 150 | Complete |
-| CTCF/H3K27ac SNVs | 60 | Complete |
-| RNA ASE | 30 | Complete |
-| ATAC/H3K4me3/H3K27me3 SNVs | 90 | Complete |
-| Total | 450 | 3,150 feature-specific classifier metric records |
+| P0 exposure matching | ΔAP +0.00148 / +0.00200; both pointwise intervals positive | Balanced 50%-positive subset; different target population. C alone still exceeds C+S+T |
+| P0 assay-only calls | H3K27ac: +0.00058 / +0.00061; CTCF: +0.00026 / +0.00073 | Positive intervals only for H3K27ac strict and CTCF one-hop; no uniform effect |
+| CTCF, equal-locus evaluation | +0.00018 / +0.00049; both intervals cross zero | Primary measurement-weighted signal is not robust to this weighting change |
+| H3K27ac, equal-locus evaluation | +0.00199 / +0.00221; intervals [0.00111, 0.00273] / [0.00065, 0.00419] | Small positive locus-level signal; exploratory follow-up |
+| H3K4me3, equal-locus evaluation | +0.00107 / +0.00115; both intervals cross zero | Apparent primary gain attenuates markedly |
+| Three-assay multiplicity sensitivity | No AP contrast at q < 0.05; H3K4me3 q = 0.375 measurement-weighted, 0.75 equal-locus | Six assay/context contrasts per weighting; five folds give minimum two-sided sign-flip P = 0.0625 |
+| P0 graph complexity | AS prevalence: low 9.04%, medium 10.20%, high 13.23%; high-complexity gain inconclusive | Label–complexity association is not a topology benefit; one-hop low/medium gains are negative |
 
-Here “configuration” means one task × fold × run identifier × graph context, with seven separately fitted feature-set probes. It is not 450 donors or biological replicates. We checked all 3,150 per-run metric rows, five folds, three run identifiers, two contexts, and all seven features; recomputed summary means and paired ΔT from the saved metrics agree within 1e-12. CIs are the saved hierarchical-bootstrap estimates, not newly bootstrapped predictions.
+**Weighting distinction:** each locus receives equal total weight at evaluation only; no refitting. Donor/tissue macro results describe existing groups, not unseen-donor/tissue transfer. CTCF/H3K27ac follow-ups were post hoc; the three-assay follow-up protocol was fixed before its fits. Measurement multiplicity remains an explanation to test, not an established causal mechanism.
 
-Completed follow-ups re-evaluate 150 existing prediction configurations (60 CTCF/H3K27ac and 90 extension runs); they are not additional training runs. Full prediction arrays and large graph/cache files remain on the lab server. The present review checks locally saved result tables, QC and audit receipts, and does not claim a new server rerun. These are custom repository runs, not registered NGS Workbench jobs.
+## 11–13 min · Evidence boundaries
 
-## 3. Data quality and provenance
+- **Biological unit:** four donors; many correlated measurements. Static locus features cannot distinguish two alleles, donors or tissues at the same locus.
+- **Sequence baseline:** segment embeddings with terminal sampling/truncation; incomplete long-segment coverage and no allele-centred input. Larger AP gains cannot be assumed against a stronger sequence baseline.
+- **Pretraining attribution:** original masking shortcut and incomplete RNG control; unmasked embedding extraction does not erase effects of pretraining. No matched trained/random/handcrafted EN-TEx comparison completed.
+- **Generalization:** chromosome-held-out is not donor-held-out. Repeated use of the same folds for development requires independent confirmation.
+- **QC scope:** processed-table QC only; no independent FASTQ quality, antibody specificity, phasing or allele-mapping-bias assessment.
+- **Completion scope:** 450 fitted configurations complete; 150 prediction follow-ups complete, not additional fits. Saved means and paired arithmetic verified to 1e-12; CIs not re-bootstrapped in this review.
 
-### 3.1 Source files and schemas
+## 13–15 min · Potential ideas
+
+**Priority 1 · Attribution on the existing panel**
+
+- Original T + sequence-conditioned E + matched untrained encoders + handcrafted graph statistics
+- Same examples, folds and probes across arms; matched inputs/capacity within each trained–untrained pair
+- Fixed six-assay panel; CTCF, ATAC, RNA and other null endpoints retained
+- Model selection on designated development data; untouched confirmation evidence
+
+**Priority 2 · Measurement exposure and allele resolution**
+
+- Equal-locus **training** sensitivity, alongside completed evaluation-only reweighting
+- Exposure, read depth and donor/tissue coverage strata; eligibility rules fixed in advance
+- Allele-centred frozen sequence features; report coverage of the actual variant base
+- Two clearly separated targets: locus susceptibility now; individual allele response with verified haplotype-aware inputs
+
+**Priority 3 · Confirmation and coverage**
+
+- Donor/tissue-aware and external validation where data support it
+- Complete late-run feature-audit export; length-weighted P0 pooling sensitivity
+- Additional assays only for a predefined biological hypothesis; no performance-driven assay selection
+- H3K27ac signal as a hypothesis for confirmation; H3K4me3 as an exposure-sensitivity example
+
+**Meeting takeaway:** reusable graph features show limited, assay-dependent EN-TEx signal. The next improvement should establish what the encoder learns beyond its inputs and how that information transfers across loci and biological contexts.
+
+---
+
+# Detailed reference: retained in this document
+
+The 15-minute discussion ends above. Appendices retain the exact results, alternative feature sets, sample distributions, QC and resource identities for discussion follow-up. All scientific tables from the preceding report are preserved; none requires another file to interpret.
+
+## Appendix A. Source data and QC
+
+### A.1 Source files and schemas
 
 | Source | Bytes | Rows | Unique loci/IDs | Compression | Recorded missing values |
 |---|---|---|---|---|---|
@@ -61,7 +138,7 @@ Read counts and supplied p-values remain provenance fields. Labels use `imbalanc
 
 **Representative cCRE:** chr1:817080–817403, `EH38D2115333_PLS,CTCF-bound`, haplotype counts 16/16, donor ENC-001, thoracic aorta, H3K27ac, supplied p=1 and AS=0. **Representative SNV:** chr1:17385–17386, ref G and haplotypes A/G, RNA-seq, counts A/C/G/T=7/0/7/0, AS=0. Examples demonstrate schema, not a locus selected for model success.
 
-### 3.2 Assay-specific SNV data
+### A.2 Assay-specific SNV data
 
 | Assay/source | Measurements | Unique loci | AS+ measurements | AS− measurements | Prevalence | Donors | Tissues |
 |---|---|---|---|---|---|---|---|
@@ -74,7 +151,7 @@ Read counts and supplied p-values remain provenance fields. Labels use `imbalanc
 
 All six prepared SNV datasets record zero identical-duplicate exclusions. CTCF and H3K27ac come from the full accessible source; the initially supplied high-confidence file contains RNA-seq only. The full source contains 22,310,439 measurements across 12 assays and was parsed in chunks, once into compact caches. RNA here uses the high-confidence subset (1,640,580 measurements), not all 2,531,272 RNA measurements in the default file. Source selection therefore differs by endpoint.
 
-### 3.3 cCREs, tissue selection and registry mismatch
+### A.3 cCREs, tissue selection and registry mismatch
 
 P0 retains 250,722 loci: 28,092 positive and 222,630 negative (11.2044%), from 5,330,335 informative measurements. No source measurements were excluded. The cCRE table spans four donors, 30 tissues and 11 assays. “Any significant call” gives loci with more measurements more opportunities to become positive; this is why exposure matching is essential.
 
@@ -90,13 +167,13 @@ The active and repressed annotations span 28 tissues. Initial SCREEN v4 joins ma
 
 Tissues were ranked by the smaller class count, then total loci and tissue name, with at least 1,000 examples per class; model performance never entered selection. Separate classifiers were fitted per tissue. The macro result gives equal weight to these five fixed tissues within each fold/run, then bootstraps folds/runs; it does not resample tissues or claim all-tissue generalization. Conflicts were excluded because a single static binary state could not be assigned faithfully after collapsing the supplied annotations.
 
-### 3.4 Mapping and feature coverage
+### A.4 Mapping and feature coverage
 
 All tasks use the same checksum-pinned HPRC R2 SV graph as the manuscript. The existing half-open interval mapper was reused. P0 maps 250,722/250,722 loci: 247,382 overlap one segment and 3,340 overlap multiple segments (1.3322%). The default mean pools segment features; length-weighted pooling is implemented, but a completed length-weighted sensitivity is not established by the reviewed outputs. SNVs use only the containing segment; no neighbourhood pooling extension was added. All six SNV datasets map 100% and have no multi-segment SNVs. The original P1 completion record reports 100% mapping; its per-run feature-coverage receipts are available locally, but the separate full mapping receipt was not re-exported for this review.
 
 Joint C/K/S/T coverage is 100% across the 180 P0/sensitivity/CTCF/H3K27ac configurations. Across 150 P1 configurations, common coverage is at least 99.9982869966%; two to four examples per run are excluded under the existing topology-extraction rules. They are removed from every feature arm, not just T. Do not sum these repeated fold/context exclusions into a count of unique loci. RNA/extension preparation, smoke and completed summary/follow-up audits are available; this review does not have a uniform 120-run raw feature-audit export for those later fits, so their every-run feature coverage is not independently re-certified here.
 
-### 3.5 Resource identities
+### A.5 Resource identities
 
 Graph segment SHA256: `e0d832a820969403797662f9af267440599898f068ba9df4069b114d669a3347`. NT: `InstaDeepAI/nucleotide-transformer-v2-50m-multi-species`, revision `81b29e5786726d891dbf929404ef20adca5b36f1`. Registry SHA256: `16fe76cbbc1f24e38a5476ce44fa4b81a9612f61a23517860d6e61f5619615ec`. No release or checkpoint substitution is allowed.
 
@@ -108,7 +185,40 @@ Graph segment SHA256: `e0d832a820969403797662f9af267440599898f068ba9df4069b114d6
 | repressed.combined_set.txt.zip | 0096f4c5d0fce555bf67d3e8dddf52413e471be4a38ab86c8ede937dbdcc3770 |
 | hetSNVs_default_AS.tsv | e59a83a1595cbe12ba56714af79c297ac9f31b593e13ee44966c732d30d4daa8 |
 
-## 4. Model, splits and statistics
+## Appendix B. Definitions, completeness and evaluation
+
+EN-TEx combines personal genomes and functional assays across tissues from four individuals. Its published resource contains 1,635 datasets; our experiments use released, processed accessible/testable AS calls and active/repressed cCRE annotations, not all raw experiments. Source: Rozowsky et al., Cell 186, 1493–1511.e40 (2023), and the released EN-TEx annotations.
+
+Primary objective: measure the incremental AP of frozen topology T beyond C+S on identical examples: `ΔT = AP(C+S+T) − AP(C+S)`. The reciprocal contrast is `ΔS = AP(C+S+T) − AP(C+T)`. A positive topology increment is neither proof of causal biological information nor proof that pretraining was necessary.
+
+### Experimental units and labels
+
+| Task | Unit and positive | Negative / exclusions |
+|---|---|---|
+| P0 | One cCRE locus; any supplied significant AS call among informative measurements | Measured/testable with no significant call; absent/unmeasured elements never become negative |
+| P0b | Existing P0 predictions within predefined graph-complexity strata | No re-binning or selection using performance |
+| P0 sensitivities | Exact exposure matching, H3K27ac-only, CTCF-only | Definitions fixed before P0 biological fitting; matching after common feature coverage |
+| P1 | A distal enhancer-like cCRE in one tissue, explicitly active | Explicitly repressed; require V2 dELS and supplied distal state; exclude conflicting locus/tissue labels |
+| P2 / extensions | A measured heterozygous SNV/experiment, supplied AS significance=1 | Accessible/informative SNV measurement with significance=0; no absence-based negatives |
+
+SNV features and predictions are constant for every occurrence of a locus within a run. Training aggregates identical locus/label examples with counts while retaining original measurement class weights and scaler occurrence weights. A locus may have both AS and non-AS measurements across experiments. Thus the task measures propensity for imbalance within the sampled measurements; it does not predict the favoured allele, its direction of effect, a causal variant, or a donor/tissue-specific response.
+
+### Completed programme
+
+| Programme | Configurations | Status |
+|---|---|---|
+| P0 + 3 sensitivities | 120 | Complete |
+| P1, 5 tissues | 150 | Complete |
+| CTCF/H3K27ac SNVs | 60 | Complete |
+| RNA ASE | 30 | Complete |
+| ATAC/H3K4me3/H3K27me3 SNVs | 90 | Complete |
+| Total | 450 | 3,150 feature-specific classifier metric records |
+
+Here “configuration” means one task × fold × run identifier × graph context, with seven separately fitted feature-set probes. It is not 450 donors or biological replicates. We checked all 3,150 per-run metric rows, five folds, three run identifiers, two contexts, and all seven features; recomputed summary means and paired ΔT from the saved metrics agree within 1e-12. CIs are the saved hierarchical-bootstrap estimates, not newly bootstrapped predictions.
+
+Completed follow-ups re-evaluate 150 existing prediction configurations (60 CTCF/H3K27ac and 90 extension runs); they are not additional training runs. Full prediction arrays and large graph/cache files remain on the lab server. The present review checks locally saved result tables, QC and audit receipts, and does not claim a new server rerun.
+
+### Features, splits and uncertainty
 
 - C: log1p segment reference offset, log1p segment length and orientation; pooled using the same rules as other segment features. These are not freshly redefined locus coordinates.
 - K: normalized mono/di/tri-nucleotide composition from the manuscript procedure.
@@ -128,7 +238,7 @@ All remaining chromosomes train the probe. Locus repeats across donors/tissues/a
 
 Primary metric: AP. Secondary metrics: AUROC, balanced accuracy, F1, precision, recall and normalized AP `(AP − prevalence)/(1 − prevalence)`. Random-ranking AP equals prevalence. Normalized AP adjusts the baseline but is not fully prevalence invariant. The summaries resample five folds and then three runs within folds for 10,000 hierarchical draws, pairing feature contrasts before resampling. Repeated training sets and only five chromosome blocks limit uncertainty estimates. The intervals are pointwise; an interval above zero is not a family-wise significance claim.
 
-## 5. Complete primary and sensitivity results
+## Appendix C. Exact primary and sensitivity results
 
 Each row averages 15 fold/run pairs. The prevalence column is the mean held-out-fold prevalence and can differ from the global source prevalence above. All null and negative results are shown.
 
@@ -182,7 +292,7 @@ Each row averages 15 fold/run pairs. The prevalence column is the mean held-out-
 - **H3K4me3:** positive pointwise intervals in both contexts, but the effect is smaller under equal-locus weighting and does not survive the existing six-contrast multiplicity analysis.
 - **ATAC / H3K27me3:** global intervals cross zero; no consistent improvement is established.
 
-## 6. Measurement exposure and donor/tissue sensitivity
+## Appendix D. Measurement exposure, donor/tissue macros and multiplicity
 
 Three P0 sensitivities were fixed before biological fitting: exact 1:1 matching within chromosome × number-of-informative-measurements strata, H3K27ac-only calls and CTCF-only calls. Matching is without replacement with seed 20260806 and is applied after common feature coverage; every arm uses the same selected loci. It controls the measured exposure count, not all donor/tissue/assay ascertainment.
 
@@ -252,7 +362,7 @@ Equal-locus weighting makes CTCF inconclusive and preserves a small H3K27ac sign
 
 BH adjustment is across the six assay/context contrasts separately for each metric and weighting scheme. None of these AP contrasts passes q<0.05. The minimum attainable two-sided sign-flip P with five folds is 0.0625. This is an exploratory sensitivity, not a correction covering every task, stratum and follow-up in this report.
 
-## 7. Graph complexity: within-stratum evidence
+## Appendix E. P0 graph-complexity results
 
 Use the existing label-free native complexity v2 categories and locus-start regional assignment, fixed independently of EN-TEx performance. AS prevalence increasing with complexity does not show that adding T helps. The following P0 comparison uses the same examples within each stratum; normalized AP and AUROC appear alongside AP.
 
@@ -265,87 +375,11 @@ Use the existing label-free native complexity v2 categories and locus-start regi
 | strict | low | 12477.6 | 0.090691 | 0.117755 | 0.117306 | -0.000449 [-0.001383, +0.000453] | -0.000879 [-0.003325, +0.001509] | -0.000499 [-0.001528, +0.000497] |
 | strict | medium | 16252.0 | 0.101949 | 0.129840 | 0.129344 | -0.000496 [-0.001436, +0.000664] | -0.001442 [-0.004379, +0.001293] | -0.000550 [-0.001594, +0.000742] |
 
-P0 does not establish a positive high-complexity topology gain. In one-hop context, low- and medium-complexity intervals are negative. Prevalence-normalization does not turn this into evidence of beneficial topology. Every task’s full complexity table is linked in Section 10; no bin was chosen for a favorable outcome.
+P0 does not establish a positive high-complexity topology gain. In one-hop context, low- and medium-complexity intervals are negative. Prevalence-normalization does not turn this into evidence of beneficial topology. All task-specific complexity contrasts appear in Appendix I below; no bin was chosen for a favorable outcome.
 
-## 8. What these results do and do not establish
+## Appendix F. All seven feature combinations
 
-**Supported:** frozen representations can be reused across these measurement-derived tasks, with small, assay-dependent incremental AP; all loci remain chromosome-held-out and the completed programme includes null results. **Unresolved:** learned-versus-random attribution for EN-TEx, robust external/donor-held-out transfer, improved allele-specific prediction from actual allele sequences, and gains beyond stronger full-context sequence baselines.
-
-Key limitations:
-
-1. Four biological donors, many correlated experiments; millions of measurements are not millions of independent individuals.
-2. Static locus/segment features cannot distinguish donors, tissues or two alleles at the same locus; distinct nearby loci may share the same feature vector.
-3. “Any AS” and measurement-weighted targets depend on detection opportunity and source ascertainment.
-4. P1 conflicting states are excluded; state labels may summarize differing donor/assay contexts rather than a universal tissue truth.
-5. End-sampled NT segments are not an allele-centred local sequence baseline.
-6. Original pretraining contains a masking shortcut and incompletely controlled RNG states. Unmasked extraction does not undo what pretrained weights learned.
-7. Existing H/R controls concern cCRE/SV tasks; do not transfer their attribution conclusions quantitatively to EN-TEx.
-8. Repeated inspection of the same chromosome folds makes subsequent design selection exploratory.
-9. Raw-library QC is inherited from EN-TEx, not independently reproduced here.
-10. Historical QC documents marked mapping or fitting “pending” at preparation time. Later mapping/completion/per-run outputs supersede those fields; the old receipts remain as an audit trail.
-
-## 9. Suggested discussion at the group meeting
-
-1. Is the next target **locus susceptibility** or **individual allele response**? These require different representations and labels.
-2. Should H3K27ac/H3K4me3 become fixed development endpoints, with CTCF/ATAC/RNA/null tasks retained as checks rather than discarded?
-3. Compare trained and matched untrained encoders plus H on the same EN-TEx examples before attributing small gains to pretraining.
-4. Fit an equal-locus-weight sensitivity, separate from the already completed evaluation-only reweighting; keep chromosome splits unchanged.
-5. Compare an allele-centred frozen sequence representation against the segment representation on identical loci, reporting actual variant-base coverage.
-6. Reserve untouched external/donor-aware evidence before selecting the model on repeatedly viewed folds.
-7. Do not add assays solely to obtain a positive interval; prioritize correcting representation and attribution limitations.
-
-### Work still not demonstrated
-
-- Full EN-TEx E-versus-random-versus-H comparison, strict donor/tissue-held-out fits and genotype/haplotype-specific AS direction prediction.
-- Full long-sequence/local-allele baseline and a completed length-weighted P0 pooling sensitivity.
-- Additional default-source assays H3K36me3, H3K4me1, H3K9me3, EP300, POLR2A and POLR2AphosphoS5; their source availability is not a fitted result.
-- Independent FASTQ-level QC. None is claimed as completed here.
-
-## 10. Verified artifacts and reproduction
-
-### Results and QC
-
-- **P0 AS-prone cCRE:** [per-run metrics](../results/entex/v1/p0_analysis/per_run.csv) · [all features/metrics](../results/entex/v1/p0_analysis/summary.csv) · [paired AP contrasts](../results/entex/v1/p0_analysis/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/v1/p0_analysis/complexity_metric_summary.csv)
-- **P0 exposure matched:** [per-run metrics](../results/entex/v1/p0_exposure_matched_analysis/per_run.csv) · [all features/metrics](../results/entex/v1/p0_exposure_matched_analysis/summary.csv) · [paired AP contrasts](../results/entex/v1/p0_exposure_matched_analysis/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/v1/p0_exposure_matched_analysis/complexity_metric_summary.csv)
-- **P0 H3K27ac only:** [per-run metrics](../results/entex/v1/p0_h3k27ac_analysis/per_run.csv) · [all features/metrics](../results/entex/v1/p0_h3k27ac_analysis/summary.csv) · [paired AP contrasts](../results/entex/v1/p0_h3k27ac_analysis/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/v1/p0_h3k27ac_analysis/complexity_metric_summary.csv)
-- **P0 CTCF only:** [per-run metrics](../results/entex/v1/p0_ctcf_analysis/per_run.csv) · [all features/metrics](../results/entex/v1/p0_ctcf_analysis/summary.csv) · [paired AP contrasts](../results/entex/v1/p0_ctcf_analysis/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/v1/p0_ctcf_analysis/complexity_metric_summary.csv)
-- **P1 thyroid_gland:** [per-run metrics](../results/entex/v1/p1_analysis/thyroid_gland/per_run.csv) · [all features/metrics](../results/entex/v1/p1_analysis/thyroid_gland/summary.csv) · [paired AP contrasts](../results/entex/v1/p1_analysis/thyroid_gland/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/v1/p1_analysis/thyroid_gland/complexity_metric_summary.csv)
-- **P1 tibial_nerve:** [per-run metrics](../results/entex/v1/p1_analysis/tibial_nerve/per_run.csv) · [all features/metrics](../results/entex/v1/p1_analysis/tibial_nerve/summary.csv) · [paired AP contrasts](../results/entex/v1/p1_analysis/tibial_nerve/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/v1/p1_analysis/tibial_nerve/complexity_metric_summary.csv)
-- **P1 body_of_pancreas:** [per-run metrics](../results/entex/v1/p1_analysis/body_of_pancreas/per_run.csv) · [all features/metrics](../results/entex/v1/p1_analysis/body_of_pancreas/summary.csv) · [paired AP contrasts](../results/entex/v1/p1_analysis/body_of_pancreas/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/v1/p1_analysis/body_of_pancreas/complexity_metric_summary.csv)
-- **P1 gastroesophageal_sphincter:** [per-run metrics](../results/entex/v1/p1_analysis/gastroesophageal_sphincter/per_run.csv) · [all features/metrics](../results/entex/v1/p1_analysis/gastroesophageal_sphincter/summary.csv) · [paired AP contrasts](../results/entex/v1/p1_analysis/gastroesophageal_sphincter/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/v1/p1_analysis/gastroesophageal_sphincter/complexity_metric_summary.csv)
-- **P1 Peyers_patch:** [per-run metrics](../results/entex/v1/p1_analysis/Peyers_patch/per_run.csv) · [all features/metrics](../results/entex/v1/p1_analysis/Peyers_patch/summary.csv) · [paired AP contrasts](../results/entex/v1/p1_analysis/Peyers_patch/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/v1/p1_analysis/Peyers_patch/complexity_metric_summary.csv)
-- **P2 CTCF:** [per-run metrics](../results/entex/v1/p2_analysis/ctcf/per_run.csv) · [all features/metrics](../results/entex/v1/p2_analysis/ctcf/summary.csv) · [paired AP contrasts](../results/entex/v1/p2_analysis/ctcf/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/v1/p2_analysis/ctcf/complexity_metric_summary.csv)
-- **P2 H3K27ac:** [per-run metrics](../results/entex/v1/p2_analysis/h3k27ac/per_run.csv) · [all features/metrics](../results/entex/v1/p2_analysis/h3k27ac/summary.csv) · [paired AP contrasts](../results/entex/v1/p2_analysis/h3k27ac/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/v1/p2_analysis/h3k27ac/complexity_metric_summary.csv)
-- **RNA ASE:** [per-run metrics](../results/entex/meeting_20260929/rna_analysis/per_run.csv) · [all features/metrics](../results/entex/meeting_20260929/rna_analysis/summary.csv) · [paired AP contrasts](../results/entex/meeting_20260929/rna_analysis/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/meeting_20260929/rna_analysis/complexity_metric_summary.csv)
-- **atac:** [per-run metrics](../results/entex/extension_20260927/analysis/atac/per_run.csv) · [all features/metrics](../results/entex/extension_20260927/analysis/atac/summary.csv) · [paired AP contrasts](../results/entex/extension_20260927/analysis/atac/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/extension_20260927/analysis/atac/complexity_metric_summary.csv)
-- **h3k4me3:** [per-run metrics](../results/entex/extension_20260927/analysis/h3k4me3/per_run.csv) · [all features/metrics](../results/entex/extension_20260927/analysis/h3k4me3/summary.csv) · [paired AP contrasts](../results/entex/extension_20260927/analysis/h3k4me3/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/extension_20260927/analysis/h3k4me3/complexity_metric_summary.csv)
-- **h3k27me3:** [per-run metrics](../results/entex/extension_20260927/analysis/h3k27me3/per_run.csv) · [all features/metrics](../results/entex/extension_20260927/analysis/h3k27me3/summary.csv) · [paired AP contrasts](../results/entex/extension_20260927/analysis/h3k27me3/paired_gains.csv) · [complexity AP/AUROC/normalized AP](../results/entex/extension_20260927/analysis/h3k27me3/complexity_metric_summary.csv)
-
-QC sources: [cCREs_default_AS.tsv.qc.json](../results/entex/v1/qc/cCREs_default_AS.tsv.qc.json) · [hetSNVs_high-confidence_AS.tsv.qc.json](../results/entex/v1/qc/hetSNVs_high-confidence_AS.tsv.qc.json) · [active.combined_set.txt.zip.qc.json](../results/entex/v1/qc/active.combined_set.txt.zip.qc.json) · [repressed.combined_set.txt.zip.qc.json](../results/entex/v1/qc/repressed.combined_set.txt.zip.qc.json) · [preparation.json](../results/entex/v1/qc/p2/preparation.json) · [final_coverage.json](../results/entex/v1/qc/completed/final_coverage.json) · [rna_preparation.json](../results/entex/meeting_20260929/qc/rna_preparation.json) · [audit.json](../results/entex/extension_20260927/qc/audit.json).
-
-### Visual reports
-
-[P0 all features](../results/entex/v1/p0_analysis/auprc_strict.png) · [P0 complexity](../results/entex/v1/p0_analysis/complexity_gain_strict.png) · [CTCF/H3K27ac weighting](../results/entex/meeting_20260929/report/weighting_auprc.pdf) · [Three-assay weighting](../results/entex/extension_20260927/report/weighting_auprc.pdf) · [Extension donor strata](../results/entex/extension_20260927/report/donor_gains.pdf) · [Extension tissue strata](../results/entex/extension_20260927/report/tissue_gains.pdf)
-
-### Provenance and commands
-
-Core configuration: [entex_v1.json](../configs/entex_v1.json). Follow-up protocols: [entex_meeting_20260929.json](../configs/entex_meeting_20260929.json) and [entex_extension_20260927.json](../configs/entex_extension_20260927.json). Core execution receipt pins commit `3475d979943ea800371e27e633ec9f4928adc02d`; per-stage audits record their own code/config identities. Reuse exact graph/checkpoint/cache versions.
-
-```bash
-# From the repository root in the original server environment
-export PYTHONPATH=src:.
-# Core preparation, mapping, probe and analysis commands:
-# docs/ENTEX_EXPERIMENTS.md (historical status paragraphs are superseded here)
-bash scripts/server/run_entex_extension_20260927.sh prepare
-bash scripts/server/run_entex_extension_20260927.sh smoke
-bash scripts/server/run_entex_extension_20260927.sh matrix
-```
-
-These commands reproduce existing work; they were not rerun in this review. Large graph and embedding inputs are required on the server. The checked compact outputs are sufficient for this report.
-
-## Appendix A. All seven feature combinations
-
-AP is mean [pointwise 95% CI]; other metrics below are means. Their SDs and CIs, precision/recall, calibrated thresholds and per-run sizes are retained in the linked summary/per-run files.
+AP is mean [pointwise 95% CI]; other metrics below are means. The exact sample sizes are in Appendix H. AP uncertainty is shown for every feature combination; secondary metrics here are descriptive means.
 
 ### P0 AS-prone cCRE
 
@@ -646,8 +680,7 @@ AP is mean [pointwise 95% CI]; other metrics below are means. Their SDs and CIs,
 | 1hop | C+T | 0.080940 [0.047879, 0.122034] | 0.675674 | 0.578262 | 0.130807 | 0.108897 | 0.188133 |
 | 1hop | C+S+T | 0.098773 [0.059172, 0.144421] | 0.682379 | 0.592251 | 0.160443 | 0.153501 | 0.209140 |
 
-
-## Appendix B. Reciprocal sequence contribution
+## Appendix G. Reciprocal sequence contribution
 
 | Task | Context | ΔS given C+T [95% CI] |
 |---|---|---|
@@ -682,7 +715,7 @@ AP is mean [pointwise 95% CI]; other metrics below are means. Their SDs and CIs,
 | h3k27me3 | strict | +0.018618 [-0.002522, +0.040524] |
 | h3k27me3 | 1hop | +0.017833 [-0.010608, +0.047179] |
 
-## Appendix C. Per-fold sizes and source distributions
+## Appendix H. Per-fold sizes and source distributions
 
 Fold sizes below use C+S; the report verification checks equality with C+S+T. Counts are the units exported by each task (loci for P0/P1, original measurement rows for SNV tasks); do not sum across overlapping training folds.
 
@@ -853,7 +886,7 @@ Fold sizes below use C+S; the report verification checks equality with C+S+T. Co
 
 ### P0 source complexity counts
 
-These are full-cohort counts; Section 7 reports means across test folds. They are not performance estimates.
+These are full-cohort counts; Appendix E reports means across test folds. They are not performance estimates.
 
 | Stratum | Loci | AS-prone | Prevalence |
 |---|---|---|---|
@@ -888,7 +921,7 @@ These are full-cohort counts; Section 7 reports means across test folds. They ar
 | chr21 | 3509 |
 | chr22 | 5404 |
 
-The preparation-era `p0_qc.json` supplies these counts only; its old “mapping pending” field is superseded by the successful mapping and completion receipts in Section 3.4.
+The preparation-era `p0_qc.json` supplies these counts only; its old “mapping pending” field is superseded by the successful mapping and completion receipts in Appendix A.4.
 
 ### SNV chromosome distribution (measurements)
 
@@ -1012,15 +1045,214 @@ The preparation-era `p0_qc.json` supplies these counts only; its old “mapping 
 | ATAC-seq | 3265155 | Fitted full-source task |
 | RNA-seq | 2531272 | RNA high-confidence subset used instead |
 
-## Review checks
+## Appendix I. Graph-complexity contrasts across all tasks
 
-[Machine-readable validation receipt](ENTEX_REPORT_AUDIT_20260929.json) records the checked tables, their hashes, and the scope of the arithmetic checks.
+Mean held-out size and prevalence, AP for each arm, and paired gains. Pointwise intervals; no correction across these many strata. These exploratory subsets do not establish a general complexity-dependent benefit. Normalized AP = (AP − prevalence)/(1 − prevalence); it adjusts the chance baseline but is not fully prevalence invariant.
 
+### P0 AS-prone cCRE
 
-- [x] All 450 configuration records and 3,150 feature-specific rows complete.
-- [x] Paired AP arithmetic and seven-metric summary means reproduce within 1e-12.
-- [x] Source measurement/locus units and registry-resolution history distinguished.
-- [x] Null outcomes and all predefined assays/tissues retained.
-- [x] Historical pending states distinguished from later completion evidence.
-- [x] No new encoder/probe fitting, no new data download, no changed significance thresholds.
-- [ ] Learned-versus-random attribution and independent biological confirmation for EN-TEx remain scientific work, not editorial completion.
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 12477.6 | 0.090691 | 0.117755 | 0.117306 | -0.000449 [-0.001383, +0.000453] | -0.000879 [-0.003325, +0.001509] | -0.000499 [-0.001528, +0.000497] |
+| strict | medium | 16252.0 | 0.101949 | 0.129840 | 0.129344 | -0.000496 [-0.001436, +0.000664] | -0.001442 [-0.004379, +0.001293] | -0.000550 [-0.001594, +0.000742] |
+| strict | high | 21414.8 | 0.130428 | 0.172560 | 0.173060 | +0.000500 [-0.000659, +0.001569] | +0.000806 [-0.001104, +0.002586] | +0.000579 [-0.000753, +0.001813] |
+| 1hop | low | 12477.6 | 0.090691 | 0.117755 | 0.116619 | -0.001136 [-0.001836, -0.000457] | -0.001553 [-0.004014, +0.000475] | -0.001249 [-0.002014, -0.000504] |
+| 1hop | medium | 16252.0 | 0.101949 | 0.129840 | 0.128429 | -0.001412 [-0.002348, -0.000620] | -0.001470 [-0.002552, -0.000287] | -0.001569 [-0.002604, -0.000691] |
+| 1hop | high | 21414.8 | 0.130428 | 0.172560 | 0.172162 | -0.000398 [-0.002298, +0.001443] | -0.000501 [-0.003058, +0.002180] | -0.000430 [-0.002589, +0.001689] |
+
+### P0 exposure matched
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 2159.8 | 0.478610 | 0.501372 | 0.501096 | -0.000276 [-0.002811, +0.002324] | -0.000437 [-0.003213, +0.002352] | -0.000526 [-0.005371, +0.004451] |
+| strict | medium | 3095.2 | 0.487743 | 0.506341 | 0.507777 | +0.001436 [-0.001001, +0.004500] | +0.000071 [-0.002912, +0.002826] | +0.002780 [-0.001992, +0.008762] |
+| strict | high | 4875.8 | 0.519433 | 0.560921 | 0.562494 | +0.001572 [-0.001076, +0.004244] | +0.001509 [-0.001502, +0.003907] | +0.003305 [-0.002222, +0.008934] |
+| 1hop | low | 2159.8 | 0.478610 | 0.501372 | 0.500962 | -0.000410 [-0.002692, +0.001635] | -0.000194 [-0.002011, +0.001956] | -0.000781 [-0.005135, +0.003116] |
+| 1hop | medium | 3095.2 | 0.487743 | 0.506341 | 0.509632 | +0.003291 [+0.001576, +0.004978] | +0.001927 [-0.000352, +0.003943] | +0.006466 [+0.003082, +0.009830] |
+| 1hop | high | 4875.8 | 0.519433 | 0.560921 | 0.562656 | +0.001735 [-0.001058, +0.004303] | +0.001977 [-0.000515, +0.004524] | +0.003558 [-0.002233, +0.008864] |
+
+### P0 H3K27ac only
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 6825.4 | 0.035229 | 0.049765 | 0.049058 | -0.000707 [-0.001999, +0.000308] | +0.001271 [-0.002212, +0.004143] | -0.000734 [-0.002074, +0.000319] |
+| strict | medium | 9480.4 | 0.037488 | 0.047065 | 0.048202 | +0.001137 [-0.000941, +0.004804] | +0.002596 [-0.001288, +0.006443] | +0.001194 [-0.000975, +0.005027] |
+| strict | high | 13077.0 | 0.057100 | 0.075407 | 0.075779 | +0.000372 [-0.000918, +0.001471] | +0.002845 [-0.001580, +0.006946] | +0.000396 [-0.000974, +0.001563] |
+| 1hop | low | 6825.4 | 0.035229 | 0.049765 | 0.049175 | -0.000590 [-0.002110, +0.000937] | -0.001039 [-0.008209, +0.005556] | -0.000608 [-0.002182, +0.000975] |
+| 1hop | medium | 9480.4 | 0.037488 | 0.047065 | 0.049437 | +0.002372 [-0.000197, +0.006187] | +0.000217 [-0.002744, +0.003185] | +0.002480 [-0.000204, +0.006472] |
+| 1hop | high | 13077.0 | 0.057100 | 0.075407 | 0.075528 | +0.000121 [-0.001366, +0.001724] | +0.003921 [+0.000123, +0.007694] | +0.000133 [-0.001443, +0.001836] |
+
+### P0 CTCF only
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 5533.4 | 0.059804 | 0.070388 | 0.069995 | -0.000393 [-0.002363, +0.001140] | +0.000113 [-0.005276, +0.003880] | -0.000422 [-0.002515, +0.001201] |
+| strict | medium | 7590.4 | 0.061854 | 0.069331 | 0.069692 | +0.000362 [-0.000573, +0.001036] | -0.002314 [-0.005735, +0.001480] | +0.000385 [-0.000612, +0.001105] |
+| strict | high | 10761.4 | 0.070505 | 0.089067 | 0.089417 | +0.000351 [-0.000919, +0.001747] | +0.000285 [-0.002896, +0.002603] | +0.000380 [-0.000985, +0.001882] |
+| 1hop | low | 5533.4 | 0.059804 | 0.070388 | 0.069868 | -0.000520 [-0.001836, +0.000869] | -0.001868 [-0.004963, +0.001466] | -0.000561 [-0.001961, +0.000914] |
+| 1hop | medium | 7590.4 | 0.061854 | 0.069331 | 0.070889 | +0.001559 [+0.000640, +0.002436] | +0.000161 [-0.002219, +0.002070] | +0.001662 [+0.000684, +0.002595] |
+| 1hop | high | 10761.4 | 0.070505 | 0.089067 | 0.089862 | +0.000795 [-0.000310, +0.001768] | +0.002359 [-0.000323, +0.004972] | +0.000857 [-0.000332, +0.001903] |
+
+### P1 thyroid_gland
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 15033.0 | 0.393148 | 0.509559 | 0.509525 | -0.000034 [-0.001939, +0.001475] | -0.000294 [-0.001324, +0.000984] | -0.000065 [-0.003282, +0.002486] |
+| strict | medium | 17587.8 | 0.440225 | 0.571858 | 0.573123 | +0.001264 [-0.000871, +0.003701] | +0.000079 [-0.000619, +0.000865] | +0.002205 [-0.001665, +0.006540] |
+| strict | high | 19558.4 | 0.480809 | 0.596997 | 0.599553 | +0.002556 [+0.000572, +0.004851] | +0.000952 [-0.000327, +0.002240] | +0.004789 [+0.001049, +0.009101] |
+| 1hop | low | 15033.0 | 0.393148 | 0.509559 | 0.509162 | -0.000397 [-0.002122, +0.001639] | +0.000447 [-0.000714, +0.001612] | -0.000677 [-0.003512, +0.002599] |
+| 1hop | medium | 17587.8 | 0.440225 | 0.571858 | 0.573565 | +0.001706 [-0.000471, +0.004137] | +0.000620 [-0.001056, +0.002268] | +0.002956 [-0.000943, +0.007240] |
+| 1hop | high | 19558.4 | 0.480809 | 0.596997 | 0.599189 | +0.002192 [-0.002769, +0.006284] | +0.001418 [-0.001008, +0.003141] | +0.004660 [-0.004461, +0.012382] |
+
+### P1 tibial_nerve
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 12888.2 | 0.396576 | 0.532875 | 0.532482 | -0.000393 [-0.003038, +0.002051] | -0.000650 [-0.003010, +0.001844] | -0.000713 [-0.005053, +0.003252] |
+| strict | medium | 15233.4 | 0.429575 | 0.592047 | 0.592170 | +0.000123 [-0.003393, +0.003139] | -0.000373 [-0.002985, +0.002414] | +0.000134 [-0.006058, +0.005437] |
+| strict | high | 18579.2 | 0.455435 | 0.597869 | 0.603849 | +0.005979 [+0.003899, +0.008420] | +0.003336 [+0.000232, +0.006476] | +0.011068 [+0.007143, +0.015126] |
+| 1hop | low | 12888.2 | 0.396576 | 0.532875 | 0.533275 | +0.000400 [-0.002207, +0.002926] | +0.000485 [-0.001577, +0.002866] | +0.000780 [-0.003530, +0.004985] |
+| 1hop | medium | 15233.4 | 0.429575 | 0.592047 | 0.591610 | -0.000437 [-0.004213, +0.003727] | -0.000677 [-0.002877, +0.001841] | -0.000945 [-0.007423, +0.006188] |
+| 1hop | high | 18579.2 | 0.455435 | 0.597869 | 0.601393 | +0.003524 [-0.003295, +0.008847] | +0.000970 [-0.005352, +0.005163] | +0.007143 [-0.004829, +0.016810] |
+
+### P1 body_of_pancreas
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 12941.2 | 0.403391 | 0.507969 | 0.507346 | -0.000624 [-0.002686, +0.001014] | -0.000681 [-0.002107, +0.000630] | -0.001054 [-0.004478, +0.001686] |
+| strict | medium | 14977.8 | 0.432331 | 0.552046 | 0.552610 | +0.000564 [-0.002162, +0.004140] | +0.000208 [-0.001271, +0.001669] | +0.000937 [-0.003863, +0.007203] |
+| strict | high | 17590.8 | 0.467269 | 0.574359 | 0.576532 | +0.002173 [+0.000289, +0.004182] | +0.001560 [-0.000021, +0.003074] | +0.003911 [+0.000504, +0.007447] |
+| 1hop | low | 12941.2 | 0.403391 | 0.507969 | 0.508943 | +0.000974 [-0.000969, +0.002614] | +0.000790 [-0.000548, +0.001992] | +0.001658 [-0.001607, +0.004413] |
+| 1hop | medium | 14977.8 | 0.432331 | 0.552046 | 0.550981 | -0.001066 [-0.002905, +0.001135] | -0.000930 [-0.002412, +0.000765] | -0.001914 [-0.005166, +0.001947] |
+| 1hop | high | 17590.8 | 0.467269 | 0.574359 | 0.576168 | +0.001809 [-0.000240, +0.004058] | +0.001774 [-0.000043, +0.003591] | +0.003393 [-0.000493, +0.007622] |
+
+### P1 gastroesophageal_sphincter
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 11674.8 | 0.443967 | 0.543423 | 0.541884 | -0.001539 [-0.004772, +0.001590] | -0.001746 [-0.003977, +0.000348] | -0.002675 [-0.008442, +0.002900] |
+| strict | medium | 13520.8 | 0.465960 | 0.584399 | 0.582589 | -0.001811 [-0.004888, +0.000731] | -0.000653 [-0.002950, +0.001581] | -0.003407 [-0.009211, +0.001355] |
+| strict | high | 15961.4 | 0.463326 | 0.576288 | 0.579567 | +0.003279 [-0.000029, +0.006614] | +0.001597 [-0.000887, +0.004411] | +0.006027 [-0.000163, +0.012308] |
+| 1hop | low | 11674.8 | 0.443967 | 0.543423 | 0.541447 | -0.001977 [-0.004914, +0.000911] | -0.001846 [-0.004057, -0.000230] | -0.003426 [-0.008698, +0.001794] |
+| 1hop | medium | 13520.8 | 0.465960 | 0.584399 | 0.583058 | -0.001341 [-0.005920, +0.002512] | -0.001738 [-0.005537, +0.001731] | -0.002406 [-0.010850, +0.004776] |
+| 1hop | high | 15961.4 | 0.463326 | 0.576288 | 0.578748 | +0.002460 [-0.007222, +0.010112] | +0.000244 [-0.007914, +0.006149] | +0.005218 [-0.011934, +0.018969] |
+
+### P1 Peyers_patch
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 12752.8 | 0.336238 | 0.496841 | 0.495992 | -0.000850 [-0.003921, +0.002195] | -0.000889 [-0.002570, +0.001017] | -0.001224 [-0.005817, +0.003371] |
+| strict | medium | 15409.8 | 0.390869 | 0.563088 | 0.561624 | -0.001464 [-0.003914, +0.001025] | -0.000586 [-0.001825, +0.000657] | -0.002443 [-0.006445, +0.001640] |
+| strict | high | 18784.0 | 0.440757 | 0.585884 | 0.585356 | -0.000528 [-0.001804, +0.000797] | -0.000304 [-0.001236, +0.000643] | -0.000910 [-0.003321, +0.001535] |
+| 1hop | low | 12752.8 | 0.336238 | 0.496841 | 0.497660 | +0.000819 [-0.001660, +0.003067] | +0.000899 [-0.000884, +0.002620] | +0.001317 [-0.002462, +0.004817] |
+| 1hop | medium | 15409.8 | 0.390869 | 0.563088 | 0.561074 | -0.002014 [-0.004162, -0.000209] | -0.000744 [-0.001607, +0.000010] | -0.003279 [-0.006748, -0.000345] |
+| 1hop | high | 18784.0 | 0.440757 | 0.585884 | 0.586076 | +0.000191 [-0.002004, +0.001945] | +0.000407 [-0.000857, +0.001697] | +0.000582 [-0.003014, +0.003592] |
+
+### CTCF SNVs
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 104046.2 | 0.026057 | 0.043303 | 0.042031 | -0.001272 [-0.003082, +0.000378] | -0.003259 [-0.010094, +0.003269] | -0.001303 [-0.003162, +0.000389] |
+| strict | medium | 145751.2 | 0.032184 | 0.068291 | 0.069488 | +0.001197 [-0.001247, +0.004157] | -0.000924 [-0.006816, +0.004278] | +0.001224 [-0.001296, +0.004271] |
+| strict | high | 228390.6 | 0.040389 | 0.066625 | 0.068983 | +0.002358 [-0.000226, +0.006485] | +0.003094 [-0.001722, +0.007411] | +0.002454 [-0.000236, +0.006751] |
+| 1hop | low | 104046.2 | 0.026057 | 0.043303 | 0.041446 | -0.001857 [-0.004881, +0.000292] | -0.000590 [-0.005090, +0.004449] | -0.001901 [-0.004993, +0.000301] |
+| 1hop | medium | 145751.2 | 0.032184 | 0.068291 | 0.069132 | +0.000842 [-0.000864, +0.003920] | +0.000435 [-0.004518, +0.005009] | +0.000868 [-0.000888, +0.004029] |
+| 1hop | high | 228390.6 | 0.040389 | 0.066625 | 0.070886 | +0.004261 [+0.002256, +0.006560] | +0.009585 [-0.001444, +0.017763] | +0.004438 [+0.002351, +0.006834] |
+
+### H3K27ac SNVs
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 133325.4 | 0.015872 | 0.032043 | 0.030600 | -0.001443 [-0.003613, +0.000429] | -0.000213 [-0.009662, +0.007493] | -0.001466 [-0.003671, +0.000436] |
+| strict | medium | 193175.0 | 0.020483 | 0.063856 | 0.068494 | +0.004638 [-0.000817, +0.015690] | +0.004488 [-0.004623, +0.016438] | +0.004795 [-0.000828, +0.016229] |
+| strict | high | 307196.0 | 0.028381 | 0.054470 | 0.054052 | -0.000418 [-0.002290, +0.001694] | -0.001733 [-0.023027, +0.016746] | -0.000424 [-0.002353, +0.001758] |
+| 1hop | low | 133325.4 | 0.015872 | 0.032043 | 0.032425 | +0.000381 [-0.000745, +0.001524] | +0.001600 [-0.011369, +0.016300] | +0.000388 [-0.000757, +0.001550] |
+| 1hop | medium | 193175.0 | 0.020483 | 0.063856 | 0.065769 | +0.001914 [-0.000547, +0.005962] | +0.001596 [-0.008909, +0.015190] | +0.001980 [-0.000557, +0.006163] |
+| 1hop | high | 307196.0 | 0.028381 | 0.054470 | 0.058925 | +0.004454 [-0.000563, +0.010572] | +0.019627 [+0.002493, +0.041445] | +0.004603 [-0.000576, +0.010951] |
+
+### RNA ASE
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 82648.2 | 0.007935 | 0.012115 | 0.013475 | +0.001360 [-0.000137, +0.003498] | +0.003705 [-0.006053, +0.015081] | +0.001373 [-0.000138, +0.003532] |
+| strict | medium | 104384.8 | 0.010448 | 0.015753 | 0.016140 | +0.000387 [-0.000351, +0.001303] | +0.000503 [-0.006915, +0.009496] | +0.000392 [-0.000355, +0.001318] |
+| strict | high | 141083.0 | 0.019833 | 0.035318 | 0.036856 | +0.001538 [-0.000971, +0.005358] | +0.005216 [-0.005414, +0.018390] | +0.001590 [-0.000988, +0.005526] |
+| 1hop | low | 82648.2 | 0.007935 | 0.012115 | 0.012698 | +0.000582 [-0.000252, +0.001507] | -0.004773 [-0.018760, +0.007706] | +0.000588 [-0.000254, +0.001520] |
+| 1hop | medium | 104384.8 | 0.010448 | 0.015753 | 0.016254 | +0.000501 [-0.000391, +0.001783] | +0.003661 [+0.000096, +0.008240] | +0.000507 [-0.000396, +0.001803] |
+| 1hop | high | 141083.0 | 0.019833 | 0.035318 | 0.037065 | +0.001746 [-0.001211, +0.005751] | -0.001391 [-0.013706, +0.011455] | +0.001792 [-0.001235, +0.005911] |
+
+### ATAC SNVs
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 151786.8 | 0.035306 | 0.039557 | 0.039791 | +0.000234 [-0.000119, +0.000522] | +0.001201 [-0.000966, +0.003235] | +0.000242 [-0.000123, +0.000541] |
+| strict | medium | 197092.0 | 0.038747 | 0.047527 | 0.047274 | -0.000253 [-0.000698, +0.000186] | -0.000118 [-0.002545, +0.002247] | -0.000263 [-0.000727, +0.000195] |
+| strict | high | 304145.8 | 0.044554 | 0.051178 | 0.050407 | -0.000771 [-0.001721, -0.000071] | -0.003394 [-0.007516, -0.000004] | -0.000808 [-0.001804, -0.000074] |
+| 1hop | low | 151786.8 | 0.035306 | 0.039557 | 0.039144 | -0.000414 [-0.000969, +0.000112] | -0.001253 [-0.003551, +0.001139] | -0.000429 [-0.001004, +0.000116] |
+| 1hop | medium | 197092.0 | 0.038747 | 0.047527 | 0.047266 | -0.000261 [-0.000953, +0.000518] | +0.000831 [-0.003291, +0.005331] | -0.000270 [-0.000994, +0.000547] |
+| 1hop | high | 304145.8 | 0.044554 | 0.051178 | 0.052234 | +0.001057 [-0.000427, +0.003488] | +0.002087 [-0.003096, +0.008503] | +0.001110 [-0.000447, +0.003663] |
+
+### H3K4me3 SNVs
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 67791.2 | 0.031344 | 0.058596 | 0.060036 | +0.001440 [-0.002480, +0.005740] | +0.013902 [+0.002313, +0.028254] | +0.001496 [-0.002550, +0.005946] |
+| strict | medium | 95878.8 | 0.037274 | 0.073767 | 0.077485 | +0.003718 [-0.000139, +0.008862] | -0.004825 [-0.012796, +0.003320] | +0.003884 [-0.000141, +0.009311] |
+| strict | high | 168255.4 | 0.055736 | 0.092310 | 0.096300 | +0.003991 [-0.003223, +0.012818] | +0.002987 [-0.019872, +0.022597] | +0.004278 [-0.003417, +0.013703] |
+| 1hop | low | 67791.2 | 0.031344 | 0.058596 | 0.059005 | +0.000409 [-0.006326, +0.007792] | +0.018657 [-0.010098, +0.056476] | +0.000441 [-0.006550, +0.008120] |
+| 1hop | medium | 95878.8 | 0.037274 | 0.073767 | 0.077835 | +0.004068 [-0.000637, +0.009975] | +0.003946 [-0.007477, +0.015462] | +0.004235 [-0.000691, +0.010431] |
+| 1hop | high | 168255.4 | 0.055736 | 0.092310 | 0.103551 | +0.011242 [-0.000363, +0.024533] | +0.032125 [+0.002782, +0.076312] | +0.011973 [-0.000333, +0.026053] |
+
+### H3K27me3 SNVs
+
+| Context | Complexity | Mean test n | Prevalence | AP C+S | AP C+S+T | ΔAP [95% CI] | ΔAUROC [95% CI] | Δnormalized AP [95% CI] |
+|---|---|---|---|---|---|---|---|---|
+| strict | low | 49496.4 | 0.014749 | 0.080123 | 0.076979 | -0.003144 [-0.012788, +0.002586] | -0.003199 [-0.009147, +0.002383] | -0.003195 [-0.013019, +0.002629] |
+| strict | medium | 67573.6 | 0.014740 | 0.105350 | 0.109267 | +0.003917 [-0.009200, +0.017032] | -0.005194 [-0.016397, +0.006832] | +0.003986 [-0.009348, +0.017308] |
+| strict | high | 141167.0 | 0.023759 | 0.087460 | 0.091972 | +0.004512 [+0.000911, +0.011472] | +0.003006 [-0.001479, +0.008223] | +0.004654 [+0.000931, +0.011880] |
+| 1hop | low | 49496.4 | 0.014749 | 0.080123 | 0.081431 | +0.001308 [-0.002880, +0.007586] | -0.013556 [-0.026929, -0.001622] | +0.001339 [-0.002917, +0.007725] |
+| 1hop | medium | 67573.6 | 0.014740 | 0.105350 | 0.102207 | -0.003142 [-0.019578, +0.006305] | -0.007437 [-0.015281, +0.002141] | -0.003182 [-0.019891, +0.006416] |
+| 1hop | high | 141167.0 | 0.023759 | 0.087460 | 0.096804 | +0.009344 [-0.000460, +0.026486] | +0.004076 [-0.002158, +0.010637] | +0.009671 [-0.000468, +0.027452] |
+
+## Appendix J. Limitations, unfinished evidence and reproducibility
+
+**Supported:** frozen representations can be reused across these measurement-derived tasks, with small, assay-dependent incremental AP; all loci remain chromosome-held-out and the completed programme includes null results. **Unresolved:** learned-versus-random attribution for EN-TEx, robust external/donor-held-out transfer, improved allele-specific prediction from actual allele sequences, and gains beyond stronger full-context sequence baselines.
+
+Key limitations:
+
+1. Four biological donors, many correlated experiments; millions of measurements are not millions of independent individuals.
+2. Static locus/segment features cannot distinguish donors, tissues or two alleles at the same locus; distinct nearby loci may share the same feature vector.
+3. “Any AS” and measurement-weighted targets depend on detection opportunity and source ascertainment.
+4. P1 conflicting states are excluded; state labels may summarize differing donor/assay contexts rather than a universal tissue truth.
+5. End-sampled NT segments are not an allele-centred local sequence baseline.
+6. Original pretraining contains a masking shortcut and incompletely controlled RNG states. Unmasked extraction does not undo what pretrained weights learned.
+7. Existing H/R controls concern cCRE/SV tasks; do not transfer their attribution conclusions quantitatively to EN-TEx.
+8. Repeated inspection of the same chromosome folds makes subsequent design selection exploratory.
+9. Raw-library QC is inherited from EN-TEx, not independently reproduced here.
+10. Historical QC documents marked mapping or fitting “pending” at preparation time. Later mapping/completion/per-run outputs supersede those fields; the old receipts remain as an audit trail.
+
+### Not yet demonstrated
+
+- Full EN-TEx E-versus-random-versus-H comparison, strict donor/tissue-held-out fits and genotype/haplotype-specific AS direction prediction.
+- Full long-sequence/local-allele baseline and a completed length-weighted P0 pooling sensitivity.
+- Additional default-source assays H3K36me3, H3K4me1, H3K9me3, EP300, POLR2A and POLR2AphosphoS5; their source availability is not a fitted result.
+- Independent FASTQ-level QC. None is claimed as completed here.
+
+### Reproducibility record
+
+- Core execution receipt: commit `3475d979943ea800371e27e633ec9f4928adc02d`.
+- Protocol identifiers: `entex_v1`, `entex_meeting_20260929`, `entex_extension_20260927`; raw-source and graph hashes retained in Appendix A.
+- Order of operations: validate supplied calls → prepare compact task tables → map to pinned HPRC R2 segments → common C/K/S/T coverage → chromosome partitions → validation-only calibration/threshold selection → frozen-feature probes → paired summaries → saved-prediction sensitivities.
+- Original large graph, checkpoints, embeddings and full predictions retained on the lab server. This briefing reviews exported metrics/QC; it does not re-run training or independently re-bootstrap intervals.
+- Source reference: Rozowsky and colleagues, “The EN-TEx resource of multi-tissue personal epigenomes & variant-impact models”, Cell 186(7), 1493–1511.e40, 2023. Resource descriptions do not independently validate PangenomeFM performance.
+
+### Review checks
+
+- [x] All 450 configurations and 3,150 feature-specific metric records complete.
+- [x] Paired AP arithmetic and seven-metric summary means agree within 1e-12.
+- [x] Measurement/locus/donor units, registry correction and feature-coverage limits explicit.
+- [x] All prior scientific table rows retained; task-wide complexity contrasts now included directly.
+- [x] Null and negative outcomes retained alongside positive pointwise intervals.
+- [x] No discussion questions, hyperlinks or external-document navigation.
+- [x] Main briefing organized into seven timed blocks totalling 15 minutes.
+- [ ] Learned-versus-random attribution and independent biological confirmation remain scientific work.
