@@ -110,7 +110,7 @@
   ],
   "scope": "Saved metrics verification, not refitting or rebootstrap of predictions",
   "review_date": "2026-09-29",
-  "report_sha256": "de72ea4160f096308fb2c1c14734ad3d0b89c8cc5a462dc2dee43ab1748c73f0",
+  "report_sha256": "d75915322b5e1f3d0d03a3aec2b7c8bf779c6b5b60587b8c2ba47cc7f091f14c",
   "source_artifacts": {
     "results/entex/v1/p0_analysis/per_run.csv": {
       "bytes": 102879,
@@ -427,7 +427,7 @@
     "Local coverage receipts are complete for 330 core configurations; later 120 configurations lack a uniform full feature-audit export.",
     "P1 mapping percentage is carried from the original completion record, not independently re-mapped here."
   ],
-  "previous_report_sha256": "afbd64449e9a3e34b59fbdbabbf4de23380c7c2f59fe883156f6c63913f23fc1",
+  "previous_report_sha256": "de72ea4160f096308fb2c1c14734ad3d0b89c8cc5a462dc2dee43ab1748c73f0",
   "presentation_revision": {
     "main_briefing_minutes": 15,
     "timed_blocks": 7,
@@ -438,9 +438,20 @@
     "all_task_complexity_contrasts_included": 90,
     "new_experiments": 0,
     "appendices": "All supporting details remain in the same document; not part of the timed delivery.",
-    "main_briefing_word_count": 1510,
+    "main_briefing_word_count": 1951,
     "table_column_consistency": "passed",
     "all_recorded_source_hashes": "passed",
-    "scientific_table_row_preservation": "passed"
+    "scientific_table_row_preservation": "passed",
+    "plain_language_revision": true,
+    "briefing_task_codes_removed": true,
+    "score_table_contexts_in_separate_columns": true,
+    "worked_example": "H3K27ac: 0.0497 to 0.0530; paired gain approximately 0.0033",
+    "biological_and_statistical_glossary": true,
+    "detailed_tables": "Unchanged from preceding report; summary labels expanded without changing scores.",
+    "detailed_scientific_table_row_preservation": "Exact match to previous version",
+    "original_664_table_rows_preserved": true,
+    "main_table_task_codes_and_feature_symbols": "Replaced with biological descriptions and plain-language column labels",
+    "metric_explanation": "Average precision is not accuracy; higher is better; compare models within a task",
+    "source_hashes_rechecked": 77
   }
 }

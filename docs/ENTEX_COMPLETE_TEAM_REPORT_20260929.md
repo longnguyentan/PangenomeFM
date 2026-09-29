@@ -1,120 +1,207 @@
-# EN-TEx × PangenomeFM: 15-minute team briefing
+# EN-TEx and PangenomeFM: explained for a 15-minute team discussion
 
-**Evidence snapshot: 29 September 2026.** Completed saved results; no new fitting in this review. Main briefing below; detailed results and QC retained in the appendices of this same document. No external material needed to follow the discussion.
+**Results reviewed: 29 September 2026.** This briefing explains the biological targets, model comparison and interpretation. The detailed tables and quality checks remain in the same document after the timed discussion.
 
-## 0–1 min · Main message
+## 0–1 min · Main finding
 
-- **450 completed configurations across 15 datasets; 3,150 feature-specific metric records.** Five chromosome folds × three runs × two graph contexts per dataset.
-- **Small, assay-dependent graph contributions.** No global benefit established for AS-prone cCREs, enhancer state or RNA allele-specific expression.
-- **Measurement exposure changes the interpretation.** CTCF becomes inconclusive with equal-locus evaluation; H3K27ac retains small positive intervals; H3K4me3 attenuates and does not pass multiplicity sensitivity.
-- **EN-TEx does not yet demonstrate a benefit from learned weights over an untrained encoder.** Existing results use the original frozen model, not the newer sequence-conditioned encoder.
+Adding information from the pangenome graph gives **small improvements in some biological measurements**, but not a consistent improvement across all EN-TEx tasks. Some positive findings weaken when we account for how often a genomic location was measured.
 
-## 1–3 min · Biological tasks and data
+The completed analysis covers **450 experiment settings across 15 datasets**, with seven model-input combinations in each setting. These are repeated model evaluations, not 450 independent donors. EN-TEx contains only four donors in this analysis.
 
-**EN-TEx:** personal genomes and functional assays from four donors, up to 30 tissues in the analysed AS tables. Published resource: 1,635 datasets. Here: released, processed calls; no independent raw-read reanalysis.
+The current results support further testing of graph information. They do **not yet show that pretraining the graph encoder is better than using an otherwise identical encoder with random weights**.
 
-**AS = allele-specific imbalance; cCRE = candidate cis-regulatory element; dELS = distal enhancer-like element.** A measurement is one tested locus/experiment observation; repeated measurements are not independent donors.
+## 1–3 min · The biology behind each task
 
-| Task | Prediction target | Data scale / class balance |
+EN-TEx combines personal genomes with functional measurements across tissues from four donors.
+
+People usually carry two copies of each autosomal genomic region, one inherited from each parent. At a position where the copies differ, sequencing reads can sometimes be assigned to one copy or the other. **Allele-specific imbalance** means that the supplied statistical test detects unequal activity between those copies. It does not automatically identify a disease-causing variant.
+
+We use three types of prediction:
+
+1. **Regulatory regions prone to unequal activity.** Candidate cis-regulatory elements are DNA regions with evidence of a gene-regulatory role. A region is positive if EN-TEx reports significant imbalance in at least one informative experiment; measured regions with no significant call are negative. There are 250,722 regions, including 28,092 positives, or 11.20%.
+2. **Active versus repressed enhancers.** Enhancers help regulate gene expression. We restrict this comparison to annotated distal enhancer-like regions, rather than comparing promoters with enhancers. Each tissue has its own classifier. The final tissue average gives equal importance to all five tissues.
+3. **Imbalance measured at single-base variants.** A single-nucleotide variant is a difference at one DNA base. Here it helps distinguish the two alleles when counting reads. The task predicts unequal biological signal at an informative variant; it does not predict whether the variant exists.
+
+The six variant-based tasks measure different biological signals:
+
+| Measurement | Biological meaning |
+|---|---|
+| CTCF protein binding | CTCF is a DNA-binding protein involved in organizing chromosome contacts. The assay measures its association with DNA |
+| H3K27ac histone signal | A chemical modification of a DNA-packaging protein, often associated with active enhancers and promoters |
+| RNA production | RNA sequencing measures gene-expression output; unequal RNA reads can indicate unequal expression of the two alleles |
+| DNA accessibility, measured by ATAC-seq | Measures how accessible DNA is to the assay enzyme, reflecting how tightly it is packaged |
+| H3K4me3 histone signal | A histone modification commonly associated with active gene promoters |
+| H3K27me3 histone signal | A histone modification commonly associated with repressed chromatin |
+
+**For every row, the target is imbalance between alleles, not simply the presence of binding, expression or a histone mark.** The model gives one prediction per genomic location; it cannot specify which allele is favoured in a particular donor.
+
+## 3–5 min · Data checks and the model comparison
+
+**Data issues resolved before analysis**
+
+- The initially supplied high-confidence variant file contains **RNA measurements only**. Other assays come from the complete accessible-variant file, with 22,310,439 measurements across 12 assays. The six analysed tasks contain 1.29–3.27 million measurements each, with only 1.44–4.50% labelled positive.
+- A newer regulatory-element registry matched only **31.6% of active and 41.6% of repressed records**. The older ENCODE version 2 registry matched all supplied identifiers, avoiding unequal loss of the two classes.
+- Five enhancer tissues were selected by sample size, before examining performance: thyroid gland, tibial nerve, body of pancreas, gastroesophageal sphincter and Peyer's patch. Conflicting active/repressed labels were excluded. Each tissue retained approximately 206,000–261,000 regions.
+- All regulatory-region and variant locations mapped to the original HPRC release 2 graph. Here HPRC means Human Pangenome Reference Consortium. About 1.33% of regulatory regions overlap more than one graph segment. The original enhancer-task record also reports complete mapping.
+- The four initial tables had no recorded missing values. Checks covered coordinates, counts and labels. We did not independently repeat sequencing-library quality control.
+
+**Three score columns, one controlled comparison**
+
+- **Without graph:** genomic position/structural descriptors plus DNA-sequence features from the Nucleotide Transformer model.
+- **Graph within window:** the same inputs, plus PangenomeFM features using the graph inside each genomic window. This is called “strict” in the detailed tables.
+- **Graph with neighbours:** the same inputs, with graph features also using directly connected segments. This is called “one-hop”.
+
+An encoder converts sequence or graph structure into numerical features for prediction. Both pretrained encoders stay **frozen**, meaning their weights are unchanged. Only the same simple downstream classifier is fitted with biological labels. We test on five groups of chromosomes withheld from fitting, with three pretraining runs per graph context. All observations at the same location stay in the same partition, including repeats across donors and tissues.
+
+## 5–8 min · Results, with the table explained
+
+Every number below is **average precision**, a score summarizing how well the model retrieves true positive examples as the prediction threshold changes. Higher is better. It is **not classification accuracy**: a score of 0.05 does not mean “5% of predictions are correct”.
+
+For a random ranking, the expected score is approximately the positive fraction. Because that fraction differs between tasks, compare models **within a row**, not raw scores between biological tasks.
+
+| Biological prediction | Without graph | Graph within window | Graph with neighbours |
+|---|---|---|---|
+| Regulatory regions prone to unequal activity between alleles | 0.1514 | 0.1516 | 0.1508 |
+| Active versus repressed enhancers, average across five tissues | 0.5699 | 0.5708 | 0.5707 |
+| Unequal CTCF protein binding between alleles | 0.0616 | 0.0630 | 0.0638 |
+| Unequal H3K27ac signal between alleles | 0.0497 | 0.0504 | 0.0530 |
+| Unequal RNA production between alleles | 0.0255 | 0.0271 | 0.0270 |
+| Unequal DNA accessibility between alleles | 0.0473 | 0.0470 | 0.0476 |
+| Unequal H3K4me3 signal between alleles | 0.0803 | 0.0847 | 0.0893 |
+| Unequal H3K27me3 signal between alleles | 0.0915 | 0.0949 | 0.0988 |
+
+**Worked example:** for unequal H3K27ac signal, the score rises from 0.0497 without graph information to 0.0530 with graph neighbours. The paired mean improvement is approximately 0.0033, or 0.33 percentage point of average precision. This is a small improvement in ranking rare positive events; it is not a 0.33-point increase in classification accuracy.
+
+**Uncertainty matters.** A 95% interval describes uncertainty in the estimated improvement. If it includes zero, these runs do not establish a clear benefit. We estimate intervals by resampling chromosome groups and runs while keeping each model comparison paired.
+
+- **Regulatory-region susceptibility, enhancer state, RNA, accessibility and H3K27me3:** overall improvement remains inconclusive.
+- **CTCF binding:** positive primary intervals in both graph settings, but sensitive to how repeated measurements are weighted.
+- **H3K27ac:** positive primary interval with neighbours; the within-window primary interval includes zero.
+- **H3K4me3:** positive primary intervals in both settings, but the follow-up checks below weaken that result.
+
+The enhancer average is inconclusive even though tibial nerve has a positive within-window interval. The other tissue/settings include zero. We retain every tissue, including negative estimates for Peyer's patch.
+
+## 8–11 min · Follow-up checks and their meaning
+
+**Frequently measured locations have more influence.** A location measured 20 times can contribute 20 observations, while another contributes only one. Our follow-up gives each location the same total weight during evaluation. The classifier is not retrained in this check.
+
+| Follow-up | Observed change | Interpretation |
 |---|---|---|
-| P0: AS-prone cCRE | Any supplied significant AS call at a testable locus | 5,330,335 measurements → 250,722 loci; 28,092 positive, 11.20% |
-| P0 sensitivities | Exposure-matched, H3K27ac-only, CTCF-only | Three definitions fixed before biological fitting |
-| P1: enhancer state | Explicitly active versus explicitly repressed dELS, separately per tissue | Five tissues; 205,788–260,898 loci each; approximately 40–46% active |
-| P2: CTCF / H3K27ac SNVs | Supplied significant imbalance in an informative measurement | 2.39M / 3.17M measurements; 596,650 / 713,418 loci; 3.51% / 2.36% positive |
-| RNA allele-specific expression | Same AS target, high-confidence RNA subset | 1.64M measurements; 466,867 loci; 1.44% positive |
-| ATAC / H3K4me3 / H3K27me3 | Same AS target, three additional assays | 3.27M / 1.66M / 1.29M measurements; 4.08% / 4.50% / 1.99% positive |
+| Equal weight per location: CTCF binding | Improvements shrink to +0.00018 within-window and +0.00049 with neighbours; both intervals include zero | The primary finding is not stable under this weighting choice |
+| Equal weight per location: H3K27ac | Improvements +0.00199 and +0.00221; both intervals remain above zero | A small signal worth independent confirmation |
+| Equal weight per location: H3K4me3 | Improvements shrink to +0.00107 and +0.00115; both intervals include zero | Frequently measured locations influence the larger primary gain |
+| Regulatory regions matched by number of measurements | Improvements +0.00148 and +0.00200; both intervals above zero | A different, balanced population with 50% positives; coordinate features alone still outperform the largest feature combination |
 
-**Label safeguards:** supplied AS calls; no invented significance threshold; unmeasured loci excluded from negatives. P1 uses measured repression, not “not active”. SNV features are shared across occurrences of a locus, so the target is susceptibility to imbalance, not its favoured allele or a donor-specific response.
+We also prepared regulatory-region tasks restricted to H3K27ac or CTCF before fitting. Positive intervals occur only in the within-window H3K27ac analysis and the neighbour-expanded CTCF analysis, rather than consistently across settings.
 
-## 3–5 min · QC and evaluation design
+**Testing many comparisons increases the chance of a positive-looking result.** In the additional accessibility/H3K4me3/H3K27me3 panel, none of the average-precision improvements passes the multiple-comparison check. That check has limited resolution because only five chromosome groups contribute. Exact intervals and adjusted values are retained in Appendix D.
 
-**Resolved data issues**
+**More graph complexity does not mean more model benefit.** The fraction of regulatory regions with imbalance rises from 9.04% to 10.20% to 13.23% across low, medium and high complexity. However, adding graph features does not show a clear gain within the high-complexity group. With neighbours included, the low- and medium-complexity gains are negative.
 
-- Initial high-confidence SNV file: **RNA only**. CTCF/H3K27ac and the three-assay extension use the full accessible set: 22,310,439 measurements across 12 assays.
-- Initial SCREEN v4 join: only **31.6% active / 41.6% repressed coverage**. ENCODE V2 registry ENCFF924IMH resolved all supplied IDs; outcome-dependent missingness was not accepted.
-- P1 tissues selected by class counts, not performance: thyroid gland, tibial nerve, body of pancreas, gastroesophageal sphincter, Peyer's patch. Conflicting tissue/locus states excluded.
-- Four initial source tables: zero recorded missing values; malformed coordinates/counts and conflicting duplicate identities rejected. Coordinates: GRCh38, zero-based, half-open.
-- Same pinned HPRC R2 graph. P0: **100% mapped**, 1.33% multi-segment; all six SNV datasets: **100% mapped**, one containing segment. P1: 100% mapping in the original completion record.
-- Common feature coverage: **100% in 180 core configurations**; at least **99.9983% in 150 P1 configurations**. Later 120 RNA/extension fits lack a uniform exported per-run feature audit; their every-run coverage is not independently re-certified here.
+The CTCF/H3K27ac weighting analyses were designed after seeing the initial results and remain exploratory. The three additional assays had their follow-up protocol fixed before fitting. Reweighting suggests sensitivity to measurement frequency; it does not prove that measurement frequency caused the observed gains.
 
-**Frozen comparison**
+## 11–13 min · Limits of the current evidence
 
-- C: manuscript coordinate/structural features; K: k-mer composition; S: frozen Nucleotide Transformer; T: frozen PangenomeFM.
-- Seven probes: C, K, S, T, C+S, C+T, C+S+T. Standardized logistic classifiers; only probes receive biological labels.
-- Same loci and chromosome partitions for all feature arms. Strict: within-window graph; one-hop: directly connected context. No random row split.
-- Primary contrast: **ΔT = AP(C+S+T) − AP(C+S)**. AP is reported as AUPRC; random-ranking baseline equals positive prevalence. A gain of 0.001 is 0.1 percentage point of AP.
-- Paired 95% hierarchical-bootstrap intervals: five folds, then three runs within folds, 10,000 draws. Pointwise intervals; not automatically evidence after multiple comparisons. Run IDs do not imply fully controlled encoder initialization/DropEdge randomness.
-
-## 5–8 min · Complete endpoint overview
-
-Read each pair as **strict / one-hop**. † = primary pointwise 95% interval entirely above zero; not a multiplicity-adjusted claim. Exact intervals, AUROC and all feature combinations remain in Appendices C and F.
-
-| Endpoint | C+S AP | C+S+T AP, strict / one-hop | ΔAP, strict / one-hop | Primary readout |
-|---|---|---|---|---|
-| P0 AS-prone cCRE | 0.1514 | 0.1516 / 0.1508 | +0.0002 / -0.0007 | Inconclusive |
-| P1 enhancer state, 5-tissue macro | 0.5699 | 0.5708 / 0.5707 | +0.0009 / +0.0008 | Inconclusive |
-| CTCF SNVs | 0.0616 | 0.0630 / 0.0638 | +0.0015 † / +0.0022 † | Positive primary intervals; weighting-sensitive |
-| H3K27ac SNVs | 0.0497 | 0.0504 / 0.0530 | +0.0007 / +0.0033 † | Positive one-hop primary interval |
-| RNA ASE | 0.0255 | 0.0271 / 0.0270 | +0.0016 / +0.0015 | Inconclusive |
-| ATAC SNVs | 0.0473 | 0.0470 / 0.0476 | -0.0003 / +0.0003 | Inconclusive |
-| H3K4me3 SNVs | 0.0803 | 0.0847 / 0.0893 | +0.0044 † / +0.0090 † | Primary gain attenuates after reweighting |
-| H3K27me3 SNVs | 0.0915 | 0.0949 / 0.0988 | +0.0034 / +0.0073 | Inconclusive |
-
-**P1 detail:** five-tissue macro inconclusive; tibial nerve has a positive strict pointwise interval, other tissue/context intervals cross zero. All five tissues retained, including negative Peyer's-patch estimates.
-
-## 8–11 min · Sensitivities that change the interpretation
-
-| Analysis | Observed result | Interpretation |
-|---|---|---|
-| P0 exposure matching | ΔAP +0.00148 / +0.00200; both pointwise intervals positive | Balanced 50%-positive subset; different target population. C alone still exceeds C+S+T |
-| P0 assay-only calls | H3K27ac: +0.00058 / +0.00061; CTCF: +0.00026 / +0.00073 | Positive intervals only for H3K27ac strict and CTCF one-hop; no uniform effect |
-| CTCF, equal-locus evaluation | +0.00018 / +0.00049; both intervals cross zero | Primary measurement-weighted signal is not robust to this weighting change |
-| H3K27ac, equal-locus evaluation | +0.00199 / +0.00221; intervals [0.00111, 0.00273] / [0.00065, 0.00419] | Small positive locus-level signal; exploratory follow-up |
-| H3K4me3, equal-locus evaluation | +0.00107 / +0.00115; both intervals cross zero | Apparent primary gain attenuates markedly |
-| Three-assay multiplicity sensitivity | No AP contrast at q < 0.05; H3K4me3 q = 0.375 measurement-weighted, 0.75 equal-locus | Six assay/context contrasts per weighting; five folds give minimum two-sided sign-flip P = 0.0625 |
-| P0 graph complexity | AS prevalence: low 9.04%, medium 10.20%, high 13.23%; high-complexity gain inconclusive | Label–complexity association is not a topology benefit; one-hop low/medium gains are negative |
-
-**Weighting distinction:** each locus receives equal total weight at evaluation only; no refitting. Donor/tissue macro results describe existing groups, not unseen-donor/tissue transfer. CTCF/H3K27ac follow-ups were post hoc; the three-assay follow-up protocol was fixed before its fits. Measurement multiplicity remains an explanation to test, not an established causal mechanism.
-
-## 11–13 min · Evidence boundaries
-
-- **Biological unit:** four donors; many correlated measurements. Static locus features cannot distinguish two alleles, donors or tissues at the same locus.
-- **Sequence baseline:** segment embeddings with terminal sampling/truncation; incomplete long-segment coverage and no allele-centred input. Larger AP gains cannot be assumed against a stronger sequence baseline.
-- **Pretraining attribution:** original masking shortcut and incomplete RNG control; unmasked embedding extraction does not erase effects of pretraining. No matched trained/random/handcrafted EN-TEx comparison completed.
-- **Generalization:** chromosome-held-out is not donor-held-out. Repeated use of the same folds for development requires independent confirmation.
-- **QC scope:** processed-table QC only; no independent FASTQ quality, antibody specificity, phasing or allele-mapping-bias assessment.
-- **Completion scope:** 450 fitted configurations complete; 150 prediction follow-ups complete, not additional fits. Saved means and paired arithmetic verified to 1e-12; CIs not re-bootstrapped in this review.
+- **Shared location-level features:** cannot distinguish donors, tissues or two alleles at the same position. Many observations from four donors do not become many independent individuals.
+- **Sequence coverage:** long segments use sampled terminal sequence rather than every base; the sequence features are not centred on each tested allele. A stronger sequence baseline could change the graph comparison.
+- **Pretraining:** the original reconstruction task contained a masking shortcut. Random initialization and the random removal of graph edges during training were not fully controlled by the recorded run identifiers. Frozen extraction does not remove these limitations.
+- **Generalization:** withheld chromosomes are not withheld donors. Further model choices made on repeatedly examined folds need untouched confirmation data.
+- **Feature coverage:** complete in 180 core settings; at least 99.9983% in 150 enhancer settings. Later 120 RNA/additional-assay settings lack a uniform exported feature audit, so every-run coverage is not independently re-certified here.
+- **Completed work:** 450 settings and 3,150 feature-specific metric records, plus 150 evaluations of existing predictions. Saved means and paired differences were checked; this report did not retrain models or recompute confidence intervals.
 
 ## 13–15 min · Potential ideas
 
-**Priority 1 · Attribution on the existing panel**
+- **Separate graph information from learned weights:** compare trained encoders, matched random-weight encoders and simple graph statistics on the same examples. Include the newer sequence-conditioned encoder, which also receives sequence information.
+- **Change training weights as well as evaluation weights:** prevent heavily measured locations from dominating fitting; retain the existing chromosome partitions.
+- **Represent the actual alleles:** compare local sequence around each variant with the current segment representation; verify that the variant base enters the sequence model.
+- **Retain the full six-assay panel:** use H3K27ac as a hypothesis for confirmation and H3K4me3 as a measurement-frequency sensitivity example; keep the null results.
+- **Strengthen confirmation and audit coverage:** reserve external or donor/tissue-aware validation, complete the late-run feature audit, and test length-weighted pooling for multi-segment regulatory regions.
 
-- Original T + sequence-conditioned E + matched untrained encoders + handcrafted graph statistics
-- Same examples, folds and probes across arms; matched inputs/capacity within each trained–untrained pair
-- Fixed six-assay panel; CTCF, ATAC, RNA and other null endpoints retained
-- Model selection on designated development data; untouched confirmation evidence
-
-**Priority 2 · Measurement exposure and allele resolution**
-
-- Equal-locus **training** sensitivity, alongside completed evaluation-only reweighting
-- Exposure, read depth and donor/tissue coverage strata; eligibility rules fixed in advance
-- Allele-centred frozen sequence features; report coverage of the actual variant base
-- Two clearly separated targets: locus susceptibility now; individual allele response with verified haplotype-aware inputs
-
-**Priority 3 · Confirmation and coverage**
-
-- Donor/tissue-aware and external validation where data support it
-- Complete late-run feature-audit export; length-weighted P0 pooling sensitivity
-- Additional assays only for a predefined biological hypothesis; no performance-driven assay selection
-- H3K27ac signal as a hypothesis for confirmation; H3K4me3 as an exposure-sensitivity example
-
-**Meeting takeaway:** reusable graph features show limited, assay-dependent EN-TEx signal. The next improvement should establish what the encoder learns beyond its inputs and how that information transfers across loci and biological contexts.
+**Take-home message:** graph information may help identify some locations prone to allelic imbalance. The evidence is small and depends on the assay and evaluation choices. The next step is to test whether learned graph representations add information beyond simpler inputs on independent data.
 
 ---
 
 # Detailed reference: retained in this document
 
-The 15-minute discussion ends above. Appendices retain the exact results, alternative feature sets, sample distributions, QC and resource identities for discussion follow-up. All scientific tables from the preceding report are preserved; none requires another file to interpret.
+The 15-minute discussion ends above. The following glossary explains the notation used in the exact tables. All detailed scientific tables from the preceding version remain unchanged, including confidence intervals, null results, sample counts and quality checks.
+
+## Reading the detailed tables
+
+### Biological labels and task codes
+
+| Term in the tables | Meaning in this study |
+|---|---|
+| Endpoint / task | The biological outcome being predicted |
+| Locus | A genomic location or interval; the same locus can be measured repeatedly |
+| Allele / heterozygous | One of the sequence alternatives at a locus; heterozygous means the two inherited copies differ |
+| AS | Allele-specific imbalance: a supplied significant difference in signal between the two alleles |
+| AS-prone | A location with at least one significant imbalance call across its informative measurements |
+| cCRE | Candidate cis-regulatory element: a DNA region with evidence of a regulatory role |
+| dELS | Distal enhancer-like signature: the annotated enhancer-like class used in the active/repressed task |
+| P0 | AS-prone regulatory-region prediction; P0b uses its predictions for graph-complexity comparisons |
+| P1 | Active versus explicitly repressed distal enhancer-like regions, analysed separately in five tissues |
+| P2 | Variant-based imbalance tasks initially defined for CTCF and H3K27ac; later assays extend this design |
+| SNV | Single-nucleotide variant: a difference at one DNA base; informative heterozygous sites allow allele-specific read counting |
+| CTCF | CCCTC-binding factor, a DNA-binding protein involved in genome organization; here the target is unequal binding signal |
+| H3K27ac | Acetylation at lysine 27 of histone H3; associated with active regulatory regions. The task predicts unequal signal between alleles |
+| H3K4me3 | Trimethylation at lysine 4 of histone H3; commonly associated with active promoters. The task predicts unequal signal |
+| H3K27me3 | Trimethylation at lysine 27 of histone H3; commonly associated with repression. The task predicts unequal signal |
+| RNA ASE | Allele-specific expression measured using RNA sequencing; unequal expression of the two alleles |
+| ATAC-seq | Assay for transposase-accessible chromatin using sequencing; measures DNA accessibility. The task predicts unequal accessibility signal |
+| ChIP-seq | Chromatin immunoprecipitation followed by sequencing; profiles protein binding or histone modifications |
+| Prevalence / positive fraction | Fraction of examples labelled positive; for example, 3.51% of CTCF measurements |
+| Exposure / informative measurements | Number of experiments in which a locus had a measurable, testable observation; not environmental exposure |
+
+### Model inputs and evaluation
+
+| Symbol / term | Plain-language interpretation |
+|---|---|
+| C | Coordinate and structural descriptors: segment position, length and orientation |
+| K | Counts of short DNA words, called k-mers; a simple sequence-composition baseline |
+| S | DNA-sequence features produced by the frozen Nucleotide Transformer model |
+| T | Graph features produced by the frozen PangenomeFM encoder |
+| C+S | The main model-input baseline: coordinates plus sequence, without learned graph features |
+| C+S+T | The same baseline with PangenomeFM graph features added |
+| C+T | Coordinates plus graph features, used to estimate the extra contribution of sequence |
+| H / R / E | Simple handcrafted graph statistics / a random-weight encoder / the newer sequence-conditioned encoder. Their matched EN-TEx comparison is not completed here |
+| Frozen encoder | A representation model whose parameters are not changed using EN-TEx labels |
+| Probe | The downstream classifier trained on those fixed representations |
+| Strict / one-hop | Graph inside the selected window / graph expanded to directly connected neighbours |
+| Fold / chromosome-held-out | One chromosome partition reserved for evaluation; observations at a locus stay together |
+| Seed / run identifier | Recorded repeat identifier; historical encoder randomness was not fully controlled |
+| RNG / DropEdge | Random-number generation / random removal of graph edges during training |
+| Five-tissue macro | Compute each tissue's score, then average the five scores with equal tissue weight |
+| Donor/tissue macro | Equal-weight average across eligible donor or tissue groups; does not imply those groups were withheld during fitting |
+| Measurement weighting | Every measurement counts once, so frequently measured loci can count more often |
+| Equal-locus weighting | Each locus has equal total evaluation weight; a locus measured 20 times gives each observation weight 1/20 |
+| Exposure matched | Positive and negative loci paired by chromosome and number of informative measurements |
+| Graph complexity | The predefined measure of how structurally variable a graph region is; bins were not chosen using prediction results |
+
+### Scores and uncertainty
+
+| Metric / notation | Meaning and reading rule |
+|---|---|
+| AP / AUPRC | Average precision, called AUPRC in this code: summarizes precision across recall thresholds. Higher is better; not accuracy |
+| Precision / recall | Fraction of predicted positives that are true positives / fraction of true positives retrieved |
+| F1 | Harmonic mean of precision and recall at the selected decision threshold |
+| Balanced accuracy | Average of sensitivity and specificity; gives the positive and negative classes equal importance |
+| AUROC | Area under the receiver operating characteristic curve; ranking measure with random baseline 0.5 |
+| ΔT / ΔAP | AP with coordinates + sequence + graph minus AP with coordinates + sequence; positive values favour adding graph features |
+| ΔS | AP with coordinates + sequence + graph minus AP with coordinates + graph; estimates the extra sequence contribution |
+| Normalized AP | (AP − prevalence)/(1 − prevalence); adjusts the chance baseline but does not make different tasks directly comparable |
+| Mean / SD | Average across runs / standard deviation describing variation across runs |
+| 95% CI | A 95% confidence interval for the estimate. An interval including zero does not establish a clear positive gain |
+| Paired comparison | Compare models on the same fold, run and examples before summarizing differences |
+| Hierarchical bootstrap | Resample chromosome groups, then runs within groups, to estimate uncertainty while preserving the comparison pairs |
+| Pointwise interval | Uncertainty for one comparison; does not adjust for inspecting many comparisons |
+| Multiplicity / BH q | Multiple-comparison analysis / Benjamini–Hochberg adjusted P value; applied to the stated comparison family only |
+| Sign-flip test | Repeatedly reverse the signs of fold-level differences to evaluate the null of no consistent directional gain |
+| Inconclusive | The evaluated runs do not establish a clear improvement; this is not proof that the true effect is exactly zero |
+| Post hoc / exploratory | Designed after inspecting earlier results; requires independent confirmation |
+| QC / feature coverage | Quality control / fraction of examples retaining the required model inputs |
+| HPRC / ENCODE / SCREEN | Human Pangenome Reference Consortium / Encyclopedia of DNA Elements / its candidate-regulatory-element registry browser |
+| GRCh38 | The human reference assembly used for genomic coordinates |
+| SHA256 | A file fingerprint used to verify that the same resource version was analysed |
 
 ## Appendix A. Source data and QC
 
@@ -1251,7 +1338,7 @@ Key limitations:
 - [x] All 450 configurations and 3,150 feature-specific metric records complete.
 - [x] Paired AP arithmetic and seven-metric summary means agree within 1e-12.
 - [x] Measurement/locus/donor units, registry correction and feature-coverage limits explicit.
-- [x] All prior scientific table rows retained; task-wide complexity contrasts now included directly.
+- [x] All detailed scientific tables retained unchanged; overview labels rewritten and notation explained.
 - [x] Null and negative outcomes retained alongside positive pointwise intervals.
 - [x] No discussion questions, hyperlinks or external-document navigation.
 - [x] Main briefing organized into seven timed blocks totalling 15 minutes.
