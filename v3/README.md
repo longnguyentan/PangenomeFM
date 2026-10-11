@@ -94,3 +94,5 @@ r2 is undefined for constant or insufficient whole paired cohorts. Preserve
 full candidate identity, all donors, missingness, sample dependence and
 conditional cohort labels when comparing methods. These operators do not
 retrain models or establish external accuracy, independent phase or biology.
+
+The portable `tier0_core_v1.py` adds per-query masked-observation nearest-copy selection, complete-candidate haplotype NLL and paired family contrast summaries. Hidden labels cannot choose a reference; missing context/copies stay unavailable. Exact baseline zeros produce infinite loss, separately from unavailable states and finite-only conditional summaries. Nearest uses the caller's full declared context; its context aggregation need not equal the axial model. These operators have software conformance checks, but no validated trained-model accuracy, independent replication or biological gain is claimed.
