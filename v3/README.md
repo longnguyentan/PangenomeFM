@@ -64,3 +64,33 @@ does not by itself demonstrate causality.
 
 This source-only branch contains no cohort data, private plans, transcripts,
 server configuration, historical checkpoints or private research Git history.
+
+## Complete hybrid encoder and paired evaluation update — 11 October 2026
+
+The additional portable modules implement a hybrid own-allele encoder: complete
+small-allele DNA plus common reference flanks through a CNN, and externally
+produced complete structural-allele banks through a learned projection. The
+structural input is eight512-dimensional forward/reverse-complement region
+banks with explicit missing masks and full allele length/N fraction. Banks must
+come from complete allele coverage; this repository does not provide pretrained
+teacher weights or a sequence-cache dataset. Coarse region pooling does not
+provide nucleotide-position embeddings.
+
+`grouped_candidate_loss_v1.py` groups sites with equal candidate counts and
+retains the exact full candidate denominator. `paired_axial_training_v1.py`
+constructs identical trained/random twins, freezes the random backbone and
+encoder while training its head, and validates both losses/gradients before
+either optimizer update. The pilot uses fixed pretraining then SNP-only query
+imputation; complete cache and maximum-panel forward/backward/optimizer GPU
+gates must pass first. No actual scientific fit or improvement is claimed by
+this source release. Independent invented conformance checks passed for the
+hybrid encoder, full candidate loss and paired update semantics.
+
+`saved_metrics_core_v1.py` (NumPy) evaluates saved full candidate logits as
+unordered diploid genotype NLL, full genotype Brier and non-reference dosage
+error, with stable neural log probabilities. Exact baseline probability zero
+means infinite NLL; missing truth/copy input is unavailable. Per-allele dosage
+r2 is undefined for constant or insufficient whole paired cohorts. Preserve
+full candidate identity, all donors, missingness, sample dependence and
+conditional cohort labels when comparing methods. These operators do not
+retrain models or establish external accuracy, independent phase or biology.
