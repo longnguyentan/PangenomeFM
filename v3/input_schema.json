@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "observations": {
+    "dtype": "torch.int64",
+    "shape": [
+      "haplotypes",
+      "sites"
+    ],
+    "alleles": "0 <= index < offsets[site+1]-offsets[site]",
+    "missing": -1,
+    "masked": -2,
+    "ordering": "all TRAIN reference rows first, then isolated query rows"
+  },
+  "allele_vectors": {
+    "dtype": "floating",
+    "shape": [
+      "sum(full_site_candidate_counts)",
+      "model_width"
+    ],
+    "semantics": "complete declared per-allele DNA representation; exact coverage/strand/encoder provenance required"
+  },
+  "offsets": {
+    "dtype": "torch.int64",
+    "shape": [
+      "sites+1"
+    ],
+    "invariants": [
+      "first=0",
+      "last=len(allele_vectors)",
+      "strictly increasing",
+      "exact full original candidate order at each site"
+    ]
+  },
+  "site_features": {
+    "shape": [
+      "sites",
+      4
+    ],
+    "binding": "prospectively declare geometry features; no donor/query/target genotype/held-out frequency features"
+  },
+  "truth": {
+    "dtype": "torch.int64",
+    "shape": [
+      "haplotypes",
+      "sites"
+    ],
+    "access": "separate from masked observations; missing not a negative"
+  },
+  "scored": {
+    "dtype": "torch.bool",
+    "shape": [
+      "haplotypes",
+      "sites"
+    ],
+    "invariant": "only available in-universe truths scored"
+  },
+  "panel_rows": "number of TRAIN reference rows; no DEV, sealed or external query donors in panel",
+  "scope": "research software, no validated biological gain"
+}
