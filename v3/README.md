@@ -120,3 +120,29 @@ Independent software contracts passed for positional/query isolation and
 TRAIN-only selection/metric semantics. Real full-panel model profiling,
 training and biological validation remain incomplete. These source components
 are not trained weights or evidence of improved imputation.
+
+## Saved uncertainty and call-event calibration
+
+`saved_uncertainty_calibration_v1.py` adds NumPy operators for per-ALT dosage
+correlations and paired macro-allele contrasts. It anchors values before
+weighted centering so exactly constant predictions or truths remain undefined.
+Use these operators for constant-safe calculations; earlier metric modules
+remain available for versioned comparisons.
+
+The caller supplies frozen integer donor multiplicities for complete-family
+draws and allele multiplicities for complete source-block draws. Paired
+contrasts use the same defined alleles. Every unavailable or undefined draw
+stays in the reported denominator; conditional nearest-rank percentiles are
+descriptive dependence sensitivity, not unconditional or simultaneous
+confidence intervals. Source 1 Mb blocks are not validated LD blocks.
+
+Fixed ten-bin reliability summaries require the exact saved probability of the
+reported unordered call and its correctness. The binary call-correctness Brier
+differs from full genotype-distribution Brier. Native marginal dosage alone
+cannot provide joint call confidence. Bins do not fit or recalibrate a model.
+
+The module accepts arrays and has no cohort, model, checkpoint or file readers.
+Independent invented-data numerical checks passed; real saved-output evaluation,
+imputation accuracy and biological validation remain incomplete. Integration
+must verify complete allele/sample identity, missingness, source hashes and the
+actual producer of each saved prediction before interpreting statistics.
