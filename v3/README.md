@@ -96,3 +96,27 @@ conditional cohort labels when comparing methods. These operators do not
 retrain models or establish external accuracy, independent phase or biology.
 
 The portable `tier0_core_v1.py` adds per-query masked-observation nearest-copy selection, complete-candidate haplotype NLL and paired family contrast summaries. Hidden labels cannot choose a reference; missing context/copies stay unavailable. Exact baseline zeros produce infinite loss, separately from unavailable states and finite-only conditional summaries. Nearest uses the caller's full declared context; its context aggregation need not equal the axial model. These operators have software conformance checks, but no validated trained-model accuracy, independent replication or biological gain is claimed.
+
+## Positional attention and TRAIN-only selection (11 October)
+
+`positional_axial_v2.py` adds site-index RoPE and a fixed monotone log base-pair
+distance bias to row attention. Population attention shares the panel across up
+to 64 independent query rows per chunk. Queries cannot change the panel or
+relay information to other queries. Geometry is supplied explicitly as integer
+site indices and base-pair positions; identifiers and held-out genotypes are
+not model features. `positional_training_v2.py` supplies identical paired
+initialization, a frozen-random encoder/backbone control and atomic paired
+gradient validation.
+
+`TRAIN_internal_protocol_v2.py` defines family-held internal validation, warmup
+and cosine scheduling, and deterministic complete-trial selection. Settings
+are frozen before a fresh full pilot; DEV and SEALED outcomes must never select
+settings. `tier1_primary_metrics_v2.py` defines stable dosage r², unordered
+concordance, TRAIN-frequency bins and the predeclared 1e-6 secondary event-log
+score floor. Unsmoothed exact-zero losses and missing/undefined denominators
+remain separate. Flooring does not alter distributions, dosages or calls.
+
+Independent software contracts passed for positional/query isolation and
+TRAIN-only selection/metric semantics. Real full-panel model profiling,
+training and biological validation remain incomplete. These source components
+are not trained weights or evidence of improved imputation.
